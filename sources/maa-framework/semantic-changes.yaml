@@ -1,0 +1,18 @@
+source_id: maafw
+changes:
+  - topic_id: framework.pipeline-control-flow
+    first_version: 5.5.0
+    revision: 143e99490afcfa7229e315b4197651ee8bde7773
+    description: Pipeline timeout added -1 as an infinite-wait value.
+    paths:
+      - docs/zh_cn/3.1-任务流水线协议.md
+      - tools/pipeline.schema.json
+
+  - topic_id: pipeline.ocr-field-semantics
+    first_version: 5.8.0
+    revision: c59e7682705142a5e3107629e8563d3a2d6978db
+    description: OCR added the color_filter preprocessing field.
+    paths:
+      - docs/zh_cn/3.1-任务流水线协议.md
+      - tools/pipeline.schema.json
+      - source/MaaFramework/Vision/OCRer.cpp

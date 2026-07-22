@@ -1,0 +1,108 @@
+source_id: maa-framework-go
+version: 3.5.1
+revision: 2a6d70566b51b1372e07d04c355114ac443b0065
+artifacts:
+- path: README.md
+  kind: documentation
+  title: README
+  summary: English | <a href="README_zh.md">简体中文</a>
+- path: README_zh.md
+  kind: documentation
+  title: README_zh
+  summary: MaaFramework 的 Go 语言绑定。MaaFramework 是一个基于图像识别的跨平台自动化测试框架。
+- path: agent_client.go
+  kind: binding-api
+  title: agent_client.go
+  summary: Public Go binding declarations for the agent_client module.
+- path: agent_server.go
+  kind: binding-api
+  title: agent_server.go
+  summary: Public Go binding declarations for the agent_server module.
+- path: context.go
+  kind: binding-api
+  title: context.go
+  summary: Public Go binding declarations for the context module.
+- path: controller.go
+  kind: binding-api
+  title: controller.go
+  summary: Public Go binding declarations for the controller module.
+- path: controller/adb/adb.go
+  kind: binding-api
+  title: adb.go
+  summary: Public Go binding declarations for the adb module.
+- path: controller/gamepad/gamepad.go
+  kind: binding-api
+  title: gamepad.go
+  summary: Public Go binding declarations for the gamepad module.
+- path: controller/win32/win32.go
+  kind: binding-api
+  title: win32.go
+  summary: Public Go binding declarations for the win32 module.
+- path: custom_action.go
+  kind: binding-api
+  title: custom_action.go
+  summary: Public Go binding declarations for the custom_action module.
+- path: custom_controller.go
+  kind: binding-api
+  title: custom_controller.go
+  summary: Public Go binding declarations for the custom_controller module.
+- path: custom_recognition.go
+  kind: binding-api
+  title: custom_recognition.go
+  summary: Public Go binding declarations for the custom_recognition module.
+- path: dbg_controller.go
+  kind: binding-api
+  title: dbg_controller.go
+  summary: Public Go binding declarations for the dbg_controller module.
+- path: event.go
+  kind: binding-api
+  title: event.go
+  summary: Public Go binding declarations for the event module.
+- path: go.mod
+  kind: package-manifest
+  title: go.mod
+  summary: Package and dependency metadata for the Go binding.
+- path: job.go
+  kind: binding-api
+  title: job.go
+  summary: Public Go binding declarations for the job module.
+- path: maa.go
+  kind: binding-api
+  title: maa.go
+  summary: Public Go binding declarations for the maa module.
+- path: node.go
+  kind: binding-api
+  title: node.go
+  summary: Public Go binding declarations for the node module.
+- path: pipeline.go
+  kind: binding-api
+  title: pipeline.go
+  summary: Public Go binding declarations for the pipeline module.
+- path: rect.go
+  kind: binding-api
+  title: rect.go
+  summary: Public Go binding declarations for the rect module.
+- path: resource.go
+  kind: binding-api
+  title: resource.go
+  summary: Public Go binding declarations for the resource module.
+- path: status.go
+  kind: binding-api
+  title: status.go
+  summary: Public Go binding declarations for the status module.
+- path: target.go
+  kind: binding-api
+  title: target.go
+  summary: Public Go binding declarations for the target module.
+- path: tasker.go
+  kind: binding-api
+  title: tasker.go
+  summary: Public Go binding declarations for the tasker module.
+- path: toolkit.go
+  kind: binding-api
+  title: toolkit.go
+  summary: Public Go binding declarations for the toolkit module.
+- path: version.go
+  kind: binding-api
+  title: version.go
+  summary: Public Go binding declarations for the version module.

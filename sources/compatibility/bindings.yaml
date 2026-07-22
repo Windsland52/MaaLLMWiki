@@ -1,0 +1,526 @@
+bindings:
+- source_id: maa-framework-go
+  binding_version: 0.1.0
+  binding_revision: c6a24d651a3b7d3f7189c9d58403ad3685a34f57
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.2.0
+  binding_revision: 4d73c63952e35be1d7df08885b8802c3c5904291
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.2.1
+  binding_revision: 147e84d5257ce0830b052e1401a655f4c05aaf76
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.2.2
+  binding_revision: ae0db8ff119d47bf0820df6248d8ea31f3da1383
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.2.3
+  binding_revision: 0067b6f36211538745d953dc948fbbebf52ad45b
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.2.4
+  binding_revision: 6994df596eeefc9fcc877f7fc8000d36df2a6d59
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.2.5
+  binding_revision: c57d7f56bc90aa3aded94343b183e95f60d26cf8
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.3.0
+  binding_revision: 94a893a6122f618d2e5f9f626573edf1a4a3ec3d
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.4.0
+  binding_revision: 70d67c9d3b32503ee7a6a2c1560d066d0c2bd0b5
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.4.1
+  binding_revision: a44bab12fc6fd95ad8201e26895b27d0aed3ab3f
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.5.0
+  binding_revision: 4387543b637e01f99063bad28c6c765224630226
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.5.1
+  binding_revision: a4eeaafaa352231372be9a2488f3cc0bba67aa5d
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.5.2
+  binding_revision: 7d25c7c1a53cd00d89d2a15557ee59ec19f69099
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.5.3
+  binding_revision: f8f019ed4dc049873bc43c669b76c7833838a4cd
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.5.4
+  binding_revision: 01dae55e3d777429ee563cec3ea9eeabbdaa83d2
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 0.6.0
+  binding_revision: 086995fe00997f6f99e4ec596f3a5c7e6793465f
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-go
+  binding_version: 1.0.0
+  binding_revision: b94931436039509e2ca5bc70871de93d9124205d
+  framework_version: 2.0.0
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.0.0.
+- source_id: maa-framework-go
+  binding_version: 1.0.1
+  binding_revision: d7217168cabc0bb31b324967277ef802680b142e
+  framework_version: 2.0.0
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.0.0.
+- source_id: maa-framework-go
+  binding_version: 1.1.0
+  binding_revision: 4d30b2022830b446c124536d0e2a37badb8653cf
+  framework_version: 2.0.0
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.0.0.
+- source_id: maa-framework-go
+  binding_version: 1.1.1
+  binding_revision: 29e53f41c163403168d637af4c725e2afea7033d
+  framework_version: 2.0.2
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.0.2.
+- source_id: maa-framework-go
+  binding_version: 1.2.0
+  binding_revision: d6a1c0a2019dcefcc6dcbe00d48a82c5c289f89f
+  framework_version: 2.0.3
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.0.3.
+- source_id: maa-framework-go
+  binding_version: 1.3.0
+  binding_revision: 80db80c2ef4c253cd098b7a4ce06ed722d8f11a2
+  framework_version: 2.1.3
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.1.3.
+- source_id: maa-framework-go
+  binding_version: 1.4.0
+  binding_revision: 6edd98f672442a299215f385ef1a8406bd965a52
+  framework_version: 2.2.1
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.2.1.
+- source_id: maa-framework-go
+  binding_version: 1.5.0
+  binding_revision: b788755e995d8d022f070bd317e7a5e02149bc13
+  framework_version: 2.2.2
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.2.2.
+- source_id: maa-framework-go
+  binding_version: 1.5.1
+  binding_revision: acc89d3bf5d5a9f953e3b6aa2c7ffb63416fcd4a
+  framework_version: 2.2.2
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.2.2.
+- source_id: maa-framework-go
+  binding_version: 1.6.0
+  binding_revision: c23269a491e25f599ac22216ee6ee409cc99c641
+  framework_version: 2.2.2
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.2.2.
+- source_id: maa-framework-go
+  binding_version: 1.6.1
+  binding_revision: 1a216eb53231c621ba161b371008f245b67633b6
+  framework_version: 2.2.2
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.2.2.
+- source_id: maa-framework-go
+  binding_version: 1.7.0
+  binding_revision: e413b08e148bd3e1fb1193f3df03ff304ac8150f
+  framework_version: 2.3.1
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v2.3.1.
+- source_id: maa-framework-go
+  binding_version: 2.0.0
+  binding_revision: 6a3e3e18726537ad780aa379f75ad570a5107f9b
+  framework_version: 3.0.3
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v3.0.3.
+- source_id: maa-framework-go
+  binding_version: 2.1.0
+  binding_revision: 44d285f175b6f409e8b3bf9a8e8877fcf6cdef1a
+  framework_version: 3.0.4
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v3.0.4.
+- source_id: maa-framework-go
+  binding_version: 2.2.0
+  binding_revision: 055aae8ac39bc591f623a7fc2817b82921bf94c2
+  framework_version: 3.0.4
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v3.0.4.
+- source_id: maa-framework-go
+  binding_version: 2.3.0
+  binding_revision: 4c07a4f0f97dcd0f980c38000eae199466d2044d
+  framework_version: 3.0.4
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v3.0.4.
+- source_id: maa-framework-go
+  binding_version: 3.0.0
+  binding_revision: aa5c08b4ec7a16c0d772cb106c716613b6be1891
+  framework_version: 5.1.3
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v5.1.3.
+- source_id: maa-framework-go
+  binding_version: 3.1.0
+  binding_revision: 44465802f963f1b4520384300ed6528e185525a6
+  framework_version: 5.2.0
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v5.2.0.
+- source_id: maa-framework-go
+  binding_version: 3.2.0
+  binding_revision: 82d006c573b028d8b8f17adbe7ab133ebc6be716
+  framework_version: 5.2.2
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v5.2.2.
+- source_id: maa-framework-go
+  binding_version: 3.2.1
+  binding_revision: 7e376a09772481649d9aa1d7061c121f70c220c5
+  framework_version: 5.2.3
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v5.2.3.
+- source_id: maa-framework-go
+  binding_version: 3.3.0
+  binding_revision: 8705ea60b723fd2a0a9f8b56006bff5a618fa47e
+  framework_version: 5.2.6
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v5.2.6.
+- source_id: maa-framework-go
+  binding_version: 3.3.1
+  binding_revision: c954be148f8d9e6f0539dc6ef23e610babc60aa4
+  framework_version: 5.2.6
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v5.2.6.
+- source_id: maa-framework-go
+  binding_version: 3.4.0
+  binding_revision: 92137ed09f8fe506dd26a49e096c9e0adc0181bf
+  framework_version: 5.3.0
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v5.3.0.
+- source_id: maa-framework-go
+  binding_version: 3.5.0
+  binding_revision: 12fa39e1bdd5cee550ffc9a8724c77b8f62f5fc1
+  framework_version: 5.4.1
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v5.4.1.
+- source_id: maa-framework-go
+  binding_version: 3.5.1
+  binding_revision: 2a6d70566b51b1372e07d04c355114ac443b0065
+  framework_version: 5.4.3
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v5.4.3.
+- source_id: maa-framework-rs
+  binding_version: 0.2.1
+  binding_revision: bc01af847b489f6cde96a500ee3d58c3a94a6977
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 0.2.2
+  binding_revision: 31af071f6183c9b1bae71e815ed70c85b1e27fb8
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.0.0
+  binding_revision: 5f88d652118a89f058ee9212c911078e687fc145
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.0.1
+  binding_revision: bcf2043138c5d81573706d90e471fdd5e92baaa1
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.1.0
+  binding_revision: 946f8050c0651a716b101e20d7ebfe5b5e886055
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.10.0
+  binding_revision: 9b630cd31a74b332a59f5d4f1d67805695c5c8d7
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.10.1
+  binding_revision: a7af19aaaf404a7e58ead208f87e7a430b82ef2b
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.11.0
+  binding_revision: e7bcdc0989b014aafb75f538953d5c9d1ec91d3f
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.12.0
+  binding_revision: 667449fd068748a5824c18b95973d6636c12f401
+  framework_version: 5.9.2
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.13.0
+  binding_revision: 4aa4377231e56de7ccf0b77cbdbed2c254a7a390
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.14.0
+  binding_revision: 67b18d50e97ed6b831d4c1997b0e0a85ab1b35ee
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.15.0
+  binding_revision: 0bae315b22308c9a9693b7033bbf79219da77c70
+  framework_version: 5.10.0
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.16.0
+  binding_revision: a6fe7da1b50eb38db9f652cda0702664414a0bfc
+  framework_version: 5.10.2
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.17.0
+  binding_revision: 7dbb4f5715697e094fadef107c435640051ecb9a
+  framework_version: 5.10.3
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.18.0
+  binding_revision: a449195791b56918638ff92c52ee9ff3ca3265a5
+  framework_version: 5.11.0
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.18.1
+  binding_revision: 793bb4a890b1979cfa52e2f25f74d864dec347f7
+  framework_version: 5.11.0
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.19.0
+  binding_revision: 2fd276655e984f8b56b97039fe49bf24d6bfdce6
+  framework_version: 5.11.1
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.2.0
+  binding_revision: da20045109dc684a38296102c0d497097adc6e3c
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.20.0
+  binding_revision: 500f018ffbc93c693cdb4bc3175bc911d2c2a233
+  framework_version: 5.12.1
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.3.0
+  binding_revision: a459fe9bfd671634251fd796c473c0e23b26e026
+  framework_version: 5.5.0
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.4.0
+  binding_revision: 9e7c41576dbe983831e99eebec347d9477d49b06
+  framework_version: 5.6.0
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.4.1
+  binding_revision: 3c8f243c890e451a30ab3bd68d7ce1d2b54969f9
+  framework_version: 5.6.0
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.5.0
+  binding_revision: 9a0032478be749d53d49015ffed3b44039b5968b
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.6.0
+  binding_revision: 4cfaa24ff0027e3ec4263ea1e5e89e36ec33cdcc
+  framework_version: 5.7.0
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.7.0
+  binding_revision: 21351dca4780a03cfb05b11d79caaef18faf52d2
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.8.0
+  binding_revision: 4330183dd582c8eb74189341a1399cfa2d0f6cc7
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.9.0
+  binding_revision: fec62e60cf5555cfdb2bc3180668de1955ac3cdc
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.

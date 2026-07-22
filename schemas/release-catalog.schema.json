@@ -1,0 +1,59 @@
+{
+  "$defs": {
+    "ReleaseRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "tag": {
+          "minLength": 1,
+          "title": "Tag",
+          "type": "string"
+        },
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Commit",
+          "type": "string"
+        },
+        "released_at": {
+          "format": "date",
+          "title": "Released At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "tag",
+        "commit",
+        "released_at"
+      ],
+      "title": "ReleaseRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_id": {
+      "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "releases": {
+      "items": {
+        "$ref": "#/$defs/ReleaseRecord"
+      },
+      "minItems": 1,
+      "title": "Releases",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_id",
+    "releases"
+  ],
+  "title": "ReleaseCatalog",
+  "type": "object"
+}

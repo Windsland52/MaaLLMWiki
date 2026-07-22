@@ -1,0 +1,81 @@
+{
+  "$defs": {
+    "BindingCompatibility": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "binding_version": {
+          "minLength": 1,
+          "title": "Binding Version",
+          "type": "string"
+        },
+        "binding_revision": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Binding Revision",
+          "type": "string"
+        },
+        "framework_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Framework Version"
+        },
+        "status": {
+          "$ref": "#/$defs/CompatibilityStatus"
+        },
+        "evidence_paths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Paths",
+          "type": "array"
+        },
+        "note": {
+          "minLength": 1,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "binding_version",
+        "binding_revision",
+        "status",
+        "note"
+      ],
+      "title": "BindingCompatibility",
+      "type": "object"
+    },
+    "CompatibilityStatus": {
+      "enum": [
+        "declared",
+        "verified",
+        "unknown"
+      ],
+      "title": "CompatibilityStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "bindings": {
+      "items": {
+        "$ref": "#/$defs/BindingCompatibility"
+      },
+      "title": "Bindings",
+      "type": "array"
+    }
+  },
+  "title": "BindingCompatibilityCatalog",
+  "type": "object"
+}

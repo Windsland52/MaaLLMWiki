@@ -1,0 +1,34 @@
+repositories:
+- id: maafw
+  name: MaaFramework
+  url: https://github.com/MaaXYZ/MaaFramework
+  role: authoritative
+  status: active
+  enabled: true
+  default_revision: f625a60edeccd4549f9a71c0f74628d827ade8fb
+  note: The default revision follows the latest indexed stable MaaFramework release.
+- id: maa-tutorial
+  name: MaaTutorial
+  url: https://github.com/Windsland52/MaaTutorial
+  role: maintainer-guidance
+  status: placeholder
+  enabled: false
+  default_revision: null
+  note: Reserved for authored Pipeline guidance; do not ingest the current working
+    tree.
+- id: maa-framework-go
+  name: MaaFramework Go binding
+  url: https://github.com/MaaXYZ/maa-framework-go
+  role: authoritative
+  status: active
+  enabled: true
+  default_revision: 2a6d70566b51b1372e07d04c355114ac443b0065
+  note: The default revision follows the latest indexed stable Go binding release.
+- id: maa-framework-rs
+  name: MaaFramework Rust binding
+  url: https://github.com/MaaXYZ/maa-framework-rs
+  role: authoritative
+  status: active
+  enabled: true
+  default_revision: 500f018ffbc93c693cdb4bc3175bc911d2c2a233
+  note: The default revision follows the latest indexed stable Rust binding release.

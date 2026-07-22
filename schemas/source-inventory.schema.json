@@ -1,0 +1,80 @@
+{
+  "$defs": {
+    "ArtifactKind": {
+      "enum": [
+        "documentation",
+        "documentation-asset",
+        "binding-api",
+        "schema",
+        "public-api",
+        "package-manifest"
+      ],
+      "title": "ArtifactKind",
+      "type": "string"
+    },
+    "SourceArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ArtifactKind"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "kind",
+        "title",
+        "summary"
+      ],
+      "title": "SourceArtifact",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_id": {
+      "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "version": {
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    },
+    "revision": {
+      "pattern": "^[0-9a-f]{40}$",
+      "title": "Revision",
+      "type": "string"
+    },
+    "artifacts": {
+      "items": {
+        "$ref": "#/$defs/SourceArtifact"
+      },
+      "minItems": 1,
+      "title": "Artifacts",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_id",
+    "version",
+    "revision",
+    "artifacts"
+  ],
+  "title": "SourceInventory",
+  "type": "object"
+}

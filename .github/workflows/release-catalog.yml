@@ -1,0 +1,35 @@
+name: Release catalog snapshot
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out catalog revision
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Validate and build catalog snapshot
+        run: |
+          uv sync --locked
+          uv run maa-wiki-validate
+          uv run pytest
+          uv run maa-wiki-build-bundle --output "dist/maa-llm-wiki-catalog-${GITHUB_REF_NAME}.zip"
+          cp "dist/maa-llm-wiki-catalog-${GITHUB_REF_NAME}.zip" "dist/maa-llm-wiki-catalog.zip"
+
+      - name: Publish catalog snapshot
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/maa-llm-wiki-catalog-*.zip
+          generate_release_notes: true

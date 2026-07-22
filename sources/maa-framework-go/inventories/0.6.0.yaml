@@ -1,0 +1,72 @@
+source_id: maa-framework-go
+version: 0.6.0
+revision: 086995fe00997f6f99e4ec596f3a5c7e6793465f
+artifacts:
+- path: README.md
+  kind: documentation
+  title: MaaFramework Golang Binding
+  summary: English | 简体中文
+- path: README_zh.md
+  kind: documentation
+  title: MaaFramework Golang 绑定
+  summary: English | 简体中文
+- path: callback.go
+  kind: binding-api
+  title: callback.go
+  summary: Public Go binding declarations for the callback module.
+- path: cgo.go
+  kind: binding-api
+  title: cgo.go
+  summary: Public Go binding declarations for the cgo module.
+- path: controller.go
+  kind: binding-api
+  title: controller.go
+  summary: Public Go binding declarations for the controller module.
+- path: custom_action.go
+  kind: binding-api
+  title: custom_action.go
+  summary: Public Go binding declarations for the custom_action module.
+- path: custom_controller.go
+  kind: binding-api
+  title: custom_controller.go
+  summary: Public Go binding declarations for the custom_controller module.
+- path: custom_recognizer.go
+  kind: binding-api
+  title: custom_recognizer.go
+  summary: Public Go binding declarations for the custom_recognizer module.
+- path: go.mod
+  kind: package-manifest
+  title: go.mod
+  summary: Package and dependency metadata for the Go binding.
+- path: instance.go
+  kind: binding-api
+  title: instance.go
+  summary: Public Go binding declarations for the instance module.
+- path: job.go
+  kind: binding-api
+  title: job.go
+  summary: Public Go binding declarations for the job module.
+- path: option.go
+  kind: binding-api
+  title: option.go
+  summary: Public Go binding declarations for the option module.
+- path: rect.go
+  kind: binding-api
+  title: rect.go
+  summary: Public Go binding declarations for the rect module.
+- path: resource.go
+  kind: binding-api
+  title: resource.go
+  summary: Public Go binding declarations for the resource module.
+- path: status.go
+  kind: binding-api
+  title: status.go
+  summary: Public Go binding declarations for the status module.
+- path: sync_context.go
+  kind: binding-api
+  title: sync_context.go
+  summary: Public Go binding declarations for the sync_context module.
+- path: version.go
+  kind: binding-api
+  title: version.go
+  summary: Public Go binding declarations for the version module.

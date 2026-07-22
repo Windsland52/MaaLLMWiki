@@ -1,0 +1,12 @@
+source_id: maa-framework-rs
+version: 0.2.1
+revision: bc01af847b489f6cde96a500ee3d58c3a94a6977
+artifacts:
+- path: Cargo.toml
+  kind: package-manifest
+  title: Cargo.toml
+  summary: Package and dependency metadata for the Rust binding.
+- path: README.md
+  kind: documentation
+  title: MaaFramework Rust bindings
+  summary: Official documentation for MaaFramework Rust bindings.

@@ -1,0 +1,92 @@
+source_id: maa-framework-go
+version: 0.1.0
+revision: c6a24d651a3b7d3f7189c9d58403ad3685a34f57
+artifacts:
+- path: README.md
+  kind: documentation
+  title: MaaFramework Golang Binding
+  summary: Official documentation for MaaFramework Golang Binding.
+- path: buffer_image.go
+  kind: binding-api
+  title: buffer_image.go
+  summary: Public Go binding declarations for the buffer_image module.
+- path: buffer_image_list.go
+  kind: binding-api
+  title: buffer_image_list.go
+  summary: Public Go binding declarations for the buffer_image_list module.
+- path: buffer_rect.go
+  kind: binding-api
+  title: buffer_rect.go
+  summary: Public Go binding declarations for the buffer_rect module.
+- path: buffer_string.go
+  kind: binding-api
+  title: buffer_string.go
+  summary: Public Go binding declarations for the buffer_string module.
+- path: buffer_string_list.go
+  kind: binding-api
+  title: buffer_string_list.go
+  summary: Public Go binding declarations for the buffer_string_list module.
+- path: callback_agent.go
+  kind: binding-api
+  title: callback_agent.go
+  summary: Public Go binding declarations for the callback_agent module.
+- path: cgo.go
+  kind: binding-api
+  title: cgo.go
+  summary: Public Go binding declarations for the cgo module.
+- path: controller.go
+  kind: binding-api
+  title: controller.go
+  summary: Public Go binding declarations for the controller module.
+- path: controller_adb.go
+  kind: binding-api
+  title: controller_adb.go
+  summary: Public Go binding declarations for the controller_adb module.
+- path: controller_custom.go
+  kind: binding-api
+  title: controller_custom.go
+  summary: Public Go binding declarations for the controller_custom module.
+- path: controller_dbg.go
+  kind: binding-api
+  title: controller_dbg.go
+  summary: Public Go binding declarations for the controller_dbg module.
+- path: controller_thrift.go
+  kind: binding-api
+  title: controller_thrift.go
+  summary: Public Go binding declarations for the controller_thrift module.
+- path: controller_win32.go
+  kind: binding-api
+  title: controller_win32.go
+  summary: Public Go binding declarations for the controller_win32 module.
+- path: custom_action.go
+  kind: binding-api
+  title: custom_action.go
+  summary: Public Go binding declarations for the custom_action module.
+- path: custom_recognizer.go
+  kind: binding-api
+  title: custom_recognizer.go
+  summary: Public Go binding declarations for the custom_recognizer module.
+- path: custom_sync_context.go
+  kind: binding-api
+  title: custom_sync_context.go
+  summary: Public Go binding declarations for the custom_sync_context module.
+- path: go.mod
+  kind: package-manifest
+  title: go.mod
+  summary: Package and dependency metadata for the Go binding.
+- path: instance.go
+  kind: binding-api
+  title: instance.go
+  summary: Public Go binding declarations for the instance module.
+- path: resource.go
+  kind: binding-api
+  title: resource.go
+  summary: Public Go binding declarations for the resource module.
+- path: status.go
+  kind: binding-api
+  title: status.go
+  summary: Public Go binding declarations for the status module.
+- path: utility.go
+  kind: binding-api
+  title: utility.go
+  summary: Public Go binding declarations for the utility module.

@@ -1,0 +1,96 @@
+{
+  "$defs": {
+    "SourceMapVariant": {
+      "additionalProperties": false,
+      "properties": {
+        "applies_to": {
+          "minLength": 1,
+          "title": "Applies To",
+          "type": "string"
+        },
+        "revision": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Revision",
+          "type": "string"
+        },
+        "paths": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Paths",
+          "type": "array"
+        },
+        "symbols": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Symbols",
+          "type": "array"
+        },
+        "terms": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Terms",
+          "type": "array"
+        }
+      },
+      "required": [
+        "applies_to",
+        "revision",
+        "paths",
+        "terms"
+      ],
+      "title": "SourceMapVariant",
+      "type": "object"
+    },
+    "TopicSourceMap": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "variants": {
+          "items": {
+            "$ref": "#/$defs/SourceMapVariant"
+          },
+          "minItems": 1,
+          "title": "Variants",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "variants"
+      ],
+      "title": "TopicSourceMap",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "topics": {
+      "items": {
+        "$ref": "#/$defs/TopicSourceMap"
+      },
+      "minItems": 1,
+      "title": "Topics",
+      "type": "array"
+    }
+  },
+  "required": [
+    "topics"
+  ],
+  "title": "SourceMap",
+  "type": "object"
+}

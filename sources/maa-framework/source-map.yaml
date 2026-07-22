@@ -1,0 +1,62 @@
+topics:
+  - id: framework.pipeline-control-flow
+    source_id: maafw
+    variants:
+      - applies_to: "5.11.2"
+        revision: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+        paths:
+          - docs/zh_cn/3.1-任务流水线协议.md
+          - tools/pipeline.schema.json
+          - source/MaaFramework/Task/PipelineTask.cpp
+        symbols:
+          - PipelineTask::run
+          - PipelineTask::find_first
+        terms:
+          - next
+          - timeout
+          - rate_limit
+          - on_error
+          - Node.NextList.Failed
+
+  - id: diagnostics.failure-event-levels
+    source_id: maafw
+    variants:
+      - applies_to: "5.11.2"
+        revision: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+        paths:
+          - docs/zh_cn/2.3-回调协议.md
+          - include/MaaFramework/MaaMsg.h
+          - source/MaaFramework/Task/TaskBase.cpp
+          - source/MaaFramework/Task/PipelineTask.cpp
+          - source/MaaFramework/Tasker/Tasker.cpp
+        symbols:
+          - MaaMsg_Node_Recognition_Failed
+          - MaaMsg_Node_NextList_Failed
+          - MaaMsg_Node_Action_Failed
+          - MaaMsg_Node_PipelineNode_Failed
+          - MaaMsg_Tasker_Task_Failed
+        terms:
+          - Node.Recognition.Failed
+          - Node.NextList.Failed
+          - Node.Action.Failed
+          - Node.PipelineNode.Failed
+          - Tasker.Task.Failed
+
+  - id: pipeline.ocr-field-semantics
+    source_id: maafw
+    variants:
+      - applies_to: "5.11.2"
+        revision: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+        paths:
+          - docs/zh_cn/3.1-任务流水线协议.md
+          - tools/pipeline.schema.json
+          - source/MaaFramework/Vision/OCRer.cpp
+        symbols:
+          - OCRer::predict
+          - OCRer::add_results
+        terms:
+          - roi
+          - expected
+          - replace
+          - only_rec
+          - color_filter

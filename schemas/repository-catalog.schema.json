@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "RepositoryRole": {
+      "enum": [
+        "authoritative",
+        "maintainer-guidance"
+      ],
+      "title": "RepositoryRole",
+      "type": "string"
+    },
+    "RepositorySource": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "url": {
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/RepositoryRole"
+        },
+        "status": {
+          "$ref": "#/$defs/RepositoryStatus"
+        },
+        "enabled": {
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "default_revision": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{40}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Default Revision"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "url",
+        "role",
+        "status",
+        "enabled"
+      ],
+      "title": "RepositorySource",
+      "type": "object"
+    },
+    "RepositoryStatus": {
+      "enum": [
+        "active",
+        "placeholder"
+      ],
+      "title": "RepositoryStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "repositories": {
+      "items": {
+        "$ref": "#/$defs/RepositorySource"
+      },
+      "minItems": 1,
+      "title": "Repositories",
+      "type": "array"
+    }
+  },
+  "required": [
+    "repositories"
+  ],
+  "title": "RepositoryCatalog",
+  "type": "object"
+}

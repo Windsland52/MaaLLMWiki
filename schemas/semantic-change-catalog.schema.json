@@ -1,0 +1,66 @@
+{
+  "$defs": {
+    "SemanticChange": {
+      "additionalProperties": false,
+      "properties": {
+        "topic_id": {
+          "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "title": "Topic Id",
+          "type": "string"
+        },
+        "first_version": {
+          "minLength": 1,
+          "title": "First Version",
+          "type": "string"
+        },
+        "revision": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Revision",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "paths": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Paths",
+          "type": "array"
+        }
+      },
+      "required": [
+        "topic_id",
+        "first_version",
+        "revision",
+        "description",
+        "paths"
+      ],
+      "title": "SemanticChange",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_id": {
+      "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "changes": {
+      "items": {
+        "$ref": "#/$defs/SemanticChange"
+      },
+      "title": "Changes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_id"
+  ],
+  "title": "SemanticChangeCatalog",
+  "type": "object"
+}

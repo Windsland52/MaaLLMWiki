@@ -1,0 +1,116 @@
+source_id: maa-framework-rs
+version: 1.10.0
+revision: 9b630cd31a74b332a59f5d4f1d67805695c5c8d7
+artifacts:
+- path: Cargo.toml
+  kind: package-manifest
+  title: Cargo.toml
+  summary: Package and dependency metadata for the Rust binding.
+- path: README.md
+  kind: documentation
+  title: README
+  summary: English | <a href="https://github.com/MaaXYZ/maa-framework-rs/blob/main/README_zh.md">简体中文</a>
+- path: README_zh.md
+  kind: documentation
+  title: README_zh
+  summary: 从 MaaFramework Releases 下载：
+- path: maa-framework-sys/Cargo.toml
+  kind: package-manifest
+  title: Cargo.toml
+  summary: Package and dependency metadata for the Rust binding.
+- path: maa-framework-sys/src/bindings/dynamic_bindings.rs
+  kind: binding-api
+  title: dynamic_bindings.rs
+  summary: Public Rust binding declarations for the dynamic_bindings module.
+- path: maa-framework-sys/src/bindings/shims.rs
+  kind: binding-api
+  title: shims.rs
+  summary: Public Rust binding declarations for the shims module.
+- path: maa-framework-sys/src/bindings/static_bindings.rs
+  kind: binding-api
+  title: static_bindings.rs
+  summary: Public Rust binding declarations for the static_bindings module.
+- path: maa-framework-sys/src/lib.rs
+  kind: binding-api
+  title: lib.rs
+  summary: Public Rust binding declarations for the lib module.
+- path: maa-framework/Cargo.toml
+  kind: package-manifest
+  title: Cargo.toml
+  summary: Package and dependency metadata for the Rust binding.
+- path: maa-framework/src/agent_client.rs
+  kind: binding-api
+  title: agent_client.rs
+  summary: Public Rust binding declarations for the agent_client module.
+- path: maa-framework/src/agent_server.rs
+  kind: binding-api
+  title: agent_server.rs
+  summary: Public Rust binding declarations for the agent_server module.
+- path: maa-framework/src/buffer.rs
+  kind: binding-api
+  title: buffer.rs
+  summary: Public Rust binding declarations for the buffer module.
+- path: maa-framework/src/callback.rs
+  kind: binding-api
+  title: callback.rs
+  summary: Public Rust binding declarations for the callback module.
+- path: maa-framework/src/common.rs
+  kind: binding-api
+  title: common.rs
+  summary: Public Rust binding declarations for the common module.
+- path: maa-framework/src/context.rs
+  kind: binding-api
+  title: context.rs
+  summary: Public Rust binding declarations for the context module.
+- path: maa-framework/src/controller.rs
+  kind: binding-api
+  title: controller.rs
+  summary: Public Rust binding declarations for the controller module.
+- path: maa-framework/src/custom.rs
+  kind: binding-api
+  title: custom.rs
+  summary: Public Rust binding declarations for the custom module.
+- path: maa-framework/src/custom_controller.rs
+  kind: binding-api
+  title: custom_controller.rs
+  summary: Public Rust binding declarations for the custom_controller module.
+- path: maa-framework/src/error.rs
+  kind: binding-api
+  title: error.rs
+  summary: Public Rust binding declarations for the error module.
+- path: maa-framework/src/event_sink.rs
+  kind: binding-api
+  title: event_sink.rs
+  summary: Public Rust binding declarations for the event_sink module.
+- path: maa-framework/src/job.rs
+  kind: binding-api
+  title: job.rs
+  summary: Public Rust binding declarations for the job module.
+- path: maa-framework/src/lib.rs
+  kind: binding-api
+  title: lib.rs
+  summary: Public Rust binding declarations for the lib module.
+- path: maa-framework/src/notification.rs
+  kind: binding-api
+  title: notification.rs
+  summary: Public Rust binding declarations for the notification module.
+- path: maa-framework/src/pipeline.rs
+  kind: binding-api
+  title: pipeline.rs
+  summary: Public Rust binding declarations for the pipeline module.
+- path: maa-framework/src/resource.rs
+  kind: binding-api
+  title: resource.rs
+  summary: Public Rust binding declarations for the resource module.
+- path: maa-framework/src/tasker.rs
+  kind: binding-api
+  title: tasker.rs
+  summary: Public Rust binding declarations for the tasker module.
+- path: maa-framework/src/toolkit.rs
+  kind: binding-api
+  title: toolkit.rs
+  summary: Public Rust binding declarations for the toolkit module.
+- path: maa-framework/src/util.rs
+  kind: binding-api
+  title: util.rs
+  summary: Public Rust binding declarations for the util module.

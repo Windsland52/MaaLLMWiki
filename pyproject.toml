@@ -1,0 +1,50 @@
+[project]
+name = "maa-llm-wiki"
+version = "0.1.0"
+description = "Versioned navigation knowledge for MaaFramework development and diagnostics"
+readme = "README.md"
+requires-python = "==3.13.*"
+dependencies = [
+    "pydantic>=2.12,<3",
+    "pyyaml>=6.0.2,<7",
+]
+
+[project.scripts]
+maa-wiki-validate = "maa_llm_wiki.cli:main"
+maa-wiki-generate-schemas = "maa_llm_wiki.cli:generate_schemas_main"
+maa-wiki-sync-maafw = "maa_llm_wiki.cli:sync_maafw_main"
+maa-wiki-sync-latest-maafw = "maa_llm_wiki.cli:sync_latest_maafw_main"
+maa-wiki-sync-maafw-history = "maa_llm_wiki.cli:sync_maafw_history_main"
+maa-wiki-sync-bindings-history = "maa_llm_wiki.cli:sync_bindings_history_main"
+maa-wiki-build-bundle = "maa_llm_wiki.cli:build_bundle_main"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.408,<2",
+    "pytest>=9,<10",
+    "ruff>=0.14,<0.15",
+    "types-pyyaml>=6.0.12,<7",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.29,<0.12"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "strict"
+include = ["src", "tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.format]
+line-ending = "lf"
