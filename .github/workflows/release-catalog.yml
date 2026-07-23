@@ -26,7 +26,6 @@ jobs:
           uv run maa-wiki-validate
           uv run pytest
           uv run maa-wiki-build-bundle --output "dist/maa-llm-wiki-catalog-${GITHUB_REF_NAME}.zip"
-          cp "dist/maa-llm-wiki-catalog-${GITHUB_REF_NAME}.zip" "dist/maa-llm-wiki-catalog.zip"
 
       - name: Publish catalog snapshot
         uses: softprops/action-gh-release@v2

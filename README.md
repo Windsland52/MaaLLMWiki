@@ -82,12 +82,12 @@ Go binding, and Rust binding releases. MaaTutorial is intentionally not ingested
 
 ## Catalog snapshots
 
-MDE can read this Git checkout directly during development. Tagged releases publish both a
-tag-named catalog ZIP and the stable `maa-llm-wiki-catalog.zip` asset used by GitHub's
-`releases/latest/download` URL. Each contains `sources/`, `generated/`, `schemas/`, and a
-`catalog-manifest.json`. The manifest pins the Wiki commit and current upstream revisions and
-records every bundled file's size and SHA-256 digest. Release bundles must be built from a clean
-working tree; `--allow-dirty` exists only for local development and tests.
+MDE can read this Git checkout directly during development. Tagged releases publish a versioned
+`maa-llm-wiki-catalog-vX.Y.Z.zip` asset containing `sources/`, `generated/`, `schemas/`, and
+a `catalog-manifest.json`. Consumers discover the latest versioned asset through the GitHub
+Releases API. The manifest pins the Wiki commit and current upstream revisions and records every
+bundled file's size and SHA-256 digest. Release bundles must be built from a clean working tree;
+`--allow-dirty` exists only for local development and tests.
 
 The inventory treats C/C++ headers as the native public API. Python modules under
 `source/binding/Python/maa` and NodeJS declarations under `source/binding/NodeJS/src/apis/*.d.ts`
