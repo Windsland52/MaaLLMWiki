@@ -77,9 +77,11 @@ def test_generated_navigation_is_hierarchical() -> None:
 
 
 def test_current_inventory_has_historical_manifest() -> None:
-    inventory_path = ROOT / "sources" / "maa-framework" / "inventories" / "5.12.2.yaml"
+    inventory = load_source_inventory(ROOT)
+    inventory_path = (
+        ROOT / "sources" / "maa-framework" / "inventories" / f"{inventory.version}.yaml"
+    )
     assert inventory_path.is_file()
-    assert load_source_inventory(ROOT).version == "5.12.2"
     assert len(load_source_inventories(ROOT)) >= 2
 
 
@@ -87,21 +89,23 @@ def test_external_bindings_have_independent_versioned_indexes() -> None:
     go_releases = load_release_catalog(ROOT, "maa-framework-go")
     rust_releases = load_release_catalog(ROOT, "maa-framework-rs")
 
-    assert go_releases.releases[-1].version == "3.5.1"
-    assert rust_releases.releases[-1].version == "1.20.0"
     for source_id, releases in (
         ("maa-framework-go", go_releases),
         ("maa-framework-rs", rust_releases),
     ):
+        latest = releases.releases[-1]
         assert (ROOT / "generated" / source_id / "index.md").is_file()
+        assert (ROOT / "generated" / source_id / latest.version / "api.md").is_file()
         assert len(load_source_inventories(ROOT, source_id)) == len(releases.releases)
 
-    go_api = (ROOT / "generated" / "maa-framework-go" / "3.5.1" / "api.md").read_text(
+    go_latest = go_releases.releases[-1]
+    go_api = (ROOT / "generated" / "maa-framework-go" / go_latest.version / "api.md").read_text(
         encoding="utf-8"
     )
-    assert "https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3@v3.5.1" in go_api
+    assert f"https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3@{go_latest.tag}" in go_api
     assert (
-        "https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/adb@v3.5.1" in go_api
+        f"https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/adb@{go_latest.tag}"
+        in go_api
     )
 
 
