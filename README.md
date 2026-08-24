@@ -89,6 +89,11 @@ Releases API. The manifest pins the Wiki commit and current upstream revisions a
 bundled file's size and SHA-256 digest. Release bundles must be built from a clean working tree;
 `--allow-dirty` exists only for local development and tests.
 
+Snapshot tags are cut automatically: merging a pull request that changes `sources/`,
+`generated/`, or `schemas/` runs the checks once more and pushes the next patch tag, which
+triggers the snapshot release. A snapshot can also be requested manually at any time through
+the `workflow_dispatch` event of the tagging workflow.
+
 The inventory treats C/C++ headers as the native public API. Python modules under
 `source/binding/Python/maa` and NodeJS declarations under `source/binding/NodeJS/src/apis/*.d.ts`
 are in-tree binding APIs. C#, Go, and Rust bindings live in independent repositories and require
@@ -101,4 +106,5 @@ is not a default API source.
 The weekly GitHub Actions workflow discovers the latest stable `vMAJOR.MINOR.PATCH` tag, records
 its immutable commit, regenerates the catalogs, runs all checks, and opens a pull request. It does
 not infer semantic changes: maintainers review API and behavior changes and update
-`semantic-changes.yaml` when needed.
+`semantic-changes.yaml` when needed. Merging the pull request is the review gate; the merge push
+then cuts the next snapshot tag and publishes the release automatically.
