@@ -136,6 +136,8 @@ def validate_repository(root: Path) -> list[str]:
     release_index = generated_root / "index.md"
     if not release_index.is_file():
         errors.append(f"generated release index is missing: {release_index.relative_to(root)}")
+    if releases.prereleases and not (generated_root / "prereleases.md").is_file():
+        errors.append("generated prerelease registry is missing for maa-framework")
 
     compatibility_by_key = {
         (item.source_id, item.binding_version): item for item in binding_compatibility.bindings
@@ -207,6 +209,11 @@ def validate_repository(root: Path) -> list[str]:
                 )
         if not (root / "generated" / binding_source_id / "index.md").is_file():
             errors.append(f"{binding_source_id} generated release index is missing")
+        if (
+            binding_releases.prereleases
+            and not (root / "generated" / binding_source_id / "prereleases.md").is_file()
+        ):
+            errors.append(f"{binding_source_id} generated prerelease registry is missing")
 
     for topic in source_map.topics:
         if topic.source_id not in repository_ids:

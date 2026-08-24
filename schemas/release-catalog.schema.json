@@ -1,5 +1,50 @@
 {
   "$defs": {
+    "PrereleaseRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "tag": {
+          "minLength": 1,
+          "title": "Tag",
+          "type": "string"
+        },
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Commit",
+          "type": "string"
+        },
+        "released_at": {
+          "format": "date",
+          "title": "Released At",
+          "type": "string"
+        },
+        "included_in": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Included In"
+        }
+      },
+      "required": [
+        "version",
+        "tag",
+        "commit",
+        "released_at"
+      ],
+      "title": "PrereleaseRecord",
+      "type": "object"
+    },
     "ReleaseRecord": {
       "additionalProperties": false,
       "properties": {
@@ -47,6 +92,13 @@
       },
       "minItems": 1,
       "title": "Releases",
+      "type": "array"
+    },
+    "prereleases": {
+      "items": {
+        "$ref": "#/$defs/PrereleaseRecord"
+      },
+      "title": "Prereleases",
       "type": "array"
     }
   },

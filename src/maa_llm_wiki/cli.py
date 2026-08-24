@@ -63,12 +63,15 @@ def sync_maafw_history_main() -> int:
     parser.add_argument("--repository", type=Path, required=True)
     parser.add_argument("--major", type=int, default=5)
     args = parser.parse_args()
-    releases = sync_maafw_history(
+    releases, prereleases = sync_maafw_history(
         root=args.root.resolve(),
         repository=args.repository.resolve(),
         major=args.major,
     )
-    print(f"Indexed {len(releases)} MaaFramework {args.major}.x releases")  # noqa: T201
+    print(  # noqa: T201
+        f"Indexed {len(releases)} MaaFramework {args.major}.x releases "
+        f"and {len(prereleases)} prereleases"
+    )
     return 0
 
 
@@ -82,11 +85,12 @@ def sync_bindings_history_main() -> int:
         "maa-framework-rs": args.rust_repository.resolve(),
     }
     for source_id, repository in repositories.items():
-        releases = sync_binding_history(
+        releases, prereleases = sync_binding_history(
             root=args.root.resolve(), repository=repository, source_id=source_id
         )
         print(  # noqa: T201
-            f"Indexed {len(releases)} stable {BINDING_SPECS[source_id].display_name} releases"
+            f"Indexed {len(releases)} stable {BINDING_SPECS[source_id].display_name} releases "
+            f"and {len(prereleases)} prereleases"
         )
     return 0
 

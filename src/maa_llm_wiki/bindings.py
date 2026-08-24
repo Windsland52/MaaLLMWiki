@@ -9,10 +9,13 @@ from urllib.parse import quote
 import yaml
 
 from .inventory import (
+    discover_prereleases,
     discover_stable_releases,
     git_text,
     load_markdown,
     markdown_metadata,
+    render_prereleases_page,
+    resolve_included_in,
     write_yaml,
 )
 from .models import (
@@ -20,6 +23,7 @@ from .models import (
     BindingCompatibility,
     BindingCompatibilityCatalog,
     CompatibilityStatus,
+    PrereleaseRecord,
     ReleaseCatalog,
     ReleaseRecord,
     SourceArtifact,
@@ -321,6 +325,7 @@ def _write_binding_indexes(
     compatibility: BindingCompatibility,
     repository_url: str,
     releases: list[ReleaseRecord],
+    prereleases: list[PrereleaseRecord],
     package_documentation: list[PackageDocumentation],
 ) -> None:
     output_root = root / "generated" / spec.source_id
@@ -346,7 +351,27 @@ def _write_binding_indexes(
     for release in reversed(releases):
         if (output_root / release.version / "index.md").is_file():
             lines.append(f"- [{release.version}](./{release.version}/index.md) `{release.commit}`")
+    if prereleases:
+        lines.extend(
+            [
+                "",
+                "## Prereleases",
+                "",
+                "[Pre-release registry](./prereleases.md)",
+            ]
+        )
     (output_root / "index.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    (output_root / "prereleases.md").write_text(
+        render_prereleases_page(
+            display_name=spec.display_name,
+            generator="maa-wiki-sync-bindings-history",
+            repository_url=repository_url,
+            releases=releases,
+            prereleases=prereleases,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
 
 
 def _load_compatibility(root: Path) -> BindingCompatibilityCatalog:
@@ -362,7 +387,7 @@ def sync_binding_history(
     root: Path,
     repository: Path,
     source_id: str,
-) -> list[ReleaseRecord]:
+) -> tuple[list[ReleaseRecord], list[PrereleaseRecord]]:
     spec = BINDING_SPECS.get(source_id)
     if spec is None:
         raise ValueError(f"Unsupported binding source: {source_id}")
@@ -372,12 +397,17 @@ def sync_binding_history(
         raise ValueError(f"Unknown repository source: {source_id}")
 
     releases = discover_stable_releases(repository)
+    prereleases = resolve_included_in(repository, discover_prereleases(repository), releases)
     source.default_revision = releases[-1].commit
     source_root = root / "sources" / source_id
     source_root.mkdir(parents=True, exist_ok=True)
     write_yaml(
         source_root / "releases.yaml",
-        ReleaseCatalog(source_id=source_id, releases=releases).model_dump(mode="json"),
+        ReleaseCatalog(
+            source_id=source_id,
+            releases=releases,
+            prereleases=prereleases,
+        ).model_dump(mode="json"),
     )
     write_yaml(root / "sources" / "repositories.yaml", repositories.model_dump(mode="json"))
 
@@ -410,6 +440,7 @@ def sync_binding_history(
             compatibility,
             source.url,
             releases,
+            prereleases,
             package_documentation,
         )
 
@@ -418,4 +449,4 @@ def sync_binding_history(
     compatibility_path = root / "sources" / "compatibility" / "bindings.yaml"
     compatibility_path.parent.mkdir(parents=True, exist_ok=True)
     write_yaml(compatibility_path, catalog.model_dump(mode="json"))
-    return releases
+    return releases, prereleases

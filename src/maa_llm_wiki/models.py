@@ -108,15 +108,50 @@ class ReleaseRecord(StrictModel):
     released_at: date
 
 
+class PrereleaseRecord(StrictModel):
+    version: str = Field(min_length=1)
+    tag: str = Field(min_length=1)
+    commit: str = Field(pattern=COMMIT_PATTERN)
+    released_at: date
+    included_in: str | None = None
+
+
 class ReleaseCatalog(StrictModel):
     source_id: str = Field(pattern=ID_PATTERN)
     releases: list[ReleaseRecord] = Field(min_length=1)
+    prereleases: list[PrereleaseRecord] = Field(default_factory=list[PrereleaseRecord])
 
     @model_validator(mode="after")
     def require_unique_versions(self) -> ReleaseCatalog:
         versions = [release.version for release in self.releases]
         if len(versions) != len(set(versions)):
             raise ValueError("Release versions must be unique")
+        return self
+
+    @model_validator(mode="after")
+    def require_consistent_prereleases(self) -> ReleaseCatalog:
+        stable_versions = {release.version for release in self.releases}
+        stable_commits = {release.commit for release in self.releases}
+        seen_versions: set[str] = set()
+        seen_tags: set[str] = set()
+        for prerelease in self.prereleases:
+            if prerelease.version in stable_versions:
+                raise ValueError(
+                    f"Prerelease version collides with a stable release: {prerelease.version}"
+                )
+            if prerelease.commit in stable_commits:
+                raise ValueError(
+                    f"Prerelease tag points at a stable release commit: {prerelease.tag}"
+                )
+            if prerelease.version in seen_versions or prerelease.tag in seen_tags:
+                raise ValueError(f"Duplicate prerelease entry: {prerelease.version}")
+            seen_versions.add(prerelease.version)
+            seen_tags.add(prerelease.tag)
+            if prerelease.included_in is not None and prerelease.included_in not in stable_versions:
+                raise ValueError(
+                    f"Prerelease {prerelease.version} references unknown stable release: "
+                    f"{prerelease.included_in}"
+                )
         return self
 
 

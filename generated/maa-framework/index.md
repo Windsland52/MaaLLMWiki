@@ -52,3 +52,7 @@ Select a version before using framework facts or APIs.
 - [5.0.2](./5.0.2/index.md) `078d3fa4c4b3950e5956bc2e8bd529894bccdfdf`
 - [5.0.1](./5.0.1/index.md) `f100e7fb7d058e00dacd1e23b498e791d4ddb03a`
 - [5.0.0](./5.0.0/index.md) `79a50c31f086c0383bef91234dca7f267e7db9f6`
+
+## Prereleases
+
+[Pre-release registry](./prereleases.md)
