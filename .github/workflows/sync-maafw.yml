@@ -14,31 +14,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out MaaLLMWiki
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Check out MaaFramework with tags
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: MaaXYZ/MaaFramework
           path: tmp/MaaFramework
           fetch-depth: 0
 
       - name: Check out Go binding with tags
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: MaaXYZ/maa-framework-go
           path: tmp/maa-framework-go
           fetch-depth: 0
 
       - name: Check out Rust binding with tags
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: MaaXYZ/maa-framework-rs
           path: tmp/maa-framework-rs
           fetch-depth: 0
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
 
@@ -59,7 +59,7 @@ jobs:
           git diff --check
 
       - name: Open update pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: automation/update-maa-sources
           delete-branch: true
