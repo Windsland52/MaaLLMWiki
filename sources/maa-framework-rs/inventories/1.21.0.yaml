@@ -1,6 +1,6 @@
 source_id: maa-framework-rs
-version: 1.22.0
-revision: c1c617330b56205798609c7566e602b55adba74b
+version: 1.21.0
+revision: 33241c5485b54f650a83e01a3f8fb5479f27f604
 artifacts:
 - path: Cargo.toml
   kind: package-manifest
