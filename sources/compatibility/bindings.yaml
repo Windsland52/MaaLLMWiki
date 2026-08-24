@@ -461,6 +461,20 @@ bindings:
   note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
     has not been independently verified.
 - source_id: maa-framework-rs
+  binding_version: 1.21.0
+  binding_revision: 33241c5485b54f650a83e01a3f8fb5479f27f604
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
+  binding_version: 1.22.0
+  binding_revision: c1c617330b56205798609c7566e602b55adba74b
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
   binding_version: 1.3.0
   binding_revision: a459fe9bfd671634251fd796c473c0e23b26e026
   framework_version: 5.5.0

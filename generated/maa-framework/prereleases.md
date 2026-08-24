@@ -5,6 +5,11 @@ Pre-release tags recorded for traceability, pinned to their exact commits. Pre-r
 
 | Version | Date | Commit | Included in |
 | --- | --- | --- | --- |
+| 5.13.0-beta.5 | 2026-08-22 | [`1ef752b411e9`](https://github.com/MaaXYZ/MaaFramework/commit/1ef752b411e96a133432e81c2c2318abad545a22) | not merged |
+| 5.13.0-beta.4 | 2026-08-19 | [`ec7ccd37d4e2`](https://github.com/MaaXYZ/MaaFramework/commit/ec7ccd37d4e2fd0f0ca58f1768f59c7d4694dadd) | not merged |
+| 5.13.0-beta.3 | 2026-08-19 | [`d41b76ad8e05`](https://github.com/MaaXYZ/MaaFramework/commit/d41b76ad8e05e3ddeff6316d301a9ec4c7ab7777) | not merged |
+| 5.13.0-beta.2 | 2026-08-09 | [`41dec4ded69f`](https://github.com/MaaXYZ/MaaFramework/commit/41dec4ded69f34c07ab31265da3e8dbdd266d30f) | not merged |
+| 5.13.0-beta.1 | 2026-08-03 | [`b8288660fa64`](https://github.com/MaaXYZ/MaaFramework/commit/b8288660fa6406933ddf322170e7a2a3c4945b76) | not merged |
 | 5.10.0-beta.6 | 2026-04-04 | [`b20c150bcea1`](https://github.com/MaaXYZ/MaaFramework/commit/b20c150bcea1374eaea95557117241610268f2ae) | [5.10.0](./5.10.0/index.md) |
 | 5.10.0-beta.5 | 2026-04-02 | [`528e7a4cef7f`](https://github.com/MaaXYZ/MaaFramework/commit/528e7a4cef7f545bad1396731b94f643a9082a13) | [5.10.0](./5.10.0/index.md) |
 | 5.10.0-beta.4 | 2026-04-02 | [`c46967df76a4`](https://github.com/MaaXYZ/MaaFramework/commit/c46967df76a4785a5cb3bf7a594be6d0a7696641) | [5.10.0](./5.10.0/index.md) |
