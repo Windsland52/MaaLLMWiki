@@ -475,6 +475,13 @@ bindings:
   evidence_paths: []
   note: No exact MaaFramework version declaration was found in indexed package metadata.
 - source_id: maa-framework-rs
+  binding_version: 1.23.0
+  binding_revision: e10d6b00bb86c22089193b67f5ec93f56ce266cc
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
   binding_version: 1.3.0
   binding_revision: a459fe9bfd671634251fd796c473c0e23b26e026
   framework_version: 5.5.0
