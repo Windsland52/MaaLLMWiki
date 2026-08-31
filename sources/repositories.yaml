@@ -30,5 +30,5 @@ repositories:
   role: authoritative
   status: active
   enabled: true
-  default_revision: c1c617330b56205798609c7566e602b55adba74b
+  default_revision: e10d6b00bb86c22089193b67f5ec93f56ce266cc
   note: The default revision follows the latest indexed stable Rust binding release.
