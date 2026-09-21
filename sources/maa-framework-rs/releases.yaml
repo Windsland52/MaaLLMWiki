@@ -120,4 +120,12 @@ releases:
   tag: v1.23.0
   commit: e10d6b00bb86c22089193b67f5ec93f56ce266cc
   released_at: '2026-08-27'
+- version: 1.24.0
+  tag: v1.24.0
+  commit: 43908f69d4604e52d3993460d83dbda6bbd5d8fc
+  released_at: '2026-09-17'
+- version: 1.25.0
+  tag: v1.25.0
+  commit: 6dba174a1655726ca89e67601c18ddc3e2384242
+  released_at: '2026-09-18'
 prereleases: []

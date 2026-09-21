@@ -1,6 +1,6 @@
 source_id: maafw
-version: 5.13.1
-revision: 9c20d69a9412fc52537f61c48077a7e024737896
+version: 5.13.0
+revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
 artifacts:
 - path: docs/en_us/1.1-QuickStarted.md
   kind: documentation

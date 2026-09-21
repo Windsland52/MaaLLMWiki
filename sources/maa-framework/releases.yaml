@@ -192,6 +192,14 @@ releases:
   tag: v5.12.3
   commit: 0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb
   released_at: '2026-08-01'
+- version: 5.13.0
+  tag: v5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  released_at: '2026-09-07'
+- version: 5.13.1
+  tag: v5.13.1
+  commit: 9c20d69a9412fc52537f61c48077a7e024737896
+  released_at: '2026-09-15'
 prereleases:
 - version: 5.0.0-alpha.1
   tag: v5.0.0-alpha.1
@@ -532,24 +540,34 @@ prereleases:
   tag: v5.13.0-beta.1
   commit: b8288660fa6406933ddf322170e7a2a3c4945b76
   released_at: '2026-08-03'
-  included_in: null
+  included_in: 5.13.0
 - version: 5.13.0-beta.2
   tag: v5.13.0-beta.2
   commit: 41dec4ded69f34c07ab31265da3e8dbdd266d30f
   released_at: '2026-08-09'
-  included_in: null
+  included_in: 5.13.0
 - version: 5.13.0-beta.3
   tag: v5.13.0-beta.3
   commit: d41b76ad8e05e3ddeff6316d301a9ec4c7ab7777
   released_at: '2026-08-19'
-  included_in: null
+  included_in: 5.13.0
 - version: 5.13.0-beta.4
   tag: v5.13.0-beta.4
   commit: ec7ccd37d4e2fd0f0ca58f1768f59c7d4694dadd
   released_at: '2026-08-19'
-  included_in: null
+  included_in: 5.13.0
 - version: 5.13.0-beta.5
   tag: v5.13.0-beta.5
   commit: 1ef752b411e96a133432e81c2c2318abad545a22
   released_at: '2026-08-22'
+  included_in: 5.13.0
+- version: 5.13.0-beta.6
+  tag: v5.13.0-beta.6
+  commit: b687d69ecf0071e468e15915f2fb8b0274764b01
+  released_at: '2026-09-02'
+  included_in: 5.13.0
+- version: 5.14.0-beta.1
+  tag: v5.14.0-beta.1
+  commit: e503b0c8b6ebcffe75580161a4ff374310143c11
+  released_at: '2026-09-17'
   included_in: null
