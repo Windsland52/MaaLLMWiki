@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .bindings import BINDING_SPECS, sync_binding_history
 from .bundle import build_catalog_bundle
+from .gaps import render_review_queue
 from .inventory import sync_latest_maafw, sync_maafw_history, sync_maafw_inventory
 from .schemas import generate_schemas
 from .validation import validate_repository
@@ -108,4 +109,17 @@ def build_bundle_main() -> int:
     print(  # noqa: T201
         f"Built catalog bundle for {manifest.wiki_revision} with {len(manifest.files)} files"
     )
+    return 0
+
+
+def report_semantic_gaps_main() -> int:
+    parser = _root_parser("Report MaaFramework releases awaiting semantic-change review")
+    parser.add_argument("--output", type=Path)
+    args = parser.parse_args()
+    report = render_review_queue(args.root.resolve())
+    if args.output is None:
+        print(report, end="")  # noqa: T201
+        return 0
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(report, encoding="utf-8")
     return 0

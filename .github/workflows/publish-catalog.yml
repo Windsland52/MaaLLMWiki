@@ -1,0 +1,210 @@
+name: Publish catalog snapshot
+
+# One workflow owns the whole cycle: detect upstream releases, regenerate the catalogs, commit
+# them to the default branch, tag the snapshot, and publish its bundle. Detection, commit, tag,
+# and release stay in a single job because events produced with the default GITHUB_TOKEN do not
+# start another workflow, which would silently leave a tag without a release.
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: publish-catalog
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  CATALOG_BRANCH: ${{ github.event.repository.default_branch }}
+  CATALOG_TOKEN: ${{ secrets.CATALOG_PUSH_TOKEN || github.token }}
+  HAND_AUTHORED_PATHS: sources/maa-framework/source-map.yaml sources/maa-framework/semantic-changes.yaml
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out catalog history
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.CATALOG_BRANCH }}
+          fetch-depth: 0
+          token: ${{ env.CATALOG_TOKEN }}
+
+      - name: Check out MaaFramework with tags
+        uses: actions/checkout@v6
+        with:
+          repository: MaaXYZ/MaaFramework
+          path: tmp/MaaFramework
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out Go binding with tags
+        uses: actions/checkout@v6
+        with:
+          repository: MaaXYZ/maa-framework-go
+          path: tmp/maa-framework-go
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out Rust binding with tags
+        uses: actions/checkout@v6
+        with:
+          repository: MaaXYZ/maa-framework-rs
+          path: tmp/maa-framework-rs
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Sync Maa source indexes
+        run: |
+          uv sync --locked
+          uv run maa-wiki-sync-maafw-history --repository tmp/MaaFramework --major 5
+          uv run maa-wiki-sync-bindings-history \
+            --go-repository tmp/maa-framework-go \
+            --rust-repository tmp/maa-framework-rs
+          uv run maa-wiki-generate-schemas
+
+      - name: Classify catalog state
+        id: state
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            git status --short
+            exit 0
+          fi
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+          released="$(git describe --tags --match 'v[0-9]*' --abbrev=0 2>/dev/null || true)"
+          if [ -z "${released}" ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::No snapshot tag exists yet; publishing the first snapshot."
+          elif git diff --quiet "${released}" HEAD -- sources generated schemas; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "Catalog paths match ${released}; nothing to publish."
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Catalog paths moved since ${released}; publishing a new snapshot."
+          fi
+
+      - name: Guard hand-authored catalogs
+        if: steps.state.outputs.changed == 'true'
+        run: |
+          if [ -n "$(git status --porcelain -- ${HAND_AUTHORED_PATHS})" ]; then
+            echo "::error::Synchronization modified hand-authored catalogs; refusing to publish."
+            git status --short -- ${HAND_AUTHORED_PATHS}
+            exit 1
+          fi
+
+      - name: Validate generated source indexes
+        if: steps.state.outputs.publish == 'true'
+        run: |
+          uv run maa-wiki-validate
+          uv run pytest
+          uv run ruff check .
+          uv run ruff format --check .
+          uv run pyright
+          git diff --check
+
+      - name: Commit catalog update
+        if: steps.state.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git commit -m "chore: update Maa source indexes"
+          git pull --rebase --autostash origin "${CATALOG_BRANCH}"
+          git push origin "HEAD:${CATALOG_BRANCH}"
+
+      - name: Compute snapshot version
+        if: steps.state.outputs.publish == 'true'
+        id: version
+        run: |
+          existing="$(git describe --exact-match --tags --match 'v[0-9]*' HEAD 2>/dev/null || true)"
+          if [ -n "${existing}" ]; then
+            version="${existing}"
+            previous="$(git describe --tags --match 'v[0-9]*' --abbrev=0 "${existing}^" 2>/dev/null || true)"
+            echo "Reusing ${version} from an interrupted publish."
+          else
+            previous="$(git describe --tags --match 'v[0-9]*' --abbrev=0 2>/dev/null || true)"
+            if [ -z "${previous}" ]; then
+              version="v0.1.0"
+            else
+              base="${previous#v}"
+              series="${base%.*}"
+              next_patch="$(( ${base##*.} + 1 ))"
+              while git rev-parse -q --verify "refs/tags/v${series}.${next_patch}" >/dev/null 2>&1; do
+                next_patch=$(( next_patch + 1 ))
+              done
+              version="v${series}.${next_patch}"
+            fi
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "previous=${previous}" >> "$GITHUB_OUTPUT"
+
+      - name: Build catalog bundle
+        if: steps.state.outputs.publish == 'true'
+        run: |
+          uv run maa-wiki-build-bundle \
+            --output "dist/maa-llm-wiki-catalog-${{ steps.version.outputs.version }}.zip"
+
+      - name: Push snapshot tag
+        if: steps.state.outputs.publish == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          PREVIOUS: ${{ steps.version.outputs.previous }}
+        run: |
+          if git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null 2>&1; then
+            echo "Tag ${VERSION} already exists."
+            exit 0
+          fi
+          {
+            echo "Catalog snapshot ${VERSION}"
+            echo
+            if [ -n "${PREVIOUS}" ]; then
+              echo "Changes since ${PREVIOUS}:"
+              git log --oneline --no-decorate "${PREVIOUS}..HEAD"
+            else
+              echo "Initial catalog snapshot."
+              git log --oneline --no-decorate
+            fi
+          } > /tmp/tag-message.txt
+          git tag -a "${VERSION}" -F /tmp/tag-message.txt
+          git push origin "${VERSION}"
+
+      - name: Publish catalog snapshot
+        if: steps.state.outputs.publish == 'true'
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          files: dist/maa-llm-wiki-catalog-*.zip
+          generate_release_notes: true
+          overwrite_files: true
+          token: ${{ env.CATALOG_TOKEN }}
+
+      - name: Report releases awaiting semantic-change review
+        if: steps.state.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ env.CATALOG_TOKEN }}
+          ISSUE_TITLE: MaaFramework releases awaiting semantic-change review
+        run: |
+          uv run maa-wiki-report-semantic-gaps --output /tmp/semantic-gaps.md
+          if [ ! -s /tmp/semantic-gaps.md ]; then
+            echo "No releases are waiting for a semantic-change review."
+            exit 0
+          fi
+          existing="$(gh issue list --state open --limit 100 --json number,title \
+            --template '{{range .}}{{.number}}{{"\t"}}{{.title}}{{"\n"}}{{end}}' \
+            | awk -F '\t' -v title="${ISSUE_TITLE}" '$2 == title { print $1; exit }')"
+          if [ -n "${existing}" ]; then
+            gh issue comment "${existing}" --body-file /tmp/semantic-gaps.md
+          else
+            gh issue create --title "${ISSUE_TITLE}" --body-file /tmp/semantic-gaps.md
+          fi

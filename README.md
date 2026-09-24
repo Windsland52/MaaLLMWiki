@@ -68,6 +68,7 @@ uv run maa-wiki-sync-latest-maafw --repository ../MaaFramework
 uv run maa-wiki-sync-maafw-history --repository ../MaaFramework --major 5
 uv run maa-wiki-sync-bindings-history --go-repository tmp/maa-framework-go --rust-repository ../maa-framework-rs
 uv run maa-wiki-build-bundle --output dist/maa-llm-wiki-catalog.zip
+uv run maa-wiki-report-semantic-gaps
 uv run maa-wiki-validate
 uv run maa-wiki-generate-schemas
 uv run pytest
@@ -86,13 +87,15 @@ MDE can read this Git checkout directly during development. Tagged releases publ
 `maa-llm-wiki-catalog-vX.Y.Z.zip` asset containing `sources/`, `generated/`, `schemas/`, and
 a `catalog-manifest.json`. Consumers discover the latest versioned asset through the GitHub
 Releases API. The manifest pins the Wiki commit and current upstream revisions and records every
-bundled file's size and SHA-256 digest. Release bundles must be built from a clean working tree;
-`--allow-dirty` exists only for local development and tests.
+bundled file's size and SHA-256 digest. A snapshot is built from the committed catalog revision, so
+its tag names exactly the catalog it carries; `maa-wiki-build-bundle` refuses a dirty working tree,
+and `--allow-dirty` exists only for local development and tests.
 
-Snapshot tags are cut automatically: merging a pull request that changes `sources/`,
-`generated/`, or `schemas/` runs the checks once more and pushes the next patch tag, which
-triggers the snapshot release. A snapshot can also be requested manually at any time through
-the `workflow_dispatch` event of the tagging workflow.
+Snapshot tags, and the release that ships their bundle, are produced by the publish workflow
+described below. A run that finds catalog data on the default branch without a snapshot tag
+publishes that revision instead of creating a second tag, so an interrupted publish heals on the
+next run. `v0.1.2` was tagged before the workflow was consolidated and carries no bundle asset; its
+number is not reused.
 
 The inventory treats C/C++ headers as the native public API. Python modules under
 `source/binding/Python/maa` and NodeJS declarations under `source/binding/NodeJS/src/apis/*.d.ts`
@@ -103,8 +106,24 @@ is not a default API source.
 
 ## Automated updates
 
-The weekly GitHub Actions workflow discovers the latest stable `vMAJOR.MINOR.PATCH` tag, records
-its immutable commit, regenerates the catalogs, runs all checks, and opens a pull request. It does
-not infer semantic changes: maintainers review API and behavior changes and update
-`semantic-changes.yaml` when needed. Merging the pull request is the review gate; the merge push
-then cuts the next snapshot tag and publishes the release automatically.
+`.github/workflows/publish-catalog.yml` owns the whole cycle and runs daily. It discovers the latest
+stable `vMAJOR.MINOR.PATCH` tags of MaaFramework, the Go binding, and the Rust binding, records their
+immutable commits, regenerates the catalogs, runs every check, commits the result to the default
+branch, and publishes the snapshot release from the same job. Detection, commit, tag, and release
+stay in one workflow because events produced with the default `GITHUB_TOKEN` do not start another
+workflow; tagging in a separate workflow would leave a tag without its release. The workflow can also
+be started by hand through `workflow_dispatch`.
+
+Two rules keep human-authored content out of the automation:
+
+- The run refuses to publish when synchronization touched
+  `sources/maa-framework/source-map.yaml` or `sources/maa-framework/semantic-changes.yaml`; those
+  files change only through review.
+- The workflow never infers semantic changes. When a snapshot lands with releases whose recorded
+  official material moved after the newest `semantic-changes.yaml` entry, it opens or updates a
+  semantic-review issue naming the releases and artifacts to inspect
+  (`uv run maa-wiki-report-semantic-gaps`). Each item is a suspected trigger, not a verified change.
+
+The job authenticates with the repository `GITHUB_TOKEN`. If the default branch requires pull
+requests, add a `CATALOG_PUSH_TOKEN` secret — a fine-grained token with contents and issues write
+from an identity allowed to bypass that rule — and the workflow prefers it automatically.
