@@ -5,7 +5,7 @@ repositories:
   role: authoritative
   status: active
   enabled: true
-  default_revision: 0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb
+  default_revision: b96ab05ace1c14533144fedfcbb7358dad785579
   note: The default revision follows the latest indexed stable MaaFramework release.
 - id: maa-tutorial
   name: MaaTutorial
@@ -30,5 +30,5 @@ repositories:
   role: authoritative
   status: active
   enabled: true
-  default_revision: e10d6b00bb86c22089193b67f5ec93f56ce266cc
+  default_revision: 6dba174a1655726ca89e67601c18ddc3e2384242
   note: The default revision follows the latest indexed stable Rust binding release.

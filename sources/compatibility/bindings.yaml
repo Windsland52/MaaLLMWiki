@@ -482,6 +482,22 @@ bindings:
   evidence_paths: []
   note: No exact MaaFramework version declaration was found in indexed package metadata.
 - source_id: maa-framework-rs
+  binding_version: 1.24.0
+  binding_revision: 43908f69d4604e52d3993460d83dbda6bbd5d8fc
+  framework_version: 5.13.1
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.25.0
+  binding_revision: 6dba174a1655726ca89e67601c18ddc3e2384242
+  framework_version: null
+  status: unknown
+  evidence_paths: []
+  note: No exact MaaFramework version declaration was found in indexed package metadata.
+- source_id: maa-framework-rs
   binding_version: 1.3.0
   binding_revision: a459fe9bfd671634251fd796c473c0e23b26e026
   framework_version: 5.5.0
