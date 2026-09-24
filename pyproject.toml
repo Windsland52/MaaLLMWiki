@@ -17,6 +17,7 @@ maa-wiki-sync-latest-maafw = "maa_llm_wiki.cli:sync_latest_maafw_main"
 maa-wiki-sync-maafw-history = "maa_llm_wiki.cli:sync_maafw_history_main"
 maa-wiki-sync-bindings-history = "maa_llm_wiki.cli:sync_bindings_history_main"
 maa-wiki-build-bundle = "maa_llm_wiki.cli:build_bundle_main"
+maa-wiki-report-semantic-gaps = "maa_llm_wiki.cli:report_semantic_gaps_main"
 
 [dependency-groups]
 dev = [
