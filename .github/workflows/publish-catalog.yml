@@ -74,7 +74,13 @@ jobs:
 
       - name: Classify catalog state
         id: state
+        env:
+          GH_TOKEN: ${{ env.CATALOG_TOKEN }}
         run: |
+          has_bundle() {
+            gh release view "$1" --json assets --jq '.assets[].name' 2>/dev/null \
+              | grep -Fx "maa-llm-wiki-catalog-$1.zip" >/dev/null
+          }
           if [ -n "$(git status --porcelain)" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "publish=true" >> "$GITHUB_OUTPUT"
@@ -86,12 +92,16 @@ jobs:
           if [ -z "${released}" ]; then
             echo "publish=true" >> "$GITHUB_OUTPUT"
             echo "::notice::No snapshot tag exists yet; publishing the first snapshot."
-          elif git diff --quiet "${released}" HEAD -- sources generated schemas; then
-            echo "publish=false" >> "$GITHUB_OUTPUT"
-            echo "Catalog paths match ${released}; nothing to publish."
-          else
+          elif ! git diff --quiet "${released}" HEAD -- sources generated schemas; then
             echo "publish=true" >> "$GITHUB_OUTPUT"
             echo "::notice::Catalog paths moved since ${released}; publishing a new snapshot."
+          elif [ "$(git rev-parse "${released}^{commit}")" = "$(git rev-parse HEAD)" ] \
+            && ! has_bundle "${released}"; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Snapshot ${released} has no release bundle; publishing it again."
+          else
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "Catalog matches ${released}; no snapshot is needed."
           fi
 
       - name: Guard hand-authored catalogs
