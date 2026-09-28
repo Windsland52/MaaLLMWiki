@@ -5,6 +5,7 @@ Select a version before using framework facts or APIs.
 
 ## Releases
 
+- [5.14.1](./5.14.1/index.md) `adba94d694569643d0517bc7c5220d1fdf603800`
 - [5.14.0](./5.14.0/index.md) `b96ab05ace1c14533144fedfcbb7358dad785579`
 - [5.13.1](./5.13.1/index.md) `9c20d69a9412fc52537f61c48077a7e024737896`
 - [5.13.0](./5.13.0/index.md) `2bcfa85c66a2eac6ca3e5937f175495275ee0643`
