@@ -60,3 +60,116 @@ topics:
           - replace
           - only_rec
           - color_filter
+
+  - id: framework.controller-api
+    source_id: maafw
+    variants:
+      - applies_to: "5.11.2"
+        revision: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+        paths:
+          - include/MaaFramework/Instance/MaaController.h
+          - include/MaaFramework/Instance/MaaCustomController.h
+          - include/MaaFramework/MaaDef.h
+        symbols:
+          - MaaMacOSControllerCreate
+          - MaaAndroidNativeControllerCreate
+          - MaaCustomControllerCreate
+          - MaaKWinControllerCreate
+        terms:
+          - screencap_method
+          - input_method
+          - use_win32_vk_code
+          - MaaCtrlOption
+
+  - id: framework.control-unit-api
+    source_id: maafw
+    variants:
+      - applies_to: "5.11.2"
+        revision: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+        paths:
+          - include/MaaControlUnit/ControlUnitAPI.h
+          - include/MaaControlUnit/CustomControlUnitAPI.h
+          - include/MaaControlUnit/MaaControlUnitAPI.h
+        symbols:
+          - ControlUnitAPI
+          - CustomControlUnitAPI
+        terms:
+          - MaaControlUnit
+          - ControlUnitAPI
+
+  - id: framework.interface-protocol
+    source_id: maafw
+    variants:
+      - applies_to: "5.11.2"
+        revision: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+        paths:
+          - tools/interface.schema.json
+          - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+        terms:
+          - pretask
+          - telemetry
+          - hotkey
+          - resource
+
+  - id: framework.adb-emulator-support
+    source_id: maafw
+    variants:
+      - applies_to: "5.11.2"
+        revision: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+        paths:
+          - source/MaaToolkit/AdbDevice/AdbDeviceFinder.cpp
+          - source/MaaAdbControlUnit/EmulatorExtras/AndrowsExtras.cpp
+        symbols:
+          - AdbDeviceFinder
+          - AndrowsExtras
+        terms:
+          - Androws
+          - minitouch
+          - emulator
+
+  - id: framework.toolkit-linux-capture
+    source_id: maafw
+    variants:
+      - applies_to: "5.13.0"
+        revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+        paths:
+          - include/MaaToolkit/Gamescope/MaaToolkitGamescope.h
+          - include/MaaToolkit/Portal/MaaToolkitPortal.h
+        symbols:
+          - MaaToolkitGamescopeInstanceFindAll
+          - MaaToolkitPortalHelperOpenStream
+        terms:
+          - gamescope
+          - portal
+          - PipeWire
+
+  - id: diagnostics.wait-freezes-detail
+    source_id: maafw
+    variants:
+      - applies_to: "5.11.2"
+        revision: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+        paths:
+          - include/MaaFramework/Instance/MaaTasker.h
+          - include/MaaFramework/MaaMsg.h
+          - docs/zh_cn/2.3-回调协议.md
+        symbols:
+          - MaaTaskerGetWaitFreezesDetail
+        terms:
+          - Node.WaitFreezes
+          - wait_freezes
+
+  - id: pipeline.nn-expected-labels
+    source_id: maafw
+    variants:
+      - applies_to: "5.13.0"
+        revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+        paths:
+          - docs/zh_cn/3.1-任务流水线协议.md
+          - tools/pipeline.schema.json
+          - source/MaaFramework/Vision/NeuralNetworkClassifier.cpp
+        symbols:
+          - NeuralNetworkClassifier
+          - NeuralNetworkDetector
+        terms:
+          - expected
+          - labels

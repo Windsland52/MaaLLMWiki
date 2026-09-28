@@ -16,3 +16,187 @@ changes:
       - docs/zh_cn/3.1-任务流水线协议.md
       - tools/pipeline.schema.json
       - source/MaaFramework/Vision/OCRer.cpp
+
+  - topic_id: framework.pipeline-control-flow
+    first_version: 5.9.0
+    revision: 17324f86394c4e426766857da790e53040552ae3
+    description: roi and target string forms support [Anchor] node-name references.
+    paths:
+      - docs/zh_cn/3.1-任务流水线协议.md
+      - tools/pipeline.schema.json
+
+  - topic_id: framework.pipeline-control-flow
+    first_version: 5.9.0
+    revision: 17324f86394c4e426766857da790e53040552ae3
+    description: Action failure no longer triggers [JumpBack]; the error path continues through on_error.
+    paths:
+      - docs/zh_cn/3.1-任务流水线协议.md
+      - source/MaaFramework/Task/PipelineTask.cpp
+
+  - topic_id: framework.interface-protocol
+    first_version: 5.9.0
+    revision: 17324f86394c4e426766857da790e53040552ae3
+    description: interface.json v2.4.0 added top-level group declarations and task.group.
+    paths:
+      - tools/interface.schema.json
+      - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+
+  - topic_id: framework.control-unit-api
+    first_version: 5.10.0
+    revision: 09af59ea0365f666497535eb5cc116c4586fc6bb
+    description: Control unit API headers were first published under include/MaaControlUnit/; the surface was previously internal.
+    paths:
+      - include/MaaControlUnit/ControlUnitAPI.h
+      - include/MaaControlUnit/CustomControlUnitAPI.h
+
+  - topic_id: framework.controller-api
+    first_version: 5.10.0
+    revision: 09af59ea0365f666497535eb5cc116c4586fc6bb
+    description: Added MacOS, Android-native, Record, and Replay controllers; MaaDbgControllerCreate was reduced to a single read_path argument.
+    paths:
+      - include/MaaFramework/Instance/MaaController.h
+      - include/MaaFramework/MaaDef.h
+      - tools/interface.schema.json
+
+  - topic_id: framework.controller-api
+    first_version: 5.10.0
+    revision: 09af59ea0365f666497535eb5cc116c4586fc6bb
+    description: MaaCustomControllerCallbacks gained relative_move and shell callbacks.
+    paths:
+      - include/MaaFramework/Instance/MaaCustomController.h
+      - include/MaaFramework/Instance/MaaController.h
+
+  - topic_id: diagnostics.wait-freezes-detail
+    first_version: 5.10.0
+    revision: 09af59ea0365f666497535eb5cc116c4586fc6bb
+    description: Added Node.WaitFreezes.Starting/Succeeded/Failed callback messages and MaaTaskerGetWaitFreezesDetail.
+    paths:
+      - include/MaaFramework/Instance/MaaTasker.h
+      - include/MaaFramework/MaaMsg.h
+      - docs/zh_cn/2.3-回调协议.md
+
+  - topic_id: framework.controller-api
+    first_version: 5.10.2
+    revision: 8885479e34d81f7073ed9e87b2280ede606e51da
+    description: MaaWlRootsControllerCreate gained a use_win32_vk_code argument and interface.json gained a wlroots controller config.
+    paths:
+      - include/MaaFramework/Instance/MaaController.h
+      - tools/interface.schema.json
+
+  - topic_id: framework.controller-api
+    first_version: 5.10.3
+    revision: 89e14e984a2bd3621ae4537bc0bd89a5d85d0e4e
+    description: MaaCtrlOption_BackgroundManagedKeys (7) routes declared virtual keys through the Win32 background guardian path; must be set before connect.
+    paths:
+      - include/MaaFramework/MaaDef.h
+      - include/MaaControlUnit/Win32ControlUnitAPI.h
+      - docs/zh_cn/2.4-控制方式说明.md
+
+  - topic_id: framework.interface-protocol
+    first_version: 5.10.3
+    revision: 89e14e984a2bd3621ae4537bc0bd89a5d85d0e4e
+    description: interface.json v2.6.0 added resource.hash for resource integrity checks.
+    paths:
+      - tools/interface.schema.json
+      - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+
+  - topic_id: framework.adb-emulator-support
+    first_version: 5.10.3
+    revision: 89e14e984a2bd3621ae4537bc0bd89a5d85d0e4e
+    description: The ADB control unit added Androws (Tencent) emulator virtual-display screencap and minitouch input.
+    paths:
+      - source/MaaAdbControlUnit/EmulatorExtras/AndrowsExtras.cpp
+      - source/MaaToolkit/AdbDevice/AdbDeviceFinder.cpp
+
+  - topic_id: framework.controller-api
+    first_version: 5.11.0
+    revision: 4e0659987005354f5f97d72f145b2899863badbf
+    description: Added the KWin (pure Wayland) controller MaaKWinControllerCreate with uinput input and PipeWire/portal screencap.
+    paths:
+      - include/MaaFramework/Instance/MaaController.h
+      - include/MaaControlUnit/KWinControlUnitAPI.h
+
+  - topic_id: framework.controller-api
+    first_version: 5.11.1
+    revision: 3d27ff4cf84ef19c672ab501a6dbb29e4b41aed8
+    description: MaaKWinControllerCreate gained a use_win32_vk_code argument.
+    paths:
+      - include/MaaFramework/Instance/MaaController.h
+
+  - topic_id: framework.interface-protocol
+    first_version: 5.11.2
+    revision: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+    description: interface.json schema gained pretask, task setting page, and hotkey declarations (protocol v2.7-v2.8).
+    paths:
+      - tools/interface.schema.json
+      - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+
+  - topic_id: framework.controller-api
+    first_version: 5.12.1
+    revision: e6aa89259ff6907197becebdeb8efc0074f13dfc
+    description: Win32 added the Interception input method for driver-level input injection.
+    paths:
+      - include/MaaFramework/MaaDef.h
+
+  - topic_id: framework.interface-protocol
+    first_version: 5.12.3
+    revision: 0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb
+    description: interface.json v2.9.0 added the telemetry anonymous-analytics config (sentry, tracing).
+    paths:
+      - tools/interface.schema.json
+      - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+
+  - topic_id: pipeline.nn-expected-labels
+    first_version: 5.13.0
+    revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+    description: NeuralNetworkClassifier and NeuralNetworkDetector expected fields accept category-name strings mixed with indexes.
+    paths:
+      - docs/zh_cn/3.1-任务流水线协议.md
+      - tools/pipeline.schema.json
+      - source/MaaFramework/Vision/NeuralNetworkClassifier.cpp
+
+  - topic_id: framework.controller-api
+    first_version: 5.13.0
+    revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+    description: MaaLinuxControllerCreate(config_json) replaced MaaKWinControllerCreate; interface.json linux config replaced wlroots.
+    paths:
+      - include/MaaFramework/Instance/MaaController.h
+      - tools/interface.schema.json
+
+  - topic_id: framework.control-unit-api
+    first_version: 5.13.0
+    revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+    description: The KWin control unit API was replaced by a unified config-json-driven Linux control unit API.
+    paths:
+      - include/MaaControlUnit/LinuxControlUnitAPI.h
+      - include/MaaControlUnit/KWinControlUnitAPI.h
+
+  - topic_id: framework.controller-api
+    first_version: 5.13.0
+    revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+    description: MaaCtrlOption_ScreenshotTargetExpand (8) added Unity Canvas Expand screenshot scaling.
+    paths:
+      - include/MaaFramework/MaaDef.h
+
+  - topic_id: framework.controller-api
+    first_version: 5.13.0
+    revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+    description: Win32 added the AnchoredTouch input method with synthetic WM_POINTER touch and topmost-raise mechanics.
+    paths:
+      - include/MaaFramework/MaaDef.h
+
+  - topic_id: framework.toolkit-linux-capture
+    first_version: 5.13.0
+    revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+    description: Toolkit added Gamescope instance discovery and xdg-desktop-portal screencap helper APIs.
+    paths:
+      - include/MaaToolkit/Gamescope/MaaToolkitGamescope.h
+      - include/MaaToolkit/Portal/MaaToolkitPortal.h
+
+  - topic_id: framework.pipeline-control-flow
+    first_version: 5.14.0
+    revision: b96ab05ace1c14533144fedfcbb7358dad785579
+    description: TouchDown and KeyDown gained auto_up to release held contacts or keys when a task stops or the controller is destroyed.
+    paths:
+      - docs/zh_cn/3.1-任务流水线协议.md
+      - tools/pipeline.schema.json

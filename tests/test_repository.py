@@ -34,7 +34,21 @@ def test_maa_tutorial_is_disabled_placeholder() -> None:
 def test_framework_semantic_changes_are_explicit() -> None:
     changes = load_semantic_changes(ROOT)
 
-    assert {change.first_version for change in changes.changes} == {"5.5.0", "5.8.0"}
+    assert {change.first_version for change in changes.changes} == {
+        "5.5.0",
+        "5.8.0",
+        "5.9.0",
+        "5.10.0",
+        "5.10.2",
+        "5.10.3",
+        "5.11.0",
+        "5.11.1",
+        "5.11.2",
+        "5.12.1",
+        "5.12.3",
+        "5.13.0",
+        "5.14.0",
+    }
 
 
 def test_framework_inventory_covers_official_material() -> None:
