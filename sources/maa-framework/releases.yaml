@@ -208,6 +208,10 @@ releases:
   tag: v5.14.1
   commit: adba94d694569643d0517bc7c5220d1fdf603800
   released_at: '2026-09-28'
+- version: 5.14.2
+  tag: v5.14.2
+  commit: 8061d5bcaa3f07afcc1008795913663f64de46c8
+  released_at: '2026-09-29'
 prereleases:
 - version: 5.0.0-alpha.1
   tag: v5.0.0-alpha.1

@@ -5,7 +5,7 @@ repositories:
   role: authoritative
   status: active
   enabled: true
-  default_revision: adba94d694569643d0517bc7c5220d1fdf603800
+  default_revision: 8061d5bcaa3f07afcc1008795913663f64de46c8
   note: The default revision follows the latest indexed stable MaaFramework release.
 - id: maa-tutorial
   name: MaaTutorial
