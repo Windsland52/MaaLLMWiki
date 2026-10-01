@@ -5,6 +5,7 @@ Pre-release tags recorded for traceability, pinned to their exact commits. Pre-r
 
 | Version | Date | Commit | Included in |
 | --- | --- | --- | --- |
+| 4.0.0-beta.19 | 2026-09-30 | [`2e3a4007dfd9`](https://github.com/MaaXYZ/maa-framework-go/commit/2e3a4007dfd9aac8275f03514ea34a58bb047463) | not merged |
 | 4.0.0-beta.18 | 2026-07-20 | [`33c558e4d955`](https://github.com/MaaXYZ/maa-framework-go/commit/33c558e4d955cf1b58316e0e04fdcffa9df220a9) | not merged |
 | 4.0.0-beta.17 | 2026-05-14 | [`2b674ef2aeac`](https://github.com/MaaXYZ/maa-framework-go/commit/2b674ef2aeac62051c201945319802f14d5e5b3e) | not merged |
 | 4.0.0-beta.16 | 2026-05-01 | [`38c7f6b0c871`](https://github.com/MaaXYZ/maa-framework-go/commit/38c7f6b0c87142b54224308785913baeeeaafe1e) | not merged |

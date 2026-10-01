@@ -280,3 +280,8 @@ prereleases:
   commit: 33c558e4d955cf1b58316e0e04fdcffa9df220a9
   released_at: '2026-07-20'
   included_in: null
+- version: 4.0.0-beta.19
+  tag: v4.0.0-beta.19
+  commit: 2e3a4007dfd9aac8275f03514ea34a58bb047463
+  released_at: '2026-09-30'
+  included_in: null
