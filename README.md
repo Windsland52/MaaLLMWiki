@@ -76,7 +76,7 @@ uv run pyright
 
 ## 目录快照
 
-模型（LLM/Agent）可在开发期直接读取本 Git 检出。打 tag 的发布提供带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip` 产物，内含 `sources/`、`generated/`、`schemas/` 与 `catalog-manifest.json`。消费者通过 GitHub Releases API 发现最新的带版本产物。manifest 锁定 Wiki commit 与当前上游修订，并记录每个打包文件的体积与 SHA-256 摘要。快照由已提交的目录修订构建，因此其 tag 精确命名它所携带的目录；`maa-wiki-build-bundle` 拒绝脏工作树，`--allow-dirty` 仅供本地开发与测试使用。
+MaaEvidenceKit（MEK）可在开发期直接读取本 Git 检出。打 tag 的发布提供带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip` 产物，内含 `sources/`、`generated/`、`schemas/` 与 `catalog-manifest.json`。消费者通过 GitHub Releases API 发现最新的带版本产物。manifest 锁定 Wiki commit 与当前上游修订，并记录每个打包文件的体积与 SHA-256 摘要。快照由已提交的目录修订构建，因此其 tag 精确命名它所携带的目录；`maa-wiki-build-bundle` 拒绝脏工作树，`--allow-dirty` 仅供本地开发与测试使用。
 
 快照 tag 及运送其 bundle 的 release 由下述 publish workflow 产生。若某次运行在默认分支上发现未打快照 tag 的目录数据，会改为发布该修订而不创建第二个 tag——被中断的发布会在下一次运行时自愈。`v0.1.2` 是在 workflow 合并前打的 tag，不带 bundle 产物；其编号不再复用。
 

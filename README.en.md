@@ -86,7 +86,7 @@ Go binding, and Rust binding releases. MaaTutorial is intentionally not ingested
 
 ## Catalog snapshots
 
-MDE can read this Git checkout directly during development. Tagged releases publish a versioned
+MaaEvidenceKit (MEK) can read this Git checkout directly during development. Tagged releases publish a versioned
 `maa-llm-wiki-catalog-vX.Y.Z.zip` asset containing `sources/`, `generated/`, `schemas/`, and
 a `catalog-manifest.json`. Consumers discover the latest versioned asset through the GitHub
 Releases API. The manifest pins the Wiki commit and current upstream revisions and records every
