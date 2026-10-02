@@ -4,11 +4,10 @@ from zipfile import ZipFile
 
 from maa_llm_wiki.bundle import build_catalog_bundle
 from maa_llm_wiki.inventory import parse_stable_tag
-from maa_llm_wiki.models import CatalogBundleManifest, RepositoryStatus
+from maa_llm_wiki.models import CatalogBundleManifest
 from maa_llm_wiki.validation import (
     load_binding_compatibility,
     load_release_catalog,
-    load_repository_catalog,
     load_semantic_changes,
     load_source_inventories,
     load_source_inventory,
@@ -20,15 +19,6 @@ ROOT = Path(__file__).parents[1]
 
 def test_repository_content_is_valid() -> None:
     assert validate_repository(ROOT) == []
-
-
-def test_maa_tutorial_is_disabled_placeholder() -> None:
-    catalog = load_repository_catalog(ROOT)
-    tutorial = next(item for item in catalog.repositories if item.id == "maa-tutorial")
-
-    assert tutorial.status is RepositoryStatus.PLACEHOLDER
-    assert not tutorial.enabled
-    assert tutorial.default_revision is None
 
 
 def test_framework_semantic_changes_are_explicit() -> None:

@@ -13,8 +13,7 @@ Included:
 - complete version-pinned MaaFramework documentation, schema, native API, and in-tree binding API
   indexes;
 - independently versioned Go and Rust binding API indexes with explicit compatibility evidence;
-- topic-to-source navigation and semantic version changes;
-- a disabled MaaTutorial registration until its authored guidance is ready.
+- topic-to-source navigation and semantic version changes.
 
 Excluded:
 
@@ -26,7 +25,6 @@ Excluded:
 
 Authored Pipeline guidance and diagnostic methodology belong in MaaTutorial. Maa project details
 must be discovered from the supplied project repository, respecting its own `AGENTS.md`.
-MaaTutorial is registered as a disabled placeholder until a stable revision is selected.
 
 ## Layout
 
@@ -82,7 +80,7 @@ uv run pyright
 
 The active revisions are recorded in `sources/repositories.yaml`; immutable release histories are
 stored below each source directory. The current automation indexes all stable MaaFramework v5,
-Go binding, and Rust binding releases. MaaTutorial is intentionally not ingested yet.
+Go binding, and Rust binding releases.
 
 ## Catalog snapshots
 

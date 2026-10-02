@@ -7,15 +7,6 @@ repositories:
   enabled: true
   default_revision: 8061d5bcaa3f07afcc1008795913663f64de46c8
   note: The default revision follows the latest indexed stable MaaFramework release.
-- id: maa-tutorial
-  name: MaaTutorial
-  url: https://github.com/Windsland52/MaaTutorial
-  role: maintainer-guidance
-  status: placeholder
-  enabled: false
-  default_revision: null
-  note: Reserved for authored Pipeline guidance; do not ingest the current working
-    tree.
 - id: maa-framework-go
   name: MaaFramework Go binding
   url: https://github.com/MaaXYZ/maa-framework-go

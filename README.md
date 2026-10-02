@@ -10,8 +10,7 @@ MaaLLMWiki 为 Maa 生态知识提供机器可读、版本化的源目录。它�
 
 - 完整的版本锁定 MaaFramework 文档、schema、原生 API 与树内绑定 API 索引；
 - 独立版本化的 Go 与 Rust 绑定 API 索引，附明确的兼容性证据；
-- 主题到源的导航与语义版本变更；
-- 一个尚未启用的 MaaTutorial 注册项（等待其成稿指南就绪）。
+- 主题到源的导航与语义版本变更。
 
 不收录：
 
@@ -21,7 +20,7 @@ MaaLLMWiki 为 Maa 生态知识提供机器可读、版本化的源目录。它�
 - 人工撰写的教程、最佳实践与诊断方法论；
 - 未经核实的模型生成结论。
 
-成稿的 Pipeline 指南与诊断方法论归属 MaaTutorial。Maa 项目细节必须从对应项目仓库获取，并尊重其自身的 `AGENTS.md`。MaaTutorial 在选定稳定修订前保持禁用占位注册。
+成稿的 Pipeline 指南与诊断方法论归属 MaaTutorial。Maa 项目细节必须从对应项目仓库获取，并尊重其自身的 `AGENTS.md`。
 
 ## 布局
 
@@ -72,7 +71,7 @@ uv run ruff format --check .
 uv run pyright
 ```
 
-当前生效修订记录在 `sources/repositories.yaml`；不可变发布历史存放在各源目录之下。现有自动化已索引 MaaFramework v5、Go 绑定与 Rust 绑定的全部稳定发布。MaaTutorial 刻意尚未纳入。
+当前生效修订记录在 `sources/repositories.yaml`；不可变发布历史存放在各源目录之下。现有自动化已索引 MaaFramework v5、Go 绑定与 Rust 绑定的全部稳定发布。
 
 ## 目录快照
 

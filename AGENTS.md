@@ -42,8 +42,6 @@ runtime evidence.
   and Java bindings require independently pinned source entries and compatibility metadata.
 - `sources/maa-framework/semantic-changes.yaml` records behavior changes relevant to source
   selection; each entry must match a registered release commit.
-- MaaTutorial is currently a disabled placeholder. Do not ingest its working tree until a stable
-  revision and authored Pipeline guidance are supplied.
 - `.github/workflows/publish-catalog.yml` owns detection, commit, tag, and release in one job. Do not
   split tagging or releasing into a workflow that another workflow's push is expected to trigger:
   events produced with the default `GITHUB_TOKEN` do not start a workflow, which leaves a tag
