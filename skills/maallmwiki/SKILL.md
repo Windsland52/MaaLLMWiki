@@ -25,7 +25,14 @@ MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官�
     注册了哪些信息源见 `sources/repositories.yaml`。
 4. **回源作答**：打开条目给出的 pinned commit 链接读**原文**再回答；引用时注明上游文档 + MaaFW 版本 + commit。禁止把目录索引本身当作字段语义的出处，禁止把链接换成移动分支（main / master）。
 5. **主题级定位**（不知道文档编号时）：查 `sources/maa-framework/source-map.yaml`——主题 → 按版本适用的变体 → 原始路径（文档 / schema / 源码文件）+ 符号 + 字面搜索词，可直接跳到源码级出处。跨版本**行为变更**查 `sources/maa-framework/semantic-changes.yaml`（每条对应已注册 release）。
-6. **消费通道**：本地有 Git 检出优先读检出；没有则用 raw 直链——`https://raw.githubusercontent.com/Windsland52/MaaLLMWiki/main/<相对路径>`，如 `https://raw.githubusercontent.com/Windsland52/MaaLLMWiki/main/generated/maa-framework/5.14.2/documentation/zh-cn.md`。正式产物走 GitHub Releases 的 catalog zip（经 Releases API 发现最新版本，manifest 含 SHA-256 校验）。不引入 chunking / embedding / vector / MCP——目录就是分层 markdown，直接读。
+6. **消费通道**（按连通性择优）：
+    - 本地 Git 检出：一次克隆长期可用，弱网环境最稳；
+    - raw 直链：`https://raw.githubusercontent.com/Windsland52/MaaLLMWiki/main/<相对路径>`，如 `generated/maa-framework/5.14.2/documentation/zh-cn.md`；
+    - GitHub 不通畅时：jsDelivr CDN 镜像同一相对路径——`https://cdn.jsdelivr.net/gh/Windsland52/MaaLLMWiki@main/<相对路径>`（`@main` 有最长 12h 缓存延迟，索引场景可接受；`@tag`/`@commit` 引用为不可变缓存，与版本锁定原则一致）；
+    - 其他 GitHub 加速代理同理可用；
+    - 正式产物：GitHub Releases 的 catalog zip（经 Releases API 发现最新版本，一次下载本地解压，manifest 记录每个文件的 SHA-256）。
+
+    不引入 chunking / embedding / vector / MCP——目录就是分层 markdown，直接读。
 
 ## 硬规则
 
