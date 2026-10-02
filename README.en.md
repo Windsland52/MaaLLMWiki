@@ -23,9 +23,6 @@ Excluded:
 - manually authored tutorials, best practices, and diagnostic methodology;
 - unverified model-generated conclusions.
 
-Authored Pipeline guidance and diagnostic methodology belong in MaaTutorial. Maa project details
-must be discovered from the supplied project repository, respecting its own `AGENTS.md`.
-
 ## Layout
 
 ```text
