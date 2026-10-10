@@ -5,7 +5,7 @@ repositories:
   role: authoritative
   status: active
   enabled: true
-  default_revision: 8061d5bcaa3f07afcc1008795913663f64de46c8
+  default_revision: 8963191215ca49d6b037802acd07d20a4213160a
   note: The default revision follows the latest indexed stable MaaFramework release.
 - id: maa-framework-go
   name: MaaFramework Go binding
