@@ -89,6 +89,11 @@ def test_current_inventory_has_historical_manifest() -> None:
     assert len(load_source_inventories(ROOT)) >= 2
 
 
+def _go_module_path(tag: str) -> str:
+    major = int(tag.removeprefix("v").split(".", 1)[0])
+    return "github.com/MaaXYZ/maa-framework-go" + (f"/v{major}" if major >= 2 else "")
+
+
 def test_external_bindings_have_independent_versioned_indexes() -> None:
     go_releases = load_release_catalog(ROOT, "maa-framework-go")
     rust_releases = load_release_catalog(ROOT, "maa-framework-rs")
@@ -106,11 +111,9 @@ def test_external_bindings_have_independent_versioned_indexes() -> None:
     go_api = (ROOT / "generated" / "maa-framework-go" / go_latest.version / "api.md").read_text(
         encoding="utf-8"
     )
-    assert f"https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3@{go_latest.tag}" in go_api
-    assert (
-        f"https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/adb@{go_latest.tag}"
-        in go_api
-    )
+    go_module = _go_module_path(go_latest.tag)
+    assert f"https://pkg.go.dev/{go_module}@{go_latest.tag}" in go_api
+    assert f"https://pkg.go.dev/{go_module}/controller/adb@{go_latest.tag}" in go_api
 
 
 def test_binding_compatibility_is_evidence_backed_or_unknown() -> None:
