@@ -13,7 +13,7 @@ repositories:
   role: authoritative
   status: active
   enabled: true
-  default_revision: 2a6d70566b51b1372e07d04c355114ac443b0065
+  default_revision: c958c7bebd312c804c4e603325a4072bc854fa1f
   note: The default revision follows the latest indexed stable Go binding release.
 - id: maa-framework-rs
   name: MaaFramework Rust binding
@@ -21,5 +21,5 @@ repositories:
   role: authoritative
   status: active
   enabled: true
-  default_revision: 85b367bd16532f6c7631fe887f4c4da10a2ec58b
+  default_revision: 61577bf6e06fb4269312a8e7132c7a73fb186ae2
   note: The default revision follows the latest indexed stable Rust binding release.

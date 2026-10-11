@@ -1,7 +1,11 @@
 source_id: maa-framework-go
-version: 3.5.1
-revision: 2a6d70566b51b1372e07d04c355114ac443b0065
+version: 4.0.0
+revision: c958c7bebd312c804c4e603325a4072bc854fa1f
 artifacts:
+- path: CHANGELOG.md
+  kind: documentation
+  title: Changelog
+  summary: 本节记录 `v4.0.0-beta.19` → `v4.0.0` 的净变化。升级操作见 迁移指南。
 - path: README.md
   kind: documentation
   title: README
@@ -10,6 +14,14 @@ artifacts:
   kind: documentation
   title: README_zh
   summary: MaaFramework 的 Go 语言绑定。MaaFramework 是一个基于图像识别的跨平台自动化测试框架。
+- path: action.go
+  kind: binding-api
+  title: action.go
+  summary: Public Go binding declarations for the action module.
+- path: action_result.go
+  kind: binding-api
+  title: action_result.go
+  summary: Public Go binding declarations for the action_result module.
 - path: agent_client.go
   kind: binding-api
   title: agent_client.go
@@ -18,10 +30,22 @@ artifacts:
   kind: binding-api
   title: agent_server.go
   summary: Public Go binding declarations for the agent_server module.
+- path: blank_controller.go
+  kind: binding-api
+  title: blank_controller.go
+  summary: Public Go binding declarations for the blank_controller module.
+- path: class_selector.go
+  kind: binding-api
+  title: class_selector.go
+  summary: Public Go binding declarations for the class_selector module.
 - path: context.go
   kind: binding-api
   title: context.go
   summary: Public Go binding declarations for the context module.
+- path: context_state.go
+  kind: binding-api
+  title: context_state.go
+  summary: Public Go binding declarations for the context_state module.
 - path: controller.go
   kind: binding-api
   title: controller.go
@@ -34,6 +58,10 @@ artifacts:
   kind: binding-api
   title: gamepad.go
   summary: Public Go binding declarations for the gamepad module.
+- path: controller/macos/macos.go
+  kind: binding-api
+  title: macos.go
+  summary: Public Go binding declarations for the macos module.
 - path: controller/win32/win32.go
   kind: binding-api
   title: win32.go
@@ -50,10 +78,10 @@ artifacts:
   kind: binding-api
   title: custom_recognition.go
   summary: Public Go binding declarations for the custom_recognition module.
-- path: dbg_controller.go
+- path: doc.go
   kind: binding-api
-  title: dbg_controller.go
-  summary: Public Go binding declarations for the dbg_controller module.
+  title: doc.go
+  summary: Public Go binding declarations for the doc module.
 - path: event.go
   kind: binding-api
   title: event.go
@@ -62,14 +90,26 @@ artifacts:
   kind: package-manifest
   title: go.mod
   summary: Package and dependency metadata for the Go binding.
+- path: handle_state.go
+  kind: binding-api
+  title: handle_state.go
+  summary: Public Go binding declarations for the handle_state module.
 - path: job.go
   kind: binding-api
   title: job.go
   summary: Public Go binding declarations for the job module.
+- path: json_codec.go
+  kind: binding-api
+  title: json_codec.go
+  summary: Public Go binding declarations for the json_codec module.
 - path: maa.go
   kind: binding-api
   title: maa.go
   summary: Public Go binding declarations for the maa module.
+- path: millis.go
+  kind: binding-api
+  title: millis.go
+  summary: Public Go binding declarations for the millis module.
 - path: node.go
   kind: binding-api
   title: node.go
@@ -78,6 +118,18 @@ artifacts:
   kind: binding-api
   title: pipeline.go
   summary: Public Go binding declarations for the pipeline module.
+- path: raw_param.go
+  kind: binding-api
+  title: raw_param.go
+  summary: Public Go binding declarations for the raw_param module.
+- path: recognition.go
+  kind: binding-api
+  title: recognition.go
+  summary: Public Go binding declarations for the recognition module.
+- path: recognition_result.go
+  kind: binding-api
+  title: recognition_result.go
+  summary: Public Go binding declarations for the recognition_result module.
 - path: rect.go
   kind: binding-api
   title: rect.go
@@ -90,6 +142,10 @@ artifacts:
   kind: binding-api
   title: status.go
   summary: Public Go binding declarations for the status module.
+- path: string_list.go
+  kind: binding-api
+  title: string_list.go
+  summary: Public Go binding declarations for the string_list module.
 - path: target.go
   kind: binding-api
   title: target.go
@@ -106,3 +162,7 @@ artifacts:
   kind: binding-api
   title: version.go
   summary: Public Go binding declarations for the version module.
+- path: wait_freezes.go
+  kind: binding-api
+  title: wait_freezes.go
+  summary: Public Go binding declarations for the wait_freezes module.

@@ -311,6 +311,14 @@ bindings:
   evidence_paths:
   - README.md
   note: The binding README explicitly references MaaFramework v5.4.3.
+- source_id: maa-framework-go
+  binding_version: 4.0.0
+  binding_revision: c958c7bebd312c804c4e603325a4072bc854fa1f
+  framework_version: 5.14.3
+  status: declared
+  evidence_paths:
+  - README.md
+  note: The binding README explicitly references MaaFramework v5.14.3.
 - source_id: maa-framework-rs
   binding_version: 0.2.1
   binding_revision: bc01af847b489f6cde96a500ee3d58c3a94a6977
@@ -510,6 +518,15 @@ bindings:
   binding_version: 1.25.2
   binding_revision: 85b367bd16532f6c7631fe887f4c4da10a2ec58b
   framework_version: 5.14.2
+  status: declared
+  evidence_paths:
+  - Cargo.toml
+  note: The workspace manifest declares this maa-framework-sys version; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-rs
+  binding_version: 1.26.0
+  binding_revision: 61577bf6e06fb4269312a8e7132c7a73fb186ae2
+  framework_version: 5.14.3
   status: declared
   evidence_paths:
   - Cargo.toml
