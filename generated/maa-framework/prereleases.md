@@ -5,6 +5,7 @@ Pre-release tags recorded for traceability, pinned to their exact commits. Pre-r
 
 | Version | Date | Commit | Included in |
 | --- | --- | --- | --- |
+| 5.15.0-beta.1 | 2026-10-16 | [`5f7c3d4fab3c`](https://github.com/MaaXYZ/MaaFramework/commit/5f7c3d4fab3c75f83f75a951f0869da407b17623) | not merged |
 | 5.14.0-beta.1 | 2026-09-17 | [`e503b0c8b6eb`](https://github.com/MaaXYZ/MaaFramework/commit/e503b0c8b6ebcffe75580161a4ff374310143c11) | [5.14.0](./5.14.0/index.md) |
 | 5.13.0-beta.6 | 2026-09-02 | [`b687d69ecf00`](https://github.com/MaaXYZ/MaaFramework/commit/b687d69ecf0071e468e15915f2fb8b0274764b01) | [5.13.0](./5.13.0/index.md) |
 | 5.13.0-beta.5 | 2026-08-22 | [`1ef752b411e9`](https://github.com/MaaXYZ/MaaFramework/commit/1ef752b411e96a133432e81c2c2318abad545a22) | [5.13.0](./5.13.0/index.md) |

@@ -587,3 +587,8 @@ prereleases:
   commit: e503b0c8b6ebcffe75580161a4ff374310143c11
   released_at: '2026-09-17'
   included_in: 5.14.0
+- version: 5.15.0-beta.1
+  tag: v5.15.0-beta.1
+  commit: 5f7c3d4fab3c75f83f75a951f0869da407b17623
+  released_at: '2026-10-16'
+  included_in: null

@@ -5,6 +5,7 @@ Binding versions are independent from MaaFramework versions. Select compatibilit
 
 ## Releases
 
+- [1.27.0](./1.27.0/index.md) `df0836bc9943368a1c70c18bb0839adf2b6e7b54`
 - [1.26.0](./1.26.0/index.md) `61577bf6e06fb4269312a8e7132c7a73fb186ae2`
 - [1.25.2](./1.25.2/index.md) `85b367bd16532f6c7631fe887f4c4da10a2ec58b`
 - [1.25.1](./1.25.1/index.md) `7c8bd1e380de0fe44f48bed691fb3e0a5ccbabed`
