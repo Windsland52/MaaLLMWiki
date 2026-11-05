@@ -2,7 +2,7 @@
 
 [English](README.en.md) | **中文**
 
-MaaLLMWiki 为 Maa 生态知识提供机器可读、版本化的源目录。它帮助模型选择并定位原始文档、schema、公开 API 与源码；它不编写、也不替代这些源。
+MaaLLMWiki 为 Maa 生态知识提供机器可读、版本化的源目录。它帮助模型选择并定位原始文档、schema、公开 API 与源码；它不编写、也不替代这些源。由 publish workflow 发布的目录快照均提供可校验的 catalog bundle，消费者契约见 `CATALOG-CONTRACT.md`。
 
 ## 范围
 
@@ -16,13 +16,16 @@ MaaLLMWiki 为 Maa 生态知识提供机器可读、版本化的源目录。它�
 
 - 项目专属文档与 Pipeline 配置；
 - 原始用户产物与基准测试答案；
-- MaaFramework 文档或源码树的拷贝；
+- MaaFramework 文档或源码树的全文拷贝（索引仅保留标题、自动摘取的首段摘要与 pinned 出处链接）；
 - 人工撰写的教程、最佳实践与诊断方法论；
 - 未经核实的模型生成结论。
+
+绑定范围：只有 Go 与 Rust 绑定作为独立外部源登记（各自有锁定清单与 MaaFramework 兼容性元数据）；C# 与 Java 绑定不在本目录登记范围内——Java 被 MaaFramework 文档标注为过时，C# 没有注册的 pin 源。原生公开 API 为 C/C++ 头文件；树内 Python/NodeJS 绑定 API 随 MaaFramework 版本索引。
 
 ## 布局
 
 ```text
+CATALOG-CONTRACT.md             catalog bundle 的消费者契约（manifest、发现、校验与已知局限）
 sources/repositories.yaml       已注册的上游仓库
 sources/maa-framework/          发布、清单、语义变更与源路由元数据
 sources/maa-framework-{go,rs}/  独立绑定发布与源清单
@@ -31,53 +34,85 @@ generated/maa-framework/        生成的发布与分域导航索引
 generated/maa-framework-{go,rs}/ 生成的绑定发布导航索引
 schemas/                        生成的元数据 JSON schema
 skills/maallmwiki/              可安装的路由 agent skill
-src/maa_llm_wiki/               Python 同步与校验工具
+src/maa_llm_wiki/               Python 同步、打包与校验工具
 tests/                          确定性仓库检查
+LICENSE                         代码许可（MIT）
+LICENSE-DATA                    目录数据许可（CC BY 4.0）
+NOTICE                          上游文档摘录的许可与归属
 ```
 
-生成的索引不包含任何上游内容拷贝，无需人工分块、embedding 或向量数据库。MaaFramework 源码保留在它自己的 Git 仓库中，按目录选定的修订进行检索。
+生成的索引逐条包含标题、首段摘要与 pinned commit 指向的原始出处；它不复制上游全文，查询时无需人工分块、embedding 或向量数据库。MaaFramework 源码保留在它自己的 Git 仓库中，按选定的不可变修订检索。
 
 生成导航的分层结构：
 
 ```text
 generated/maa-framework/index.md
   -> <version>/index.md
-       -> documentation/{en-us,zh-cn,nodejs,tools}.md
-       -> bindings/{python,nodejs}.md
-       -> native-api/{framework,control-units,toolkit,agents}.md
+       -> documentation/index.md -> {en-us,zh-cn,nodejs,tools}.md
+       -> documentation/diagrams.md        # 自 5.10.3 起
+       -> bindings/index.md -> {python,nodejs}.md
+       -> native-api/index.md -> {framework,toolkit,agents}.md
+       -> native-api/control-units.md      # 自 5.10.0 起
        -> schemas.md
-       -> documentation/diagrams.md
 ```
+
+`diagrams.md` 与 `control-units.md` 只存在于部分版本；其余版本目录中没有这两个文件。
 
 `sources/maa-framework/inventory.yaml` 仍是用于覆盖率检查的扁平权威产物清单，它不是导航接口。
 
 ## 开发
 
 ```powershell
-uv sync
-uv run maa-wiki-sync-maafw --repository ../MaaFramework --version 5.11.2
-uv run maa-wiki-sync-latest-maafw --repository ../MaaFramework
-uv run maa-wiki-sync-maafw-history --repository ../MaaFramework --major 5
-uv run maa-wiki-sync-bindings-history --go-repository tmp/maa-framework-go --rust-repository ../maa-framework-rs
-uv run maa-wiki-build-bundle --output dist/maa-llm-wiki-catalog.zip
-uv run maa-wiki-report-semantic-gaps
+uv sync --locked
+uv run maa-wiki-sync-latest-maafw --repository tmp/MaaFramework
+uv run maa-wiki-sync-maafw-history --repository tmp/MaaFramework --major 5
+uv run maa-wiki-sync-bindings-history --go-repository tmp/maa-framework-go --rust-repository tmp/maa-framework-rs
+uv run maa-wiki-build-bundle --output dist/maa-llm-wiki-catalog-vX.Y.Z.zip --version vX.Y.Z
+uv run maa-wiki-verify-bundle --bundle dist/maa-llm-wiki-catalog-vX.Y.Z.zip --expect-version vX.Y.Z --expect-revision <40 位 SHA>
+uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework
 uv run maa-wiki-validate
 uv run maa-wiki-generate-schemas
 uv run pytest
 uv run ruff check .
 uv run ruff format --check .
 uv run pyright
+git diff --check
 ```
+
+`vX.Y.Z` 与 `<40 位 SHA>` 是占位符。同步命令需要先按 publish workflow 的仓库地址把上游检出到 `tmp/`（`tmp/MaaFramework`、`tmp/maa-framework-go`、`tmp/maa-framework-rs`）。
+
+单版本命令只用于重新生成默认清单：`uv run maa-wiki-sync-maafw --version <版本> --repository tmp/MaaFramework` 只重建 `sources/maa-framework/inventory.yaml`，且只接受 `sources/maa-framework/releases.yaml` 中已注册的发布；它必须指向当前已索引的最新发布，否则 `maa-wiki-validate` 会失败。需要重建全部历史清单时运行 `maa-wiki-sync-maafw-history`。
+
+历史同步（`maa-wiki-sync-maafw-history` 与 `maa-wiki-sync-bindings-history`）默认拒绝删除已注册的发布或预发布：如果本地克隆缺少已注册的 tag，命令会报错而不是静默收缩目录。`--prune` 只在上游确实删除 tag 时使用——它会删除目录数据，属于危险的逃生舱口；其 help 文本明确写着 "do NOT pass from automation"，publish workflow 也绝不传这个 flag。
 
 当前生效修订记录在 `sources/repositories.yaml`；不可变发布历史存放在各源目录之下。现有自动化已索引 MaaFramework v5、Go 绑定与 Rust 绑定的全部稳定发布。
 
 ## 目录快照
 
-打 tag 的发布提供带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip` 产物，内含 `sources/`、`generated/`、`schemas/` 与 `catalog-manifest.json`。消费者通过 GitHub Releases API 发现最新的带版本产物。manifest 锁定 Wiki commit 与当前上游修订，并记录每个打包文件的体积与 SHA-256 摘要。快照由已提交的目录修订构建，因此其 tag 精确命名它所携带的目录；`maa-wiki-build-bundle` 拒绝脏工作树，`--allow-dirty` 仅供本地开发与测试使用。
+打 tag 的发布提供带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip` 产物，内含 `sources/`、`generated/`、`schemas/` 与 `catalog-manifest.json`；发布时还会上传便利别名 `maa-llm-wiki-catalog-latest.zip`。manifest 的 `api_version` 为 `maa-llm-wiki-catalog/v1`，`wiki_revision` 记录构建提交，`working_tree_clean` 标记是否来自干净工作树，`catalog_version` 记录该 bundle 的 tag（旧 bundle 可能没有该字段），`sources` 固定 MaaFramework、Go、Rust 三源的版本与 40 位 commit，`files` 为除 manifest 自身外每个文件的 `path`、`size_bytes` 与 `sha256`。字段语义、v1 稳定性规则与完整性不变量见 `CATALOG-CONTRACT.md`，机器可读的 schema 随 bundle 提供于 `schemas/catalog-bundle-manifest.schema.json`。
 
-快照 tag 及运送其 bundle 的 release 由下述 publish workflow 产生。若某次运行在默认分支上发现未打快照 tag 的目录数据，会改为发布该修订而不创建第二个 tag——被中断的发布会在下一次运行时自愈。`v0.1.2` 是在 workflow 合并前打的 tag，不带 bundle 产物；其编号不再复用。
+快照由已提交的目录修订构建，因此其 tag 精确命名它所携带的目录；`maa-wiki-build-bundle` 拒绝脏工作树，`--allow-dirty` 仅供本地开发与测试使用。发布构建必须传 `--version vX.Y.Z`（该值写入 manifest 的 `catalog_version`），并在上传前用 `uv run maa-wiki-verify-bundle --bundle <zip> --expect-version vX.Y.Z --expect-revision <40 位 SHA>` 校验。
 
-清单将 C/C++ 头文件视为原生公开 API。`source/binding/Python/maa` 下的 Python 模块与 `source/binding/NodeJS/src/apis/*.d.ts` 下的 NodeJS 声明属于树内绑定 API。C#、Go、Rust 绑定位于独立仓库，需要各自的锁定清单与 MaaFramework 兼容性元数据；它们不得继承 MaaFramework 仓库修订。Java 绑定被 MaaFramework 文档标注为过时，不是默认 API 源。
+自 `v0.1.3` 起，快照 tag 及运送其 bundle 的 release 由下述 publish workflow 产生；更早的 `v0.1.0`、`v0.1.1` 是在 workflow 合并前发布的（当时仓库使用 `release-catalog.yml` / `sync-maafw.yml`），其 release 同样带有 bundle。若目录修订尚未有快照 tag，下一次运行会为它创建新 tag 并发布；若该修订已有 tag 但 release/zip 资产缺失，则复用既有 tag 补发、不另建 tag——两种中断都会在下一次运行时自愈。`v0.1.2` 是 2026-08-31 的 annotated tag，没有对应的 GitHub Release，因此没有 bundle 资产；其编号不再复用。
+
+### 获取与校验
+
+最新快照的稳定别名地址：
+
+```text
+https://github.com/Windsland52/MaaLLMWiki/releases/latest/download/maa-llm-wiki-catalog-latest.zip
+```
+
+该便利别名由当前 publish workflow 在发布时上传；此前的历史 release（例如 `v0.1.14`）没有该资产，历史版本请使用版本化的 `maa-llm-wiki-catalog-vX.Y.Z.zip`。
+
+便利别名会随新版本原地覆盖，不用于复现；需要可复现时请从 Releases API 或 release 页面下载带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip`，并记录对应 tag。也可以从 `https://api.github.com/repos/Windsland52/MaaLLMWiki/releases/latest` 发现最新带版本产物。
+
+```powershell
+Invoke-WebRequest https://github.com/Windsland52/MaaLLMWiki/releases/latest/download/maa-llm-wiki-catalog-latest.zip -OutFile maa-llm-wiki-catalog-latest.zip
+uv run maa-wiki-verify-bundle --bundle maa-llm-wiki-catalog-latest.zip
+```
+
+`maa-wiki-verify-bundle` 只读取 zip，离线运行；传入 `--expect-version` / `--expect-revision` 可以把下载内容绑定到预期的 tag 与 commit。发现方式、校验规则与保证/非保证范围以 `CATALOG-CONTRACT.md` 为准。
 
 ## Agent skill
 
@@ -89,11 +124,23 @@ npx skills add https://github.com/Windsland52/MaaLLMWiki --skill maallmwiki --gl
 
 ## 自动更新
 
-`.github/workflows/publish-catalog.yml` 掌管整个周期并每日运行。它发现 MaaFramework、Go 绑定与 Rust 绑定的最新稳定 `vMAJOR.MINOR.PATCH` tag，记录其不可变 commit，重新生成目录，运行全部检查，把结果提交到默认分支，并在同一 job 中发布快照 release。检测、提交、打 tag 与发布保持在单个 workflow 内，因为默认 `GITHUB_TOKEN` 产生的事件不会触发另一个 workflow；拆开打 tag 会留下没有 release 的 tag。该 workflow 也支持 `workflow_dispatch` 手动触发。
+`.github/workflows/publish-catalog.yml` 掌管整个周期并每日运行。它重新索引 MaaFramework 5.x（workflow 环境变量 `CATALOG_MAJOR`，当前为 `5`）与 Go、Rust 绑定的全部稳定 `vMAJOR.MINOR.PATCH` tag，记录其不可变 commit，并重新生成目录与 schema；如果上游发布更高的主版本，同步会以明确错误失败（不再静默冻结在 5.x），只有在人工 review 后才应提升 `CATALOG_MAJOR`。在需要发布快照时（`publish=true`），它先运行全部检查（`uv run maa-wiki-validate`、`pytest`、`ruff check`、`ruff format --check`、`pyright`、`git diff --check`），再提交目录、计算快照版本、构建并校验 bundle，然后在同一 job 中打 tag 并发布 release（同时更新 `maa-llm-wiki-catalog-latest.zip`）。无变更的运行只同步与分类，不运行检查、不提交、不发布。检测、提交、打 tag 与发布保持在单个 workflow 内，因为默认 `GITHUB_TOKEN` 产生的事件不会触发另一个 workflow；拆开打 tag 会留下没有 release 的 tag。该 workflow 也支持 `workflow_dispatch` 手动触发。
 
 两条规则把人工内容挡在自动化之外：
 
 - 当同步触碰了 `sources/maa-framework/source-map.yaml` 或 `sources/maa-framework/semantic-changes.yaml` 时，运行拒绝发布；这两个文件只能经人工 review 变更。
-- workflow 绝不推断语义变更。当快照落地的发布中，已记录的官方材料晚于最新 `semantic-changes.yaml` 条目发生移动时，它会打开或更新一个 semantic-review issue，点名待检查的发布与产物（`uv run maa-wiki-report-semantic-gaps`）。每一条都是疑似触发，不是已验证的变更。
+- workflow 绝不推断语义变更。每次运行结束前（`if: always()`）会运行 `uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework`，对晚于最新 `semantic-changes.yaml` 条目的已索引发布比较标题/首段摘要以及已索引路径的内容差异，并在队列为空时关闭跟踪 issue。报告会列出待检查的发布与产物；每条都是疑似触发，不是已验证的变更。目录未索引的路径仍不可见——覆盖范围与盲区见 `CATALOG-CONTRACT.md` §7。
 
 该 job 使用仓库 `GITHUB_TOKEN` 认证。若默认分支强制 pull request，请添加 `CATALOG_PUSH_TOKEN` secret——一个具 contents 与 issues 写权限、来自允许绕过该规则身份的 fine-grained token——workflow 会自动优先使用它。
+
+## 已知局限
+
+`CATALOG-CONTRACT.md` §7 公开记录目录的覆盖盲区与保证边界：语义变更覆盖不完整（该节给出最近一次核对的版本数）、source-map 只覆盖人工挑选的主题、绑定的 `declared` 兼容性只是文本证据而非运行时验证、`unknown` 条目不做猜测、GitHub Releases 是唯一分发渠道、且没有 SLA。该节给出重新核算这些数字的命令；若数字与数据文件不一致，以数据文件为准。
+
+## 许可证
+
+- 代码（Python 源码、测试、workflow 与构建工具）以 MIT 发布：见 `LICENSE`。
+- 目录数据（元数据、清单、生成的导航页面、schema 与发布 bundle）以 CC BY 4.0 发布：见 `LICENSE-DATA`。
+- 目录中对 MaaXYZ 上游仓库文档的短摘录保留其上游许可证（LGPL-3.0）：归属、链接与说明见 `NOTICE`。
+
+再分发目录数据或摘录时请保留上述归属声明；本仓库的许可不改变上游材料的许可。
