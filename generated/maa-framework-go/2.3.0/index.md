@@ -7,7 +7,7 @@ Revision: `4c07a4f0f97dcd0f980c38000eae199466d2044d`
 
 - Status: `declared`
 - MaaFramework version: `3.0.4`
-- Basis: The binding README explicitly references MaaFramework v3.0.4.
+- Basis: The binding README release link points at MaaFramework v3.0.4; runtime compatibility has not been independently verified.
 - Evidence: [`README.md`](https://github.com/MaaXYZ/maa-framework-go/blob/4c07a4f0f97dcd0f980c38000eae199466d2044d/README.md)
 
 ## Go API documentation

@@ -5,9 +5,10 @@ Revision: `9b630cd31a74b332a59f5d4f1d67805695c5c8d7`
 
 ## Compatibility
 
-- Status: `unknown`
-- MaaFramework version: `not declared`
-- Basis: No exact MaaFramework version declaration was found in indexed package metadata.
+- Status: `declared`
+- MaaFramework version: `5.9.0-alpha.1`
+- Basis: The workspace manifest declares this maa-framework-sys version; runtime compatibility has not been independently verified.
+- Evidence: [`Cargo.toml`](https://github.com/MaaXYZ/maa-framework-rs/blob/9b630cd31a74b332a59f5d4f1d67805695c5c8d7/Cargo.toml)
 
 
 

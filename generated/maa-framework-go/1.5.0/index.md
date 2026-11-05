@@ -7,7 +7,7 @@ Revision: `b788755e995d8d022f070bd317e7a5e02149bc13`
 
 - Status: `declared`
 - MaaFramework version: `2.2.2`
-- Basis: The binding README explicitly references MaaFramework v2.2.2.
+- Basis: The binding README release link points at MaaFramework v2.2.2; runtime compatibility has not been independently verified.
 - Evidence: [`README.md`](https://github.com/MaaXYZ/maa-framework-go/blob/b788755e995d8d022f070bd317e7a5e02149bc13/README.md)
 
 ## Go API documentation
