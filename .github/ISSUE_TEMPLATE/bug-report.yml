@@ -1,0 +1,83 @@
+name: Catalog data error
+description: Report a wrong, missing, stale, or misclassified entry in the MaaLLMWiki catalog.
+title: "[catalog] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for errors in the catalog data itself: a wrong title, summary, version,
+        artifact path, or pinned commit SHA.
+
+        Keep the report short and source-based. Do **not** paste raw logs, dumps, screenshots, or
+        whole upstream documents; quote the upstream text briefly and link to the pinned commit.
+        Every reference must use a full 40-character commit SHA, never a moving branch.
+  - type: input
+    id: source
+    attributes:
+      label: Affected source
+      description: "`source_id` from `sources/repositories.yaml` (maafw, maa-framework-go, maa-framework-rs)."
+      placeholder: maafw
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Affected catalog version or release
+      description: The snapshot tag or registered release the entry belongs to, e.g. `v0.1.14` or `5.15.0`.
+      placeholder: 5.15.0
+    validations:
+      required: true
+  - type: input
+    id: artifact
+    attributes:
+      label: Artifact path
+      description: Repo-relative path exactly as listed in `sources/<source>/inventories/<version>.yaml`.
+      placeholder: include/MaaFramework/MaaFramework.h
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Pinned commit SHA
+      description: The 40-character revision recorded for that release in the inventory.
+      placeholder: 0123456789abcdef0123456789abcdef01234567
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of error
+      options:
+        - Wrong title or summary
+        - Missing artifact
+        - Extra or misclassified artifact
+        - Wrong pinned revision
+        - Wrong release or tag metadata
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: upstream
+    attributes:
+      label: What the upstream actually says
+      description: >
+        Quote or paraphrase the upstream content at the pinned SHA, and state what the catalog
+        should say instead. One short excerpt is enough.
+    validations:
+      required: true
+  - type: input
+    id: evidence
+    attributes:
+      label: Evidence link
+      description: >
+        Permalink to the upstream file at the pinned commit SHA, e.g.
+        `https://github.com/MaaXYZ/MaaFramework/blob/<sha>/<path>`.
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Anything else needed to reproduce or judge the error (no raw logs or dumps).
+    validations:
+      required: false

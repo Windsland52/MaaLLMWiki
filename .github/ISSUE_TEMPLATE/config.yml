@@ -1,0 +1,12 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report (placeholder)
+    url: https://github.com/Windsland52/MaaLLMWiki/security/advisories/new
+    about: >-
+      Report security issues privately through GitHub Security Advisories. This contact link is a
+      placeholder until the project publishes a dedicated security policy and reporting channel.
+  - name: Catalog contract and known gaps
+    url: https://github.com/Windsland52/MaaLLMWiki/blob/main/CATALOG-CONTRACT.md
+    about: >-
+      What a snapshot tag guarantees, how to discover and verify a bundle, and what the catalog does
+      not cover. The same document states the limitations.
