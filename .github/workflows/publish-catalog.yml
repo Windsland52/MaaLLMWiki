@@ -21,11 +21,15 @@ permissions:
 env:
   CATALOG_BRANCH: ${{ github.event.repository.default_branch }}
   CATALOG_TOKEN: ${{ secrets.CATALOG_PUSH_TOKEN || github.token }}
+  # MaaFramework major line that the catalog tracks. A higher upstream major now makes the sync
+  # fail loudly instead of silently freezing the catalog; bump this deliberately when 6.x ships.
+  CATALOG_MAJOR: "5"
   HAND_AUTHORED_PATHS: sources/maa-framework/source-map.yaml sources/maa-framework/semantic-changes.yaml
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Check out catalog history
         uses: actions/checkout@v6
@@ -71,7 +75,7 @@ jobs:
       - name: Sync Maa source indexes
         run: |
           uv sync --locked
-          uv run maa-wiki-sync-maafw-history --repository tmp/MaaFramework --major 5
+          uv run maa-wiki-sync-maafw-history --repository tmp/MaaFramework --major "${CATALOG_MAJOR}"
           uv run maa-wiki-sync-bindings-history \
             --go-repository tmp/maa-framework-go \
             --rust-repository tmp/maa-framework-rs
@@ -131,7 +135,15 @@ jobs:
       - name: Commit catalog update
         if: steps.state.outputs.changed == 'true'
         run: |
+          set -euo pipefail
           git add --all
+          unexpected="$(git diff --cached --name-only | grep -Ev '^(sources/|generated/|schemas/)' || true)"
+          if [ -n "${unexpected}" ]; then
+            echo "::error::Synchronization staged files outside sources/, generated/, schemas/:"
+            printf '%s\n' "${unexpected}"
+            exit 1
+          fi
+          git diff --cached --check
           git commit -m "chore: update Maa source indexes"
           git pull --rebase --autostash origin "${CATALOG_BRANCH}"
           git push origin "HEAD:${CATALOG_BRANCH}"
@@ -164,9 +176,33 @@ jobs:
 
       - name: Build catalog bundle
         if: steps.state.outputs.publish == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
+          set -euo pipefail
           uv run maa-wiki-build-bundle \
-            --output "dist/maa-llm-wiki-catalog-${{ steps.version.outputs.version }}.zip"
+            --version "${VERSION}" \
+            --output "dist/maa-llm-wiki-catalog-${VERSION}.zip"
+
+      - name: Verify catalog bundle
+        if: steps.state.outputs.publish == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          uv run maa-wiki-verify-bundle \
+            --bundle "dist/maa-llm-wiki-catalog-${VERSION}.zip" \
+            --expect-version "${VERSION}" \
+            --expect-revision "$(git rev-parse HEAD)"
+
+      - name: Copy stable alias bundle
+        if: steps.state.outputs.publish == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          cp "dist/maa-llm-wiki-catalog-${VERSION}.zip" dist/maa-llm-wiki-catalog-latest.zip
+          ls -l dist
 
       - name: Push snapshot tag
         if: steps.state.outputs.publish == 'true'
@@ -174,8 +210,13 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
           PREVIOUS: ${{ steps.version.outputs.previous }}
         run: |
+          set -euo pipefail
           if git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null 2>&1; then
-            echo "Tag ${VERSION} already exists."
+            if [ "$(git rev-parse "${VERSION}^{commit}")" != "$(git rev-parse HEAD)" ]; then
+              echo "::error::Tag ${VERSION} already exists at another commit; refusing to reuse it."
+              exit 1
+            fi
+            echo "Tag ${VERSION} already exists at HEAD (interrupted publish); reusing it."
             exit 0
           fi
           {
@@ -197,27 +238,60 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.version.outputs.version }}
-          files: dist/maa-llm-wiki-catalog-*.zip
+          files: |
+            dist/maa-llm-wiki-catalog-${{ steps.version.outputs.version }}.zip
+            dist/maa-llm-wiki-catalog-latest.zip
           generate_release_notes: true
           overwrite_files: true
+          fail_on_unmatched_files: true
           token: ${{ env.CATALOG_TOKEN }}
 
-      - name: Report releases awaiting semantic-change review
-        if: steps.state.outputs.publish == 'true'
+      - name: Reconcile semantic-review issue
+        if: always()
         env:
           GH_TOKEN: ${{ env.CATALOG_TOKEN }}
           ISSUE_TITLE: MaaFramework releases awaiting semantic-change review
+          ISSUE_LABEL: semantic-review
         run: |
-          uv run maa-wiki-report-semantic-gaps --output /tmp/semantic-gaps.md
-          if [ ! -s /tmp/semantic-gaps.md ]; then
-            echo "No releases are waiting for a semantic-change review."
+          set -euo pipefail
+          if [ ! -d tmp/MaaFramework/.git ]; then
+            echo "::warning::MaaFramework clone is unavailable; skipping semantic-review reconciliation."
             exit 0
           fi
-          existing="$(gh issue list --state open --limit 100 --json number,title \
-            --template '{{range .}}{{.number}}{{"\t"}}{{.title}}{{"\n"}}{{end}}' \
-            | awk -F '\t' -v title="${ISSUE_TITLE}" '$2 == title { print $1; exit }')"
-          if [ -n "${existing}" ]; then
-            gh issue comment "${existing}" --body-file /tmp/semantic-gaps.md
+          report=/tmp/semantic-gaps.md
+          uv run maa-wiki-report-semantic-gaps \
+            --repository tmp/MaaFramework \
+            --output "${report}"
+          gh label create "${ISSUE_LABEL}" --color ededed \
+            --description "Releases awaiting semantic-change review" >/dev/null 2>&1 || true
+          number="$(gh issue list --state open --label "${ISSUE_LABEL}" --limit 100 \
+            --json number --jq '.[0].number // empty')"
+          if [ -z "${number}" ]; then
+            # Legacy issues created before the label existed are matched by the fixed title.
+            number="$(gh issue list --state open --limit 100 --json number,title \
+              --template '{{range .}}{{.number}}{{"\t"}}{{.title}}{{"\n"}}{{end}}' \
+              | awk -F '\t' -v title="${ISSUE_TITLE}" '$2 == title { print $1; exit }')"
+            if [ -n "${number}" ]; then
+              gh issue edit "${number}" --add-label "${ISSUE_LABEL}"
+            fi
+          fi
+          if [ ! -s "${report}" ]; then
+            echo "No releases are waiting for a semantic-change review."
+            if [ -n "${number}" ]; then
+              gh issue close "${number}" \
+                --comment "The review queue is empty again; closing automatically. The next non-empty report creates or reopens the tracking issue."
+            fi
+            exit 0
+          fi
+          new_sha="$(printf '%s' "$(cat "${report}")" | sha256sum | cut -d' ' -f1)"
+          if [ -n "${number}" ]; then
+            current="$(gh issue view "${number}" --json body --jq .body)"
+            current_sha="$(printf '%s' "${current}" | sha256sum | cut -d' ' -f1)"
+            if [ "${current_sha}" != "${new_sha}" ]; then
+              gh issue edit "${number}" --body-file "${report}"
+              gh issue comment "${number}" \
+                --body "Review queue changed. The issue body lists the current releases; each item is a suspected trigger, not a verified behaviour change."
+            fi
           else
-            gh issue create --title "${ISSUE_TITLE}" --body-file /tmp/semantic-gaps.md
+            gh issue create --title "${ISSUE_TITLE}" --label "${ISSUE_LABEL}" --body-file "${report}"
           fi

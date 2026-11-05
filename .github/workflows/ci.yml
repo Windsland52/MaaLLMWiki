@@ -1,0 +1,77 @@
+name: CI
+
+# Pull-request validation. This workflow only checks; it never commits, tags, or releases, so it
+# cannot race the publish workflow and does not violate the AGENTS.md rule that detection, commit,
+# tagging and releasing stay inside one job. Pushes made by the publish job use the default
+# GITHUB_TOKEN, and events produced with that token do not start another workflow, so the bot
+# cannot trigger a CI loop.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out catalog history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Sync dependencies from the lockfile
+        run: uv sync --locked
+
+      - name: Validate catalog metadata and generated indexes
+        run: uv run maa-wiki-validate
+
+      - name: Generated schemas are current
+        run: |
+          uv run maa-wiki-generate-schemas
+          git diff --exit-code -- schemas
+          # `git diff` does not report untracked files, so also fail on a newly generated schema.
+          if [ -n "$(git status --porcelain -- schemas)" ]; then
+            echo "::error::Generated schemas are not committed:"
+            git status --short -- schemas
+            exit 1
+          fi
+
+      - name: Run tests
+        run: uv run pytest
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Check formatting
+        run: uv run ruff format --check .
+
+      - name: Type-check
+        run: uv run pyright
+
+      - name: Whitespace errors in the change set
+        env:
+          # PR runs compare against the base commit; push runs against the previous tip. A fresh
+          # single-commit history has no previous tip, so fall back to the first commit.
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "${BASE}" ] || [ "${BASE}" = "0000000000000000000000000000000000000000" ]; then
+            BASE="$(git rev-list --max-parents=0 HEAD | tail -1)"
+          fi
+          git diff --check "${BASE}...HEAD"
