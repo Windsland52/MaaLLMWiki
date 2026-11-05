@@ -12,8 +12,10 @@ from .inventory import (
     discover_prereleases,
     discover_stable_releases,
     git_text,
+    guard_registry_shrink,
     load_markdown,
     markdown_metadata,
+    registered_release_versions,
     render_prereleases_page,
     resolve_included_in,
     write_yaml,
@@ -161,6 +163,35 @@ def _go_package_documentation(
     return links
 
 
+GO_RELEASE_LINK_PATTERN = re.compile(
+    r"MaaFramework/releases/tag/v(?P<version>\d+\.\d+\.\d+(?:-[0-9A-Za-z.]+)?)",
+    flags=re.IGNORECASE,
+)
+GO_VERSION_BADGE_PATTERN = re.compile(
+    r"img\.shields\.io/badge/MaaFramework-v(?P<version>\d+\.\d+\.\d+(?:--[0-9A-Za-z.]+)*)",
+    flags=re.IGNORECASE,
+)
+RUST_FRAMEWORK_DEPENDENCY_PATTERN = re.compile(
+    r"maa-framework-sys\s*=\s*\{[^}]*version\s*=\s*\""
+    r"(?P<version>\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)\""
+)
+
+
+def _go_compatibility_evidence(content: str) -> tuple[str, str] | None:
+    """Return the declared framework version and which README element carries it.
+
+    The release-link anchor is the primary evidence; the shields.io badge is the
+    fallback. Badge text escapes `-` as `--`, so the badge version is normalised.
+    """
+    link = GO_RELEASE_LINK_PATTERN.search(content)
+    if link is not None:
+        return link["version"], "release link"
+    badge = GO_VERSION_BADGE_PATTERN.search(content)
+    if badge is not None:
+        return badge["version"].replace("--", "-"), "version badge"
+    return None
+
+
 def _binding_compatibility(
     repository: Path,
     release: ReleaseRecord,
@@ -171,13 +202,9 @@ def _binding_compatibility(
             content = _read_revision_file(repository, release.commit, path)
             if content is None:
                 continue
-            match = re.search(
-                r"MaaFramework(?:/releases/tag/|-v)(?P<version>\d+\.\d+\.\d+)",
-                content,
-                flags=re.IGNORECASE,
-            )
-            if match is not None:
-                version = match["version"]
+            evidence = _go_compatibility_evidence(content)
+            if evidence is not None:
+                version, basis = evidence
                 return BindingCompatibility(
                     source_id=spec.source_id,
                     binding_version=release.version,
@@ -185,15 +212,15 @@ def _binding_compatibility(
                     framework_version=version,
                     status=CompatibilityStatus.DECLARED,
                     evidence_paths=[path],
-                    note=f"The binding README explicitly references MaaFramework v{version}.",
+                    note=(
+                        f"The binding README {basis} points at MaaFramework v{version}; "
+                        "runtime compatibility has not been independently verified."
+                    ),
                 )
     else:
         content = _read_revision_file(repository, release.commit, "Cargo.toml")
         if content is not None:
-            match = re.search(
-                r"maa-framework-sys\s*=\s*\{[^}]*version\s*=\s*\"(?P<version>\d+\.\d+\.\d+)\"",
-                content,
-            )
+            match = RUST_FRAMEWORK_DEPENDENCY_PATTERN.search(content)
             if match is not None:
                 version = match["version"]
                 return BindingCompatibility(
@@ -219,7 +246,7 @@ def _binding_compatibility(
     )
 
 
-def _artifact_page(
+def render_artifact_page(
     spec: BindingSourceSpec,
     inventory: SourceInventory,
     repository_url: str,
@@ -247,7 +274,7 @@ def _artifact_page(
     return "\n".join(lines) + "\n"
 
 
-def _render_binding_version(
+def render_binding_version(
     spec: BindingSourceSpec,
     inventory: SourceInventory,
     compatibility: BindingCompatibility,
@@ -301,7 +328,7 @@ def _render_binding_version(
     index = "\n".join(index_lines)
     return {
         "index.md": index + "\n",
-        "api.md": _artifact_page(
+        "api.md": render_artifact_page(
             spec,
             inventory,
             repository_url,
@@ -309,10 +336,10 @@ def _render_binding_version(
             "Public binding API",
             package_documentation,
         ),
-        "documentation.md": _artifact_page(
+        "documentation.md": render_artifact_page(
             spec, inventory, repository_url, ArtifactKind.DOCUMENTATION, "Documentation"
         ),
-        "manifests.md": _artifact_page(
+        "manifests.md": render_artifact_page(
             spec, inventory, repository_url, ArtifactKind.PACKAGE_MANIFEST, "Package manifests"
         ),
     }
@@ -333,7 +360,7 @@ def _write_binding_indexes(
     version_root.mkdir(parents=True, exist_ok=True)
     for path in version_root.glob("*.md"):
         path.unlink()
-    for relative_path, content in _render_binding_version(
+    for relative_path, content in render_binding_version(
         spec, inventory, compatibility, repository_url, package_documentation
     ).items():
         (version_root / relative_path).write_text(content, encoding="utf-8", newline="\n")
@@ -387,6 +414,7 @@ def sync_binding_history(
     root: Path,
     repository: Path,
     source_id: str,
+    prune: bool = False,
 ) -> tuple[list[ReleaseRecord], list[PrereleaseRecord]]:
     spec = BINDING_SPECS.get(source_id)
     if spec is None:
@@ -397,7 +425,21 @@ def sync_binding_history(
         raise ValueError(f"Unknown repository source: {source_id}")
 
     releases = discover_stable_releases(repository)
-    prereleases = resolve_included_in(repository, discover_prereleases(repository), releases)
+    prereleases = discover_prereleases(repository)
+    registered_releases, registered_prereleases = registered_release_versions(root, source_id)
+    guard_registry_shrink(
+        registered_releases,
+        {release.version for release in releases},
+        prune=prune,
+        source=source_id,
+    )
+    guard_registry_shrink(
+        registered_prereleases,
+        {prerelease.version for prerelease in prereleases},
+        prune=prune,
+        source=f"{source_id} prerelease",
+    )
+    prereleases = resolve_included_in(repository, prereleases, releases)
     source.default_revision = releases[-1].commit
     source_root = root / "sources" / source_id
     source_root.mkdir(parents=True, exist_ok=True)

@@ -4,6 +4,7 @@ import re
 import subprocess
 import tarfile
 from collections import defaultdict
+from dataclasses import dataclass
 from datetime import date
 from io import BytesIO
 from pathlib import Path, PurePosixPath
@@ -226,7 +227,7 @@ def _artifact_link(artifact: SourceArtifact, repository_url: str, revision: str)
     return f"- **{artifact.title}**: {artifact.summary} [`{artifact.path}`]({url})"
 
 
-def _render_version_indexes(inventory: SourceInventory, repository_url: str) -> dict[str, str]:
+def render_version_indexes(inventory: SourceInventory, repository_url: str) -> dict[str, str]:
     grouped: defaultdict[str, list[SourceArtifact]] = defaultdict(list)
     titles: dict[str, str] = {}
     for artifact in inventory.artifacts:
@@ -344,7 +345,7 @@ def render_prereleases_page(
     return "\n".join(lines) + "\n"
 
 
-def _render_release_index(
+def render_release_index(
     releases: list[ReleaseRecord],
     prereleases: list[PrereleaseRecord],
 ) -> str:
@@ -387,7 +388,7 @@ def _write_generated_indexes(
         legacy_index.unlink()
     for path in version_root.rglob("*.md"):
         path.unlink()
-    for relative_path, content in _render_version_indexes(inventory, repository_url).items():
+    for relative_path, content in render_version_indexes(inventory, repository_url).items():
         path = version_root / relative_path
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8", newline="\n")
@@ -396,7 +397,7 @@ def _write_generated_indexes(
         release for release in releases if (output_root / release.version / "index.md").is_file()
     ]
     (output_root / "index.md").write_text(
-        _render_release_index(indexed_releases, prereleases), encoding="utf-8", newline="\n"
+        render_release_index(indexed_releases, prereleases), encoding="utf-8", newline="\n"
     )
     (output_root / "prereleases.md").write_text(
         render_prereleases_page(
@@ -473,11 +474,35 @@ def _prerelease_sort_key(suffix: str) -> tuple[tuple[int, int | str], ...]:
     return tuple(part_key(part) for part in suffix.split("."))
 
 
+@dataclass(frozen=True)
+class TagMetadata:
+    commit: str
+    released_at: date
+
+
+TAG_METADATA_FORMAT = (
+    "%(refname:short)\t%(if)%(*objectname)%(then)%(*objectname)%(else)%(objectname)%(end)"
+    "\t%(creatordate:short)"
+)
+
+
+def _tag_metadata(repository: Path) -> dict[str, TagMetadata]:
+    """Read every version tag's commit and date with one git process."""
+    output = git_text(repository, "for-each-ref", f"--format={TAG_METADATA_FORMAT}", "refs/tags/v*")
+    metadata: dict[str, TagMetadata] = {}
+    for line in output.splitlines():
+        name, commit, released_at = line.split("\t")
+        if not name or not commit:
+            continue
+        metadata[name] = TagMetadata(commit=commit, released_at=date.fromisoformat(released_at))
+    return metadata
+
+
 def discover_stable_releases(repository: Path, *, major: int | None = None) -> list[ReleaseRecord]:
-    tags = git_text(repository, "tag", "--list", "v*").splitlines()
+    metadata = _tag_metadata(repository)
     stable_tags = [
         (version, tag)
-        for tag in tags
+        for tag in metadata
         if (version := parse_stable_tag(tag)) is not None and (major is None or version[0] == major)
     ]
     if not stable_tags:
@@ -486,16 +511,13 @@ def discover_stable_releases(repository: Path, *, major: int | None = None) -> l
 
     releases: list[ReleaseRecord] = []
     for version_tuple, tag in sorted(stable_tags):
-        commit = git_text(repository, "rev-parse", f"{tag}^{{commit}}").strip()
-        released_at = date.fromisoformat(
-            git_text(repository, "show", "-s", "--format=%cs", commit).strip()
-        )
+        details = metadata[tag]
         releases.append(
             ReleaseRecord(
                 version=".".join(str(part) for part in version_tuple),
                 tag=tag,
-                commit=commit,
-                released_at=released_at,
+                commit=details.commit,
+                released_at=details.released_at,
             )
         )
     return releases
@@ -505,35 +527,10 @@ def find_latest_stable_release(repository: Path) -> ReleaseRecord:
     return discover_stable_releases(repository)[-1]
 
 
-def _commit_is_ancestor(repository: Path, ancestor: str, descendant: str) -> bool:
-    result = subprocess.run(
-        [
-            "git",
-            "-c",
-            "core.quotepath=false",
-            "merge-base",
-            "--is-ancestor",
-            ancestor,
-            descendant,
-        ],
-        cwd=repository,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    if result.returncode == 0:
-        return True
-    if result.returncode == 1:
-        return False
-    raise RuntimeError(
-        f"git merge-base --is-ancestor {ancestor} {descendant} failed: {result.stderr.strip()}"
-    )
-
-
 def discover_prereleases(repository: Path, *, major: int | None = None) -> list[PrereleaseRecord]:
-    tags = git_text(repository, "tag", "--list", "v*").splitlines()
+    metadata = _tag_metadata(repository)
     found: list[tuple[tuple[int, int, int], str, str]] = []
-    for tag in tags:
+    for tag in metadata:
         parsed = parse_prerelease_tag(tag)
         if parsed is None:
             continue
@@ -545,16 +542,13 @@ def discover_prereleases(repository: Path, *, major: int | None = None) -> list[
 
     prereleases: list[PrereleaseRecord] = []
     for version, suffix, tag in found:
-        commit = git_text(repository, "rev-parse", f"{tag}^{{commit}}").strip()
-        released_at = date.fromisoformat(
-            git_text(repository, "show", "-s", "--format=%cs", commit).strip()
-        )
+        details = metadata[tag]
         prereleases.append(
             PrereleaseRecord(
                 version=f"{'.'.join(str(part) for part in version)}-{suffix}",
                 tag=tag,
-                commit=commit,
-                released_at=released_at,
+                commit=details.commit,
+                released_at=details.released_at,
             )
         )
     return prereleases
@@ -565,14 +559,19 @@ def resolve_included_in(
     prereleases: list[PrereleaseRecord],
     releases: list[ReleaseRecord],
 ) -> list[PrereleaseRecord]:
+    """Resolve each prerelease to its earliest containing stable release.
+
+    One `git tag --contains` per prerelease replaces the per-(prerelease, release)
+    `merge-base --is-ancestor` probe; `releases` is ascending, so the first
+    containing entry is the smallest stable version.
+    """
     resolved: list[PrereleaseRecord] = []
     for prerelease in prereleases:
+        contained_tags = set(
+            git_text(repository, "tag", "--contains", prerelease.commit, "--list", "v*").split()
+        )
         included_in = next(
-            (
-                release.version
-                for release in releases
-                if _commit_is_ancestor(repository, prerelease.commit, release.commit)
-            ),
+            (release.version for release in releases if release.tag in contained_tags),
             None,
         )
         resolved.append(prerelease.model_copy(update={"included_in": included_in}))
@@ -584,6 +583,33 @@ def write_yaml(path: Path, value: object) -> None:
         yaml.safe_dump(value, allow_unicode=True, sort_keys=False),
         encoding="utf-8",
         newline="\n",
+    )
+
+
+def guard_registry_shrink(
+    registered: set[str],
+    discovered: set[str],
+    *,
+    prune: bool,
+    source: str,
+) -> None:
+    missing = sorted(registered - discovered)
+    if missing and not prune:
+        raise ValueError(
+            f"Refusing to remove registered {source} versions missing from the clone: "
+            f"{', '.join(missing)}. Re-run with --prune only if the upstream tags were really "
+            "deleted."
+        )
+
+
+def registered_release_versions(root: Path, source_id: str) -> tuple[set[str], set[str]]:
+    directory = "maa-framework" if source_id == "maafw" else source_id
+    if not (root / "sources" / directory / "releases.yaml").is_file():
+        return set(), set()
+    catalog = load_release_catalog(root, source_id)
+    return (
+        {release.version for release in catalog.releases},
+        {prerelease.version for prerelease in catalog.prereleases},
     )
 
 
@@ -629,13 +655,43 @@ def sync_latest_maafw(*, root: Path, repository: Path) -> ReleaseRecord:
 
 
 def sync_maafw_history(
-    *, root: Path, repository: Path, major: int
+    *, root: Path, repository: Path, major: int, prune: bool = False
 ) -> tuple[list[ReleaseRecord], list[PrereleaseRecord]]:
-    releases = discover_stable_releases(repository, major=major)
-    prereleases = resolve_included_in(
-        repository, discover_prereleases(repository, major=major), releases
-    )
+    all_releases = discover_stable_releases(repository)
+    newer_releases = [
+        release
+        for release in all_releases
+        if (version := parse_stable_tag(release.tag)) is not None and version[0] > major
+    ]
+    if newer_releases:
+        raise ValueError(
+            f"Upstream has MaaFramework {newer_releases[-1].version} but --major {major} was "
+            "requested; update the workflow's CATALOG_MAJOR"
+        )
+    releases = [
+        release
+        for release in all_releases
+        if (version := parse_stable_tag(release.tag)) is not None and version[0] == major
+    ]
+    if not releases:
+        raise ValueError(f"MaaFramework repository contains no stable release for major {major}")
+    prereleases = discover_prereleases(repository, major=major)
+
     release_catalog = load_release_catalog(root)
+    guard_registry_shrink(
+        {release.version for release in release_catalog.releases},
+        {release.version for release in releases},
+        prune=prune,
+        source="MaaFramework",
+    )
+    guard_registry_shrink(
+        {prerelease.version for prerelease in release_catalog.prereleases},
+        {prerelease.version for prerelease in prereleases},
+        prune=prune,
+        source="MaaFramework prerelease",
+    )
+
+    prereleases = resolve_included_in(repository, prereleases, releases)
     release_catalog.releases = releases
     release_catalog.prereleases = prereleases
     write_yaml(
