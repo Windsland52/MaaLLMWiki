@@ -215,6 +215,7 @@ class CatalogBundleSource(StrictModel):
 
 class CatalogBundleManifest(StrictModel):
     api_version: Literal["maa-llm-wiki-catalog/v1"] = "maa-llm-wiki-catalog/v1"
+    catalog_version: str | None = Field(default=None, pattern=r"^v\d+\.\d+\.\d+$")
     wiki_revision: str = Field(pattern=COMMIT_PATTERN)
     working_tree_clean: bool
     sources: list[CatalogBundleSource] = Field(min_length=1)

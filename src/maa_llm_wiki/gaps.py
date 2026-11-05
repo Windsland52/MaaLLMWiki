@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -15,6 +16,7 @@ REVIEW_KINDS = frozenset(
     }
 )
 _LISTED_PATHS = 5
+_CONTENT_PATHS = ("docs", "tools", "include", "source/binding")
 
 
 def _version_key(version: str) -> tuple[int, ...]:
@@ -34,10 +36,11 @@ class ReleaseDelta:
     added: tuple[str, ...]
     removed: tuple[str, ...]
     revised: tuple[str, ...]
+    content_changed: tuple[str, ...] = ()
 
     @property
     def tracked_changes(self) -> int:
-        return len(self.added) + len(self.removed) + len(self.revised)
+        return len(self.added) + len(self.removed) + len(self.revised) + len(self.content_changed)
 
 
 @dataclass(frozen=True)
@@ -46,7 +49,55 @@ class ReviewQueue:
     entries: tuple[ReleaseDelta, ...]
 
 
-def _delta(previous: SourceInventory, current: SourceInventory) -> ReleaseDelta:
+def _content_changed(
+    repository: Path,
+    previous_tag: str,
+    current_tag: str,
+    indexed_paths: set[str],
+) -> tuple[str, ...]:
+    """Paths with content edits between two release tags that the inventories actually index."""
+    result = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(repository),
+            "-c",
+            "core.quotepath=false",
+            "diff",
+            "--numstat",
+            "--no-renames",
+            f"{previous_tag}..{current_tag}",
+            "--",
+            *_CONTENT_PATHS,
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"git diff {previous_tag}..{current_tag} failed in {repository}: "
+            f"{result.stderr.strip()}"
+        )
+    changed: set[str] = set()
+    for line in result.stdout.splitlines():
+        fields = line.split("\t", 2)
+        if len(fields) != 3:
+            continue
+        path = fields[2].strip()
+        if path in indexed_paths:
+            changed.add(path)
+    return tuple(sorted(changed))
+
+
+def _delta(
+    previous: SourceInventory,
+    current: SourceInventory,
+    *,
+    content_changed: tuple[str, ...] = (),
+) -> ReleaseDelta:
     before = {artifact.path: artifact for artifact in previous.artifacts}
     after = {artifact.path: artifact for artifact in current.artifacts}
     added = tuple(
@@ -70,15 +121,18 @@ def _delta(previous: SourceInventory, current: SourceInventory) -> ReleaseDelta:
         added=added,
         removed=removed,
         revised=revised,
+        content_changed=content_changed,
     )
 
 
-def review_queue(root: Path) -> ReviewQueue:
+def review_queue(root: Path, repository: Path | None = None) -> ReviewQueue:
     """Indexed releases newer than the newest semantic-change record whose material moved.
 
     Recorded titles and summaries are compared between consecutive inventories. A moved title or
     summary is a suspected trigger for a behavior change, not proof of one: the summary is the
-    first paragraph of the artifact, so edits deeper inside a file stay invisible here.
+    first paragraph of the artifact, so edits deeper inside a file stay invisible here. Pass a
+    pinned MaaFramework clone as ``repository`` to also diff file content between release tags,
+    which closes that blind spot.
     """
     releases = sorted(
         load_release_catalog(root).releases, key=lambda item: _version_key(item.version)
@@ -88,20 +142,29 @@ def review_queue(root: Path) -> ReviewQueue:
     recorded = [change.first_version for change in changes]
     reviewed_through = max(recorded, key=_version_key) if recorded else None
     threshold = _version_key(reviewed_through) if reviewed_through is not None else None
+    indexed_paths = {
+        artifact.path for inventory in inventories.values() for artifact in inventory.artifacts
+    }
 
     entries: list[ReleaseDelta] = []
     previous: SourceInventory | None = None
+    previous_tag: str | None = None
     for release in releases:
         inventory = inventories.get(release.version)
         if inventory is None:
             continue
         if previous is not None:
-            delta = _delta(previous, inventory)
-            if delta.tracked_changes and (
-                threshold is None or _version_key(release.version) > threshold
-            ):
+            after_threshold = threshold is None or _version_key(release.version) > threshold
+            content_changed: tuple[str, ...] = ()
+            if repository is not None and after_threshold and previous_tag is not None:
+                content_changed = _content_changed(
+                    repository, previous_tag, release.tag, indexed_paths
+                )
+            delta = _delta(previous, inventory, content_changed=content_changed)
+            if delta.tracked_changes and after_threshold:
                 entries.append(delta)
         previous = inventory
+        previous_tag = release.tag
     return ReviewQueue(reviewed_through=reviewed_through, entries=tuple(entries))
 
 
@@ -114,9 +177,9 @@ def _bullet(label: str, paths: tuple[str, ...]) -> list[str]:
     return [f"  - {label}: {listed}"]
 
 
-def render_review_queue(root: Path) -> str:
+def render_review_queue(root: Path, repository: Path | None = None) -> str:
     """Render the semantic-review issue body, or an empty string when nothing needs review."""
-    queue = review_queue(root)
+    queue = review_queue(root, repository)
     if not queue.entries:
         return ""
     since = queue.reviewed_through
@@ -130,10 +193,24 @@ def render_review_queue(root: Path) -> str:
         "",
         f"Recorded official material moved in {len(queue.entries)} indexed release(s) newer than",
         f"{recorded}. Each item is a suspected trigger for a behavior change, not a verified one:",
-        "recorded titles and summaries come from the first paragraph of each artifact, so edits",
-        "deeper inside a file are not detected here.",
-        "",
     ]
+    if repository is None:
+        lines.extend(
+            [
+                "recorded titles and summaries come from the first paragraph of each artifact, "
+                "so edits",
+                "deeper inside a file are not detected here.",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "recorded titles and summaries come from the first paragraph of each artifact; "
+                "content edits",
+                "inside indexed files are also detected from `git diff` against the pinned tags.",
+            ]
+        )
+    lines.append("")
     for entry in reversed(queue.entries):
         lines.append(
             f"- **{entry.version}** `{entry.revision[:12]}` "
@@ -142,6 +219,7 @@ def render_review_queue(root: Path) -> str:
         lines.extend(_bullet("added", entry.added))
         lines.extend(_bullet("removed", entry.removed))
         lines.extend(_bullet("revised", entry.revised))
+        lines.extend(_bullet("content changed", entry.content_changed))
     lines.extend(
         [
             "",

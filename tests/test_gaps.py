@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
+
+import pytest
 
 from maa_llm_wiki.gaps import render_review_queue, review_queue
 
@@ -178,3 +181,106 @@ def test_render_review_queue_names_release_and_artifact(tmp_path: Path) -> None:
     assert "**1.1.0**" in report
     assert "`docs/zh_cn/b.md`" in report
     assert "`1.0.0`" in report
+
+
+def _git(repository: Path, *arguments: str) -> None:
+    subprocess.run(
+        ["git", *arguments],
+        cwd=repository,
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+
+
+def _make_upstream(tmp_path: Path) -> Path:
+    repository = tmp_path / "upstream"
+    repository.mkdir()
+    _git(repository, "init", "-q")
+    _git(repository, "config", "user.email", "catalog@example.com")
+    _git(repository, "config", "user.name", "Catalog Test")
+    _git(repository, "config", "commit.gpgsign", "false")
+    docs = repository / "docs" / "zh_cn"
+    docs.mkdir(parents=True)
+    (repository / "README.md").write_text("readme one\n", encoding="utf-8")
+    _git(repository, "add", "-A")
+    _git(repository, "commit", "-q", "-m", "release one")
+    _git(repository, "tag", "v1.0.0")
+
+    (docs / "a.md").write_text("# A\n\nFirst body.\n", encoding="utf-8")
+    (repository / "README.md").write_text("readme two\n", encoding="utf-8")
+    _git(repository, "add", "-A")
+    _git(repository, "commit", "-q", "-m", "release two")
+    _git(repository, "tag", "v1.1.0")
+    return repository
+
+
+def _write_blind_spot_catalog(root: Path, recorded: list[str] | None = None) -> None:
+    # Titles and summaries are identical across both releases, so the summary-based queue alone
+    # cannot notice that docs/zh_cn/a.md changed between the tags.
+    _write_catalog(
+        root,
+        [
+            ("1.0.0", COMMIT_A, [("docs/zh_cn/a.md", "documentation", "Same summary.")]),
+            ("1.1.0", COMMIT_B, [("docs/zh_cn/a.md", "documentation", "Same summary.")]),
+        ],
+        recorded=["1.0.0"] if recorded is None else recorded,
+    )
+
+
+def test_review_queue_without_repository_misses_content_only_edits(tmp_path: Path) -> None:
+    _write_blind_spot_catalog(tmp_path)
+
+    assert review_queue(tmp_path).entries == ()
+    assert render_review_queue(tmp_path) == ""
+
+
+def test_review_queue_with_repository_detects_content_only_edits(tmp_path: Path) -> None:
+    upstream = _make_upstream(tmp_path)
+    _write_blind_spot_catalog(tmp_path)
+
+    queue = review_queue(tmp_path, repository=upstream)
+
+    assert [entry.version for entry in queue.entries] == ["1.1.0"]
+    entry = queue.entries[0]
+    assert entry.added == ()
+    assert entry.removed == ()
+    assert entry.revised == ()
+    assert entry.content_changed == ("docs/zh_cn/a.md",)
+    assert entry.tracked_changes == 1
+
+
+def test_render_review_queue_names_content_changed_files(tmp_path: Path) -> None:
+    upstream = _make_upstream(tmp_path)
+    _write_blind_spot_catalog(tmp_path)
+
+    report = render_review_queue(tmp_path, repository=upstream)
+
+    assert "**1.1.0**" in report
+    assert "content changed" in report
+    assert "`docs/zh_cn/a.md`" in report
+    assert "git diff" in report
+
+
+def test_review_queue_content_detection_ignores_unindexed_paths(tmp_path: Path) -> None:
+    upstream = _make_upstream(tmp_path)
+    _write_blind_spot_catalog(tmp_path)
+
+    entry = review_queue(tmp_path, repository=upstream).entries[0]
+
+    assert "README.md" not in entry.content_changed
+
+
+def test_review_queue_content_detection_respects_recorded_threshold(tmp_path: Path) -> None:
+    upstream = _make_upstream(tmp_path)
+    _write_blind_spot_catalog(tmp_path, recorded=["1.1.0"])
+
+    assert review_queue(tmp_path, repository=upstream).entries == ()
+
+
+def test_review_queue_content_detection_requires_valid_clone(tmp_path: Path) -> None:
+    _write_blind_spot_catalog(tmp_path)
+
+    with pytest.raises(RuntimeError, match="git diff"):
+        review_queue(tmp_path, repository=tmp_path / "missing-clone")

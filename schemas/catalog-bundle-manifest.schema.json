@@ -62,6 +62,19 @@
       "title": "Api Version",
       "type": "string"
     },
+    "catalog_version": {
+      "anyOf": [
+        {
+          "pattern": "^v\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Catalog Version"
+    },
     "wiki_revision": {
       "pattern": "^[0-9a-f]{40}$",
       "title": "Wiki Revision",
