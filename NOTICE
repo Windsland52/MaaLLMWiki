@@ -1,0 +1,33 @@
+NOTICE
+
+MaaLLMWiki — third-party notices
+
+This catalog describes material from the following upstream repositories, which are licensed under
+the GNU Lesser General Public License version 3.0 (LGPL-3.0):
+
+- MaaFramework — https://github.com/MaaXYZ/MaaFramework — LGPL-3.0
+- MaaFramework Go binding — https://github.com/MaaXYZ/maa-framework-go — LGPL-3.0
+- MaaFramework Rust binding — https://github.com/MaaXYZ/maa-framework-rs — LGPL-3.0
+
+The licence statement above is recorded as we understand it at the pinned revisions indexed by this
+catalog. It is not a restatement of the upstream licences and it does not replace them; consult each
+upstream repository for the authoritative licence text.
+
+What this catalog stores about those projects:
+
+- metadata only: repository identifiers, release versions and tags, immutable 40-character commit
+  SHAs, file paths, artifact kinds, and links to the upstream files at the pinned revision;
+- a short first-paragraph excerpt of some upstream documentation pages, used solely to identify and
+  navigate to that material.
+
+Those excerpts are quotations of upstream content and remain under their own upstream licence. They
+are not relicensed by this repository. No upstream source code, no complete documentation page, and
+no schema file is redistributed here; consumers must retrieve the referenced material from the
+upstream repository at the pinned commit SHA.
+
+The MaaLLMWiki code (Python sources, tests, workflows, build tooling) is licensed under the MIT
+License; see LICENSE.
+
+The MaaLLMWiki catalog data (metadata, inventories, generated navigation pages, schemas, release
+bundles) is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0); see
+LICENSE-DATA.
