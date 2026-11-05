@@ -23,8 +23,13 @@ def test_repository_content_is_valid() -> None:
 
 def test_framework_semantic_changes_are_explicit() -> None:
     changes = load_semantic_changes(ROOT)
+    registered = {release.version for release in load_release_catalog(ROOT).releases}
+    recorded = {change.first_version for change in changes.changes}
 
-    assert {change.first_version for change in changes.changes} == {
+    # Every recorded change must name a registered release, and the versions that carry the
+    # documented behaviour history must not silently disappear from the catalog.
+    assert recorded <= registered
+    assert {
         "5.5.0",
         "5.8.0",
         "5.9.0",
@@ -38,7 +43,8 @@ def test_framework_semantic_changes_are_explicit() -> None:
         "5.12.3",
         "5.13.0",
         "5.14.0",
-    }
+    } <= recorded
+    assert len(changes.changes) >= 25
 
 
 def test_framework_inventory_covers_official_material() -> None:

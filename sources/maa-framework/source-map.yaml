@@ -10,13 +10,27 @@ topics:
           - source/MaaFramework/Task/PipelineTask.cpp
         symbols:
           - PipelineTask::run
-          - PipelineTask::find_first
+          - PipelineTask::run_next
         terms:
           - next
           - timeout
           - rate_limit
           - on_error
-          - Node.NextList.Failed
+      - applies_to: "5.15.0"
+        revision: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+        paths:
+          - docs/zh_cn/3.1-任务流水线协议.md
+          - tools/pipeline.schema.json
+          - source/MaaFramework/Task/PipelineTask.cpp
+          - include/MaaFramework/MaaDef.h
+        symbols:
+          - PipelineTask::run
+          - MaaCustomRecognitionCallback
+        terms:
+          - $all
+          - $filtered
+          - index
+          - order_by
 
   - id: diagnostics.failure-event-levels
     source_id: maafw
@@ -80,6 +94,20 @@ topics:
           - input_method
           - use_win32_vk_code
           - MaaCtrlOption
+      - applies_to: "5.13.0"
+        revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+        paths:
+          - include/MaaFramework/Instance/MaaController.h
+          - include/MaaFramework/Instance/MaaCustomController.h
+          - include/MaaFramework/MaaDef.h
+        symbols:
+          - MaaLinuxControllerCreate
+          - MaaCustomControllerCreate
+        terms:
+          - screencap_method
+          - input_method
+          - use_win32_vk_code
+          - MaaCtrlOption
 
   - id: framework.control-unit-api
     source_id: maafw
@@ -90,6 +118,18 @@ topics:
           - include/MaaControlUnit/ControlUnitAPI.h
           - include/MaaControlUnit/CustomControlUnitAPI.h
           - include/MaaControlUnit/MaaControlUnitAPI.h
+        symbols:
+          - ControlUnitAPI
+          - CustomControlUnitAPI
+        terms:
+          - MaaControlUnit
+          - ControlUnitAPI
+      - applies_to: "5.13.0"
+        revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+        paths:
+          - include/MaaControlUnit/ControlUnitAPI.h
+          - include/MaaControlUnit/CustomControlUnitAPI.h
+          - include/MaaControlUnit/LinuxControlUnitAPI.h
         symbols:
           - ControlUnitAPI
           - CustomControlUnitAPI
@@ -107,9 +147,40 @@ topics:
           - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
         terms:
           - pretask
+          - hotkey
+          - resource
+      - applies_to: "5.12.3"
+        revision: 0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb
+        paths:
+          - tools/interface.schema.json
+          - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+        terms:
+          - pretask
           - telemetry
           - hotkey
           - resource
+      - applies_to: "5.13.0"
+        revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+        paths:
+          - tools/interface.schema.json
+          - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+        terms:
+          - password
+          - min_count
+          - max_count
+          - focus
+          - telemetry
+      - applies_to: "5.15.0"
+        revision: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+        paths:
+          - tools/interface.schema.json
+          - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+        terms:
+          - input_type
+          - preset
+          - pretask
+          - PI_USER_DATA_DIR
+          - telemetry
 
   - id: framework.adb-emulator-support
     source_id: maafw
@@ -139,8 +210,8 @@ topics:
           - MaaToolkitGamescopeInstanceFindAll
           - MaaToolkitPortalHelperOpenStream
         terms:
-          - gamescope
-          - portal
+          - Gamescope
+          - Portal
           - PipeWire
 
   - id: diagnostics.wait-freezes-detail
@@ -167,9 +238,34 @@ topics:
           - docs/zh_cn/3.1-任务流水线协议.md
           - tools/pipeline.schema.json
           - source/MaaFramework/Vision/NeuralNetworkClassifier.cpp
+          - source/MaaFramework/Vision/NeuralNetworkDetector.cpp
         symbols:
           - NeuralNetworkClassifier
           - NeuralNetworkDetector
         terms:
           - expected
           - labels
+
+  - id: framework.inference-backends
+    source_id: maafw
+    variants:
+      - applies_to: "5.14.3"
+        revision: 8963191215ca49d6b037802acd07d20a4213160a
+        paths:
+          - include/MaaFramework/MaaDef.h
+          - docs/zh_cn/2.2-集成接口一览.md
+        symbols:
+          - MaaInferenceExecutionProvider_WebGPU
+        terms:
+          - WebGPU
+          - MaaInferenceExecutionProvider
+      - applies_to: "5.15.0"
+        revision: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+        paths:
+          - include/MaaFramework/MaaDef.h
+          - docs/zh_cn/2.2-集成接口一览.md
+        symbols:
+          - MaaInferenceExecutionProvider_NCNN
+        terms:
+          - NCNN
+          - ncnn

@@ -193,6 +193,22 @@ changes:
       - include/MaaToolkit/Gamescope/MaaToolkitGamescope.h
       - include/MaaToolkit/Portal/MaaToolkitPortal.h
 
+  - topic_id: framework.interface-protocol
+    first_version: 5.13.0
+    revision: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+    description: Project Interface gained v2.9.1 focus.trace, v2.9.2 telemetry.sentry.failure_attachments_sample_rate, v2.10.0 input password, and v2.10.1 checkbox min_count/max_count.
+    paths:
+      - tools/interface.schema.json
+      - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+
+  - topic_id: framework.interface-protocol
+    first_version: 5.13.1
+    revision: 9c20d69a9412fc52537f61c48077a7e024737896
+    description: Project Interface v2.10.2 allows welcome to be a string array of announcement lines.
+    paths:
+      - tools/interface.schema.json
+      - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+
   - topic_id: framework.pipeline-control-flow
     first_version: 5.14.0
     revision: b96ab05ace1c14533144fedfcbb7358dad785579
@@ -200,3 +216,51 @@ changes:
     paths:
       - docs/zh_cn/3.1-任务流水线协议.md
       - tools/pipeline.schema.json
+
+  - topic_id: framework.controller-api
+    first_version: 5.14.1
+    revision: adba94d694569643d0517bc7c5220d1fdf603800
+    description: Linux controller TouchMove now degrades to an absolute pointer move when no contact is down instead of failing.
+    paths:
+      - source/MaaLinuxControlUnit/Input/UInput.cpp
+
+  - topic_id: framework.interface-protocol
+    first_version: 5.14.1
+    revision: adba94d694569643d0517bc7c5220d1fdf603800
+    description: Expanded tools/interface_import.schema.json so imported Project Interface fragments validate against the full field set, including hotkey definitions.
+    paths:
+      - tools/interface_import.schema.json
+
+  - topic_id: framework.inference-backends
+    first_version: 5.14.3
+    revision: 8963191215ca49d6b037802acd07d20a4213160a
+    description: Added the WebGPU execution provider and deprecated the CoreML provider, which MaaDeps no longer ships.
+    paths:
+      - include/MaaFramework/MaaDef.h
+      - docs/zh_cn/2.2-集成接口一览.md
+
+  - topic_id: framework.inference-backends
+    first_version: 5.15.0
+    revision: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+    description: Added the NCNN execution provider for NCNN builds, loading ncnn model files with no fallback to onnxruntime.
+    paths:
+      - include/MaaFramework/MaaDef.h
+      - docs/zh_cn/2.2-集成接口一览.md
+
+  - topic_id: framework.pipeline-control-flow
+    first_version: 5.15.0
+    revision: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+    description: Custom recognition can return multiple results through $all/$filtered in out_detail, selected by the pipeline index field, and Custom no longer supports order_by.
+    paths:
+      - tools/pipeline.schema.json
+      - docs/zh_cn/3.1-任务流水线协议.md
+      - include/MaaFramework/MaaDef.h
+
+  - topic_id: framework.interface-protocol
+    first_version: 5.15.0
+    revision: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+    description: Project Interface added v2.10.3 preset.pretask, v2.10.4 preset.controller filtering, v2.10.5 input_type, and v2.11.0 PI_USER_DATA_DIR.
+    paths:
+      - tools/interface.schema.json
+      - tools/interface_import.schema.json
+      - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
