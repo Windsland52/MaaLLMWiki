@@ -596,3 +596,13 @@ prereleases:
   commit: 5f7c3d4fab3c75f83f75a951f0869da407b17623
   released_at: '2026-10-16'
   included_in: 5.15.0
+- version: 5.16.0-beta.1
+  tag: v5.16.0-beta.1
+  commit: f5d2f0f7f68a75e12455c37e3f9f4e3602d1bfef
+  released_at: '2026-11-04'
+  included_in: null
+- version: 5.16.0-beta.2
+  tag: v5.16.0-beta.2
+  commit: a0ae79a9d28cba8f4efe4e841899964391cbb146
+  released_at: '2026-11-05'
+  included_in: null
