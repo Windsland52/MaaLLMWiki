@@ -150,6 +150,11 @@ def bundle_paths(root: Path) -> list[Path]:
     return _bundle_paths(root)
 
 
+def bundle_archive_path(relative: str) -> str:
+    """The name a bundled source file takes inside the zip (most keep their repository path)."""
+    return _BUNDLE_RENAMED.get(relative, relative)
+
+
 def bundle_sha256(bundle: Path) -> str:
     """SHA-256 of the whole bundle file, for cross-checking a published SHA256SUMS."""
     digest = hashlib.sha256()

@@ -9,6 +9,7 @@ import pytest
 
 from maa_llm_wiki.bundle import (
     build_catalog_bundle,
+    bundle_archive_path,
     bundle_paths,
     bundle_sha256,
     bundle_sources,
@@ -214,7 +215,7 @@ def test_build_catalog_bundle_records_catalog_version(tmp_path: Path) -> None:
     # The manifest must list exactly the allowlisted published layout (grows with the catalog,
     # e.g. when sources/maa-framework/machine-changes.yaml is added by the sync).
     assert {record.path for record in manifest.files} == {
-        path.relative_to(ROOT).as_posix() for path in bundle_paths(ROOT)
+        bundle_archive_path(path.relative_to(ROOT).as_posix()) for path in bundle_paths(ROOT)
     }
     with ZipFile(output) as archive:
         bundled = CatalogBundleManifest.model_validate_json(archive.read("catalog-manifest.json"))
