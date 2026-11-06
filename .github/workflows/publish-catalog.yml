@@ -9,6 +9,11 @@ on:
   schedule:
     - cron: "17 3 * * *"
   workflow_dispatch:
+    inputs:
+      force:
+        description: Publish a snapshot even when the catalog data is unchanged (packaging/pipeline change)
+        type: boolean
+        default: false
 
 concurrency:
   group: publish-catalog
@@ -90,12 +95,20 @@ jobs:
         id: state
         env:
           GH_TOKEN: ${{ env.CATALOG_TOKEN }}
+          # True only for a manual dispatch with force=true; the event-name guard keeps the scheduled
+          # path identical to before (inputs is empty there, so the expression is false).
+          FORCE_PUBLISH: ${{ github.event_name == 'workflow_dispatch' && inputs.force == true }}
         run: |
           has_bundle() {
             gh release view "$1" --json assets --jq '.assets[].name' 2>/dev/null \
               | grep -Fx "maa-llm-wiki-catalog-$1.zip" >/dev/null
           }
           if [ -n "$(git status --porcelain)" ]; then
+            if [ "${FORCE_PUBLISH}" = "true" ]; then
+              echo "::error::force=true is only for a packaging-only snapshot, but the working tree changed; run the workflow without force so the catalog update is committed and validated normally."
+              git status --short
+              exit 1
+            fi
             echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "publish=true" >> "$GITHUB_OUTPUT"
             git status --short
@@ -113,6 +126,9 @@ jobs:
             && ! has_bundle "${released}"; then
             echo "publish=true" >> "$GITHUB_OUTPUT"
             echo "::notice::Snapshot ${released} has no release bundle; publishing it again."
+          elif [ "${FORCE_PUBLISH}" = "true" ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Forced packaging-only snapshot: catalog data is unchanged from ${released}; publishing because the packaging/pipeline changed."
           else
             echo "publish=false" >> "$GITHUB_OUTPUT"
             echo "Catalog matches ${released}; no snapshot is needed."

@@ -39,6 +39,13 @@ Tags are created and published only by `.github/workflows/publish-catalog.yml`. 
 to commit outside `sources/`, `generated/`, `schemas/`, refuses to publish after touching the two
 hand-authored catalogs, and refuses to reuse an existing tag that names a different commit.
 
+A maintainer can deliberately re-issue a snapshot when only packaging or pipeline changed: a manual
+`workflow_dispatch` with `force=true` publishes even when the catalog data is unchanged. The
+resulting tag still names the catalog contents carried by the bundle — those contents may be
+identical to the previous snapshot — while the release assets and build-provenance attestation are
+rebuilt; the workflow still refuses a dirty working tree and still runs every validation, build,
+verification, checksum and attestation step.
+
 ## 2. Versioning rules
 
 - `vX.Y.Z` is the catalog version. The publish workflow increments the patch component by default;
