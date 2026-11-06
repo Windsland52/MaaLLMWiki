@@ -10,7 +10,7 @@ from zipfile import ZIP_DEFLATED, BadZipFile, ZipFile, ZipInfo
 from pydantic import ValidationError
 
 from .models import CatalogBundleFile, CatalogBundleManifest, CatalogBundleSource
-from .validation import load_source_inventory, validate_repository
+from .validation import load_repository_catalog, load_source_inventory, validate_repository
 
 _BUNDLE_DIRECTORIES = ("generated", "schemas", "sources")
 _ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
@@ -41,17 +41,30 @@ def _bundle_paths(root: Path) -> list[Path]:
 
 
 def _bundle_sources(root: Path) -> list[CatalogBundleSource]:
+    """Every registered source that actually has an indexed inventory, in catalog order.
+
+    A repository entry without ``sources/<dir>/inventory.yaml`` (placeholder or not yet indexed)
+    is skipped instead of being hard-coded out of the manifest.
+    """
     sources: list[CatalogBundleSource] = []
-    for source_id in ("maafw", "maa-framework-go", "maa-framework-rs"):
-        inventory = load_source_inventory(root, source_id)
+    for repository in load_repository_catalog(root).repositories:
+        try:
+            inventory = load_source_inventory(root, repository.id)
+        except OSError:
+            continue
         sources.append(
             CatalogBundleSource(
-                source_id=source_id,
+                source_id=repository.id,
                 version=inventory.version,
                 revision=inventory.revision,
             )
         )
     return sources
+
+
+def bundle_sources(root: Path) -> list[CatalogBundleSource]:
+    """Public view of the manifest source list, for checks and tests."""
+    return _bundle_sources(root)
 
 
 def _zip_info(path: str) -> ZipInfo:

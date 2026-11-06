@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import subprocess
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from .models import ArtifactKind, SourceArtifact, SourceInventory
@@ -25,6 +25,18 @@ def _version_key(version: str) -> tuple[int, ...]:
 
 def _is_reviewable(artifact: SourceArtifact) -> bool:
     return artifact.kind in REVIEW_KINDS
+
+
+def artifact_changed(before: SourceArtifact, after: SourceArtifact) -> bool:
+    """Whether recorded material changed, using the content hash whenever both sides have one.
+
+    Inventories generated after blob ids were introduced carry the git blob SHA of each artifact,
+    so a content edit is visible without a clone. Artifacts without a blob id (older inventories)
+    still fall back to comparing the recorded title and summary.
+    """
+    if before.blob is not None and after.blob is not None:
+        return before.blob != after.blob
+    return before.title != after.title or before.summary != after.summary
 
 
 @dataclass(frozen=True)
@@ -55,7 +67,11 @@ def _content_changed(
     current_tag: str,
     indexed_paths: set[str],
 ) -> tuple[str, ...]:
-    """Paths with content edits between two release tags that the inventories actually index."""
+    """Paths with content edits between two release tags that the inventories actually index.
+
+    This is the optional cross-check for the offline blob comparison: it can only add evidence
+    (for example for inventories that predate blob ids), never remove it.
+    """
     result = subprocess.run(
         [
             "git",
@@ -92,12 +108,7 @@ def _content_changed(
     return tuple(sorted(changed))
 
 
-def _delta(
-    previous: SourceInventory,
-    current: SourceInventory,
-    *,
-    content_changed: tuple[str, ...] = (),
-) -> ReleaseDelta:
+def _delta(previous: SourceInventory, current: SourceInventory) -> ReleaseDelta:
     before = {artifact.path: artifact for artifact in previous.artifacts}
     after = {artifact.path: artifact for artifact in current.artifacts}
     added = tuple(
@@ -110,7 +121,7 @@ def _delta(
         path
         for path, artifact in after.items()
         if path in before
-        and (artifact.title != before[path].title or artifact.summary != before[path].summary)
+        and artifact_changed(before[path], artifact)
         and (_is_reviewable(artifact) or _is_reviewable(before[path]))
     )
     return ReleaseDelta(
@@ -121,18 +132,17 @@ def _delta(
         added=added,
         removed=removed,
         revised=revised,
-        content_changed=content_changed,
     )
 
 
 def review_queue(root: Path, repository: Path | None = None) -> ReviewQueue:
     """Indexed releases newer than the newest semantic-change record whose material moved.
 
-    Recorded titles and summaries are compared between consecutive inventories. A moved title or
-    summary is a suspected trigger for a behavior change, not proof of one: the summary is the
-    first paragraph of the artifact, so edits deeper inside a file stay invisible here. Pass a
-    pinned MaaFramework clone as ``repository`` to also diff file content between release tags,
-    which closes that blind spot.
+    Artifact content is compared between consecutive inventories through the recorded git blob
+    ids, so an edit deeper inside a file is detected without a clone. Inventories that predate
+    blob ids fall back to comparing the recorded title and summary. Pass a pinned MaaFramework
+    clone as ``repository`` to cross-check the diff against the release tags; the clone can only
+    add evidence, never remove it.
     """
     releases = sorted(
         load_release_catalog(root).releases, key=lambda item: _version_key(item.version)
@@ -145,6 +155,12 @@ def review_queue(root: Path, repository: Path | None = None) -> ReviewQueue:
     indexed_paths = {
         artifact.path for inventory in inventories.values() for artifact in inventory.artifacts
     }
+    reviewable_paths = {
+        artifact.path
+        for inventory in inventories.values()
+        for artifact in inventory.artifacts
+        if _is_reviewable(artifact)
+    }
 
     entries: list[ReleaseDelta] = []
     previous: SourceInventory | None = None
@@ -155,12 +171,19 @@ def review_queue(root: Path, repository: Path | None = None) -> ReviewQueue:
             continue
         if previous is not None:
             after_threshold = threshold is None or _version_key(release.version) > threshold
-            content_changed: tuple[str, ...] = ()
+            delta = _delta(previous, inventory)
             if repository is not None and after_threshold and previous_tag is not None:
-                content_changed = _content_changed(
+                clone_changed = _content_changed(
                     repository, previous_tag, release.tag, indexed_paths
                 )
-            delta = _delta(previous, inventory, content_changed=content_changed)
+                reported = set(delta.added) | set(delta.removed) | set(delta.revised)
+                extra = tuple(
+                    path
+                    for path in clone_changed
+                    if path not in reported and path in reviewable_paths
+                )
+                if extra:
+                    delta = replace(delta, content_changed=extra)
             if delta.tracked_changes and after_threshold:
                 entries.append(delta)
         previous = inventory
@@ -193,21 +216,15 @@ def render_review_queue(root: Path, repository: Path | None = None) -> str:
         "",
         f"Recorded official material moved in {len(queue.entries)} indexed release(s) newer than",
         f"{recorded}. Each item is a suspected trigger for a behavior change, not a verified one:",
+        "artifact content is compared through the git blob ids recorded in each inventory, so an",
+        "edit anywhere inside a file is visible; recorded titles and summaries are the fallback",
+        "for inventories that predate blob ids.",
     ]
-    if repository is None:
+    if repository is not None:
         lines.extend(
             [
-                "recorded titles and summaries come from the first paragraph of each artifact, "
-                "so edits",
-                "deeper inside a file are not detected here.",
-            ]
-        )
-    else:
-        lines.extend(
-            [
-                "recorded titles and summaries come from the first paragraph of each artifact; "
-                "content edits",
-                "inside indexed files are also detected from `git diff` against the pinned tags.",
+                "The optional `git diff` cross-check against the pinned release tags can only add",
+                "paths, never hide one.",
             ]
         )
     lines.append("")
@@ -219,7 +236,7 @@ def render_review_queue(root: Path, repository: Path | None = None) -> str:
         lines.extend(_bullet("added", entry.added))
         lines.extend(_bullet("removed", entry.removed))
         lines.extend(_bullet("revised", entry.revised))
-        lines.extend(_bullet("content changed", entry.content_changed))
+        lines.extend(_bullet("content changed (git cross-check)", entry.content_changed))
     lines.extend(
         [
             "",

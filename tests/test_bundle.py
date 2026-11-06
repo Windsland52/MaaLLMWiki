@@ -7,7 +7,7 @@ from zipfile import ZipFile
 
 import pytest
 
-from maa_llm_wiki.bundle import build_catalog_bundle, verify_catalog_bundle
+from maa_llm_wiki.bundle import build_catalog_bundle, bundle_sources, verify_catalog_bundle
 from maa_llm_wiki.cli import (
     build_bundle_main,
     sync_bindings_history_main,
@@ -391,3 +391,63 @@ def test_cli_build_bundle_version_flag_and_alias(
     capsys.readouterr()
 
     assert seen == ["v1.2.3", "v1.2.4"]
+
+
+def _write_source_entry(root: Path, source_id: str, *, indexed: bool) -> None:
+    directory = "maa-framework" if source_id == "maafw" else source_id
+    source_root = root / "sources" / directory
+    source_root.mkdir(parents=True, exist_ok=True)
+    if not indexed:
+        return
+    (source_root / "inventory.yaml").write_text(
+        f"source_id: {source_id}\n"
+        "version: 1.0.0\n"
+        f"revision: {COMMIT}\n"
+        "artifacts:\n"
+        "- path: docs/a.md\n"
+        "  kind: documentation\n"
+        "  title: A\n"
+        "  summary: A doc.\n",
+        encoding="utf-8",
+    )
+
+
+def _write_repository_catalog(root: Path, source_ids: list[str]) -> None:
+    lines = ["repositories:"]
+    for source_id in source_ids:
+        lines.extend(
+            [
+                f"- id: {source_id}",
+                f"  name: {source_id}",
+                f"  url: https://example.invalid/{source_id}",
+                "  role: authoritative",
+                "  status: active",
+                "  enabled: true",
+                f"  default_revision: {COMMIT}",
+            ]
+        )
+    (root / "sources").mkdir(parents=True, exist_ok=True)
+    (root / "sources" / "repositories.yaml").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def test_bundle_sources_follow_catalog_order_and_skip_missing_inventories(tmp_path: Path) -> None:
+    _write_repository_catalog(tmp_path, ["maa-framework-go", "maatutorial", "maa-framework-rs"])
+    _write_source_entry(tmp_path, "maa-framework-go", indexed=True)
+    _write_source_entry(tmp_path, "maatutorial", indexed=False)
+    _write_source_entry(tmp_path, "maa-framework-rs", indexed=True)
+
+    sources = bundle_sources(tmp_path)
+
+    assert [source.source_id for source in sources] == ["maa-framework-go", "maa-framework-rs"]
+    assert [source.version for source in sources] == ["1.0.0", "1.0.0"]
+    assert [source.revision for source in sources] == [COMMIT, COMMIT]
+
+
+def test_bundle_sources_include_extra_registered_source_with_inventory(tmp_path: Path) -> None:
+    _write_repository_catalog(tmp_path, ["maa-framework-go", "maatutorial"])
+    _write_source_entry(tmp_path, "maa-framework-go", indexed=True)
+    _write_source_entry(tmp_path, "maatutorial", indexed=True)
+
+    sources = bundle_sources(tmp_path)
+
+    assert [source.source_id for source in sources] == ["maa-framework-go", "maatutorial"]

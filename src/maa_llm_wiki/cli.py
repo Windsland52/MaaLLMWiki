@@ -1,16 +1,23 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
 
 from .bindings import BINDING_SPECS, sync_binding_history
 from .bundle import build_catalog_bundle, verify_catalog_bundle
-from .gaps import render_review_queue
+from .gaps import artifact_changed, render_review_queue
 from .inventory import sync_latest_maafw, sync_maafw_history, sync_maafw_inventory
+from .models import ArtifactKind, SourceArtifact, SourceInventory
 from .schemas import generate_schemas
-from .validation import validate_repository
+from .validation import (
+    load_repository_catalog,
+    load_source_inventories,
+    validate_repository,
+)
 
 
 def _error_boundary(action: Callable[[], int]) -> Callable[[], int]:
@@ -197,4 +204,182 @@ def report_semantic_gaps_main() -> int:
         return 0
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(report, encoding="utf-8")
+    return 0
+
+
+_DIFF_KINDS = tuple(kind.value for kind in ArtifactKind)
+
+
+@dataclass(frozen=True)
+class _DiffEntry:
+    path: str
+    kind: str
+    title: str
+    summary: str
+    blob: str | None
+    previous_title: str | None = None
+    previous_summary: str | None = None
+    previous_blob: str | None = None
+
+
+@dataclass(frozen=True)
+class _InventoryDiff:
+    added: tuple[_DiffEntry, ...]
+    removed: tuple[_DiffEntry, ...]
+    changed: tuple[_DiffEntry, ...]
+
+
+def _diff_entry(artifact: SourceArtifact) -> _DiffEntry:
+    return _DiffEntry(
+        path=artifact.path,
+        kind=artifact.kind.value,
+        title=artifact.title,
+        summary=artifact.summary,
+        blob=artifact.blob,
+    )
+
+
+def _diff_inventories(before: SourceInventory, after: SourceInventory) -> _InventoryDiff:
+    old = {artifact.path: artifact for artifact in before.artifacts}
+    new = {artifact.path: artifact for artifact in after.artifacts}
+    added = tuple(_diff_entry(new[path]) for path in sorted(set(new) - set(old)))
+    removed = tuple(_diff_entry(old[path]) for path in sorted(set(old) - set(new)))
+    changed: list[_DiffEntry] = []
+    for path in sorted(set(new) & set(old)):
+        previous = old[path]
+        entry = new[path]
+        if not artifact_changed(previous, entry):
+            continue
+        changed.append(
+            _DiffEntry(
+                path=entry.path,
+                kind=entry.kind.value,
+                title=entry.title,
+                summary=entry.summary,
+                blob=entry.blob,
+                previous_title=previous.title,
+                previous_summary=previous.summary,
+                previous_blob=previous.blob,
+            )
+        )
+    return _InventoryDiff(added=added, removed=removed, changed=tuple(changed))
+
+
+def _json_entry(entry: _DiffEntry) -> dict[str, str | None]:
+    return {
+        "path": entry.path,
+        "kind": entry.kind,
+        "title": entry.title,
+        "summary": entry.summary,
+        "blob": entry.blob,
+        "previous_title": entry.previous_title,
+        "previous_summary": entry.previous_summary,
+        "previous_blob": entry.previous_blob,
+    }
+
+
+def _diff_json(
+    source_id: str,
+    before: SourceInventory,
+    after: SourceInventory,
+    diff: _InventoryDiff,
+) -> str:
+    by_kind: dict[str, dict[str, int]] = {}
+    for kind in _DIFF_KINDS:
+        counts = {
+            "added": sum(1 for entry in diff.added if entry.kind == kind),
+            "removed": sum(1 for entry in diff.removed if entry.kind == kind),
+            "changed": sum(1 for entry in diff.changed if entry.kind == kind),
+        }
+        if any(counts.values()):
+            by_kind[kind] = counts
+    payload: dict[str, object] = {
+        "source": source_id,
+        "from": {"version": before.version, "revision": before.revision},
+        "to": {"version": after.version, "revision": after.revision},
+        "counts": {
+            "added": len(diff.added),
+            "removed": len(diff.removed),
+            "changed": len(diff.changed),
+        },
+        "by_kind": by_kind,
+        "added": [_json_entry(entry) for entry in diff.added],
+        "removed": [_json_entry(entry) for entry in diff.removed],
+        "changed": [_json_entry(entry) for entry in diff.changed],
+    }
+    return json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True)
+
+
+def _diff_line(entry: _DiffEntry) -> str:
+    line = f"- `{entry.path}` — {entry.title}"
+    if entry.previous_title is not None and entry.previous_title != entry.title:
+        line += f" (was: {entry.previous_title})"
+    if entry.previous_title is not None and entry.previous_blob != entry.blob:
+        previous = (entry.previous_blob or "no blob")[:12]
+        current = (entry.blob or "no blob")[:12]
+        line += f" [`{previous}` -> `{current}`]"
+    return line
+
+
+def _diff_markdown(
+    source_id: str,
+    before: SourceInventory,
+    after: SourceInventory,
+    diff: _InventoryDiff,
+) -> str:
+    lines = [
+        f"# Catalog diff: {source_id} {before.version} -> {after.version}",
+        "",
+        f"- From: `{before.version}` at `{before.revision}`",
+        f"- To: `{after.version}` at `{after.revision}`",
+        "",
+        f"Totals: {len(diff.added)} added, {len(diff.removed)} removed, "
+        f"{len(diff.changed)} changed.",
+        "",
+    ]
+    sections = (
+        ("Added", diff.added),
+        ("Removed", diff.removed),
+        ("Changed", diff.changed),
+    )
+    if not any(entries for _, entries in sections):
+        lines.append("No artifact changes.")
+        return "\n".join(lines) + "\n"
+    for heading, entries in sections:
+        if not entries:
+            continue
+        lines.extend([f"## {heading} ({len(entries)})", ""])
+        for kind in _DIFF_KINDS:
+            grouped = [entry for entry in entries if entry.kind == kind]
+            if not grouped:
+                continue
+            lines.extend([f"### {kind}", "", *(_diff_line(entry) for entry in grouped), ""])
+    return "\n".join(lines).rstrip() + "\n"
+
+
+@_error_boundary
+def diff_main() -> int:
+    parser = _root_parser("Diff the indexed inventories of two releases for one source")
+    parser.add_argument("--from", dest="from_version", required=True)
+    parser.add_argument("--to", dest="to_version", required=True)
+    parser.add_argument("--source", default="maafw")
+    parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
+    args = parser.parse_args()
+    root = args.root.resolve()
+    known_sources = {repository.id for repository in load_repository_catalog(root).repositories}
+    if args.source not in known_sources:
+        raise ValueError(f"unknown source: {args.source}")
+    inventories = {
+        inventory.version: inventory for inventory in load_source_inventories(root, args.source)
+    }
+    for version in (args.from_version, args.to_version):
+        if version not in inventories:
+            raise ValueError(f"unknown {args.source} release: {version}")
+    before = inventories[args.from_version]
+    after = inventories[args.to_version]
+    diff = _diff_inventories(before, after)
+    if args.format == "json":
+        print(_diff_json(args.source, before, after, diff))  # noqa: T201
+    else:
+        print(_diff_markdown(args.source, before, after, diff), end="")  # noqa: T201
     return 0
