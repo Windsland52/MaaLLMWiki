@@ -78,6 +78,25 @@ def _first_listed(bundle: Path) -> str:
     return str(cast(dict[str, object], first)["path"])
 
 
+def _corrupt_member_data(good: Path, member: str, target: Path) -> Path:
+    """Overwrite a member's whole compressed payload so the archive is malformed, not just stale.
+
+    Flipping a single byte is platform-dependent: it can land in deflate padding bits and decode to
+    the original content. Overwriting the payload always breaks the stream or the CRC.
+    """
+    data = bytearray(good.read_bytes())
+    with ZipFile(good) as archive:
+        info = archive.getinfo(member)
+    header = info.header_offset
+    name_length = int.from_bytes(data[header + 26 : header + 28], "little")
+    extra_length = int.from_bytes(data[header + 28 : header + 30], "little")
+    start = header + 30 + name_length + extra_length
+    size = info.compress_size
+    data[start : start + size] = b"\xff" * size
+    target.write_bytes(bytes(data))
+    return target
+
+
 def _tampered(name: str, good: Path, tmp_path: Path) -> Path:
     listed = _first_listed(good)
     if name == "good":
@@ -110,11 +129,7 @@ def _tampered(name: str, good: Path, tmp_path: Path) -> Path:
 
         return _mutate_manifest(good, tmp_path / "duplicate.zip", duplicate)
     if name == "corrupted_member":
-        path = tmp_path / "corrupted.zip"
-        data = bytearray(good.read_bytes())
-        data[len(data) // 2] ^= 0xFF
-        path.write_bytes(bytes(data))
-        return path
+        return _corrupt_member_data(good, listed, tmp_path / "corrupted.zip")
     if name == "truncated_bundle":
         path = tmp_path / "truncated.zip"
         path.write_bytes(good.read_bytes()[: good.stat().st_size // 2])
