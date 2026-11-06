@@ -569,6 +569,8 @@ def _check_skill_paths(root: Path, errors: list[str]) -> None:
             if version is None:
                 continue
             resolved = _SKILL_PLACEHOLDER_PATTERN.sub(version, reference)
+        if "<" in resolved:
+            continue
         if not (root / resolved).exists():
             errors.append(f"skill references a missing catalog path: {reference}")
 

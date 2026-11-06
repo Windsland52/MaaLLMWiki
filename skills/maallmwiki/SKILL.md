@@ -35,7 +35,7 @@ MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官�
 
     注册了哪些信息源见 `sources/repositories.yaml`。
 4. **回源作答**：打开条目给出的 pinned commit 链接读**原文**再回答；引用时注明上游文档 + MaaFW 版本 + commit。禁止把目录索引本身当作字段语义的出处，禁止把链接换成移动分支（main / master）。
-5. **主题级定位与跨版本比较**：优先查渲染页 `generated/maa-framework/topics.md`——主题 → 按版本适用的变体 → pinned 原始路径 + 符号 + 字面搜索词，可直接跳到源码级出处；跨版本**行为变更**查 `generated/maa-framework/behaviour-changes.md`（按首次发布分组，每条链到 pinned 出处）。想知道某符号/枚举值/字段/函数是哪个版本出现的，先查 `generated/maa-framework/machine-changes.md`：它由 sync 从上游 diff 机器抽取，每条带上游证据（文本行为逐字引用，schema 值为规范化 JSON）；证据只证明该事实在版本中出现，不证明运行时语义或“变化是否重要”。`topics.md` 与 `behaviour-changes.md` 分别由 `sources/maa-framework/source-map.yaml` 与 `sources/maa-framework/semantic-changes.yaml` 渲染：YAML 是策展的权威源（改数据改 YAML，不改页面）；`machine-changes.md` 由 sync 从上游 diff 生成（源文件 `sources/maa-framework/machine-changes.yaml`），随每次 sync 自动更新；`behaviour-changes.md` 只是可选的解读层。想知道两个已索引版本之间哪些被索引产物变了，用 `uv run maa-wiki-diff --from <旧版本> --to <新版本>`（`--source` 选源，默认 `maafw`；`--format json` 供程序消费）。
+5. **主题级定位与跨版本比较**：优先查渲染页 `generated/maa-framework/topics.md`——主题 → 按版本适用的变体 → pinned 原始路径 + 符号 + 字面搜索词，可直接跳到源码级出处；跨版本**行为变更**查 `generated/maa-framework/behaviour-changes.md`（按首次发布分组，每条链到 pinned 出处）。想知道某符号/枚举值/字段/函数是哪个版本出现的，先查 `generated/maa-framework/machine-changes.md`：它由 sync 从上游 diff 机器抽取，每条带上游证据（文本行为逐字引用，schema 值为规范化 JSON）；证据只证明该事实在版本中出现，不证明运行时语义或“变化是否重要”。`topics.md` 与 `behaviour-changes.md` 分别由 `sources/maa-framework/source-map.yaml` 与 `sources/maa-framework/semantic-changes.yaml` 渲染：YAML 是策展的权威源（改数据改 YAML，不改页面）；`machine-changes.md` 由 sync 从上游 diff 生成（源文件 `sources/maa-framework/machine-changes.yaml`），随每次 sync 自动更新；`behaviour-changes.md` 只是可选的解读层。
 6. **消费通道**（按连通性择优）：
     - 本地 Git 检出：一次克隆长期可用，弱网环境最稳；
     - raw 直链：`https://raw.githubusercontent.com/Windsland52/MaaLLMWiki/<tag>/<相对路径>`（`<tag>` 取第 1 步解析出的版本，**不要用 `main`**），如 `generated/maa-framework/<版本>/documentation/zh-cn.md`；
@@ -45,6 +45,27 @@ MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官�
     - 完整性敏感时：优先带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip`，并按 README / `CATALOG-CONTRACT.md` 用该 release 的 `SHA256SUMS`（`sha256sum -c SHA256SUMS`）与 build provenance（`gh attestation verify maa-llm-wiki-catalog-vX.Y.Z.zip --repo Windsland52/MaaLLMWiki`）校验；只有版本化 zip 带 attestation，`latest` 别名不是被证明的资产。若本机没有工具链，release 还附带 `verify_bundle.py`（发布时从仓库脚本复制），用裸 Python 3 即可离线运行。
 
     不引入 chunking / embedding / vector / MCP——目录就是分层 markdown，直接读。
+
+## 跨版本材料差异（maa-wiki-diff）
+
+`Changed since` 只是页面摘要（有截断）。要完整、可复现的差异列表，在本地检出后运行：
+
+```bash
+# MaaFramework 本体：5.14.2 与 5.15.0 之间哪些被索引文件新增/改内容/删除
+uv run maa-wiki-diff --from 5.14.2 --to 5.15.0
+
+# 绑定源同理（--source 取 repositories.yaml 里的 id；只能比较已登记版本，预发布没有 inventory）
+uv run maa-wiki-diff --from 3.5.1 --to 4.0.0 --source maa-framework-go
+
+# 程序消费
+uv run maa-wiki-diff --from 5.14.2 --to 5.15.0 --format json
+```
+
+它比较的是**已索引材料**（按 git blob），不是行为变更；行为解读仍看 `behaviour-changes.md` / `semantic-changes.yaml`。没有本地检出时退回 `Changed since` 摘要，并说明列表可能被截断。
+
+## 预发布
+
+预发布只登记 tag 与 commit（`<源>/prereleases.md`），**不生成 inventory、没有版本目录**，也不能作为 `maa-wiki-diff` 的 `--from`/`--to`；需要预发布版本的事实，用该表里的 pinned commit 直接回源。
 
 ## 硬规则
 
