@@ -76,6 +76,14 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Check out C# binding with tags
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          repository: MaaXYZ/MaaFramework.Binding.CSharp
+          path: tmp/MaaFramework.Binding.CSharp
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: Configure git identity
         run: |
           git config user.name "github-actions[bot]"
@@ -92,8 +100,9 @@ jobs:
           uv sync --locked
           uv run maa-wiki-sync-maafw-history --repository tmp/MaaFramework --major "${CATALOG_MAJOR}"
           uv run maa-wiki-sync-bindings-history \
-            --go-repository tmp/maa-framework-go \
-            --rust-repository tmp/maa-framework-rs
+            --repository maa-framework-go=tmp/maa-framework-go \
+            --repository maa-framework-rs=tmp/maa-framework-rs \
+            --repository maa-framework-csharp=tmp/MaaFramework.Binding.CSharp
           uv run maa-wiki-generate-schemas
 
       # The sync above writes the machine-extracted change catalog from the same clone. `--check`
