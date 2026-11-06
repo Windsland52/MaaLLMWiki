@@ -6,12 +6,12 @@
 文件的体积与 SHA-256。manifest 的格式版本是 `api_version: "maa-llm-wiki-catalog/v1"`：v1 内只允许
 向后兼容的新增字段，消费者必须忽略未知字段；删除/重命名字段或改变语义需要升到 v2。消费方应下载
 **带版本**的产物（不可变）并运行 `uv run maa-wiki-verify-bundle` 校验；`-latest.zip` 只是便利别名，
-内容会随新版本变化，不应用于复现。覆盖边界与已知局限见 §7。
+内容会随新版本变化，不应用于复现。浏览与版本差异工具见 §7，覆盖边界与已知局限见 §8。
 
 This document is the consumer-facing contract for catalog snapshots. It is the authoritative
 description of what the publish workflow produces and what consumers may rely on. The
 machine-readable schema is `schemas/catalog-bundle-manifest.schema.json`; the measured coverage
-gaps are stated in §7; the repository-wide rules are in `AGENTS.md`.
+gaps are stated in §8; the repository-wide rules are in `AGENTS.md`.
 
 ## 1. What a snapshot is
 
@@ -26,6 +26,7 @@ has exactly one GitHub Release with two assets:
 
 The bundle contains only catalog data: `sources/`, `generated/`, `schemas/`, and
 `catalog-manifest.json`. It contains no Python code, no workflows, and no upstream source code.
+`generated/` includes the rendered navigation pages described in §7.1 (see also §3).
 
 Tags are created and published only by `.github/workflows/publish-catalog.yml`. The workflow refuses
 to commit outside `sources/`, `generated/`, `schemas/`, refuses to publish after touching the two
@@ -44,11 +45,12 @@ hand-authored catalogs, and refuses to reuse an existing tag that names a differ
   produced before this field existed omit it; consumers must treat it as optional.
 - `api_version` is `"maa-llm-wiki-catalog/v1"` and changes only for a breaking manifest change.
   **v1 stability rule:** additions are allowed within v1 (new optional manifest fields, new bundle
-  directories, new schema files). Consumers MUST ignore unknown manifest fields and unknown zip
-  entries they do not need. Removing or renaming a field, changing the meaning of an existing field,
-  or changing the bundle layout breaks v1 and requires `api_version: "maa-llm-wiki-catalog/v2"`.
+  directories, new schema files, new generated pages). Consumers MUST ignore unknown manifest fields
+  and unknown zip entries they do not need. Removing or renaming a field, changing the meaning of an
+  existing field, or changing the bundle layout breaks v1 and requires
+  `api_version: "maa-llm-wiki-catalog/v2"`.
 - A tag with no Release is not consumable: `v0.1.2` predates the publish workflow and is documented
-  as an exception (it is deliberately not reused). Consumers should discover bundles through
+  as an exception (§7.4; it is deliberately not reused). Consumers should discover bundles through
   Releases, not through `git tag`.
 
 ## 3. `catalog-manifest.json`
@@ -60,7 +62,7 @@ hand-authored catalogs, and refuses to reuse an existing tag that names a differ
 | `wiki_revision` | 40-char hex string | The tagged Wiki commit; `git rev-parse vX.Y.Z^{commit}` equals this value for bundles published by the current workflow. |
 | `working_tree_clean` | boolean | `true` for every workflow-published bundle; the builder refuses to build from a dirty tree without `--allow-dirty`. |
 | `sources` | array | One entry per indexed upstream source: `source_id` (`maafw`, `maa-framework-go`, `maa-framework-rs`), `version`, and the full 40-character `revision` it was indexed at. |
-| `files` | array | Every bundled file except the manifest: `path` (POSIX, repo-relative), `size_bytes`, `sha256` (lowercase hex). Sorted by `path`. |
+| `files` | array | Every bundled file except the manifest: `path` (POSIX, repo-relative), `size_bytes`, `sha256` (lowercase hex). Sorted by `path`. Includes the rendered navigation pages of §7.1. |
 
 The manifest is written with an explicit `wiki_revision`, so a bundle is self-describing: given only
 the zip, a consumer can identify the exact catalog data it contains. The bundle zip is deterministic
@@ -88,6 +90,7 @@ Rules of thumb:
 - The repository tree is also readable through the jsDelivr CDN for plain files (see the agent
   skill), but that is a mirror of the Git tree, not a release channel; it is not covered by this
   contract.
+- Older tags have a documented history: see §7.4 before consuming anything older than `v0.1.3`.
 
 ## 5. Verification
 
@@ -132,14 +135,15 @@ Guaranteed for bundles published by the current workflow:
   them.
 - Every source reference is a full 40-character commit SHA, never a moving branch.
 
-Not guaranteed (measured coverage in §7):
+Not guaranteed (measured coverage in §8):
 
 - Completeness or correctness of upstream coverage. The catalog tracks MaaFramework 5.x and the Go
   and Rust bindings; it does not infer or verify upstream behavior changes.
 - That every upstream behavior change is reflected in `semantic-changes.yaml`. The semantic review
-  queue is a best-effort review aid: it now compares artifact content between consecutive releases
-  (`maa-wiki-report-semantic-gaps --repository <MaaFramework clone>`, `git diff --numstat`) in
-  addition to titles/summaries, but only for indexed paths, and it is not a complete changelog.
+  queue is a best-effort review aid: it detects content-level changes offline by comparing the
+  artifact `blob` ids recorded in consecutive inventories (`maa-wiki-report-semantic-gaps`), with
+  `--repository <MaaFramework clone>` available as an optional cross-check (§7.3). It only covers
+  indexed paths and is not a complete changelog.
 - Runtime verification of binding compatibility (`status: declared` is textual evidence only).
 - Availability, refresh cadence, or response times; there is no SLA and the bundle is republished
   only when catalog data changes.
@@ -147,68 +151,137 @@ Not guaranteed (measured coverage in §7):
   manifest's hashes detect corruption, not a compromised publisher.
 - The `-latest.zip` alias contents at a later point in time; only the versioned asset is immutable.
 
+## 7. Navigating, diffing and change detection
 
-## 7. Known gaps and limitations
+### 7.1 Rendered navigation pages (recommended entry point)
 
-**Last verified: 2026-11-05** (catalog `v0.1.14`, MaaFramework 5.15.0). Every number below was
-re-derived from the catalog files on that date; §7.6 re-derives them. If a number disagrees with the
-data files, the data files win.
+The bundle ships two rendered navigation pages under `generated/maa-framework/`, both linked from
+`generated/maa-framework/index.md`:
 
-### 7.1 Semantic-change coverage is incomplete
+| Page | Contents |
+|------|----------|
+| `topics.md` | The curated routing topics: for every topic, each variant with its `applies_to` release, pinned revision, file links, symbols and literal search terms. |
+| `behaviour-changes.md` | The recorded semantic changes, grouped by the release in which behaviour first changed, with links pinned to that release's commit. |
 
-- `sources/maa-framework/semantic-changes.yaml` holds **33 entries covering 17 of the 55 indexed
-  stable releases** (5.5.0, 5.8.0, 5.9.0, 5.10.0, 5.10.2, 5.10.3, 5.11.0, 5.11.1, 5.11.2, 5.12.1,
-  5.12.3, 5.13.0, 5.13.1, 5.14.0, 5.14.1, 5.14.3, 5.15.0). It is a curated subset, not a
-  release-by-release changelog.
+Use `topics.md` for topic-level or cross-version routing questions ("where is feature X documented
+in this release"), and `behaviour-changes.md` for "when did behaviour X change" questions. They are
+the readable view of the two hand-authored catalogs, so a consumer does not need to know the YAML
+layout:
+
+- `sources/maa-framework/source-map.yaml` and `sources/maa-framework/semantic-changes.yaml` remain
+  the **authoritative hand-authored sources** (human review, changes refused by automation);
+- the two pages are **generated views** and are rebuilt by the sync; do not treat edits to them as
+  data;
+- they are ordinary bundle files inside `generated/`, covered by the manifest `size_bytes`/`sha256`
+  entries, and are additive within `api_version: ".../v1"`.
+
+### 7.2 Diffing two releases: `maa-wiki-diff`
+
+To see what changed in the indexed artifacts between two releases:
+
+```bash
+# markdown (default)
+uv run maa-wiki-diff --from 5.14.3 --to 5.15.0
+# machine readable, stable key order
+uv run maa-wiki-diff --from 5.14.3 --to 5.15.0 --format json
+# external binding sources work the same way (default --source is maafw)
+uv run maa-wiki-diff --from 1.26.0 --to 1.27.0 --source maa-framework-rs
+```
+
+It reports **added / removed / changed** indexed artifacts between the two inventories, grouped by
+artifact kind with counts. "Changed" means a different git blob id when both inventories record one,
+falling back to the title/summary comparison for older inventories. `maa-wiki-diff` compares the
+**git blob ids recorded in the inventories themselves**, so it works from a published bundle alone —
+no upstream clone and no network access are needed. The corollary is a limitation: for artifacts
+whose inventory entry has no `blob` (bundles published before the field was introduced), the tool
+falls back to titles/summaries and therefore does **not** detect a content-only change. An unknown
+version or source exits non-zero with the uniform `error: ...` line. The JSON form is stable
+(`sort_keys=True`) and suitable for tooling.
+
+### 7.3 Offline content-hash change detection
+
+Every artifact in `sources/*/inventories/*.yaml` records its git blob id (`blob`), the immutable
+content hash of the upstream file at the pinned revision. `maa-wiki-report-semantic-gaps` uses those
+hashes to detect **content-level** changes offline, without an upstream clone: it compares blob ids
+across consecutive inventories and reports releases whose indexed artifacts changed content even when
+titles and summaries did not move. `--repository <MaaFramework clone>` remains available as an
+optional cross-check that additionally diffs file content between tags.
+
+An **empty report means the review queue is empty** — nothing changed relative to the newest
+recorded semantic-change entry — which is the expected state while the catalog is current. The
+detector still cannot see paths outside the indexed set (`docs/`, `tools/`, `include/`,
+`source/binding/`) and cannot detect upstream tag mutation; it is a review aid, not a changelog
+(§8.1).
+
+### 7.4 Legacy snapshot tags
+
+- `v0.1.0` and `v0.1.1` predate the current single-job publish pipeline but **do carry release
+  bundles** (`maa-llm-wiki-catalog-v0.1.0.zip`, `...v0.1.1.zip`). They may omit fields and gates
+  introduced later (for example `catalog_version`), so treat them as historical.
+- `v0.1.2` is a tag with **no GitHub Release at all**. It is not a consumable snapshot and its
+  version number is not reused. Discovery goes through Releases (§4), never through `git tag`.
+
+## 8. Known gaps and limitations
+
+**Last verified: 2026-11-05** (catalog `v0.1.14`, MaaFramework 5.15.0). This section states what the
+catalog does not cover or guarantee. It deliberately does not hardcode volatile coverage counts —
+"last verified" is the date of the descriptions below, and §8.6 re-derives every number from the
+data files. If a number disagrees with the files, the files win.
+
+### 8.1 Semantic-change coverage is incomplete
+
+- `sources/maa-framework/semantic-changes.yaml` lists recorded behaviour changes for a curated
+  subset of the indexed stable releases; it is not a release-by-release changelog. §8.6 re-derives
+  the current entry count and the number of distinct covered versions.
 - The synthetic `vX.Y.Z` snapshot versions of this repository are not upstream MaaFramework
   releases; only the 5.x numbers are.
-- `maa-wiki-report-semantic-gaps --repository <clone>` compares artifact content between consecutive
-  release tags (`git diff --numstat`) in addition to titles and first paragraphs, so edits deeper
-  inside an indexed file are visible. It still cannot see paths outside the indexed set (`docs/`,
-  `tools/`, `include/`, `source/binding/`) and cannot detect upstream tag mutation. An empty report
-  means the review queue is empty, which is the expected state while the catalog is current.
-- The report is a review aid, not a changelog: each item is a suspected trigger. A release without an
-  entry may still have changed behaviour, and an entry may describe no functional change.
+- Detection is content-aware but bounded: blob ids make content edits visible for indexed paths,
+  paths outside `docs/`, `tools/`, `include/` and `source/binding/` remain invisible, and upstream
+  tag mutation is not detected. An empty report means the review queue is empty, the expected state
+  while the catalog is current.
+- The report is a review aid, not a changelog: each item is a suspected trigger. A release without
+  an entry may still have changed behaviour, and an entry may describe no functional change.
 
-### 7.2 Source-map coverage is partial and version-pinned
+### 8.2 Source-map coverage is partial and version-pinned
 
-- `sources/maa-framework/source-map.yaml` holds **11 topics and 18 variants** — a curated subset of
-  routing topics, not a complete API map.
-- Variants are pinned per release (**8 at 5.11.2, 5 at 5.13.0, 3 at 5.15.0, one each at 5.12.3 and
-  5.14.3**). A variant proves that the listed paths, symbols and terms existed at that commit; it
-  says nothing about later releases. A topic whose newest variant predates the newest indexed release
-  is intentionally pinned until a newer variant is reviewed.
+- `sources/maa-framework/source-map.yaml` is a curated subset of routing topics, not a complete API
+  map; the rendered `topics.md` (§7.1) is its readable view.
+- Variants are pinned per release. A variant proves that the listed paths, symbols and terms existed
+  at that pinned commit; it says nothing about later releases. A topic whose newest variant predates
+  the newest indexed release is intentionally pinned until a newer variant is reviewed. §8.6
+  re-derives the current topic/variant counts.
 - If a question cannot be routed through the source map, cite the upstream file at its pinned commit
   directly.
 
-### 7.3 Binding compatibility is declared, not verified
+### 8.3 Binding compatibility is declared, not verified
 
 - `sources/compatibility/bindings.yaml` ties Go/Rust binding releases to MaaFramework versions using
   textual evidence: a release link or badge in the binding's README or workspace manifest at its
   pinned commit. `status: declared` means "the binding's own documentation claims this", not "this
   combination was built, loaded and run".
-- The current file has **56 `declared` and 22 `unknown` entries**. `unknown` means "not established",
+- The file mixes `declared` entries with `unknown` entries where the textual evidence could not be
+  tied to a MaaFramework version; §8.6 re-derives the split. `unknown` means "not established",
   never "incompatible".
-- No runtime compatibility matrix has been executed. Treat compatibility as a testing starting point,
-  never as a support guarantee.
+- No runtime compatibility matrix has been executed. Treat compatibility as a testing starting
+  point, never as a support guarantee.
 - Only the Go and Rust bindings are registered as external sources. C# and Java are not indexed
   (Java is obsolete upstream; C# has no registered source with a pinned revision). In-tree
   Python/NodeJS binding APIs follow the MaaFramework revision.
 
-### 7.4 Version scope and upstream change detection
+### 8.4 Version scope and upstream change detection
 
 - The publish workflow indexes **MaaFramework 5.x only** (`CATALOG_MAJOR`); a higher upstream major
-  makes the sync fail loudly instead of silently freezing the catalog. The catalog stays on 5.x until
-  a maintainer deliberately bumps `CATALOG_MAJOR`.
-- Upstream tag mutation is not detected: the sync re-reads tags and rewrites the release catalogs, so
-  a moved or deleted upstream tag changes the next snapshot silently unless a hand-authored entry
+  makes the sync fail loudly instead of silently freezing the catalog. The catalog stays on 5.x
+  until a maintainer deliberately bumps `CATALOG_MAJOR`.
+- Upstream tag mutation is not detected: the sync re-reads tags and rewrites the release catalogs,
+  so a moved or deleted upstream tag changes the next snapshot silently unless a hand-authored entry
   still references it. Take release identity from the pinned 40-character commit SHA, never from the
   tag name.
 - Prerelease movement can produce snapshots of its own, so a catalog release does not imply a new
   stable MaaFramework release.
 - The daily schedule is best-effort; GitHub may delay or skip scheduled runs.
 
-### 7.5 Distribution and operations
+### 8.5 Distribution and operations
 
 - **GitHub Releases is the only distribution channel**; there is no other mirror operated by this
   project. The jsDelivr URL used by the agent skill mirrors the Git tree for plain files — an
@@ -220,17 +293,20 @@ data files, the data files win.
 - **No SLA**: no availability, response-time or refresh guarantee. The workflow runs daily and
   publishes only when catalog data changes.
 
-### 7.6 How to re-derive these numbers
+### 8.6 How to re-derive these numbers
 
 ```bash
 # entries, distinct versions, topics, indexed releases
 uv run python -c "from pathlib import Path; from maa_llm_wiki.validation import load_semantic_changes, load_source_map, load_release_catalog; r=Path('.'); c=load_semantic_changes(r); print('entries', len(c.changes), 'versions', len({x.first_version for x in c.changes}), 'topics', len(load_source_map(r).topics), 'releases', len(load_release_catalog(r).releases))"
 uv run maa-wiki-validate
+uv run maa-wiki-report-semantic-gaps --output /tmp/semantic-gaps.md
+# optional cross-check against a pinned MaaFramework clone:
 uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework --output /tmp/semantic-gaps.md
 grep -c 'status: declared' sources/compatibility/bindings.yaml
 grep -c 'status: unknown' sources/compatibility/bindings.yaml
 ```
-## 8. Licence of the bundle
+
+## 9. Licence of the bundle
 
 Catalog data in the bundle is licensed under CC BY 4.0 (`LICENSE-DATA`); short upstream
 documentation excerpts remain under their upstream licences (LGPL-3.0 for the MaaXYZ projects, see
