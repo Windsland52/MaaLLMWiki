@@ -36,6 +36,15 @@ carry fewer: two before `SHA256SUMS` was introduced, three before the standalone
 The build-provenance attestation is **not** a release asset: it is stored in this repository's
 immutable attestation store (§5).
 
+The release body is generated from the catalog, not written by hand. Its sections state the upstream
+versions the snapshot pins (Upstream snapshot), the upstream releases that appeared since the
+previous snapshot (New upstream releases), the machine-extracted facts and any curated behaviour
+entries for those releases (Machine-extracted changes, Curated behaviour changes), per-source counts
+of indexed material that moved (Indexed material moved), the exact verification commands, the
+released assets with their digests, sizes and file counts, and documentation links including a
+compare URL for the change range. The publish workflow is scheduled twice a day (03:17 and 15:17
+UTC) and can also be dispatched manually.
+
 The bundle contains only catalog data: `sources/`, `generated/`, `schemas/`, and
 `catalog-manifest.json`. It contains no Python code, no workflows, and no upstream source code.
 `generated/` includes the rendered navigation pages described in §7.1 (see also §3).
@@ -401,7 +410,7 @@ data files. If a number disagrees with the files, the files win.
   tag name.
 - Prerelease movement can produce snapshots of its own, so a catalog release does not imply a new
   stable MaaFramework release.
-- The daily schedule is best-effort; GitHub may delay or skip scheduled runs.
+- The twice-daily schedule is best-effort; GitHub may delay or skip scheduled runs.
 
 ### 8.5 Distribution and operations
 
@@ -422,7 +431,7 @@ data files. If a number disagrees with the files, the files win.
   different platform can produce the same content with a different SHA-256. Where a `SHA256SUMS`
   asset exists (`v0.1.17` onward), it still matches the published bytes; only cross-platform rebuild
   equality is not guaranteed for those older bundles.
-- **No SLA**: no availability, response-time or refresh guarantee. The workflow runs daily and
+- **No SLA**: no availability, response-time or refresh guarantee. The workflow runs twice a day and
   publishes only when catalog data changes.
 
 ### 8.6 How to re-derive these numbers

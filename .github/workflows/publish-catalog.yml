@@ -6,8 +6,9 @@ name: Publish catalog snapshot
 # start another workflow, which would silently leave a tag without a release.
 
 on:
+  # Twice daily: 03:17 and 15:17 UTC (11:17 and 23:17 UTC+8), plus the manual dispatch below.
   schedule:
-    - cron: "17 3 * * *"
+    - cron: "17 3,15 * * *"
   workflow_dispatch:
     inputs:
       force:
@@ -275,11 +276,35 @@ jobs:
             --expect-revision "$(git rev-parse HEAD)" \
             --checksums dist/SHA256SUMS
 
-      # Order: build -> verify -> copy stable alias -> checksum -> standalone verifier -> attest ->
-      # tag -> release. The attestation only needs the versioned zip to exist, so creating it before
-      # the tag/release means a failed attestation cannot leave a tagged snapshot without provenance.
-      # Only the immutable versioned zip is attested; the `-latest` alias, SHA256SUMS and
-      # verify_bundle.py are convenience artifacts.
+      # The release body is generated from the catalog so a consumer can see, without cloning, which
+      # upstream versions this snapshot pins, what moved since the previous snapshot, the extracted
+      # facts, the exact verification commands and the asset digests. It is rendered before the
+      # attestation/tag/release so a failed render never leaves a tag without its intended body.
+      - name: Generate release notes
+        if: steps.state.outputs.publish == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          PREVIOUS: ${{ steps.version.outputs.previous }}
+        run: |
+          set -euo pipefail
+          args=(
+            uv run maa-wiki-release-notes
+            --root .
+            --version "${VERSION}"
+            --bundle "dist/maa-llm-wiki-catalog-${VERSION}.zip"
+            --output dist/release-notes.md
+          )
+          # The first snapshot has no previous tag; omit the flag rather than passing an empty value.
+          if [ -n "${PREVIOUS}" ]; then
+            args+=(--previous "${PREVIOUS}")
+          fi
+          "${args[@]}"
+
+      # Order: build -> verify -> copy stable alias -> checksum -> standalone verifier -> release
+      # notes -> attest -> tag -> release. The attestation only needs the versioned zip to exist, so
+      # creating it before the tag/release means a failed attestation cannot leave a tagged snapshot
+      # without provenance. Only the immutable versioned zip is attested; the `-latest` alias,
+      # SHA256SUMS and verify_bundle.py are convenience artifacts.
       # v4.2.2 is the newest attest-build-provenance tag; it delegates to actions/attest v4.2.1,
       # which runs on Node 24. The Node 20 deprecation warning came from v2.4.0's bundled `predicate`
       # action, so this pin removes that warning; re-pin by SHA when a newer tag ships.
@@ -328,7 +353,8 @@ jobs:
             dist/maa-llm-wiki-catalog-latest.zip
             dist/SHA256SUMS
             dist/verify_bundle.py
-          generate_release_notes: true
+          # The generated body is the release body; do not also let the action generate notes.
+          body_path: dist/release-notes.md
           overwrite_files: true
           fail_on_unmatched_files: true
           token: ${{ env.CATALOG_TOKEN }}
