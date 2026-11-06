@@ -103,6 +103,12 @@ jobs:
         run: |
           uv run maa-wiki-extract-changes --repository tmp/MaaFramework --check
 
+      - name: Failure drill (temporary, reverted immediately)
+        # Deliberate failure used once to prove the failure-issue alerting path end to end.
+        run: |
+          echo "::error::deliberate failure drill"
+          exit 1
+
       - name: Classify catalog state
         id: state
         env:
