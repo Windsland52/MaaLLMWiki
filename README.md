@@ -20,7 +20,7 @@ MaaLLMWiki 为 Maa 生态知识提供机器可读、版本化的源目录：它�
 - 人工撰写的教程、最佳实践与诊断方法论；
 - 未经核实的模型生成结论。
 
-Go、Rust 与 C# 绑定作为独立外部源登记，各自有锁定清单与兼容性证据；C# 通过 NuGet `Maa.Framework` 分发，release 自 `v5.1.0` 起对齐 MaaFramework 5.x tag。Java 被上游文档标注为过时，不是默认 API 源；原生公开 API 为 C/C++ 头文件，树内 Python/NodeJS 绑定 API 随 MaaFramework 版本索引。
+Go、Rust 与 C# 绑定作为独立外部源登记，各自有锁定清单与兼容性证据；C# 通过 NuGet `Maa.Framework` 分发，其稳定 release 自 `v5.1.0` 起对齐 MaaFramework 5.x tag（预发布最早从 `v5.0.0-preview.1` 起）。Java 被上游文档标注为过时，不是默认 API 源；原生公开 API 为 C/C++ 头文件，树内 Python/NodeJS 绑定 API 随 MaaFramework 版本索引。
 
 ## 使用
 

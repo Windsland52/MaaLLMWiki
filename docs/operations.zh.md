@@ -31,7 +31,7 @@ generated/maa-framework/index.md
 embedding 或向量数据库。MaaFramework 源码仍保留在其自己的 Git 仓库中，按选定的不可变修订检索。
 
 MaaFramework 之外还登记了三个外部绑定源：Go、Rust 与 C#。每个源都独立 pin 自己的清单与兼容性证据，均不继承
-MaaFramework 仓库修订。C# 绑定通过 NuGet 以 `Maa.Framework` 分发；其被索引的 release 自 `v5.1.0` 起对齐
+MaaFramework 仓库修订。C# 绑定通过 NuGet 以 `Maa.Framework` 分发；其被索引的稳定 release 自 `v5.1.0` 起对齐（预发布最早从 `v5.0.0-preview.1` 起）
 MaaFramework 5.x tag，且每个 release 在 pinned commit 的 `src/Directory.Packages.props` 中声明其框架版本。
 三个上游绑定均为 LGPL-3.0（见 `NOTICE`）。
 

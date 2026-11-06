@@ -20,7 +20,7 @@ diagnostic methodology; unverified model-generated conclusions.
 
 The Go, Rust and C# bindings are registered as independent external sources, each with its own pinned
 inventory and compatibility evidence; the C# binding is distributed via NuGet (`Maa.Framework`) and
-its releases align with MaaFramework 5.x tags from `v5.1.0` on. Java is marked obsolete upstream and
+its stable releases align with MaaFramework 5.x tags from `v5.1.0` on, and its prereleases start at `v5.0.0-preview.1`. Java is marked obsolete upstream and
 is not a default API source. The native public API is the C/C++ headers; in-tree Python/NodeJS
 binding APIs follow the MaaFramework version.
 

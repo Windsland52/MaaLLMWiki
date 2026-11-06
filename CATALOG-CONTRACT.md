@@ -53,7 +53,8 @@ The bundle contains only catalog data: `sources/`, `generated/`, `schemas/`, and
 The catalog pins three external binding sources beside MaaFramework: Go, Rust and C#. Each is
 independently pinned with its own inventory and compatibility metadata, and none inherits the
 MaaFramework repository revision. The C# binding is distributed via NuGet (`Maa.Framework`); its
-releases align with MaaFramework 5.x tags from `v5.1.0` on, and each release declares its framework
+stable releases align with MaaFramework 5.x tags from `v5.1.0` on (prereleases start at
+`v5.0.0-preview.1`), and each release declares its framework
 version in `src/Directory.Packages.props` at the pinned commit.
 
 Tags are created and published only by `.github/workflows/publish-catalog.yml`. The workflow refuses
@@ -406,7 +407,8 @@ data files. If a number disagrees with the files, the files win.
 - Three external binding sources are registered: Go, Rust and C#. Each is independently pinned with
   its own inventory and compatibility metadata; none inherits the MaaFramework repository revision.
   The C# binding is distributed via NuGet (`Maa.Framework`), its releases align with MaaFramework 5.x
-  tags from `v5.1.0` on, and each release declares its framework version in
+  stable tags from `v5.1.0` on (prereleases from `v5.0.0-preview.1`), and each release declares
+its framework version in
   `src/Directory.Packages.props` at the pinned commit. Java is obsolete upstream and is not indexed;
   in-tree Python/NodeJS binding APIs follow the MaaFramework revision.
 

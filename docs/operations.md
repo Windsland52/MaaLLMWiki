@@ -37,7 +37,8 @@ at the selected immutable revision.
 Three external binding sources are registered beside MaaFramework: Go, Rust and C#. Each is
 independently pinned with its own inventory and compatibility evidence; none inherits the
 MaaFramework revision. The C# binding is distributed via NuGet as `Maa.Framework`, its indexed
-releases align with MaaFramework 5.x tags from `v5.1.0` on, and each release declares its framework
+stable releases align with MaaFramework 5.x tags from `v5.1.0` on (prereleases start at
+`v5.0.0-preview.1`), and each release declares its framework
 version in `src/Directory.Packages.props` at the pinned commit. All three upstream bindings are
 LGPL-3.0 (see `NOTICE`).
 
