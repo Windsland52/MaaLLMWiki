@@ -79,10 +79,14 @@ verification, checksum and attestation step.
 | `files` | array | Every bundled file except the manifest: `path` (POSIX, repo-relative), `size_bytes`, `sha256` (lowercase hex). Sorted by `path`. Includes the rendered navigation pages of §7.1. |
 
 The manifest is written with an explicit `wiki_revision`, so a bundle is self-describing: given only
-the zip, a consumer can identify the exact catalog data it contains. The bundle zip is deterministic
-(fixed entry timestamps, fixed file mode, sorted entries, fixed zip host field), so the same
-committed tree produces a byte-identical bundle zip across rebuilds on any platform, as long as the
-same Python and zlib toolchain is used for compression.
+the zip, a consumer can identify the exact catalog data it contains. For bundle tags **v0.1.18 and
+later**, the current builder produces a deterministic zip: entry timestamps, file modes, entry order
+and the zip host field (`create_system`) are fixed, so a clean rebuild of the same committed tree
+produces a **byte-identical zip across platforms**, as long as the same Python and zlib toolchain is
+used for compression. This is verified for `v0.1.18`: a clean Windows rebuild from its tag reproduces
+the published artifact byte-for-byte (SHA-256
+`4df3fc3d684f1ccfd5164eddf1a3e187bdf618d70f7dac0d12c58099a7f7fda3`). Bundles published before
+`v0.1.18` do **not** carry this guarantee — see §8.5.
 
 ## 4. Discovery
 
@@ -356,6 +360,11 @@ data files. If a number disagrees with the files, the files win.
   versioned zip, not intent or correctness, is only meaningful relative to this repository's
   workflow, and cannot be verified offline. The `-latest` alias and `SHA256SUMS` are convenience
   artifacts and are not attested subjects.
+- **Cross-platform rebuild equality is guaranteed only from `v0.1.18`.** Bundles published before it
+  were produced by a builder that left the zip host field at the platform default, so a rebuild on a
+  different platform can produce the same content with a different SHA-256. Where a `SHA256SUMS`
+  asset exists (`v0.1.17` onward), it still matches the published bytes; only cross-platform rebuild
+  equality is not guaranteed for those older bundles.
 - **No SLA**: no availability, response-time or refresh guarantee. The workflow runs daily and
   publishes only when catalog data changes.
 
