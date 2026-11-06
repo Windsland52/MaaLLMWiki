@@ -3,6 +3,8 @@
 
 MaaFramework `5.2.2` at `fc2af341f0cd16f1a644e5bae593b84fe21d1c62`.
 
+[← Version index](../index.md)
+
 ## Binding documentation
 
 [Binding documentation](readmes.md)

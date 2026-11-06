@@ -3,6 +3,8 @@
 
 Every symbol the extractor recorded, with the release where it first appears and the later releases that touched it. Formal `unclassified` records are omitted; the per-release view is `machine-changes.md`. Source of truth: `sources/maa-framework/machine-changes.yaml`.
 
+[← Version index](./index.md) · [Machine changes](./machine-changes.md)
+
 442 symbol/kind pairs over 429 symbols.
 
 | Symbol | Kind | First added | Also changed in |

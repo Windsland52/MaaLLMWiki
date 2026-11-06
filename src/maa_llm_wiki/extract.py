@@ -593,6 +593,8 @@ def render_machine_symbols_page(catalog: MachineChangeCatalog, repository_url: s
         "per-release view is `machine-changes.md`. Source of truth: "
         "`sources/maa-framework/machine-changes.yaml`.",
         "",
+        "[← Version index](./index.md) · [Machine changes](./machine-changes.md)",
+        "",
         f"{len(groups)} symbol/kind pairs over {len({key[0] for key in groups})} symbols.",
         "",
         "| Symbol | Kind | First added | Also changed in |",
@@ -643,14 +645,24 @@ def render_machine_changes_page(catalog: MachineChangeCatalog, repository_url: s
         "without producing a structured record. To look a symbol up by name instead of by "
         "release, use `machine-symbols.md`.",
         "",
+        "[← Version index](./index.md) · [Topics](./topics.md) · "
+        "[Behaviour changes](./behaviour-changes.md) · [Symbols](./machine-symbols.md)",
+        "",
         "Source of truth: `sources/maa-framework/machine-changes.yaml` "
         f"({len(catalog.changes)} records over {len(versions)} releases).",
         "",
-        "| Kind | Records |",
-        "| --- | --- |",
+        "| Kind | Records | Latest release |",
+        "| --- | --- | --- |",
     ]
+    latest_by_kind: dict[str, str] = {}
+    for change in catalog.changes:
+        current = latest_by_kind.get(change.kind.value)
+        if current is None or _version_sort_key(change.version) > _version_sort_key(current):
+            latest_by_kind[change.kind.value] = change.version
     for kind in sorted(kind_counts):
-        lines.append(f"| `{kind}` | {kind_counts[kind]} |")
+        version = latest_by_kind.get(kind, "")
+        cell = f"[{version}](./{version}/index.md)" if version else ""
+        lines.append(f"| `{kind}` | {kind_counts[kind]} | {cell} |")
     lines.append("")
     lines.extend(
         [

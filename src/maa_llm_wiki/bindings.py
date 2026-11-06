@@ -548,9 +548,13 @@ def _write_binding_indexes(
         "## Releases",
         "",
     ]
+    latest = releases[-1].version if releases else None
     for release in reversed(releases):
         if (output_root / release.version / "index.md").is_file():
-            lines.append(f"- [{release.version}](./{release.version}/index.md) `{release.commit}`")
+            marker = " (latest)" if release.version == latest else ""
+            lines.append(
+                f"- [{release.version}](./{release.version}/index.md) `{release.commit}`{marker}"
+            )
     if prereleases:
         lines.extend(
             [

@@ -3,6 +3,8 @@
 
 Pre-release tags recorded for traceability, pinned to their exact commits. Pre-releases are not baseline releases: no inventory is generated for them.
 
+[← All versions](./index.md)
+
 | Version | Date | Commit | Included in |
 | --- | --- | --- | --- |
 | 5.16.0-beta.2 | 2026-11-05 | [`a0ae79a9d28c`](https://github.com/MaaXYZ/MaaFramework/commit/a0ae79a9d28cba8f4efe4e841899964391cbb146) | not merged |

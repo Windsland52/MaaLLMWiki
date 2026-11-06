@@ -3,6 +3,8 @@
 
 Pre-release tags recorded for traceability, pinned to their exact commits. Pre-releases are not baseline releases: no inventory is generated for them.
 
+[← All versions](./index.md)
+
 | Version | Date | Commit | Included in |
 | --- | --- | --- | --- |
 | 4.0.0-beta.19 | 2026-09-30 | [`2e3a4007dfd9`](https://github.com/MaaXYZ/maa-framework-go/commit/2e3a4007dfd9aac8275f03514ea34a58bb047463) | [4.0.0](./4.0.0/index.md) |

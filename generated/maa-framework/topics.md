@@ -7,6 +7,8 @@ existed at that pinned commit. Latest indexed release: `5.15.0`.
 
 Source of truth: `sources/maa-framework/source-map.yaml`.
 
+[← Version index](./index.md) · [Behaviour changes](./behaviour-changes.md) · [Machine changes](./machine-changes.md) · [Symbols](./machine-symbols.md)
+
 ## framework.pipeline-control-flow
 
 Source: `maafw`.

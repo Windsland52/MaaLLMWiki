@@ -377,7 +377,7 @@ def _check_binding_generated(
     if not release_index.is_file():
         errors.append(f"{source_id} generated release index is missing")
     else:
-        listed = set(release_index.read_text(encoding="utf-8").splitlines())
+        listed = release_index.read_text(encoding="utf-8")
         for version in releases.releases:
             expected = f"- [{version.version}](./{version.version}/index.md) `{version.commit}`"
             if expected not in listed:

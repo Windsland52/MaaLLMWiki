@@ -3,6 +3,8 @@
 
 MaaFramework `5.14.0` at `b96ab05ace1c14533144fedfcbb7358dad785579`.
 
+[← Version index](../index.md)
+
 ## Architecture diagrams
 
 [Architecture diagrams](diagrams.md)

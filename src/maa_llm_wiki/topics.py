@@ -34,6 +34,9 @@ def render_topics_page(
         "",
         "Source of truth: `sources/maa-framework/source-map.yaml`.",
         "",
+        "[← Version index](./index.md) · [Behaviour changes](./behaviour-changes.md) · "
+        "[Machine changes](./machine-changes.md) · [Symbols](./machine-symbols.md)",
+        "",
     ]
     for topic in source_map.topics:
         lines.extend([f"## {topic.id}", "", f"Source: `{topic.source_id}`.", ""])
@@ -86,6 +89,9 @@ def render_semantic_changes_page(
         "",
         f"Source of truth: `sources/maa-framework/semantic-changes.yaml` (source `{source_id}`;",
         f"{len(semantic_changes.changes)} entries over {len(ordered)} releases).",
+        "[← Version index](./index.md) · [Topics](./topics.md) · "
+        "[Machine changes](./machine-changes.md) · [Symbols](./machine-symbols.md)",
+        "",
         "",
     ]
     for version in ordered:

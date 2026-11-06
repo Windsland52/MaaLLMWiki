@@ -463,6 +463,8 @@ def render_version_indexes(
             "",
             f"MaaFramework `{inventory.version}` at `{inventory.revision}`.",
             "",
+            "[← Version index](../index.md)",
+            "",
         ]
         for item_title, category in sorted(sections[section]):
             lines.extend(
@@ -534,6 +536,8 @@ def render_prereleases_page(
         "",
         "Pre-release tags recorded for traceability, pinned to their exact commits. "
         "Pre-releases are not baseline releases: no inventory is generated for them.",
+        "",
+        "[← All versions](./index.md)",
         "",
     ]
     if not prereleases:

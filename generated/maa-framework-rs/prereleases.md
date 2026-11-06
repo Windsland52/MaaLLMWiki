@@ -3,4 +3,6 @@
 
 Pre-release tags recorded for traceability, pinned to their exact commits. Pre-releases are not baseline releases: no inventory is generated for them.
 
+[← All versions](./index.md)
+
 No pre-release tags are registered for this source.

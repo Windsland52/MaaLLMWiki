@@ -24,6 +24,19 @@ its stable releases align with MaaFramework 5.x tags from `v5.1.0` on, and its p
 is not a default API source. The native public API is the C/C++ headers; in-tree Python/NodeJS
 binding APIs follow the MaaFramework version.
 
+## Pick a version in 30 seconds
+
+1. **Which MaaFramework version** → the Current snapshot block at the top of
+   `generated/maa-framework/index.md`, or any row in its list;
+2. **What is in that version** → that version's `index.md`: per-domain file counts and a Navigation
+   block (previous/next release, top-level pages);
+3. **Which release introduced a field/API/enum** → `generated/maa-framework/machine-symbols.md`
+   (symbol to first appearance);
+4. **What moved between two releases** → the `Changed since` summary on the version page, or
+   `uv run maa-wiki-diff --from <old> --to <new>`;
+5. **Need a citable source** → the page links are pinned to 40-character commits; quote the
+   upstream source, not the index.
+
 ## Using the catalog
 
 1. Download the versioned `maa-llm-wiki-catalog-vX.Y.Z.zip` from the Releases API or release page,

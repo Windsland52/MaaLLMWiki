@@ -7,6 +7,8 @@ so a release with no entry is not evidence that nothing changed.
 
 Source of truth: `sources/maa-framework/semantic-changes.yaml` (source `maafw`;
 48 entries over 27 releases).
+[← Version index](./index.md) · [Topics](./topics.md) · [Machine changes](./machine-changes.md) · [Symbols](./machine-symbols.md)
+
 
 ## 5.0.4
 

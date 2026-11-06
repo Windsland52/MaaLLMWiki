@@ -3,6 +3,8 @@
 
 MaaFramework `5.0.5` at `4a6d0723e6d354df31f56fe6587df9ecca0060a8`.
 
+[← Version index](../index.md)
+
 ## Chinese documentation
 
 [Chinese documentation](zh-cn.md)

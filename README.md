@@ -22,6 +22,14 @@ MaaLLMWiki 为 Maa 生态知识提供机器可读、版本化的源目录：它�
 
 Go、Rust 与 C# 绑定作为独立外部源登记，各自有锁定清单与兼容性证据；C# 通过 NuGet `Maa.Framework` 分发，其稳定 release 自 `v5.1.0` 起对齐 MaaFramework 5.x tag（预发布最早从 `v5.0.0-preview.1` 起）。Java 被上游文档标注为过时，不是默认 API 源；原生公开 API 为 C/C++ 头文件，树内 Python/NodeJS 绑定 API 随 MaaFramework 版本索引。
 
+## 30 秒选版本
+
+1. **用哪个 MaaFramework 版本** → `generated/maa-framework/index.md` 顶部的 Current snapshot（最新版本与总数），或列表里挑一个；
+2. **这一版里有什么** → 该版本 `index.md`：各域文件数、页尾 Navigation（上一版/下一版/顶层页）；
+3. **某字段/API/枚举是哪个版本引入的** → `generated/maa-framework/machine-symbols.md`（符号 → 首次出现版本）；
+4. **两版之间哪些被索引材料变了** → 版本页的 `Changed since` 摘要，或 `uv run maa-wiki-diff --from <旧> --to <新>`；
+5. **需要事实出处** → 页面链接钉到 40 位 commit，回源引用。
+
 ## 使用
 
 1. 从 Releases API 或 release 页面下载带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip`，并同时下载该 release 的 `SHA256SUMS` 与 `verify_bundle.py`。zip 根目录有 `START-HERE.md`，并自带 README、契约、运维指南与许可文件，解压即可离线阅读。

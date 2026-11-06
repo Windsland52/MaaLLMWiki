@@ -3,6 +3,8 @@
 
 MaaFramework `5.12.2` at `f625a60edeccd4549f9a71c0f74628d827ade8fb`.
 
+[← Version index](../index.md)
+
 ## Agent client and server API
 
 [Agent client and server API](agents.md)

@@ -3,18 +3,20 @@
 
 Structured change facts extracted deterministically from upstream diffs between consecutive registered releases. Quotes are verbatim added/removed lines trimmed to 300 characters; `unclassified` entries mark releases whose indexed material changed without producing a structured record. To look a symbol up by name instead of by release, use `machine-symbols.md`.
 
+[← Version index](./index.md) · [Topics](./topics.md) · [Behaviour changes](./behaviour-changes.md) · [Symbols](./machine-symbols.md)
+
 Source of truth: `sources/maa-framework/machine-changes.yaml` (768 records over 41 releases).
 
-| Kind | Records |
-| --- | --- |
-| `binding-api` | 483 |
-| `callback-message` | 12 |
-| `documentation-version` | 40 |
-| `enum-value` | 11 |
-| `schema-enum` | 50 |
-| `schema-property` | 152 |
-| `schema-required` | 12 |
-| `unclassified` | 8 |
+| Kind | Records | Latest release |
+| --- | --- | --- |
+| `binding-api` | 483 | [5.15.0](./5.15.0/index.md) |
+| `callback-message` | 12 | [5.10.0](./5.10.0/index.md) |
+| `documentation-version` | 40 | [5.15.0](./5.15.0/index.md) |
+| `enum-value` | 11 | [5.15.0](./5.15.0/index.md) |
+| `schema-enum` | 50 | [5.14.0](./5.14.0/index.md) |
+| `schema-property` | 152 | [5.15.0](./5.15.0/index.md) |
+| `schema-required` | 12 | [5.8.0](./5.8.0/index.md) |
+| `unclassified` | 8 | [5.11.1](./5.11.1/index.md) |
 
 | Release | Records | Unclassified |
 | --- | --- | --- |
