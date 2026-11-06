@@ -121,7 +121,7 @@ def _check_page_set(
 ) -> None:
     on_disk = {
         path.relative_to(version_root).as_posix()
-        for path in version_root.rglob("*.md")
+        for path in version_root.rglob("*")
         if path.is_file()
     }
     for missing in sorted(expected_names - on_disk):
@@ -377,6 +377,71 @@ def _check_inventory_blobs(
         errors.append(f"{label} inventory has {len(missing) - 10} more artifacts without a blob id")
 
 
+def _check_sources_layout(
+    root: Path,
+    repositories: RepositoryCatalog,
+    catalogs: dict[str, ReleaseCatalog],
+    errors: list[str],
+) -> None:
+    """sources/ may only contain the files the catalog publishes."""
+    sources_root = root / "sources"
+    if not sources_root.is_dir():
+        errors.append("sources directory is missing")
+        return
+    allowed = {"sources/repositories.yaml", "sources/compatibility/bindings.yaml"}
+    for repository in repositories.repositories:
+        directory = _source_directory(repository.id)
+        prefix = f"sources/{directory}"
+        allowed.add(f"{prefix}/releases.yaml")
+        allowed.add(f"{prefix}/inventory.yaml")
+        catalog = catalogs.get(repository.id)
+        if catalog is not None:
+            for release in catalog.releases:
+                allowed.add(f"{prefix}/inventories/{release.version}.yaml")
+        if directory == _MAAFW_DIRECTORY:
+            allowed.add(f"{prefix}/source-map.yaml")
+            allowed.add(f"{prefix}/semantic-changes.yaml")
+    for path in sorted(p for p in sources_root.rglob("*") if p.is_file()):
+        relative = f"sources/{path.relative_to(sources_root).as_posix()}"
+        if relative not in allowed:
+            errors.append(f"unexpected file under sources/: {relative}")
+
+
+def _check_generated_layout(
+    root: Path,
+    top_level_files: dict[str, set[str]],
+    errors: list[str],
+) -> None:
+    """generated/<source>/ may only contain registered version directories and known pages."""
+    for directory, allowed in top_level_files.items():
+        generated_root = root / "generated" / directory
+        if not generated_root.is_dir():
+            errors.append(f"generated directory is missing: generated/{directory}")
+            continue
+        for entry in sorted(generated_root.iterdir()):
+            if entry.is_dir():
+                continue
+            if entry.name not in allowed:
+                errors.append(f"unexpected file under generated/{directory}/: {entry.name}")
+
+
+def _check_compatibility_registry(
+    compatibility: BindingCompatibilityCatalog,
+    binding_catalogs: dict[str, ReleaseCatalog],
+    errors: list[str],
+) -> None:
+    for entry in compatibility.bindings:
+        catalog = binding_catalogs.get(entry.source_id)
+        if catalog is None:
+            errors.append(f"compatibility references unknown binding source: {entry.source_id}")
+            continue
+        if entry.binding_version not in {release.version for release in catalog.releases}:
+            errors.append(
+                f"{entry.source_id} compatibility is not a registered release: "
+                f"{entry.binding_version}"
+            )
+
+
 def _check_release_registry(
     releases: ReleaseCatalog,
     historical: list[SourceInventory],
@@ -530,6 +595,7 @@ def validate_repository(root: Path) -> list[str]:
     compatibility_by_key = {
         (item.source_id, item.binding_version): item for item in binding_compatibility.bindings
     }
+    binding_catalogs: dict[str, ReleaseCatalog] = {}
     for binding_source_id in BINDING_SPECS:
         try:
             binding_releases = load_release_catalog(root, binding_source_id)
@@ -538,6 +604,7 @@ def validate_repository(root: Path) -> list[str]:
         except (OSError, ValueError, ValidationError, yaml.YAMLError) as error:
             errors.append(f"{binding_source_id}: {error}")
             continue
+        binding_catalogs[binding_source_id] = binding_releases
         binding_source = repositories_by_id.get(binding_source_id)
         if binding_source is None:
             errors.append(f"binding release catalog references unknown source: {binding_source_id}")
@@ -596,6 +663,17 @@ def validate_repository(root: Path) -> list[str]:
                         f"{release.version}/{evidence_path}"
                     )
 
+    catalogs_by_source = {releases.source_id: releases, **binding_catalogs}
+    _check_sources_layout(root, repositories, catalogs_by_source, errors)
+    _check_generated_layout(
+        root,
+        {
+            _MAAFW_DIRECTORY: {"index.md", "prereleases.md", "topics.md", "behaviour-changes.md"},
+            **{source_id: {"index.md", "prereleases.md"} for source_id in BINDING_SPECS},
+        },
+        errors=errors,
+    )
+    _check_compatibility_registry(binding_compatibility, binding_catalogs, errors=errors)
     errors.extend(_check_source_map(source_map, release_commits, repository_ids))
     errors.extend(
         _check_semantic_changes(

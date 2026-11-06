@@ -108,3 +108,56 @@ def test_stale_binding_page_is_detected(catalog_copy: Path) -> None:
         page.write_text(backup, encoding="utf-8", newline="\n")
 
     assert any("maa-framework-rs" in error and "stale" in error for error in errors)
+
+
+def test_stray_files_are_rejected(catalog_copy: Path) -> None:
+    strays = [
+        catalog_copy / "sources" / "stray.yaml",
+        catalog_copy / "sources" / "compatibility" / "extra.yaml",
+        catalog_copy / "generated" / "maa-framework" / "stray.md",
+        catalog_copy / "generated" / "maa-framework-go" / "stray.bin",
+    ]
+    for path in strays:
+        path.write_text("stray\n", encoding="utf-8")
+    try:
+        errors = validate_repository(catalog_copy)
+    finally:
+        for path in strays:
+            path.unlink(missing_ok=True)
+
+    joined = "\n".join(errors)
+    assert "unexpected file under sources/: sources/stray.yaml" in joined
+    assert "unexpected file under sources/: sources/compatibility/extra.yaml" in joined
+    assert "unexpected file under generated/maa-framework/: stray.md" in joined
+    assert "unexpected file under generated/maa-framework-go/: stray.bin" in joined
+
+
+def test_orphan_inventory_and_compatibility_entry_are_rejected(catalog_copy: Path) -> None:
+    orphan = catalog_copy / "sources" / "maa-framework" / "inventories" / "9.9.9.yaml"
+    compatibility = catalog_copy / "sources" / "compatibility" / "bindings.yaml"
+    compatibility_backup = compatibility.read_text(encoding="utf-8")
+    try:
+        shutil.copy(REPO / "sources" / "maa-framework" / "inventories" / "5.15.0.yaml", orphan)
+        compatibility.write_text(
+            compatibility_backup
+            + "- source_id: maa-framework-go\n"
+            + "  binding_version: 9.9.9\n"
+            + "  binding_revision: "
+            + "a" * 40
+            + "\n"
+            + "  framework_version: 5.15.0\n"
+            + "  status: declared\n"
+            + "  evidence_paths:\n"
+            + "  - README.md\n"
+            + "  note: synthetic entry\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+        errors = validate_repository(catalog_copy)
+    finally:
+        orphan.unlink(missing_ok=True)
+        compatibility.write_text(compatibility_backup, encoding="utf-8", newline="\n")
+
+    joined = "\n".join(errors)
+    assert "sources/maa-framework/inventories/9.9.9.yaml" in joined
+    assert "compatibility is not a registered release: 9.9.9" in joined
