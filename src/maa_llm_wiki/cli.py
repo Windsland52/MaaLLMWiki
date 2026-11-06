@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .bindings import BINDING_SPECS, sync_binding_history
-from .bundle import build_catalog_bundle, verify_catalog_bundle
+from .bundle import build_catalog_bundle, bundle_sha256, verify_catalog_bundle
 from .gaps import artifact_changed, render_review_queue
 from .inventory import sync_latest_maafw, sync_maafw_history, sync_maafw_inventory
 from .models import ArtifactKind, SourceArtifact, SourceInventory
@@ -45,9 +45,9 @@ def main() -> int:
     errors = validate_repository(args.root.resolve())
     if errors:
         for error in errors:
-            print(error)  # noqa: T201
+            print(error)
         return 1
-    print("MaaLLMWiki validation passed")  # noqa: T201
+    print("MaaLLMWiki validation passed")
     return 0
 
 
@@ -81,7 +81,7 @@ def sync_latest_maafw_main() -> int:
         root=args.root.resolve(),
         repository=args.repository.resolve(),
     )
-    print(f"Indexed MaaFramework {release.tag} at {release.commit}")  # noqa: T201
+    print(f"Indexed MaaFramework {release.tag} at {release.commit}")
     return 0
 
 
@@ -105,7 +105,7 @@ def sync_maafw_history_main() -> int:
         major=args.major,
         prune=args.prune,
     )
-    print(  # noqa: T201
+    print(
         f"Indexed {len(releases)} MaaFramework {args.major}.x releases "
         f"and {len(prereleases)} prereleases"
     )
@@ -137,7 +137,7 @@ def sync_bindings_history_main() -> int:
             source_id=source_id,
             prune=args.prune,
         )
-        print(  # noqa: T201
+        print(
             f"Indexed {len(releases)} stable {BINDING_SPECS[source_id].display_name} releases "
             f"and {len(prereleases)} prereleases"
         )
@@ -166,9 +166,7 @@ def build_bundle_main() -> int:
         allow_dirty=args.allow_dirty,
         version=args.catalog_version,
     )
-    print(  # noqa: T201
-        f"Built catalog bundle for {manifest.wiki_revision} with {len(manifest.files)} files"
-    )
+    print(f"Built catalog bundle for {manifest.wiki_revision} with {len(manifest.files)} files")
     return 0
 
 
@@ -179,14 +177,16 @@ def verify_bundle_main() -> int:
     parser.add_argument("--expect-revision")
     parser.add_argument("--expect-version")
     args = parser.parse_args()
+    bundle = args.bundle.resolve()
     manifest = verify_catalog_bundle(
-        bundle=args.bundle.resolve(),
+        bundle=bundle,
         expect_revision=args.expect_revision,
         expect_version=args.expect_version,
     )
     version = manifest.catalog_version or "unversioned"
-    print(  # noqa: T201
-        f"Verified catalog bundle: {version} {manifest.wiki_revision} ({len(manifest.files)} files)"
+    print(
+        f"Verified catalog bundle: {version} {manifest.wiki_revision} "
+        f"({len(manifest.files)} files) sha256={bundle_sha256(bundle)}"
     )
     return 0
 
@@ -200,7 +200,7 @@ def report_semantic_gaps_main() -> int:
     repository = args.repository.resolve() if args.repository is not None else None
     report = render_review_queue(args.root.resolve(), repository)
     if args.output is None:
-        print(report, end="")  # noqa: T201
+        print(report, end="")
         return 0
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(report, encoding="utf-8")
@@ -379,7 +379,7 @@ def diff_main() -> int:
     after = inventories[args.to_version]
     diff = _diff_inventories(before, after)
     if args.format == "json":
-        print(_diff_json(args.source, before, after, diff))  # noqa: T201
+        print(_diff_json(args.source, before, after, diff))
     else:
-        print(_diff_markdown(args.source, before, after, diff), end="")  # noqa: T201
+        print(_diff_markdown(args.source, before, after, diff), end="")
     return 0

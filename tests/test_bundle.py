@@ -7,7 +7,13 @@ from zipfile import ZipFile
 
 import pytest
 
-from maa_llm_wiki.bundle import build_catalog_bundle, bundle_sources, verify_catalog_bundle
+from maa_llm_wiki.bundle import (
+    build_catalog_bundle,
+    bundle_paths,
+    bundle_sha256,
+    bundle_sources,
+    verify_catalog_bundle,
+)
 from maa_llm_wiki.cli import (
     build_bundle_main,
     sync_bindings_history_main,
@@ -205,6 +211,9 @@ def test_build_catalog_bundle_records_catalog_version(tmp_path: Path) -> None:
     manifest = build_catalog_bundle(root=ROOT, output=output, allow_dirty=True, version="v1.2.3")
 
     assert manifest.catalog_version == "v1.2.3"
+    # Snapshot-size guard: the published layout currently contains exactly 1275 files.
+    # Update this constant only when the catalog legitimately grows.
+    assert len(manifest.files) == 1275
     with ZipFile(output) as archive:
         bundled = CatalogBundleManifest.model_validate_json(archive.read("catalog-manifest.json"))
     assert bundled.catalog_version == "v1.2.3"
@@ -238,7 +247,10 @@ def test_cli_verify_bundle_prints_summary(
 
     assert verify_bundle_main() == 0
     captured = capsys.readouterr()
-    assert captured.out.strip() == f"Verified catalog bundle: v1.2.3 {REVISION} (2 files)"
+    expected_digest = hashlib.sha256((tmp_path / "catalog.zip").read_bytes()).hexdigest()
+    assert captured.out.strip() == (
+        f"Verified catalog bundle: v1.2.3 {REVISION} (2 files) sha256={expected_digest}"
+    )
     assert captured.err == ""
 
 
@@ -451,3 +463,94 @@ def test_bundle_sources_include_extra_registered_source_with_inventory(tmp_path:
     sources = bundle_sources(tmp_path)
 
     assert [source.source_id for source in sources] == ["maa-framework-go", "maatutorial"]
+
+
+def _write_published_layout(root: Path) -> dict[str, str]:
+    """Minimal real-shaped catalog tree: one indexed source plus the hand-authored files."""
+    inventory = (
+        "source_id: maa-framework-go\n"
+        "version: 1.0.0\n"
+        f"revision: {COMMIT}\n"
+        "artifacts:\n"
+        "- path: go.mod\n"
+        "  kind: package-manifest\n"
+        "  title: go.mod\n"
+        "  summary: Manifest.\n"
+    )
+    files = {
+        "generated/maa-framework/1.0.0/index.md": "# index\n",
+        "generated/maa-framework/index.md": "# releases\n",
+        "schemas/source-inventory.schema.json": "{}\n",
+        "sources/repositories.yaml": (
+            "repositories:\n"
+            "- id: maa-framework-go\n"
+            "  name: MaaFramework Go binding\n"
+            "  url: https://example.invalid/maa-framework-go\n"
+            "  role: authoritative\n"
+            "  status: active\n"
+            "  enabled: true\n"
+            f"  default_revision: {COMMIT}\n"
+        ),
+        "sources/compatibility/bindings.yaml": "bindings: []\n",
+        "sources/maa-framework-go/releases.yaml": "source_id: maa-framework-go\nreleases: []\n",
+        "sources/maa-framework-go/inventory.yaml": inventory,
+        "sources/maa-framework-go/inventories/1.0.0.yaml": inventory,
+        "sources/maa-framework/source-map.yaml": "topics: []\n",
+        "sources/maa-framework/semantic-changes.yaml": "source_id: maa-framework-go\nchanges: []\n",
+    }
+    for relative, content in files.items():
+        path = root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+    return files
+
+
+def test_bundle_paths_accepts_the_published_layout(tmp_path: Path) -> None:
+    files = _write_published_layout(tmp_path)
+
+    relative = [path.relative_to(tmp_path).as_posix() for path in bundle_paths(tmp_path)]
+
+    assert relative == sorted(files)
+
+
+def test_bundle_paths_rejects_stray_generated_file(tmp_path: Path) -> None:
+    _write_published_layout(tmp_path)
+    (tmp_path / "generated" / "notes.txt").write_text("stray\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="generated/notes.txt"):
+        bundle_paths(tmp_path)
+
+
+def test_bundle_paths_rejects_stray_sources_file(tmp_path: Path) -> None:
+    _write_published_layout(tmp_path)
+    (tmp_path / "sources" / "maa-framework-go" / "notes.md").write_text(
+        "# notes\n", encoding="utf-8"
+    )
+
+    with pytest.raises(ValueError, match="sources/maa-framework-go/notes.md"):
+        bundle_paths(tmp_path)
+
+
+def test_bundle_paths_rejects_stray_schemas_file(tmp_path: Path) -> None:
+    _write_published_layout(tmp_path)
+    (tmp_path / "schemas" / "extra.schema.json").write_text("{}\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="schemas/extra.schema.json"):
+        bundle_paths(tmp_path)
+
+
+def test_bundle_paths_rejects_unregistered_source_directory(tmp_path: Path) -> None:
+    _write_published_layout(tmp_path)
+    source_root = tmp_path / "sources" / "unregistered"
+    source_root.mkdir(parents=True)
+    (source_root / "inventory.yaml").write_text("source_id: unregistered\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="sources/unregistered/inventory.yaml"):
+        bundle_paths(tmp_path)
+
+
+def test_bundle_sha256_matches_the_file_digest(tmp_path: Path) -> None:
+    bundle = tmp_path / "catalog.zip"
+    _write_bundle(bundle, catalog_version="v1.2.3")
+
+    assert bundle_sha256(bundle) == hashlib.sha256(bundle.read_bytes()).hexdigest()

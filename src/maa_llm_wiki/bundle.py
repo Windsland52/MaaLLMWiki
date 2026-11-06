@@ -10,12 +10,22 @@ from zipfile import ZIP_DEFLATED, BadZipFile, ZipFile, ZipInfo
 from pydantic import ValidationError
 
 from .models import CatalogBundleFile, CatalogBundleManifest, CatalogBundleSource
+from .schemas import SCHEMA_MODELS
 from .validation import load_repository_catalog, load_source_inventory, validate_repository
 
 _BUNDLE_DIRECTORIES = ("generated", "schemas", "sources")
 _ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 _MANIFEST_NAME = "catalog-manifest.json"
 _CATALOG_VERSION_PATTERN = re.compile(r"^v\d+\.\d+\.\d+$")
+_SOURCE_CATALOG_FILES = frozenset({"releases.yaml", "inventory.yaml"})
+_HAND_AUTHORED_SOURCES = frozenset(
+    {
+        "sources/repositories.yaml",
+        "sources/compatibility/bindings.yaml",
+        "sources/maa-framework/source-map.yaml",
+        "sources/maa-framework/semantic-changes.yaml",
+    }
+)
 
 
 def _git(root: Path, *arguments: str) -> str:
@@ -28,16 +38,59 @@ def _git(root: Path, *arguments: str) -> str:
     return result.stdout.strip()
 
 
+def _source_directories(root: Path) -> set[str]:
+    """Directories under ``sources/`` that hold an indexed catalog for a registered source."""
+    directories: set[str] = set()
+    for repository in load_repository_catalog(root).repositories:
+        for candidate in (repository.id, "maa-framework"):
+            if (root / "sources" / candidate / "inventory.yaml").is_file():
+                directories.add(candidate)
+    return directories
+
+
+def _is_published_path(relative: str, source_directories: set[str]) -> bool:
+    """Whether a bundled path belongs to the published catalog layout.
+
+    ``generated/`` holds only rendered Markdown, ``schemas/`` only the seven committed schema
+    files, and ``sources/`` only the registered per-source catalogs plus the hand-authored files.
+    """
+    parts = PurePosixPath(relative).parts
+    if not parts:
+        return False
+    if parts[0] == "generated":
+        return relative.endswith(".md")
+    if parts[0] == "schemas":
+        return len(parts) == 2 and parts[1] in SCHEMA_MODELS
+    if relative in _HAND_AUTHORED_SOURCES:
+        return True
+    if len(parts) == 3 and parts[0] == "sources" and parts[2] in _SOURCE_CATALOG_FILES:
+        return parts[1] in source_directories
+    if (
+        len(parts) == 4
+        and parts[0] == "sources"
+        and parts[2] == "inventories"
+        and parts[3].endswith(".yaml")
+    ):
+        return parts[1] in source_directories
+    return False
+
+
 def _bundle_paths(root: Path) -> list[Path]:
-    return sorted(
-        (
-            path
-            for directory in _BUNDLE_DIRECTORIES
-            for path in (root / directory).rglob("*")
-            if path.is_file()
-        ),
-        key=lambda path: path.relative_to(root).as_posix(),
-    )
+    """Files the catalog publishes, or ValueError naming the first file outside the allowlist."""
+    source_directories = _source_directories(root)
+    paths: list[Path] = []
+    for directory in _BUNDLE_DIRECTORIES:
+        directory_root = root / directory
+        if not directory_root.is_dir():
+            continue
+        for path in sorted(directory_root.rglob("*")):
+            if not path.is_file():
+                continue
+            relative = path.relative_to(root).as_posix()
+            if not _is_published_path(relative, source_directories):
+                raise ValueError(f"refusing to bundle an unpublished file: {relative}")
+            paths.append(path)
+    return sorted(paths, key=lambda path: path.relative_to(root).as_posix())
 
 
 def _bundle_sources(root: Path) -> list[CatalogBundleSource]:
@@ -65,6 +118,20 @@ def _bundle_sources(root: Path) -> list[CatalogBundleSource]:
 def bundle_sources(root: Path) -> list[CatalogBundleSource]:
     """Public view of the manifest source list, for checks and tests."""
     return _bundle_sources(root)
+
+
+def bundle_paths(root: Path) -> list[Path]:
+    """Public view of the published bundle file set, for checks and tests."""
+    return _bundle_paths(root)
+
+
+def bundle_sha256(bundle: Path) -> str:
+    """SHA-256 of the whole bundle file, for cross-checking a published SHA256SUMS."""
+    digest = hashlib.sha256()
+    with bundle.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _zip_info(path: str) -> ZipInfo:
@@ -137,6 +204,9 @@ def verify_catalog_bundle(
     detectable defects. Raises ValueError when anything does not line up.
     """
     problems: list[str] = []
+    # Hashing the whole file also proves the archive is readable end to end; the digest is part of
+    # a failed verification report and is what the CLI prints for SHA256SUMS cross-checking.
+    digest = bundle_sha256(bundle)
     try:
         archive = ZipFile(bundle)
     except BadZipFile as error:
@@ -179,5 +249,5 @@ def verify_catalog_bundle(
                 f"expected {expect_version}"
             )
     if problems:
-        raise ValueError("; ".join(problems))
+        raise ValueError(f"bundle sha256={digest}: " + "; ".join(problems))
     return manifest
