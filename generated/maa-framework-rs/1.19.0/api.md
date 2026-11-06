@@ -3,6 +3,13 @@
 
 MaaFramework Rust binding `1.19.0` at `2fd276655e984f8b56b97039fe49bf24d6bfdce6`.
 
+## Package documentation
+
+- [maa-framework](https://docs.rs/maa-framework/1.19.0)
+- [maa-framework-sys](https://docs.rs/maa-framework-sys/5.11.1)
+
+## Source files
+
 - **dynamic_bindings.rs**: Public Rust binding declarations for the dynamic_bindings module. [`maa-framework-sys/src/bindings/dynamic_bindings.rs`](https://github.com/MaaXYZ/maa-framework-rs/blob/2fd276655e984f8b56b97039fe49bf24d6bfdce6/maa-framework-sys/src/bindings/dynamic_bindings.rs)
 - **shims.rs**: Public Rust binding declarations for the shims module. [`maa-framework-sys/src/bindings/shims.rs`](https://github.com/MaaXYZ/maa-framework-rs/blob/2fd276655e984f8b56b97039fe49bf24d6bfdce6/maa-framework-sys/src/bindings/shims.rs)
 - **static_bindings.rs**: Public Rust binding declarations for the static_bindings module. [`maa-framework-sys/src/bindings/static_bindings.rs`](https://github.com/MaaXYZ/maa-framework-rs/blob/2fd276655e984f8b56b97039fe49bf24d6bfdce6/maa-framework-sys/src/bindings/static_bindings.rs)

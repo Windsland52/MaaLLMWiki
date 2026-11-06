@@ -63,6 +63,8 @@ BINDING_SPECS = {
         source_id="maa-framework-rs",
         display_name="MaaFramework Rust binding",
         language="Rust",
+        package_heading="## Crates",
+        package_registry="docs.rs",
     ),
     "maa-framework-csharp": BindingSourceSpec(
         source_id="maa-framework-csharp",
@@ -195,6 +197,37 @@ def _go_package_documentation(
     return links
 
 
+RUST_WORKSPACE_MEMBERS_PATTERN = re.compile(r"(?m)^members\s*=\s*\[(?P<members>[^\]]*)\]")
+RUST_CRATE_NAME_PATTERN = re.compile(r'"(?P<name>[A-Za-z0-9_-]+)"')
+
+
+def _rust_package_documentation(
+    repository: Path,
+    revision: str,
+    version: str,
+    inventory: SourceInventory,
+) -> list[PackageDocumentation]:
+    """Link the workspace crates on docs.rs at the versions this release publishes."""
+    manifest = _read_revision_file(repository, revision, "Cargo.toml")
+    if manifest is None:
+        return []
+    members = RUST_WORKSPACE_MEMBERS_PATTERN.search(manifest)
+    crate_names = RUST_CRATE_NAME_PATTERN.findall(members["members"]) if members is not None else []
+    sys_version: str | None = None
+    sys_dependency = RUST_FRAMEWORK_DEPENDENCY_PATTERN.search(manifest)
+    if sys_dependency is not None:
+        sys_version = sys_dependency["version"]
+    links: list[PackageDocumentation] = []
+    for crate in crate_names:
+        crate_version = sys_version if crate.endswith("-sys") and sys_version else version
+        links.append(
+            PackageDocumentation(
+                label=crate, url=f"https://docs.rs/{quote(crate, safe='-')}/{crate_version}"
+            )
+        )
+    return sorted(links, key=lambda item: item.label)
+
+
 CSHARP_PACKAGE_ID_PATTERN = re.compile(r"<PackageId>\s*(?P<id>[^<\s]+)\s*</PackageId>")
 
 
@@ -236,6 +269,8 @@ def _package_documentation(
         return _go_package_documentation(repository, release.commit, release.tag, inventory)
     if spec.source_id == "maa-framework-csharp":
         return _csharp_package_documentation(repository, release.commit, release.version, inventory)
+    if spec.source_id == "maa-framework-rs":
+        return _rust_package_documentation(repository, release.commit, release.version, inventory)
     return []
 
 

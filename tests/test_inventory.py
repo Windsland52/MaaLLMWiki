@@ -1220,3 +1220,37 @@ def test_csharp_version_page_shows_the_nuget_section() -> None:
         BINDING_SPECS["maa-framework-rs"], inventory, compatibility, "https://example.invalid", []
     )
     assert "NuGet" not in rust_pages["index.md"]
+
+
+def test_rust_package_documentation_links_both_crates(tmp_path: Path) -> None:
+    repository, commit = _binding_repository(
+        tmp_path,
+        {
+            "Cargo.toml": (
+                "[workspace]\n"
+                'members = ["maa-framework", "maa-framework-sys"]\n'
+                "\n"
+                "[workspace.dependencies]\n"
+                'maa-framework-sys = { path = "maa-framework-sys", version = "5.15.0-beta.1" }\n'
+            ),
+            "maa-framework/Cargo.toml": '[package]\nname = "maa-framework"\n',
+            "maa-framework-sys/Cargo.toml": '[package]\nname = "maa-framework-sys"\n',
+        },
+    )
+    inventory = _inventory(
+        "1.27.0",
+        [
+            _artifact("Cargo.toml", kind=ArtifactKind.PACKAGE_MANIFEST),
+            _artifact("maa-framework-sys/Cargo.toml", kind=ArtifactKind.PACKAGE_MANIFEST),
+            _artifact("maa-framework/Cargo.toml", kind=ArtifactKind.PACKAGE_MANIFEST),
+        ],
+    )
+    release = ReleaseRecord(version="1.27.0", tag="v1.27.0", commit=commit, released_at=FIXED_DATE)
+
+    links = _package_documentation(
+        repository, release, BINDING_SPECS["maa-framework-rs"], inventory
+    )
+
+    assert [link.label for link in links] == ["maa-framework", "maa-framework-sys"]
+    assert links[0].url == "https://docs.rs/maa-framework/1.27.0"
+    assert links[1].url == "https://docs.rs/maa-framework-sys/5.15.0-beta.1"

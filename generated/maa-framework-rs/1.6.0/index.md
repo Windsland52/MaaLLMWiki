@@ -10,6 +10,10 @@ Revision: `4cfaa24ff0027e3ec4263ea1e5e89e36ec33cdcc`
 - Basis: The workspace manifest declares this maa-framework-sys version; runtime compatibility has not been independently verified.
 - Evidence: [`Cargo.toml`](https://github.com/MaaXYZ/maa-framework-rs/blob/4cfaa24ff0027e3ec4263ea1e5e89e36ec33cdcc/Cargo.toml)
 
+## Crates
+
+[Browse maa-framework on docs.rs](https://docs.rs/maa-framework/1.6.0)
+
 ## Sources
 
 - [Public binding API](api.md)

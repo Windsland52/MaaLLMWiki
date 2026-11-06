@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path, PurePosixPath
+from typing import cast
 
 import yaml
 from pydantic import ValidationError
@@ -31,9 +33,10 @@ _PACKAGE_SECTION_HEADINGS = frozenset(
         "## Source files",
         "## Go API documentation",
         "## NuGet packages",
+        "## Crates",
     }
 )
-_PACKAGE_REGISTRY_MARKERS = ("pkg.go.dev", "nuget.org")
+_PACKAGE_REGISTRY_MARKERS = ("pkg.go.dev", "nuget.org", "docs.rs")
 
 
 _YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
@@ -316,7 +319,7 @@ def _check_binding_generated(
             ),
         }
         expected_names = set(deterministic) | {"index.md"}
-        if source_id in {_GO_SOURCE_ID, _CSHARP_SOURCE_ID}:
+        if source_id in {_GO_SOURCE_ID, _CSHARP_SOURCE_ID, "maa-framework-rs"}:
             # These indexes and API pages embed registry links derived from a live checkout.
             _check_page_set(version_root, expected_names, label=source_id, errors=errors)
             _check_line_page(
@@ -524,6 +527,52 @@ def _check_release_registry(
         errors.append(f"{label} default inventory disagrees with inventories/{latest}.yaml")
 
 
+_SKILL_PATH_PATTERN = re.compile(r"`((?:generated|sources)/[^`\s]+)`")
+_SKILL_PLACEHOLDER_PATTERN = re.compile(r"<版本>|<version>|<tag>|vX\.Y\.Z")
+
+
+def _skill_reference_source(reference: str) -> str | None:
+    for directory, source_id in (
+        ("generated/maa-framework-go/", "maa-framework-go"),
+        ("generated/maa-framework-rs/", "maa-framework-rs"),
+        ("generated/maa-framework-csharp/", "maa-framework-csharp"),
+        ("generated/maa-framework/", "maafw"),
+    ):
+        if reference.startswith(directory):
+            return source_id
+    return None
+
+
+def _check_skill_paths(root: Path, errors: list[str]) -> None:
+    """Fail when the routing skill points at catalog paths that no longer exist.
+
+    The installed skill is a copy, so a structural change that lands without a skill update would
+    leave consumers routing to dead paths; this gate makes that show up in the same run.
+    """
+    skill = root / "skills" / "maallmwiki" / "SKILL.md"
+    if not skill.is_file():
+        return
+    versions: dict[str, str] = {}
+    for inventory_path in sorted(root.glob("sources/*/inventory.yaml")):
+        payload: object = yaml.safe_load(inventory_path.read_text(encoding="utf-8"))
+        if isinstance(payload, dict):
+            data = cast("dict[str, object]", payload)
+            source_id = data.get("source_id")
+            version = data.get("version")
+            if isinstance(source_id, str) and isinstance(version, str):
+                versions[source_id] = version
+    for reference in sorted(set(_SKILL_PATH_PATTERN.findall(skill.read_text(encoding="utf-8")))):
+        resolved = reference
+        if _SKILL_PLACEHOLDER_PATTERN.search(reference):
+            source_id = _skill_reference_source(reference)
+            version = versions.get(source_id) if source_id is not None else None
+            if version is None:
+                continue
+            resolved = _SKILL_PLACEHOLDER_PATTERN.sub(version, reference)
+        if not (root / resolved).exists():
+            errors.append(f"skill references a missing catalog path: {reference}")
+
+
 def _check_schemas(root: Path) -> list[str]:
     schema_root = root / "schemas"
     if not schema_root.is_dir():
@@ -651,6 +700,7 @@ def validate_repository(root: Path) -> list[str]:
             semantic_changes,
         )
     )
+    _check_skill_paths(root, errors)
 
     compatibility_by_key = {
         (item.source_id, item.binding_version): item for item in binding_compatibility.bindings
