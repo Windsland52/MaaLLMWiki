@@ -4,91 +4,113 @@ revision: c57d7f56bc90aa3aded94343b183e95f60d26cf8
 artifacts:
 - path: README.md
   kind: documentation
+  blob: aa415b2498fd8c95a99d0392f40e999626de3b63
   title: MaaFramework Golang Binding
   summary: This is the Go binding for MaaFramework, providing Go developers with a
     simple and effective way to use MaaFramework's features within their Go applications.
     Currently, the Go binding is quite rudimentary and closely mirrors the C interf...
 - path: buffer_image.go
   kind: binding-api
+  blob: a97c5d82a30b142167fcec971741111ab3ae8ad7
   title: buffer_image.go
   summary: Public Go binding declarations for the buffer_image module.
 - path: buffer_image_list.go
   kind: binding-api
+  blob: f3ae5afb68b477c15cad0fb8b00f62531381f610
   title: buffer_image_list.go
   summary: Public Go binding declarations for the buffer_image_list module.
 - path: buffer_rect.go
   kind: binding-api
+  blob: af3abe6a2c7a9829606bceabcb708db208c0b06e
   title: buffer_rect.go
   summary: Public Go binding declarations for the buffer_rect module.
 - path: buffer_string.go
   kind: binding-api
+  blob: 3357bee5c2f0341730d646852530e440aabab280
   title: buffer_string.go
   summary: Public Go binding declarations for the buffer_string module.
 - path: buffer_string_list.go
   kind: binding-api
+  blob: 03672e358629622415dab4cc25c6493fd0cf2e50
   title: buffer_string_list.go
   summary: Public Go binding declarations for the buffer_string_list module.
 - path: callback_agent.go
   kind: binding-api
+  blob: bc3b190e83064a8ada0f8b272069d53ecc67c45c
   title: callback_agent.go
   summary: Public Go binding declarations for the callback_agent module.
 - path: cgo.go
   kind: binding-api
+  blob: 5d93164513b69a2ae31ab5b49cdcd13fd1c4d90a
   title: cgo.go
   summary: Public Go binding declarations for the cgo module.
 - path: controller.go
   kind: binding-api
+  blob: 567c58e72ee1e1a46619423fcbf14a9e51d9240f
   title: controller.go
   summary: Public Go binding declarations for the controller module.
 - path: controller_adb.go
   kind: binding-api
+  blob: 664e0b5f0710a4fd9b008e3ce60ab898bb498a1f
   title: controller_adb.go
   summary: Public Go binding declarations for the controller_adb module.
 - path: controller_custom.go
   kind: binding-api
+  blob: e8eb009c0cc6784bdd6ad723faa4de69b686eca3
   title: controller_custom.go
   summary: Public Go binding declarations for the controller_custom module.
 - path: controller_dbg.go
   kind: binding-api
+  blob: abdfa0d1ab7e953320ab6f42f3c9cd8a299d6c3c
   title: controller_dbg.go
   summary: Public Go binding declarations for the controller_dbg module.
 - path: controller_thrift.go
   kind: binding-api
+  blob: 2d2d74ad506e3517fbc7c8ec1eb7b9ada80d1ef1
   title: controller_thrift.go
   summary: Public Go binding declarations for the controller_thrift module.
 - path: controller_win32.go
   kind: binding-api
+  blob: 4bc174e9b457ad7de500a59d88e42bc76b0ca9b7
   title: controller_win32.go
   summary: Public Go binding declarations for the controller_win32 module.
 - path: custom_action.go
   kind: binding-api
+  blob: 86afec47c7030a3eda15de980805b7a5b0915235
   title: custom_action.go
   summary: Public Go binding declarations for the custom_action module.
 - path: custom_recognizer.go
   kind: binding-api
+  blob: 0162495138b5e42497b158bde34f5d8c22fc4218
   title: custom_recognizer.go
   summary: Public Go binding declarations for the custom_recognizer module.
 - path: custom_sync_context.go
   kind: binding-api
+  blob: 235b14404ad68285334c036a35c0a11257d4d2a4
   title: custom_sync_context.go
   summary: Public Go binding declarations for the custom_sync_context module.
 - path: go.mod
   kind: package-manifest
+  blob: e86c2681dd40815a9a4fb9fd19d690411c0abb85
   title: go.mod
   summary: Package and dependency metadata for the Go binding.
 - path: instance.go
   kind: binding-api
+  blob: b8deddd241163df1e0730cb77a3e341d7c35653a
   title: instance.go
   summary: Public Go binding declarations for the instance module.
 - path: resource.go
   kind: binding-api
+  blob: 88d2807d9f59ec45a74783a4e4e19a93dd93ff27
   title: resource.go
   summary: Public Go binding declarations for the resource module.
 - path: status.go
   kind: binding-api
+  blob: 22710fe56422977de7f57706af25b836aa391e8e
   title: status.go
   summary: Public Go binding declarations for the status module.
 - path: utility.go
   kind: binding-api
+  blob: 9331d4861941ebb83a0475d1b11eef01b46763e5
   title: utility.go
   summary: Public Go binding declarations for the utility module.

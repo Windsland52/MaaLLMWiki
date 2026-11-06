@@ -3,5 +3,5 @@
 
 MaaFramework Go binding `1.0.0` at `b94931436039509e2ca5bc70871de93d9124205d`.
 
-- **MaaFramework Golang Binding**: English | 简体中文 [`README.md`](https://github.com/MaaXYZ/maa-framework-go/blob/b94931436039509e2ca5bc70871de93d9124205d/README.md)
-- **MaaFramework Golang 绑定**: English | 简体中文 [`README_zh.md`](https://github.com/MaaXYZ/maa-framework-go/blob/b94931436039509e2ca5bc70871de93d9124205d/README_zh.md)
+- **MaaFramework Golang Binding**: This is the Go binding for MaaFramework, providing Go developers with a simple and effective way to use MaaFramework's features within their Go applications. [`README.md`](https://github.com/MaaXYZ/maa-framework-go/blob/b94931436039509e2ca5bc70871de93d9124205d/README.md)
+- **MaaFramework Golang 绑定**: 这是 MaaFramework 的Go语言绑定，为Go开发者提供了一种简单而有效的方式，在他们的Go应用程序中使用MaaFramework的功能。 [`README_zh.md`](https://github.com/MaaXYZ/maa-framework-go/blob/b94931436039509e2ca5bc70871de93d9124205d/README_zh.md)

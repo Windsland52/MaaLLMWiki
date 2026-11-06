@@ -194,6 +194,8 @@ def _check_maafw_generated(
     inventories: list[SourceInventory],
     releases: ReleaseCatalog,
     source: RepositorySource,
+    source_map: SourceMap,
+    semantic_changes: SemanticChangeCatalog,
 ) -> list[str]:
     from .inventory import render_prereleases_page, render_release_index, render_version_indexes
 
@@ -229,6 +231,33 @@ def _check_maafw_generated(
         ),
         label="MaaFramework",
         description="prerelease registry",
+        errors=errors,
+    )
+    from .topics import render_semantic_changes_page, render_topics_page
+
+    latest_release = releases.releases[-1].version
+    _check_page(
+        generated_root / "topics.md",
+        render_topics_page(
+            source_map=source_map,
+            repository_url=source.url,
+            latest_release=latest_release,
+        ),
+        label="MaaFramework",
+        description="topic routes",
+        errors=errors,
+    )
+    _check_page(
+        generated_root / "behaviour-changes.md",
+        render_semantic_changes_page(
+            source_id=releases.source_id,
+            semantic_changes=semantic_changes,
+            source_map=source_map,
+            releases=releases,
+            repository_url=source.url,
+        ),
+        label="MaaFramework",
+        description="behaviour-change registry",
         errors=errors,
     )
     return errors
@@ -327,6 +356,25 @@ def _check_binding_generated(
 # --------------------------------------------------------------------------------------
 # Registries, manifests, hand-authored catalogs, schemas
 # --------------------------------------------------------------------------------------
+
+
+def _check_inventory_blobs(
+    inventories: list[SourceInventory],
+    *,
+    label: str,
+    errors: list[str],
+) -> None:
+    """Every indexed artifact must carry the git blob id of the content it describes."""
+    missing = [
+        f"{inventory.version}/{artifact.path}"
+        for inventory in inventories
+        for artifact in inventory.artifacts
+        if artifact.blob is None
+    ]
+    for item in missing[:10]:
+        errors.append(f"{label} inventory artifact has no blob id: {item}")
+    if len(missing) > 10:
+        errors.append(f"{label} inventory has {len(missing) - 10} more artifacts without a blob id")
 
 
 def _check_release_registry(
@@ -467,7 +515,17 @@ def validate_repository(root: Path) -> list[str]:
         label="MaaFramework",
         errors=errors,
     )
-    errors.extend(_check_maafw_generated(root, historical_inventories, releases, maafw_source))
+    _check_inventory_blobs(historical_inventories, label="MaaFramework", errors=errors)
+    errors.extend(
+        _check_maafw_generated(
+            root,
+            historical_inventories,
+            releases,
+            maafw_source,
+            source_map,
+            semantic_changes,
+        )
+    )
 
     compatibility_by_key = {
         (item.source_id, item.binding_version): item for item in binding_compatibility.bindings
@@ -504,6 +562,7 @@ def validate_repository(root: Path) -> list[str]:
             label=binding_source_id,
             errors=errors,
         )
+        _check_inventory_blobs(binding_inventories, label=binding_source_id, errors=errors)
         errors.extend(
             _check_binding_generated(
                 root,

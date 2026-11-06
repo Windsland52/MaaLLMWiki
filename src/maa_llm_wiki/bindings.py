@@ -14,6 +14,7 @@ from .inventory import (
     git_text,
     guard_registry_shrink,
     load_markdown,
+    ls_tree_blobs,
     markdown_metadata,
     registered_release_versions,
     render_prereleases_page,
@@ -102,26 +103,27 @@ def discover_binding_artifacts(
     spec: BindingSourceSpec,
 ) -> list[SourceArtifact]:
     git_text(repository, "cat-file", "-e", f"{revision}^{{commit}}")
-    paths = git_text(repository, "ls-tree", "-r", "--name-only", revision).splitlines()
+    blobs = ls_tree_blobs(repository, revision)
     classified = [
-        (path, kind)
-        for path in paths
+        (path, blobs[path], kind)
+        for path in blobs
         if (kind := _classify_binding_path(spec.source_id, path)) is not None
     ]
     markdown = load_markdown(
         repository,
         revision,
-        [path for path, kind in classified if kind is ArtifactKind.DOCUMENTATION],
+        [path for path, _blob, kind in classified if kind is ArtifactKind.DOCUMENTATION],
     )
     return sorted(
         [
             SourceArtifact(
                 path=path,
                 kind=kind,
+                blob=blob,
                 title=(details := _describe_binding_artifact(spec, path, kind, markdown))[0],
                 summary=details[1],
             )
-            for path, kind in classified
+            for path, blob, kind in classified
         ],
         key=lambda artifact: artifact.path,
     )

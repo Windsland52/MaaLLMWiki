@@ -4,9 +4,11 @@ revision: bc01af847b489f6cde96a500ee3d58c3a94a6977
 artifacts:
 - path: Cargo.toml
   kind: package-manifest
+  blob: 7d7ed21bd5d0568d25811dc5afe0fbd156592477
   title: Cargo.toml
   summary: Package and dependency metadata for the Rust binding.
 - path: README.md
   kind: documentation
+  blob: 417a0937a431cad99a9cf9e44b5fa8c7dde89638
   title: MaaFramework Rust bindings
   summary: Official documentation for MaaFramework Rust bindings.

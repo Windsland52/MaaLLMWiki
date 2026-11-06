@@ -15,9 +15,12 @@ from maa_llm_wiki.bindings import (
     sync_binding_history,
 )
 from maa_llm_wiki.inventory import (
+    discover_maafw_artifacts,
     discover_prereleases,
     discover_stable_releases,
     git_text,
+    markdown_metadata,
+    render_release_index,
     resolve_included_in,
     sync_maafw_history,
 )
@@ -106,6 +109,7 @@ def _write_maafw_root(
     revision: str | None = None,
 ) -> Path:
     root = tmp_path / "root"
+    revision = revision or releases[0].commit
     catalog = ReleaseCatalog(
         source_id="maafw",
         releases=releases,
@@ -115,10 +119,34 @@ def _write_maafw_root(
         root / "sources" / "maa-framework" / "releases.yaml", catalog.model_dump(mode="json")
     )
     _write_yaml(
+        root / "sources" / "maa-framework" / "source-map.yaml",
+        {
+            "topics": [
+                {
+                    "id": "framework.pipeline-control-flow",
+                    "source_id": "maafw",
+                    "variants": [
+                        {
+                            "applies_to": releases[0].version,
+                            "revision": revision,
+                            "paths": ["docs/test.md"],
+                            "symbols": [],
+                            "terms": ["timeout"],
+                        }
+                    ],
+                }
+            ]
+        },
+    )
+    _write_yaml(
+        root / "sources" / "maa-framework" / "semantic-changes.yaml",
+        {"source_id": "maafw", "changes": []},
+    )
+    _write_yaml(
         root / "sources" / "repositories.yaml",
-        RepositoryCatalog(
-            repositories=[_repository_source("maafw", revision or releases[0].commit)]
-        ).model_dump(mode="json"),
+        RepositoryCatalog(repositories=[_repository_source("maafw", revision)]).model_dump(
+            mode="json"
+        ),
     )
     return root
 
@@ -475,3 +503,163 @@ def test_rust_compatibility_accepts_prerelease_dependency(tmp_path: Path) -> Non
     assert compatibility.framework_version == "5.15.0-beta.1"
     assert compatibility.evidence_paths == ["Cargo.toml"]
     assert "maa-framework-sys" in compatibility.note
+
+
+def test_discover_artifacts_records_blob_ids(tmp_path: Path) -> None:
+    repository = _init_repository(tmp_path / "upstream")
+    commit = _commit_files(
+        repository,
+        {
+            "docs/guide.md": "# Guide\n\nProse.\n",
+            "tools/pipeline.schema.json": "{}\n",
+            "include/MaaFramework/MaaDef.h": "#pragma once\n",
+            "source/binding/Python/maa/tasker.py": "x = 1\n",
+            "notes/unclassified.txt": "ignored\n",
+        },
+    )
+
+    artifacts = discover_maafw_artifacts(repository, commit)
+
+    assert {artifact.path for artifact in artifacts} == {
+        "docs/guide.md",
+        "tools/pipeline.schema.json",
+        "include/MaaFramework/MaaDef.h",
+        "source/binding/Python/maa/tasker.py",
+    }
+    for artifact in artifacts:
+        assert artifact.blob == _git(repository, "rev-parse", f"{commit}:{artifact.path}")
+
+
+def test_ls_tree_blobs_keeps_symlink_entries(tmp_path: Path) -> None:
+    repository = _init_repository(tmp_path / "upstream")
+    _commit_files(repository, {"docs/guide.md": "# Guide\n\nProse.\n"})
+    blob = subprocess.run(
+        ["git", "hash-object", "-w", "--stdin"],
+        cwd=repository,
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        input="guide.md\n",
+    ).stdout.strip()
+    _git(repository, "update-index", "--add", "--cacheinfo", f"120000,{blob},docs/link.md")
+    _git(repository, "commit", "-q", "-m", "symlink")
+    commit = _git(repository, "rev-parse", "HEAD")
+
+    artifacts = discover_maafw_artifacts(repository, commit)
+
+    link = next(artifact for artifact in artifacts if artifact.path == "docs/link.md")
+    assert link.blob == blob
+
+
+def test_markdown_metadata_accepts_html_h1_and_skips_language_switcher() -> None:
+    content = (
+        "<!-- markdownlint-disable MD033 MD041 -->\n"
+        '<p align="center">\n'
+        '  <img alt="LOGO" src="https://example.invalid/logo.png" />\n'
+        "</p>\n"
+        "\n"
+        '<h1 align="center">MaaFramework Go Binding</h1>\n'
+        "\n"
+        '<p align="center">\n'
+        '  English | <a href="README_zh.md">简体中文</a>\n'
+        "</p>\n"
+        "\n"
+        "Go binding for [MaaFramework](https://github.com/MaaXYZ/MaaFramework), a cross-platform"
+        " automation testing framework.\n"
+        "\n"
+        "## Features\n"
+        "\n"
+        "- **Cross-platform Controllers** - ADB and Win32.\n"
+    )
+
+    title, summary = markdown_metadata(content, "README")
+
+    assert title == "MaaFramework Go Binding"
+    assert summary.startswith("Go binding for MaaFramework, a cross-platform automation")
+    assert "English" not in summary
+    assert "<a" not in summary
+
+
+def test_markdown_metadata_skips_malformed_multiline_html() -> None:
+    content = (
+        "# MaaFramework Golang Binding\n"
+        "\n"
+        "<p>\n"
+        '    <a href="https://example.invalid/releases/tag/v2.0.0-alpha.2">\n'
+        '        <img alt="maa framework" src="https://example.invalid/badge/MaaFramework-v2.0.0--alpha.2-blue"\n'
+        "    </a>\n"
+        "</p>\n"
+        "\n"
+        "English | [简体中文](README_zh.md)\n"
+        "\n"
+        "This is the Go binding for MaaFramework.\n"
+    )
+
+    title, summary = markdown_metadata(content, "README")
+
+    assert title == "MaaFramework Golang Binding"
+    assert summary == "This is the Go binding for MaaFramework."
+
+
+def test_markdown_metadata_uses_list_items_when_no_paragraph_exists() -> None:
+    content = (
+        "# 2.1 Integration\n"
+        "\n"
+        "## C++\n"
+        "\n"
+        "- Interface Status:\n"
+        "  - Native interface available\n"
+        "  - Full functionality available\n"
+        "- [Source](https://example.invalid/source)\n"
+    )
+
+    title, summary = markdown_metadata(content, "2.1-Integration")
+
+    assert title == "2.1 Integration"
+    assert "Interface Status:" in summary
+    assert "Native interface available" in summary
+    assert "Official documentation for" not in summary
+
+
+def test_markdown_metadata_uses_blockquote_when_no_paragraph_exists() -> None:
+    content = (
+        "# 3.2 Project Interface\n"
+        "\n"
+        "> [!NOTE]\n"
+        "> The current document has been deprecated.\n"
+        "> Use the V2 protocol instead.\n"
+    )
+
+    title, summary = markdown_metadata(content, "3.2-ProjectInterface")
+
+    assert title == "3.2 Project Interface"
+    assert summary == "The current document has been deprecated. Use the V2 protocol instead."
+    assert "[!NOTE]" not in summary
+
+
+def test_markdown_metadata_keeps_generic_fallback_for_link_only_docs() -> None:
+    content = (
+        "# MaaFW NodeJS\n"
+        "\n"
+        "[文档](../../../docs/zh_cn/NodeJS/J1.1-快速开始.md)\n"
+        "\n"
+        "[Document](../../../docs/en_us/NodeJS/J1.1-QuickStarted.md)\n"
+    )
+
+    title, summary = markdown_metadata(content, "README")
+
+    assert title == "MaaFW NodeJS"
+    assert summary == "Official documentation for MaaFW NodeJS."
+
+
+def test_render_release_index_links_topics_and_behaviour_pages() -> None:
+    releases = [
+        ReleaseRecord(version="1.0.0", tag="v1.0.0", commit="a" * 40, released_at=FIXED_DATE)
+    ]
+    page = render_release_index(releases, [])
+
+    assert "[Browse curated topic routes](./topics.md)" in page
+    assert "[Browse recorded behaviour changes](./behaviour-changes.md)" in page
+    assert "## Topics" in page
+    assert "## Behaviour changes" in page

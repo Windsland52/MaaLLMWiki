@@ -26,6 +26,9 @@ class ArtifactKind(StrEnum):
 
 def _normalize_relative_path(value: str) -> str:
     normalized = value.strip().replace("\\", "/")
+    while normalized.startswith("./"):
+        normalized = normalized[2:]
+    normalized = "/".join(part for part in normalized.split("/") if part not in {"", "."})
     candidate = PurePosixPath(normalized)
     if not normalized or candidate.is_absolute() or ".." in candidate.parts:
         raise ValueError("Source paths must be non-empty relative paths without parent traversal")
@@ -35,6 +38,7 @@ def _normalize_relative_path(value: str) -> str:
 class SourceArtifact(StrictModel):
     path: str
     kind: ArtifactKind
+    blob: str | None = Field(default=None, pattern=COMMIT_PATTERN)
     title: str = Field(min_length=1)
     summary: str = Field(min_length=1)
 
@@ -152,6 +156,20 @@ class ReleaseCatalog(StrictModel):
                     f"Prerelease {prerelease.version} references unknown stable release: "
                     f"{prerelease.included_in}"
                 )
+        return self
+
+    @model_validator(mode="after")
+    def require_tags_match_versions(self) -> ReleaseCatalog:
+        seen_tags: set[str] = set()
+        for record in [*self.releases, *self.prereleases]:
+            if record.tag != f"v{record.version}":
+                raise ValueError(
+                    f"Release tag does not name its version: {record.tag} / {record.version}"
+                )
+            if record.tag in seen_tags:
+                raise ValueError(f"Duplicate release tag: {record.tag}")
+            seen_tags.add(record.tag)
+        return self
         return self
 
 

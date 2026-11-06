@@ -64,3 +64,11 @@ Select a version before using framework facts or APIs.
 ## Prereleases
 
 [Pre-release registry](./prereleases.md)
+
+## Topics
+
+[Browse curated topic routes](./topics.md)
+
+## Behaviour changes
+
+[Browse recorded behaviour changes](./behaviour-changes.md)

@@ -4,165 +4,207 @@ revision: c958c7bebd312c804c4e603325a4072bc854fa1f
 artifacts:
 - path: CHANGELOG.md
   kind: documentation
+  blob: 8d56171ae307d8874c3afd1162132373778d3055
   title: Changelog
   summary: 本节记录 `v4.0.0-beta.19` → `v4.0.0` 的净变化。升级操作见 迁移指南。
 - path: README.md
   kind: documentation
-  title: README
-  summary: English | <a href="README_zh.md">简体中文</a>
+  blob: cf1d673559fe7eede3cdda15bfd4d0fa93344d6a
+  title: MaaFramework Go Binding
+  summary: Go binding for MaaFramework, a cross-platform automation testing framework
+    based on image recognition.
 - path: README_zh.md
   kind: documentation
-  title: README_zh
+  blob: 768b0920a59b0296a77899ff9206d55130d4f4e1
+  title: MaaFramework Go 绑定
   summary: MaaFramework 的 Go 语言绑定。MaaFramework 是一个基于图像识别的跨平台自动化测试框架。
 - path: action.go
   kind: binding-api
+  blob: 7f0e6c027352662d7951201bb05bb5e3c3e48414
   title: action.go
   summary: Public Go binding declarations for the action module.
 - path: action_result.go
   kind: binding-api
+  blob: 92083861af80038176f5cd189e602524d16d005f
   title: action_result.go
   summary: Public Go binding declarations for the action_result module.
 - path: agent_client.go
   kind: binding-api
+  blob: 4fdb2616de506bae2a624978b74e2d4df2a253ac
   title: agent_client.go
   summary: Public Go binding declarations for the agent_client module.
 - path: agent_server.go
   kind: binding-api
+  blob: 4642187c4b66a345a55b5f7b37942dcfe3dabe5a
   title: agent_server.go
   summary: Public Go binding declarations for the agent_server module.
 - path: blank_controller.go
   kind: binding-api
+  blob: aecb1a40a37c14d0b36949e7af1f3f5c651ce12c
   title: blank_controller.go
   summary: Public Go binding declarations for the blank_controller module.
 - path: class_selector.go
   kind: binding-api
+  blob: fed08de8b69768069c03e8117c6ad36951057eb1
   title: class_selector.go
   summary: Public Go binding declarations for the class_selector module.
 - path: context.go
   kind: binding-api
+  blob: 796d7b2640de4329c6a3ba792c023af16bb5b431
   title: context.go
   summary: Public Go binding declarations for the context module.
 - path: context_state.go
   kind: binding-api
+  blob: c05d1486d0cdfa5bef641d0c222a3d3890118eca
   title: context_state.go
   summary: Public Go binding declarations for the context_state module.
 - path: controller.go
   kind: binding-api
+  blob: 7649a3896608700bf159e569b41d8f20236dc0e0
   title: controller.go
   summary: Public Go binding declarations for the controller module.
 - path: controller/adb/adb.go
   kind: binding-api
+  blob: 51058c1378977348691f4e88cdfee7f35a6630eb
   title: adb.go
   summary: Public Go binding declarations for the adb module.
 - path: controller/gamepad/gamepad.go
   kind: binding-api
+  blob: bc665e85356c688cbe479b5ee8fc0a2834c4c738
   title: gamepad.go
   summary: Public Go binding declarations for the gamepad module.
 - path: controller/macos/macos.go
   kind: binding-api
+  blob: bfe16302587ca6fa533cf8a35aaa39a4c0441465
   title: macos.go
   summary: Public Go binding declarations for the macos module.
 - path: controller/win32/win32.go
   kind: binding-api
+  blob: 014f8a572df0ef13a66794c1968be19997ca7695
   title: win32.go
   summary: Public Go binding declarations for the win32 module.
 - path: custom_action.go
   kind: binding-api
+  blob: 1b3dfab17a92460ab742399fbcc7647d4ad6f260
   title: custom_action.go
   summary: Public Go binding declarations for the custom_action module.
 - path: custom_controller.go
   kind: binding-api
+  blob: 911c322e87752a4577c7e50e4f0eea1f63f64f09
   title: custom_controller.go
   summary: Public Go binding declarations for the custom_controller module.
 - path: custom_recognition.go
   kind: binding-api
+  blob: 09b8d3e474a56d6e9db8c7ab7cb1dbb2e31056b4
   title: custom_recognition.go
   summary: Public Go binding declarations for the custom_recognition module.
 - path: doc.go
   kind: binding-api
+  blob: a525ee187dfd582aa8ec4c7b5924ef093ca0cf5c
   title: doc.go
   summary: Public Go binding declarations for the doc module.
 - path: event.go
   kind: binding-api
+  blob: bcf1604f876b1d6d2e6eb23e34f500b4f82e988b
   title: event.go
   summary: Public Go binding declarations for the event module.
 - path: go.mod
   kind: package-manifest
+  blob: 77d35fc3b5a98db751a6da41f65fa0b3524e1da7
   title: go.mod
   summary: Package and dependency metadata for the Go binding.
 - path: handle_state.go
   kind: binding-api
+  blob: ede10455e5520d7662b1927596145e6a77d4df94
   title: handle_state.go
   summary: Public Go binding declarations for the handle_state module.
 - path: job.go
   kind: binding-api
+  blob: 62d3ef83dd701ce09f54d17a5c0a5420005f8570
   title: job.go
   summary: Public Go binding declarations for the job module.
 - path: json_codec.go
   kind: binding-api
+  blob: 4d600184119f19a056a3564df43dd3ddd32a0889
   title: json_codec.go
   summary: Public Go binding declarations for the json_codec module.
 - path: maa.go
   kind: binding-api
+  blob: 7fb0adb209be578d9b0e40948f55abb2a0dac55b
   title: maa.go
   summary: Public Go binding declarations for the maa module.
 - path: millis.go
   kind: binding-api
+  blob: 74023a79e2223f2c8e97aded6624890b60f24c7b
   title: millis.go
   summary: Public Go binding declarations for the millis module.
 - path: node.go
   kind: binding-api
+  blob: 32b9a22e6bdc028717b48c89ae7b8ed594ba23dc
   title: node.go
   summary: Public Go binding declarations for the node module.
 - path: pipeline.go
   kind: binding-api
+  blob: cfa9f7a931a91cb60b8ab0926e7c21664ccf5967
   title: pipeline.go
   summary: Public Go binding declarations for the pipeline module.
 - path: raw_param.go
   kind: binding-api
+  blob: e812189ead5f42ad76b46b5013ddb7c8ea0f9cfc
   title: raw_param.go
   summary: Public Go binding declarations for the raw_param module.
 - path: recognition.go
   kind: binding-api
+  blob: 189c17a1e6fc35e9a8ede7bcec82e0a8f61fca41
   title: recognition.go
   summary: Public Go binding declarations for the recognition module.
 - path: recognition_result.go
   kind: binding-api
+  blob: 3ede60b480356335b88cd2783ba9218e27481e66
   title: recognition_result.go
   summary: Public Go binding declarations for the recognition_result module.
 - path: rect.go
   kind: binding-api
+  blob: ce702470fba229f56aa28e27207dc136c993eda9
   title: rect.go
   summary: Public Go binding declarations for the rect module.
 - path: resource.go
   kind: binding-api
+  blob: bb75ba3102fb903cc811d48427ca5bdf7feed51a
   title: resource.go
   summary: Public Go binding declarations for the resource module.
 - path: status.go
   kind: binding-api
+  blob: 2043581e878892ccc0330cf47af42ee23a8d8ee5
   title: status.go
   summary: Public Go binding declarations for the status module.
 - path: string_list.go
   kind: binding-api
+  blob: 36e3ecded8a14c5c42d41e057433d6a7a16b5b52
   title: string_list.go
   summary: Public Go binding declarations for the string_list module.
 - path: target.go
   kind: binding-api
+  blob: 3bafc60517b6b5333e66361caabc136f96e0e9e7
   title: target.go
   summary: Public Go binding declarations for the target module.
 - path: tasker.go
   kind: binding-api
+  blob: 7f944c1d7dae38ed9d67a41fa849461257d94437
   title: tasker.go
   summary: Public Go binding declarations for the tasker module.
 - path: toolkit.go
   kind: binding-api
+  blob: 6d7c0d49dec2aa04f986ecb6fab8481acfa641d2
   title: toolkit.go
   summary: Public Go binding declarations for the toolkit module.
 - path: version.go
   kind: binding-api
+  blob: 47d4b43ab15b91f7e4f3b92a0fe8f2099aaa374b
   title: version.go
   summary: Public Go binding declarations for the version module.
 - path: wait_freezes.go
   kind: binding-api
+  blob: 9b27f4cb13c8872a04253a276d8b5872c0f2c7ac
   title: wait_freezes.go
   summary: Public Go binding declarations for the wait_freezes module.

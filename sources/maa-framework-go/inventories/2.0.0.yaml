@@ -4,73 +4,92 @@ revision: 6a3e3e18726537ad780aa379f75ad570a5107f9b
 artifacts:
 - path: README.md
   kind: documentation
+  blob: 2b7158ecdebc9a5861d8f3283e39d7a665135e02
   title: MaaFramework Golang Binding
-  summary: English | 简体中文
+  summary: This is the Go binding for MaaFramework, providing Go developers with a
+    simple and effective way to use MaaFramework's features within their Go applications.
 - path: README_zh.md
   kind: documentation
+  blob: 3c32065ae87ef0563ffeab14f57b450e14213a22
   title: MaaFramework Golang 绑定
-  summary: English | 简体中文
+  summary: 这是 MaaFramework 的Go语言绑定，为Go开发者提供了一种简单而有效的方式，在他们的Go应用程序中使用MaaFramework的功能。
 - path: context.go
   kind: binding-api
+  blob: d875f64679d6566ad43f734ff575ef895a5ca932
   title: context.go
   summary: Public Go binding declarations for the context module.
 - path: controller.go
   kind: binding-api
+  blob: 3c80a894b1a81ecc7f3c1fed6797f5e0dae17dad
   title: controller.go
   summary: Public Go binding declarations for the controller module.
 - path: custom_action.go
   kind: binding-api
+  blob: bb2b132d3521153fb0acadf45b4c0c5fcd94ac22
   title: custom_action.go
   summary: Public Go binding declarations for the custom_action module.
 - path: custom_controller.go
   kind: binding-api
+  blob: 961e1c1991a33c600c450056ae6cc3df86efd06e
   title: custom_controller.go
   summary: Public Go binding declarations for the custom_controller module.
 - path: custom_recognition.go
   kind: binding-api
+  blob: cca69cfe12294763e6c7e94fc05fbbb336c47896
   title: custom_recognition.go
   summary: Public Go binding declarations for the custom_recognition module.
 - path: go.mod
   kind: package-manifest
+  blob: c3a41367b5981af3d20667425a3f91bc073fa322
   title: go.mod
   summary: Package and dependency metadata for the Go binding.
 - path: job.go
   kind: binding-api
+  blob: 3008b7a59a7b76bb60839bdb78e82a7b507f75c8
   title: job.go
   summary: Public Go binding declarations for the job module.
 - path: json.go
   kind: binding-api
+  blob: 2a5a54d3676b690711c8c05e1616ccaf58ae2716
   title: json.go
   summary: Public Go binding declarations for the json module.
 - path: notification.go
   kind: binding-api
+  blob: fcc8c4cdd40aa9106c9bc379a53ab3c8d795ed1d
   title: notification.go
   summary: Public Go binding declarations for the notification module.
 - path: option.go
   kind: binding-api
+  blob: 43fe284e11368c86075a3edecb1fb3ec9b8f8903
   title: option.go
   summary: Public Go binding declarations for the option module.
 - path: rect.go
   kind: binding-api
+  blob: 6af511ee18fd5a9709ba7b8ec7a32273207b56b7
   title: rect.go
   summary: Public Go binding declarations for the rect module.
 - path: resource.go
   kind: binding-api
+  blob: 137e0f42cd808f1ec7751d156d75c0a8a27ae6ce
   title: resource.go
   summary: Public Go binding declarations for the resource module.
 - path: status.go
   kind: binding-api
+  blob: 7a94bd79f7048f478c7f662c8b584a710e33afc7
   title: status.go
   summary: Public Go binding declarations for the status module.
 - path: tasker.go
   kind: binding-api
+  blob: 5a06fe2558adfc8cda0b9b9532740b01962b1ad0
   title: tasker.go
   summary: Public Go binding declarations for the tasker module.
 - path: toolkit.go
   kind: binding-api
+  blob: 6907426919d9251e08e8ac392910e12a23929b03
   title: toolkit.go
   summary: Public Go binding declarations for the toolkit module.
 - path: version.go
   kind: binding-api
+  blob: 4dcb48d76b77ac556576e65063d573382f0738b7
   title: version.go
   summary: Public Go binding declarations for the version module.

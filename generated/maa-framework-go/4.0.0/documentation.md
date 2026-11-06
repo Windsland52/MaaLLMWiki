@@ -4,5 +4,5 @@
 MaaFramework Go binding `4.0.0` at `c958c7bebd312c804c4e603325a4072bc854fa1f`.
 
 - **Changelog**: 本节记录 `v4.0.0-beta.19` → `v4.0.0` 的净变化。升级操作见 迁移指南。 [`CHANGELOG.md`](https://github.com/MaaXYZ/maa-framework-go/blob/c958c7bebd312c804c4e603325a4072bc854fa1f/CHANGELOG.md)
-- **README**: English | <a href="README_zh.md">简体中文</a> [`README.md`](https://github.com/MaaXYZ/maa-framework-go/blob/c958c7bebd312c804c4e603325a4072bc854fa1f/README.md)
-- **README_zh**: MaaFramework 的 Go 语言绑定。MaaFramework 是一个基于图像识别的跨平台自动化测试框架。 [`README_zh.md`](https://github.com/MaaXYZ/maa-framework-go/blob/c958c7bebd312c804c4e603325a4072bc854fa1f/README_zh.md)
+- **MaaFramework Go Binding**: Go binding for MaaFramework, a cross-platform automation testing framework based on image recognition. [`README.md`](https://github.com/MaaXYZ/maa-framework-go/blob/c958c7bebd312c804c4e603325a4072bc854fa1f/README.md)
+- **MaaFramework Go 绑定**: MaaFramework 的 Go 语言绑定。MaaFramework 是一个基于图像识别的跨平台自动化测试框架。 [`README_zh.md`](https://github.com/MaaXYZ/maa-framework-go/blob/c958c7bebd312c804c4e603325a4072bc854fa1f/README_zh.md)

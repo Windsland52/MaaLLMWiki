@@ -4,113 +4,142 @@ revision: 500f018ffbc93c693cdb4bc3175bc911d2c2a233
 artifacts:
 - path: Cargo.toml
   kind: package-manifest
+  blob: 79596f84a0c08d7b420682afa8e9f39637cd300d
   title: Cargo.toml
   summary: Package and dependency metadata for the Rust binding.
 - path: README.md
   kind: documentation
-  title: README
-  summary: English | <a href="https://github.com/MaaXYZ/maa-framework-rs/blob/main/README_zh.md">简体中文</a>
+  blob: fb401fbe7e459db62a7c51aac81dd9dde9cfd6fb
+  title: MaaFramework Rust Binding
+  summary: Rust bindings for MaaFramework, a next-generation automation framework
+    based on image recognition.
 - path: README_zh.md
   kind: documentation
-  title: README_zh
-  summary: 从 MaaFramework Releases 下载：
+  blob: 48ed43b7ed2df02dd25f2edf9720b567d145f571
+  title: MaaFramework Rust Binding
+  summary: MaaFramework 的 Rust 绑定，基于图像识别的新一代自动化框架。
 - path: maa-framework-sys/Cargo.toml
   kind: package-manifest
+  blob: 356f75e09c9a6af695aff1d5deae765f091ccc54
   title: Cargo.toml
   summary: Package and dependency metadata for the Rust binding.
 - path: maa-framework-sys/src/bindings/dynamic_bindings.rs
   kind: binding-api
+  blob: 1c522abe286281d20b63aaeeb212c14450eb58ed
   title: dynamic_bindings.rs
   summary: Public Rust binding declarations for the dynamic_bindings module.
 - path: maa-framework-sys/src/bindings/shims.rs
   kind: binding-api
+  blob: 5f15a7df5cce03043755787ac9da6858e3880241
   title: shims.rs
   summary: Public Rust binding declarations for the shims module.
 - path: maa-framework-sys/src/bindings/static_bindings.rs
   kind: binding-api
+  blob: a69ae77db126aad7ee3f6aaf44a3d78130e3c1cc
   title: static_bindings.rs
   summary: Public Rust binding declarations for the static_bindings module.
 - path: maa-framework-sys/src/lib.rs
   kind: binding-api
+  blob: 6cb3e4197d67ca6d564b1eb08f6d5535c1cfcfb7
   title: lib.rs
   summary: Public Rust binding declarations for the lib module.
 - path: maa-framework/Cargo.toml
   kind: package-manifest
+  blob: 45ff1af052d189adb4c13d5f5e4087f1591f7427
   title: Cargo.toml
   summary: Package and dependency metadata for the Rust binding.
 - path: maa-framework/src/agent_client.rs
   kind: binding-api
+  blob: 19a9d9fb27223fbbaceb73e701a79969ca0eb4f6
   title: agent_client.rs
   summary: Public Rust binding declarations for the agent_client module.
 - path: maa-framework/src/agent_server.rs
   kind: binding-api
+  blob: 4e9d71cbbc5baf51cb74e140a909c36fa53e7ed2
   title: agent_server.rs
   summary: Public Rust binding declarations for the agent_server module.
 - path: maa-framework/src/buffer.rs
   kind: binding-api
+  blob: 5a2ff2fb092a2c0e4e3b53c89543832853bf262b
   title: buffer.rs
   summary: Public Rust binding declarations for the buffer module.
 - path: maa-framework/src/callback.rs
   kind: binding-api
+  blob: dbfcd63938d12b4416a78fa3c22e3704f91ebe9b
   title: callback.rs
   summary: Public Rust binding declarations for the callback module.
 - path: maa-framework/src/common.rs
   kind: binding-api
+  blob: bc984f3b91884341d44690c26882585d470cd78c
   title: common.rs
   summary: Public Rust binding declarations for the common module.
 - path: maa-framework/src/context.rs
   kind: binding-api
+  blob: e1f30f079e057c1c03f697afccfe3a8155a5bcf8
   title: context.rs
   summary: Public Rust binding declarations for the context module.
 - path: maa-framework/src/controller.rs
   kind: binding-api
+  blob: 5cd90f6aa1ad86b5f33b74995f7dc2a14e47b28c
   title: controller.rs
   summary: Public Rust binding declarations for the controller module.
 - path: maa-framework/src/custom.rs
   kind: binding-api
+  blob: bbc953ebc64796a5c1dafe1d16d69756bf27a02e
   title: custom.rs
   summary: Public Rust binding declarations for the custom module.
 - path: maa-framework/src/custom_controller.rs
   kind: binding-api
+  blob: eb33ecab57103b9ce4c2566f8b6058508c5864a1
   title: custom_controller.rs
   summary: Public Rust binding declarations for the custom_controller module.
 - path: maa-framework/src/error.rs
   kind: binding-api
+  blob: 40bece988133125c5575e28f970395d97f5c2b76
   title: error.rs
   summary: Public Rust binding declarations for the error module.
 - path: maa-framework/src/event_sink.rs
   kind: binding-api
+  blob: 187bf27781bcafe24c0998f1e8dec92dc29203a0
   title: event_sink.rs
   summary: Public Rust binding declarations for the event_sink module.
 - path: maa-framework/src/job.rs
   kind: binding-api
+  blob: 2e7d64b40241d03997b0f502e3595fafb62b4111
   title: job.rs
   summary: Public Rust binding declarations for the job module.
 - path: maa-framework/src/lib.rs
   kind: binding-api
+  blob: 65d21cd6ac67f99bcd5700118145bbd202371192
   title: lib.rs
   summary: Public Rust binding declarations for the lib module.
 - path: maa-framework/src/notification.rs
   kind: binding-api
+  blob: 82b5410aabea746c84a8d9693dbf33bf56285a34
   title: notification.rs
   summary: Public Rust binding declarations for the notification module.
 - path: maa-framework/src/pipeline.rs
   kind: binding-api
+  blob: a9cae78c8f27a7f4e8c0043e7e21b178c0218f14
   title: pipeline.rs
   summary: Public Rust binding declarations for the pipeline module.
 - path: maa-framework/src/resource.rs
   kind: binding-api
+  blob: 2b34e2bca832236d80cf42aeacf98cc415b4ba85
   title: resource.rs
   summary: Public Rust binding declarations for the resource module.
 - path: maa-framework/src/tasker.rs
   kind: binding-api
+  blob: e99b83b8001bf08064505670f1094f3c79280f7f
   title: tasker.rs
   summary: Public Rust binding declarations for the tasker module.
 - path: maa-framework/src/toolkit.rs
   kind: binding-api
+  blob: 36e9e6df8f11a563c18a72bbcd9d8bd2287f2fe1
   title: toolkit.rs
   summary: Public Rust binding declarations for the toolkit module.
 - path: maa-framework/src/util.rs
   kind: binding-api
+  blob: b572a1cd349e3d7cb21b04abc0b13b356ed1ceb5
   title: util.rs
   summary: Public Rust binding declarations for the util module.

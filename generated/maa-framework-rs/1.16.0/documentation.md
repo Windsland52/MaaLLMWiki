@@ -3,5 +3,5 @@
 
 MaaFramework Rust binding `1.16.0` at `a6fe7da1b50eb38db9f652cda0702664414a0bfc`.
 
-- **README**: English | <a href="https://github.com/MaaXYZ/maa-framework-rs/blob/main/README_zh.md">简体中文</a> [`README.md`](https://github.com/MaaXYZ/maa-framework-rs/blob/a6fe7da1b50eb38db9f652cda0702664414a0bfc/README.md)
-- **README_zh**: 从 MaaFramework Releases 下载： [`README_zh.md`](https://github.com/MaaXYZ/maa-framework-rs/blob/a6fe7da1b50eb38db9f652cda0702664414a0bfc/README_zh.md)
+- **MaaFramework Rust Binding**: Rust bindings for MaaFramework, a next-generation automation framework based on image recognition. [`README.md`](https://github.com/MaaXYZ/maa-framework-rs/blob/a6fe7da1b50eb38db9f652cda0702664414a0bfc/README.md)
+- **MaaFramework Rust Binding**: MaaFramework 的 Rust 绑定，基于图像识别的新一代自动化框架。 [`README_zh.md`](https://github.com/MaaXYZ/maa-framework-rs/blob/a6fe7da1b50eb38db9f652cda0702664414a0bfc/README_zh.md)

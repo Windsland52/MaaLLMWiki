@@ -15,11 +15,20 @@ import yaml
 from .models import (
     ArtifactKind,
     PrereleaseRecord,
+    ReleaseCatalog,
     ReleaseRecord,
+    SemanticChangeCatalog,
     SourceArtifact,
     SourceInventory,
+    SourceMap,
 )
-from .validation import load_release_catalog, load_repository_catalog
+from .topics import render_semantic_changes_page, render_topics_page
+from .validation import (
+    load_release_catalog,
+    load_repository_catalog,
+    load_semantic_changes,
+    load_source_map,
+)
 
 STABLE_TAG_PATTERN = re.compile(r"^v(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)$")
 PRERELEASE_TAG_PATTERN = re.compile(
@@ -74,37 +83,126 @@ def _classify(path: str) -> ArtifactKind | None:
     return None
 
 
+_HTML_TAG_PATTERN = re.compile(r"<[^>]*>")
+_MARKDOWN_LINK_PATTERN = re.compile(r"\[([^\]]+)]\([^)]+\)")
+_HTML_H1_PATTERN = re.compile(r"<h1\b[^>]*>(?P<title>.*?)</h1>", re.IGNORECASE | re.DOTALL)
+_LIST_ITEM_PATTERN = re.compile(r"^(?:[-*+] |\d+\.\s)")
+_LANGUAGE_LABELS = frozenset({"english", "简体中文", "繁體中文", "中文", "日本語", "한국어"})
+
+
+def _plain_text(line: str) -> str:
+    """Strip HTML tags and markdown link syntax, keeping the visible text."""
+    text = _HTML_TAG_PATTERN.sub("", line)
+    text = _MARKDOWN_LINK_PATTERN.sub(r"\1", text)
+    return " ".join(text.split())
+
+
+def _is_language_switcher(text: str) -> bool:
+    tokens = [token for token in re.split(r"[\s|·/,，、&]+", text) if token]
+    return bool(tokens) and all(token.casefold() in _LANGUAGE_LABELS for token in tokens)
+
+
 def markdown_metadata(content: str, fallback_title: str) -> tuple[str, str]:
     lines = content.replace("\r\n", "\n").splitlines()
-    title_index = next((index for index, line in enumerate(lines) if line.startswith("# ")), None)
-    title = (
-        lines[title_index].removeprefix("# ").strip() if title_index is not None else fallback_title
-    )
+    title = fallback_title
+    title_index: int | None = None
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("# "):
+            title, title_index = stripped[2:].strip(), index
+            break
+        match = _HTML_H1_PATTERN.search(stripped)
+        if match is not None:
+            candidate = _plain_text(match["title"])
+            if candidate:
+                title, title_index = candidate, index
+                break
+
     paragraphs: list[str] = []
+    quotes: list[str] = []
+    list_blocks: list[str] = []
     current: list[str] = []
+    quote: list[str] = []
+    items: list[str] = []
     in_code = False
     start = title_index + 1 if title_index is not None else 0
+
+    def flush_paragraph() -> None:
+        if current:
+            paragraphs.append(" ".join(current))
+            current.clear()
+
+    def flush_quote() -> None:
+        if quote:
+            quotes.append(" ".join(quote))
+            quote.clear()
+
+    def flush_list() -> None:
+        if items:
+            if not list_blocks:
+                block = "; ".join(items)
+                list_blocks.append(block.replace(":; ", ": ").replace(":;", ":"))
+            items.clear()
+
     for line in lines[start : start + 60]:
         stripped = line.strip()
         if stripped.startswith("```"):
             in_code = not in_code
+            flush_paragraph()
             continue
-        if in_code or stripped.startswith(("#", "<", "!", "- ", "|", ">")):
+        if in_code:
             continue
         if not stripped:
-            if current:
-                paragraphs.append(" ".join(current))
-                current = []
+            flush_paragraph()
+            flush_quote()
+            flush_list()
+            continue
+        if stripped.startswith("#"):
+            flush_paragraph()
+            flush_quote()
+            flush_list()
+            continue
+        plain = _plain_text(stripped)
+        if not plain:
+            flush_paragraph()
+            flush_quote()
+            flush_list()
+            continue
+        if "<" in plain:
+            # Malformed multi-line HTML (an unclosed tag) is markup, not prose.
+            continue
+        if _is_language_switcher(plain):
+            continue
+        if stripped.startswith(">"):
+            flush_paragraph()
+            flush_list()
+            quoted = plain.removeprefix(">").strip()
+            if quoted and not re.fullmatch(r"\[![^\]]+]", quoted):
+                quote.append(quoted)
+            continue
+        if _LIST_ITEM_PATTERN.match(stripped):
+            flush_paragraph()
+            flush_quote()
+            items.append(_LIST_ITEM_PATTERN.sub("", plain, count=1).strip())
+            continue
+        if stripped.startswith(("!", "|")):
             continue
         if stripped.startswith("[") and stripped.endswith(")"):
             continue
-        current.append(stripped)
-    if current:
-        paragraphs.append(" ".join(current))
+        flush_quote()
+        flush_list()
+        current.append(plain)
+    flush_paragraph()
+    flush_quote()
+    flush_list()
+
     summary = next((paragraph for paragraph in paragraphs if paragraph != title), "")
+    if not summary and quotes:
+        summary = quotes[0]
+    if not summary and list_blocks:
+        summary = list_blocks[0]
     if not summary:
         summary = f"Official documentation for {title}."
-    summary = re.sub(r"\[([^\]]+)]\([^)]+\)", r"\1", summary)
     if len(summary) > 240:
         summary = summary[:237].rstrip() + "..."
     return title, summary
@@ -160,34 +258,49 @@ def _describe_artifact(path: str, kind: ArtifactKind, markdown: dict[str, str]) 
     )
 
 
+_LS_TREE_PATTERN = re.compile(
+    r"^(?P<mode>\d{6}) (?P<type>blob|tree|commit) (?P<object>[0-9a-f]{40})\t(?P<path>.+)$"
+)
+
+
+def ls_tree_blobs(
+    repository: Path, revision: str, paths: list[str] | None = None
+) -> dict[str, str]:
+    """Map every indexed file path to the git blob id it resolved to at `revision`."""
+    arguments = ["ls-tree", "-r", revision]
+    if paths:
+        arguments.extend(["--", *paths])
+    output = git_text(repository, *arguments)
+    blobs: dict[str, str] = {}
+    for line in output.splitlines():
+        match = _LS_TREE_PATTERN.fullmatch(line)
+        # Symlinks are recorded as `120000 blob`; only trees and submodules are dropped.
+        if match is None or match["type"] != "blob":
+            continue
+        blobs[match["path"]] = match["object"]
+    return blobs
+
+
 def discover_maafw_artifacts(repository: Path, revision: str) -> list[SourceArtifact]:
     git_text(repository, "cat-file", "-e", f"{revision}^{{commit}}")
-    paths = git_text(
-        repository,
-        "ls-tree",
-        "-r",
-        "--name-only",
-        revision,
-        "--",
-        "docs",
-        "tools",
-        "include",
-        "source/binding",
-    ).splitlines()
-    classified = [(path, kind) for path in paths if (kind := _classify(path)) is not None]
+    blobs = ls_tree_blobs(repository, revision, ["docs", "tools", "include", "source/binding"])
+    classified = [
+        (path, blobs[path], kind) for path in blobs if (kind := _classify(path)) is not None
+    ]
     markdown = load_markdown(
         repository,
         revision,
-        [path for path, kind in classified if kind is ArtifactKind.DOCUMENTATION],
+        [path for path, _blob, kind in classified if kind is ArtifactKind.DOCUMENTATION],
     )
     artifacts = [
         SourceArtifact(
             path=path,
             kind=kind,
+            blob=blob,
             title=(details := _describe_artifact(path, kind, markdown))[0],
             summary=details[1],
         )
-        for path, kind in classified
+        for path, blob, kind in classified
     ]
     return sorted(artifacts, key=lambda artifact: artifact.path)
 
@@ -370,6 +483,18 @@ def render_release_index(
                 "[Pre-release registry](./prereleases.md)",
             ]
         )
+    lines.extend(
+        [
+            "",
+            "## Topics",
+            "",
+            "[Browse curated topic routes](./topics.md)",
+            "",
+            "## Behaviour changes",
+            "",
+            "[Browse recorded behaviour changes](./behaviour-changes.md)",
+        ]
+    )
     return "\n".join(lines) + "\n"
 
 
@@ -377,8 +502,9 @@ def _write_generated_indexes(
     root: Path,
     inventory: SourceInventory,
     repository_url: str,
-    releases: list[ReleaseRecord],
-    prereleases: list[PrereleaseRecord],
+    catalog: ReleaseCatalog,
+    source_map: SourceMap,
+    semantic_changes: SemanticChangeCatalog,
 ) -> None:
     output_root = root / "generated" / "maa-framework"
     version_root = output_root / inventory.version
@@ -393,11 +519,14 @@ def _write_generated_indexes(
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8", newline="\n")
     output_root.mkdir(parents=True, exist_ok=True)
+    releases = catalog.releases
     indexed_releases = [
         release for release in releases if (output_root / release.version / "index.md").is_file()
     ]
     (output_root / "index.md").write_text(
-        render_release_index(indexed_releases, prereleases), encoding="utf-8", newline="\n"
+        render_release_index(indexed_releases, catalog.prereleases),
+        encoding="utf-8",
+        newline="\n",
     )
     (output_root / "prereleases.md").write_text(
         render_prereleases_page(
@@ -405,7 +534,27 @@ def _write_generated_indexes(
             generator="maa-wiki-sync-maafw-history",
             repository_url=repository_url,
             releases=releases,
-            prereleases=prereleases,
+            prereleases=catalog.prereleases,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    (output_root / "topics.md").write_text(
+        render_topics_page(
+            source_map=source_map,
+            repository_url=repository_url,
+            latest_release=releases[-1].version,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    (output_root / "behaviour-changes.md").write_text(
+        render_semantic_changes_page(
+            source_id=catalog.source_id,
+            semantic_changes=semantic_changes,
+            source_map=source_map,
+            releases=catalog,
+            repository_url=repository_url,
         ),
         encoding="utf-8",
         newline="\n",
@@ -414,6 +563,8 @@ def _write_generated_indexes(
 
 def sync_maafw_inventory(*, root: Path, repository: Path, version: str) -> None:
     releases = load_release_catalog(root)
+    source_map = load_source_map(root)
+    semantic_changes = load_semantic_changes(root)
     release = next((item for item in releases.releases if item.version == version), None)
     if release is None:
         raise ValueError(f"Unknown MaaFramework release: {version}")
@@ -442,7 +593,7 @@ def sync_maafw_inventory(*, root: Path, repository: Path, version: str) -> None:
         newline="\n",
     )
 
-    _write_generated_indexes(root, inventory, source.url, releases.releases, releases.prereleases)
+    _write_generated_indexes(root, inventory, source.url, releases, source_map, semantic_changes)
 
 
 def parse_stable_tag(tag: str) -> tuple[int, int, int] | None:
@@ -678,6 +829,8 @@ def sync_maafw_history(
     prereleases = discover_prereleases(repository, major=major)
 
     release_catalog = load_release_catalog(root)
+    source_map = load_source_map(root)
+    semantic_changes = load_semantic_changes(root)
     guard_registry_shrink(
         {release.version for release in release_catalog.releases},
         {release.version for release in releases},
@@ -726,5 +879,7 @@ def sync_maafw_history(
                 root / "sources" / "maa-framework" / "inventory.yaml",
                 inventory.model_dump(mode="json"),
             )
-        _write_generated_indexes(root, inventory, source.url, releases, prereleases)
+        _write_generated_indexes(
+            root, inventory, source.url, release_catalog, source_map, semantic_changes
+        )
     return releases, prereleases

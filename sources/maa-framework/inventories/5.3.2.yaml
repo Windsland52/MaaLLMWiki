@@ -4,19 +4,25 @@ revision: d103e2e16950405d4806288a4da03d730b430aef
 artifacts:
 - path: docs/en_us/1.1-QuickStarted.md
   kind: documentation
+  blob: 5983e17fa588715b836249005f950fd00094b673
   title: 1.1 Quick Start
   summary: 'MaaFramework provides three integration solutions to meet different development
     scenarios:'
 - path: docs/en_us/1.2-ExplanationOfTerms.md
   kind: documentation
+  blob: 67b9aa591439e61b87bc5ac8803af5e6fd854701
   title: 1.2 Explanation of Terms
   summary: A complete Json Object that conforms to the Pipeline protocol.
 - path: docs/en_us/2.1-Integration.md
   kind: documentation
+  blob: 6d69b799ab76758967f3c01265781cf8a266cd47
   title: 2.1 Integration
-  summary: Official documentation for 2.1 Integration.
+  summary: 'Interface Status: Native interface ✔️; Full functionality available ✔️;
+    Sample provided ✔️; Unit Testing via CI ✔️; Standardized interface ❌; Protocol
+    parsing encapsulation ❌; Source; Download; Sample; Unit Testing'
 - path: docs/en_us/2.2-IntegratedInterfaceOverview.md
   kind: documentation
+  blob: 2aa874e9787252e22982ec419bce4c572c68270a
   title: 2.2 Integrated Interface Overview
   summary: Different language bindings may have different naming conventions and are
     wrapped according to the Standardized Interface Design. Please search for the
@@ -24,6 +30,7 @@ artifacts:
     not p...
 - path: docs/en_us/2.3-CallbackProtocol.md
   kind: documentation
+  blob: 5cc01150e63adc5a92dcd9a3015bc5095032c838
   title: 2.3 Callback Protocol
   summary: 'MaaFramework sends various status notifications and event messages to
     upper-layer applications through the `MaaEventCallback` callback function. All
@@ -31,361 +38,450 @@ artifacts:
     (detai...'
 - path: docs/en_us/2.4-ControlMethods.md
   kind: documentation
+  blob: 143dfe9771781d8e241657021636f6eedf9c30f9
   title: 2.4 Control Methods
   summary: This document provides detailed explanations of the various Screencap (screenshot)
     and Input (control) methods in MaaFramework and their configurations.
 - path: docs/en_us/3.1-PipelineProtocol.md
   kind: documentation
+  blob: d93d5dc33494fac98b6838620669571516b9632b
   title: 3.1 Pipeline Protocol
   summary: 'The task pipeline is described using JSON format and consists of several
     nodes. Each node contains the following core attributes:'
 - path: docs/en_us/3.2-ProjectInterface.md
   kind: documentation
+  blob: b0be368725ad951e3d8598a06a7bf6b35395e1c1
   title: 3.2 Project Interface
-  summary: Official documentation for 3.2 Project Interface.
+  summary: The current document is Project Interface v1 protocol, which has been deprecated.
+    The v5.x release introduces the V2 Protocol. We welcome all developers to integrate
+    and adapt it!
 - path: docs/en_us/3.3-ProjectInterfaceV2.md
   kind: documentation
+  blob: 2f6c448790cfb78e6a353cffc27333d66b2256b0
   title: 3.3 Project Interface V2
   summary: The so-called `ProjectInterface` is a standardized project structure declaration
     for MaaFramework. It currently consists of a single file, `interface.json`. By
     defining a PI, you can leverage various derivative tools of MaaFramework. The...
 - path: docs/en_us/4.1-BuildGuide.md
   kind: documentation
+  blob: b5e6118706ebc1e4661560028d540fa5184bf4b8
   title: 4.1 Build Guide
   summary: 'Before you start, ensure Git, Python 3, and CMake 3.24+ are installed,
     along with the toolchain for your platform (Windows: MSVC 2022; Linux/macOS: Ninja
     + g++/clang).'
 - path: docs/en_us/4.2-StandardizedInterfaceDesign.md
   kind: documentation
+  blob: 55d09b86be4ae83cc172a5e215bd9a310dd907ad
   title: 4.2 Standardized Interface Design
   summary: 'Binding can be divided into two steps:'
 - path: docs/en_us/5.1-Troubleshooting.md
   kind: documentation
+  blob: e84731ddf95de7745c9aa01da024d82cacdf3193
   title: 5.1 Troubleshooting
   summary: Before submitting an Issue, please provide the necessary information following
     this guide to help us locate and resolve the problem faster.
 - path: docs/en_us/NodeJS/J1.1-QuickStarted.md
   kind: documentation
+  blob: d9dbff08c4fdc3b2f4e13bc4043efd3ca27ce1b8
   title: J1.1 Getting Started
   summary: Require NodeJS 20 or above. After creating the project directory, use the
     following command to install
 - path: docs/en_us/NodeJS/J1.2-Custom Recognition and Action.md
   kind: documentation
+  blob: 3d6d8bc49df956c59ac7963dcd81f92977e653fe
   title: J1.2 Custom Recognition and Action
   summary: The following is an example of calling another task to recognize
 - path: docs/en_us/NodeJS/J1.3-Packaging.md
   kind: documentation
+  blob: c230f905c770c01f608f788339b1e0ef8f84a886
   title: J1.3 Packaging
-  summary: This project contains binary.  `@maaxyz/maa-node` package will require
-    corresponding `MaaNode.node` from `@maaxyz/maa-node-${platform}-${arch}`. Meanwhile,
-    as loaded `MaaNode.node` dynamic links `MaaFramework` library, and `Adb` controll...
+  summary: This project contains binary. `@maaxyz/maa-node` package will require corresponding
+    `MaaNode.node` from `@maaxyz/maa-node-${platform}-${arch}`. Meanwhile, as loaded
+    `MaaNode.node` dynamic links `MaaFramework` library, and `Adb` controlle...
 - path: docs/zh_cn/1.1-快速开始.md
   kind: documentation
+  blob: 6654c710a9758077bbe28a6d095d3b7af6ffd491
   title: 1.1 快速开始
   summary: MaaFramework 提供三种集成方案，满足不同开发场景需求：
 - path: docs/zh_cn/1.2-术语解释.md
   kind: documentation
+  blob: 234efe3f7e5295fbbadf5081047a40a8135ca735
   title: 1.2 术语解释
   summary: 符合 任务流水线（Pipeline）协议 的一个完整的 Json Object。
 - path: docs/zh_cn/2.1-集成文档.md
   kind: documentation
+  blob: b47e103b0f4df7cbc7d220c772f759706f6f0be7
   title: 2.1 集成文档
-  summary: Official documentation for 2.1 集成文档.
+  summary: 接口情况：; 原生接口 ✔️; 全功能可用 ✔️; 提供 sample ✔️; CI 单元测试 ✔️; 标准化接口 ❌; 协议解析封装 ❌;
+    接口源码; 下载地址; 集成示例; 单元测试
 - path: docs/zh_cn/2.2-集成接口一览.md
   kind: documentation
+  blob: 61fc9442835071d2dbaa11a0f5ac7908abe2e3e4
   title: 2.2 集成接口一览
   summary: 不同语言的 binding 会有不同的命名方式，且会根据 标准化接口 进行封装，请自行搜索实际的名称。部分接口可能直接在内部自动使用而不会提供（例如
     StringBuffer 相关接口）。下面是一些接口在不同 binding 中的参考名称。
 - path: docs/zh_cn/2.3-回调协议.md
   kind: documentation
+  blob: ab2aead6b8abc3db0382db34a84e7c5068020163
   title: 2.3 回调协议
   summary: MaaFramework 通过 `MaaEventCallback` 回调函数向上层应用发送各种状态通知和事件消息。所有回调消息都采用统一的格式：消息类型（message）+
     详细数据（details）。
 - path: docs/zh_cn/2.4-控制方式说明.md
   kind: documentation
+  blob: 5fd930463199fbbd48c6848ed0da5ed3c4375777
   title: 2.4 控制方式说明
   summary: 本文档详细说明 MaaFramework 中 Screencap（截图）和 Input（控制）的各种方式及其配置。
 - path: docs/zh_cn/3.1-任务流水线协议.md
   kind: documentation
+  blob: 07a99e1fa5b137b4845293222418ec62e5d28e2f
   title: 3.1 任务流水线（Pipeline）协议
   summary: 任务流水线采用 JSON 格式描述，由若干节点（Node）构成，每个节点包含以下核心属性：
 - path: docs/zh_cn/3.2-ProjectInterface协议.md
   kind: documentation
+  blob: 0c01c48f61c75b80091e93fc747f05506f7750ce
   title: 3.2 Project Interface 协议
-  summary: Official documentation for 3.2 Project Interface 协议.
+  summary: 当前文档为 Project Interface v1 版本协议，已被废弃。 v5.x 版本新引入了 V2 协议, 欢迎各位大佬集成适配！
 - path: docs/zh_cn/3.3-ProjectInterfaceV2协议.md
   kind: documentation
+  blob: c87b27cfe5253538ba7878667f4b0da388b5301e
   title: 3.3 Project Interface V2 协议
   summary: 所谓 `ProjectInterface`，即 MaaFramework 的一个标准化的项目结构声明，该声明目前包含 `interface.json`
     一个文件。通过定义 PI，你可以使用 MaaFramework 的各种衍生工具。因此，即使你打算纯粹依靠通用编程语言集成，也建议定义包含基础信息的 PI。
 - path: docs/zh_cn/4.1-构建指南.md
   kind: documentation
+  blob: f2c36a7bd63db988458019652883d85372de102e
   title: 4.1 构建指南
   summary: '开始前，请确保已安装 Git、Python 3、CMake 3.24+，以及对应平台的编译链（Windows: MSVC 2022；Linux/macOS:
     Ninja + g++/clang）。'
 - path: docs/zh_cn/4.2-标准化接口设计.md
   kind: documentation
+  blob: ee1d991c4f7b2a0a8b8015bbc7213918291dfc22
   title: 4.2 标准化接口设计
   summary: MaaFW 的绑定（binding）设计可以分为两个步骤：
 - path: docs/zh_cn/5.1-问题反馈.md
   kind: documentation
+  blob: 25ed791536114badd75fe3314d847e41f4c60a30
   title: 5.1 问题反馈
   summary: 在提交 Issue 前，请按照以下指南提供必要的信息，以便我们更快地定位和解决问题。
 - path: docs/zh_cn/NodeJS/J1.1-快速开始.md
   kind: documentation
+  blob: b6283edf2205a569fcf1ea964b13fc4bf4b20a81
   title: J1.1 快速开始
   summary: 需要NodeJS 20及以上, 创建项目文件夹后通过下列命令安装
 - path: docs/zh_cn/NodeJS/J1.2-自定义识别_操作.md
   kind: documentation
+  blob: a722af91e8ad8c96c29a6a370db255b0f2a3636e
   title: J1.2 自定义识别/操作
   summary: 下面是一个调用其它任务进行识别的例子
 - path: docs/zh_cn/NodeJS/J1.3-打包.md
   kind: documentation
+  blob: a3a80f00a3c1bae69a321a75f617fc55ab3c7c63
   title: J1.3 打包
   summary: 本项目中包含二进制. `@maaxyz/maa-node`包会从`@maaxyz/maa-node-${platform}-${arch}`包中获取对应`MaaNode.node`.
     同时, 由于被加载的`MaaNode.node`动态链接了`MaaFramework`库, 且`Adb`控制器依赖`AgentBinary`, 建议直接将`@maaxyz/maa-node`作为外部依赖不参与打包.
 - path: include/MaaAgentClient/MaaAgentClientAPI.h
   kind: public-api
+  blob: 83620befc650667072ed05690740746a763f2e37
   title: MaaAgentClientAPI.h
   summary: Native C/C++ declarations provided by MaaAgentClientAPI.h.
 - path: include/MaaAgentClient/MaaAgentClientDef.h
   kind: public-api
+  blob: 948eccfecfd2a8342c43e9751960b4f39ec089a6
   title: MaaAgentClientDef.h
   summary: Native C/C++ declarations provided by MaaAgentClientDef.h.
 - path: include/MaaAgentServer/MaaAgentServerAPI.h
   kind: public-api
+  blob: b70d5384f7ff5571ed9ea551c87fb82f9e077e00
   title: MaaAgentServerAPI.h
   summary: Native C/C++ declarations provided by MaaAgentServerAPI.h.
 - path: include/MaaAgentServer/MaaAgentServerDef.h
   kind: public-api
+  blob: 5352f5fb642303932ff755333996736151932ccc
   title: MaaAgentServerDef.h
   summary: Native C/C++ declarations provided by MaaAgentServerDef.h.
 - path: include/MaaFramework/Global/MaaGlobal.h
   kind: public-api
+  blob: cf87f2915ce7defa023b27fa6b0ae4eee5853a6e
   title: MaaGlobal.h
   summary: Global MaaFramework initialization and configuration declarations.
 - path: include/MaaFramework/Instance/MaaContext.h
   kind: public-api
+  blob: 2fb40b3c0ca33829bb6cc4c3c3ce4dfd5dec4ae3
   title: MaaContext.h
   summary: C API declarations for task context and custom task operations.
 - path: include/MaaFramework/Instance/MaaController.h
   kind: public-api
+  blob: 331509ad6376a8889d59015afa79005c9ff5134e
   title: MaaController.h
   summary: C API declarations for screen capture, input, and device control.
 - path: include/MaaFramework/Instance/MaaCustomController.h
   kind: public-api
+  blob: da2705de82dfa82024d2d6624ef72390b104bb43
   title: MaaCustomController.h
   summary: Callback interface for implementing a custom controller.
 - path: include/MaaFramework/Instance/MaaResource.h
   kind: public-api
+  blob: 0e204b099b41f62e2ad5beec34343b2fa7045803
   title: MaaResource.h
   summary: C API declarations for loading pipelines, models, and resources.
 - path: include/MaaFramework/Instance/MaaTasker.h
   kind: public-api
+  blob: ee7dbce566d60cfb20e1827cf535723a1d09c6f8
   title: MaaTasker.h
   summary: C API declarations for task execution and runtime coordination.
 - path: include/MaaFramework/MaaAPI.h
   kind: public-api
+  blob: 3b4f9c297f4a0081ba2305ec42d785314d465f2f
   title: MaaAPI.h
   summary: Umbrella header for the MaaFramework C API.
 - path: include/MaaFramework/MaaDef.h
   kind: public-api
+  blob: 7821fc2c4199bec77e13a57e7a66a62f39211f6d
   title: MaaDef.h
   summary: Shared MaaFramework handles, identifiers, statuses, and data types.
 - path: include/MaaFramework/MaaMsg.h
   kind: public-api
+  blob: 0951cc2aad0c8569c73b9d93e555023e855205ba
   title: MaaMsg.h
   summary: Callback event message constants and notification categories.
 - path: include/MaaFramework/MaaPort.h
   kind: public-api
+  blob: f2be1ce0459f8e4907481d7b7c001ea0c46a5efa
   title: MaaPort.h
   summary: Platform export, visibility, and calling-convention definitions.
 - path: include/MaaFramework/Utility/MaaBuffer.h
   kind: public-api
+  blob: 6972a0b5274c6a0dc7940dff8a7ad74516334cb0
   title: MaaBuffer.h
   summary: C API declarations for framework-owned data buffers.
 - path: include/MaaFramework/Utility/MaaUtility.h
   kind: public-api
+  blob: 4eb4e3d7d1f004f819912d17d05044069f51904a
   title: MaaUtility.h
   summary: General MaaFramework utility API declarations.
 - path: include/MaaToolkit/AdbDevice/MaaToolkitAdbDevice.h
   kind: public-api
+  blob: 6919aeda32caa28bf95e629d19844265741453fa
   title: MaaToolkitAdbDevice.h
   summary: Native C/C++ declarations provided by MaaToolkitAdbDevice.h.
 - path: include/MaaToolkit/Config/MaaToolkitConfig.h
   kind: public-api
+  blob: 25e8d15b8e99c95512d3b81d377956145d8984e6
   title: MaaToolkitConfig.h
   summary: Native C/C++ declarations provided by MaaToolkitConfig.h.
 - path: include/MaaToolkit/DesktopWindow/MaaToolkitDesktopWindow.h
   kind: public-api
+  blob: e15988ef31e136d04b43bce61f0c7a8e870778c1
   title: MaaToolkitDesktopWindow.h
   summary: Native C/C++ declarations provided by MaaToolkitDesktopWindow.h.
 - path: include/MaaToolkit/MaaToolkitAPI.h
   kind: public-api
+  blob: 60990611668857bb695d07365a01ac818422110c
   title: MaaToolkitAPI.h
   summary: Native C/C++ declarations provided by MaaToolkitAPI.h.
 - path: include/MaaToolkit/MaaToolkitDef.h
   kind: public-api
+  blob: a2ead9c474b0d2756d4b102da0bb9ff6e9d77699
   title: MaaToolkitDef.h
   summary: Native C/C++ declarations provided by MaaToolkitDef.h.
 - path: source/binding/NodeJS/README.md
   kind: documentation
+  blob: f82f876e4bd9bec2f7cf0623ef7d9ad51f47fa29
   title: MaaFW NodeJS
   summary: Official documentation for MaaFW NodeJS.
 - path: source/binding/NodeJS/src/apis/client.d.ts
   kind: binding-api
+  blob: 552d2faaec528145df6ea1e7b6d3414b2fa14224
   title: client.d.ts
   summary: Public TypeScript declarations for client.
 - path: source/binding/NodeJS/src/apis/constant.d.ts
   kind: binding-api
+  blob: 4cd7a85168f62ca6c22188639bcdc067719145ea
   title: constant.d.ts
   summary: Public TypeScript declarations for constant.
 - path: source/binding/NodeJS/src/apis/context.d.ts
   kind: binding-api
+  blob: c2634bcfd6abe12672b6e60f7079c626b08e8f23
   title: context.d.ts
   summary: Public TypeScript declarations for context.
 - path: source/binding/NodeJS/src/apis/controller.d.ts
   kind: binding-api
+  blob: ba6e770bc832dce9cc5ef669683638c2f665efce
   title: controller.d.ts
   summary: Public TypeScript declarations for controller.
 - path: source/binding/NodeJS/src/apis/global.d.ts
   kind: binding-api
+  blob: bb9de7df16fad1758d840f400a31a064f0bf32a7
   title: global.d.ts
   summary: Public TypeScript declarations for global.
 - path: source/binding/NodeJS/src/apis/index-client.d.ts
   kind: binding-api
+  blob: d21c8af4d8b821431968b0e20bfeb2ffaf4f9ea5
   title: index-client.d.ts
   summary: Public TypeScript declarations for index-client.
 - path: source/binding/NodeJS/src/apis/index-server.d.ts
   kind: binding-api
+  blob: fe73cc95e8f7553552db26aa214337c67a7b2751
   title: index-server.d.ts
   summary: Public TypeScript declarations for index-server.
 - path: source/binding/NodeJS/src/apis/job.d.ts
   kind: binding-api
+  blob: d4e9159ccf1fdce239a8415fc181ab5b20158526
   title: job.d.ts
   summary: Public TypeScript declarations for job.
 - path: source/binding/NodeJS/src/apis/pipeline.d.ts
   kind: binding-api
+  blob: 8f2a3db1f10bf03a25ed80bdec8c7f4445360faf
   title: pipeline.d.ts
   summary: Public TypeScript declarations for pipeline.
 - path: source/binding/NodeJS/src/apis/plugin.d.ts
   kind: binding-api
+  blob: ba4c370491d7a93aaa9da27667425d190d165e38
   title: plugin.d.ts
   summary: Public TypeScript declarations for plugin.
 - path: source/binding/NodeJS/src/apis/resource.d.ts
   kind: binding-api
+  blob: 64d8c3a0690def9732cd434770a67ebc7d162515
   title: resource.d.ts
   summary: Public TypeScript declarations for resource.
 - path: source/binding/NodeJS/src/apis/server.d.ts
   kind: binding-api
+  blob: 4f69b146e2527789f09b70d800535adccab0fdd0
   title: server.d.ts
   summary: Public TypeScript declarations for server.
 - path: source/binding/NodeJS/src/apis/tasker.d.ts
   kind: binding-api
+  blob: 250b1c9b7428a6b510e4dea7711d3bd3c80097d6
   title: tasker.d.ts
   summary: Public TypeScript declarations for tasker.
 - path: source/binding/NodeJS/src/apis/types.d.ts
   kind: binding-api
+  blob: d6ad23ef51b5457e31b98f696d7038269c033850
   title: types.d.ts
   summary: Public TypeScript declarations for types.
 - path: source/binding/Python/README.md
   kind: documentation
+  blob: bbe04769ac18ccb12b4210c6c5afbc02082678b8
   title: MaaFW Python binding
   summary: Official documentation for MaaFW Python binding.
 - path: source/binding/Python/maa/__init__.py
   kind: binding-api
+  blob: e0adf72c52e59c1619ea8435acbe00d46d7ba0ef
   title: __init__.py
   summary: Public Python binding module for __init__.
 - path: source/binding/Python/maa/agent/__init__.py
   kind: binding-api
+  blob: 5f15bc98c10fd91bbc5d331a6f6a4a8f91174ebb
   title: __init__.py
   summary: Public Python binding module for __init__.
 - path: source/binding/Python/maa/agent/agent_server.py
   kind: binding-api
+  blob: 016e50a1f5beb7a57c2da1338bd110daa01e1cb5
   title: agent_server.py
   summary: Public Python binding module for agent_server.
 - path: source/binding/Python/maa/agent_client.py
   kind: binding-api
+  blob: d767e13ec3601ef12ce3c7d889984b22d687b632
   title: agent_client.py
   summary: Public Python binding module for agent_client.
 - path: source/binding/Python/maa/buffer.py
   kind: binding-api
+  blob: ab2edc04a2716b32224175cb6b32d0f6098cd7d8
   title: buffer.py
   summary: Public Python binding module for buffer.
 - path: source/binding/Python/maa/context.py
   kind: binding-api
+  blob: f8bf811a326516c1172d1f6f9c865ad3b6d0fd6b
   title: context.py
   summary: Public Python binding module for context.
 - path: source/binding/Python/maa/controller.py
   kind: binding-api
+  blob: d76db9d9e244a8fa39968c4f0433b1957d46b237
   title: controller.py
   summary: Public Python binding module for controller.
 - path: source/binding/Python/maa/custom_action.py
   kind: binding-api
+  blob: 476c19cd4ef7b8d275fc9b3eab641ea540a5bebb
   title: custom_action.py
   summary: Public Python binding module for custom_action.
 - path: source/binding/Python/maa/custom_recognition.py
   kind: binding-api
+  blob: ef14e62bc3dad6ee73cb6de9f8714240938ac50a
   title: custom_recognition.py
   summary: Public Python binding module for custom_recognition.
 - path: source/binding/Python/maa/define.py
   kind: binding-api
+  blob: 6e005049484f2534eef0ef79121dff64be286e0b
   title: define.py
   summary: Public Python binding module for define.
 - path: source/binding/Python/maa/event_sink.py
   kind: binding-api
+  blob: 46849554d43131ada581601f54120ea9e00ebc72
   title: event_sink.py
   summary: Public Python binding module for event_sink.
 - path: source/binding/Python/maa/job.py
   kind: binding-api
+  blob: 8b9b10571c77baabe13d5db5e6db6f46700e076c
   title: job.py
   summary: Public Python binding module for job.
 - path: source/binding/Python/maa/library.py
   kind: binding-api
+  blob: efe27a3bf5498ee05d2cf00c8da68859fd545c7d
   title: library.py
   summary: Public Python binding module for library.
 - path: source/binding/Python/maa/pipeline.py
   kind: binding-api
+  blob: 879f2e76e370cb0f1c44fc5a5838306a7e10cab3
   title: pipeline.py
   summary: Public Python binding module for pipeline.
 - path: source/binding/Python/maa/resource.py
   kind: binding-api
+  blob: 46c7aa7d1c07dfb05c13e8bfb5b2037f52fdcea9
   title: resource.py
   summary: Public Python binding module for resource.
 - path: source/binding/Python/maa/tasker.py
   kind: binding-api
+  blob: 1ebd85d0e85dadbcdfc652dff089cc2eaa1400de
   title: tasker.py
   summary: Public Python binding module for tasker.
 - path: source/binding/Python/maa/toolkit.py
   kind: binding-api
+  blob: b82f5afd45d3e0958f35f0e433bf04ca2a585bc5
   title: toolkit.py
   summary: Public Python binding module for toolkit.
 - path: tools/FormatCode/README.md
   kind: documentation
+  blob: 06aabf61c7642dcb87d723a17842c39df39d7730
   title: format_cpp.py - C++ 代码格式化工具
   summary: '`format_cpp.py` 是一个用于自动格式化项目中 C++ 文件的 Python 脚本。它使用 `clang-format` 工具，根据项目根目录下的
     `.clang-format` 配置文件，对整个项目中的 C++ 文件进行格式化，同时自动排除第三方库目录（如 `3rdparty`）。'
 - path: tools/ImageCropper/README.md
   kind: documentation
+  blob: 02770a867b285c654916af9200884d799fe642ca
   title: 截图工具
   summary: 本工具可以对 **预先准备好的截图** 或 **通过 ADB 连接设备**，进行 ROI 区域的截取、保存、取色操作。
 - path: tools/custom.action.schema.json
   kind: schema
+  blob: 6f4d79a77b4abd059fd588ae5c9d041df957191f
   title: custom.action.schema.json
   summary: JSON Schema for custom.action configuration.
 - path: tools/custom.recognition.schema.json
   kind: schema
+  blob: a90bcb261411ffdabd8dc43bd24a64090e39cc1d
   title: custom.recognition.schema.json
   summary: JSON Schema for custom.recognition configuration.
 - path: tools/interface.schema.json
   kind: schema
+  blob: 1e73a6439e8e92a680dea0a0acfea5f296f606f9
   title: interface.schema.json
   summary: JSON Schema for interface configuration.
 - path: tools/interface_config.schema.json
   kind: schema
+  blob: 69ceb19387ff85478eb5cbe9ba8523f2467d5769
   title: interface_config.schema.json
   summary: JSON Schema for interface config configuration.
 - path: tools/pipeline.schema.json
   kind: schema
+  blob: 58b628ff7f2839c369a6cf50016dbbd593c38988
   title: pipeline.schema.json
   summary: JSON Schema for pipeline configuration.
