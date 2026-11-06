@@ -37,10 +37,11 @@ _CALLBACK_MESSAGE_PATTERN = re.compile(r"#define\s+(?P<symbol>MaaMsg_\w+)")
 _DOCUMENTATION_VERSION_PATTERN = re.compile(
     r"^\|\s*\d{4}-\d{1,2}-\d{1,2}\s*\|\s*(?P<symbol>v[\d.]+)\s*\|"
 )
-_PYTHON_DEFINITION_PATTERN = re.compile(r"^(?:def|class)\s+(?P<symbol>\w+)")
+_PYTHON_DEFINITION_PATTERN = re.compile(r"^\s*(?:def|class)\s+(?P<symbol>[A-Za-z]\w*)")
 _NODEJS_DEFINITION_PATTERN = re.compile(
     r"^export\s+(?:declare\s+)?(?:class|function|interface|type|const)\s+(?P<symbol>\w+)"
 )
+_NODEJS_MEMBER_PATTERN = re.compile(r"^\s+(?:readonly\s+)?(?P<symbol>[A-Za-z]\w*)\??\s*:")
 
 
 @dataclass(frozen=True)
@@ -164,6 +165,14 @@ def _is_documentation_version_path(path: str) -> bool:
     )
 
 
+_SQUASH_TRAILING = " \t,;|"
+
+
+def _squash(quote: str) -> str:
+    """Collapse formatting so a moved line or a changed trailing separator is ignored."""
+    return re.sub(r"\s+", " ", quote).strip().rstrip(_SQUASH_TRAILING)
+
+
 def _kind(value: str) -> MachineChangeKind:
     return MachineChangeKind(value)
 
@@ -198,6 +207,9 @@ def _text_line_hits(path: str, line: str) -> list[tuple[MachineChangeKind, str]]
         definition = _NODEJS_DEFINITION_PATTERN.match(line)
         if definition is not None:
             add("binding-api", definition["symbol"])
+        member = _NODEJS_MEMBER_PATTERN.match(line)
+        if member is not None:
+            add("binding-api", member["symbol"])
     return hits
 
 
@@ -253,7 +265,7 @@ def _schema_nodes(schema: object) -> dict[str, dict[str, object]]:
             for key, child in mapping.items():
                 if key == "properties":
                     continue
-                walk(child, prefix)
+                walk(child, _dotted_path(prefix, key))
         else:
             items = _as_list(node)
             if items is not None:
@@ -409,6 +421,29 @@ def _schema_requests(
     return sorted(set(requests))
 
 
+def _drop_reformatting_pairs(records: list[ExtractedRecord]) -> list[ExtractedRecord]:
+    """Remove added/removed records that only differ by whitespace or a trailing separator."""
+    added = {
+        (record.paths[0], record.kind.value, record.symbol): record
+        for record in records
+        if record.change == "added"
+    }
+    removed = {
+        (record.paths[0], record.kind.value, record.symbol): record
+        for record in records
+        if record.change == "removed"
+    }
+    dropped: set[int] = set()
+    for key, added_record in added.items():
+        removed_record = removed.get(key)
+        if removed_record is None:
+            continue
+        if _squash(added_record.quote) == _squash(removed_record.quote):
+            dropped.add(id(added_record))
+            dropped.add(id(removed_record))
+    return [record for record in records if id(record) not in dropped]
+
+
 def _pair_records(
     previous_release: ReleaseRecord,
     release: ReleaseRecord,
@@ -441,7 +476,7 @@ def _pair_records(
                 quote=quote_text,
                 paths=(path,),
             )
-    records = list(deduplicated.values())
+    records = _drop_reformatting_pairs(list(deduplicated.values()))
     records.extend(
         _schema_records_for_pair(
             previous_release,
