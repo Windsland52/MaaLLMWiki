@@ -9,7 +9,14 @@ import yaml
 
 from maa_llm_wiki.extract import build_machine_changes, render_machine_changes_page
 from maa_llm_wiki.inventory import discover_maafw_artifacts
-from maa_llm_wiki.models import ReleaseCatalog, ReleaseRecord, SourceInventory
+from maa_llm_wiki.models import (
+    MachineChange,
+    MachineChangeCatalog,
+    MachineChangeKind,
+    ReleaseCatalog,
+    ReleaseRecord,
+    SourceInventory,
+)
 
 REPOSITORY_URL = "https://github.com/MaaXYZ/MaaFramework"
 FIXED_DATE = date(2026, 1, 1)
@@ -321,3 +328,33 @@ def test_schema_file_added_and_removed(tmp_path: Path) -> None:
     symbols = {(change.symbol, change.change) for change in catalog.changes}
     assert ("a", "removed") in symbols
     assert ("b", "added") in symbols
+
+
+def test_machine_page_lists_per_release_counts() -> None:
+    changes = [
+        MachineChange(
+            version="5.15.0",
+            commit="a" * 40,
+            change="added",
+            kind=MachineChangeKind.ENUM_VALUE,
+            symbol="MaaFoo",
+            quote="#define MaaFoo 1",
+            paths=["include/MaaFramework/MaaDef.h"],
+        ),
+        MachineChange(
+            version="5.14.0",
+            commit="b" * 40,
+            change="modified",
+            kind=MachineChangeKind.UNCLASSIFIED,
+            symbol="unclassified",
+            quote="2 indexed files changed without a structured change",
+            paths=["docs/en_us/3.1-PipelineProtocol.md"],
+        ),
+    ]
+    catalog = MachineChangeCatalog(source_id="maafw", changes=changes)
+
+    page = render_machine_changes_page(catalog, "https://github.com/example/catalog")
+
+    assert "| Release | Records | Unclassified |" in page
+    assert "| 5.15.0 | 1 |  |" in page
+    assert "| 5.14.0 | 1 | yes |" in page

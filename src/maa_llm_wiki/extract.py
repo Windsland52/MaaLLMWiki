@@ -606,6 +606,17 @@ def render_machine_changes_page(catalog: MachineChangeCatalog, repository_url: s
     for kind in sorted(kind_counts):
         lines.append(f"| `{kind}` | {kind_counts[kind]} |")
     lines.append("")
+    lines.extend(
+        [
+            "| Release | Records | Unclassified |",
+            "| --- | --- | --- |",
+        ]
+    )
+    for version in versions:
+        group = by_version[version]
+        unclassified = sum(1 for change in group if change.kind is MachineChangeKind.UNCLASSIFIED)
+        lines.append(f"| {version} | {len(group)} | {'yes' if unclassified else ''} |")
+    lines.append("")
 
     for version in versions:
         group = by_version[version]
