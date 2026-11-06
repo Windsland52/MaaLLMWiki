@@ -7,6 +7,7 @@
 向后兼容的新增字段，消费者必须忽略未知字段；删除/重命名字段或改变语义需要升到 v2。消费方应下载
 **带版本**的产物（不可变），运行 `uv run maa-wiki-verify-bundle` 校验，并用发布页的 `SHA256SUMS`
 （`sha256sum -c`）与 build provenance 证明（`gh attestation verify`）确认下载完整性和构建来源；
+发布页另附零依赖校验脚本 `verify_bundle.py`（仅需 Python 3，可离线运行，非 attestation 主体）。
 `-latest.zip` 只是便利别名，内容会随新版本变化，不应用于复现。浏览与版本差异工具见 §7，覆盖边界与
 已知局限见 §8。
 
@@ -19,14 +20,15 @@ gaps are stated in §8; the repository-wide rules are in `AGENTS.md`.
 
 A snapshot is an annotated Git tag named `vMAJOR.MINOR.PATCH` on a commit of the default branch. The
 tag commit is the Wiki revision whose committed catalog data the bundle carries. Each snapshot tag
-published by the current workflow has exactly one GitHub Release with three assets (releases
-published before checksums were introduced have only the two zips):
+published by the current workflow has exactly one GitHub Release with four assets (older releases
+carry fewer: two before `SHA256SUMS` was introduced, three before the standalone verifier was added):
 
 | Asset | Meaning |
 |-------|---------|
-| `maa-llm-wiki-catalog-vX.Y.Z.zip` | The immutable versioned bundle for that tag. This is the primary, attested subject. |
+| `maa-llm-wiki-catalog-vX.Y.Z.zip` | The immutable versioned bundle for that tag. This is the primary, **attested** subject. |
 | `maa-llm-wiki-catalog-latest.zip` | A convenience copy of the newest published bundle. It is a byte-identical copy of the versioned zip and is overwritten by every release, so it is **not** reproducible. |
 | `SHA256SUMS` | `sha256sum` output covering both zip names above; verify with `sha256sum -c SHA256SUMS`. |
+| `verify_bundle.py` | Dependency-free (standard library only) copy of the in-repo verifier for consumers without `uv` or a checkout. A convenience asset; not attested (§5.3). |
 
 The build-provenance attestation is **not** a release asset: it is stored in this repository's
 immutable attestation store (§5).
@@ -175,9 +177,31 @@ Limits of this check:
 
 - it needs network access and the published attestation record, so it cannot be verified offline or
   from the zip alone;
-- the `-latest` alias and `SHA256SUMS` are convenience artifacts and are **not** attested subjects;
+- the `-latest` alias, `SHA256SUMS` and `verify_bundle.py` are convenience artifacts and are **not**
+  attested subjects;
 - releases published before provenance attestation was introduced have no attestation, so the first
   release produced with this step is the first one that can be verified this way.
+
+### 5.3 Zero-dependency verification (release asset)
+
+Each release also carries `verify_bundle.py`, a plain standard-library script that needs only a
+Python 3 interpreter (3.10 or newer, standard library only) — no `uv`, no repository checkout and no
+network access. It is a convenience copy of `src/maa_llm_wiki/verify_bundle.py`; the copy in a
+release is the verifier that was current when that release was published. Download it next to the
+bundle and `SHA256SUMS`, then run:
+
+```bash
+python verify_bundle.py \
+  --bundle maa-llm-wiki-catalog-vX.Y.Z.zip \
+  --expect-version vX.Y.Z \
+  --expect-revision <40-char wiki revision> \
+  --checksums SHA256SUMS
+```
+
+It performs the same manifest/zip/checksum/expectation checks as `maa-wiki-verify-bundle` and exits
+non-zero with an `error: ...` line on failure. `verify_bundle.py` is a convenience artifact and is
+**not** an attested subject — only the versioned zip is attested (§5.2) — and `SHA256SUMS` covers
+the two zip download names only, not the script.
 
 ## 6. Guarantees and non-guarantees
 

@@ -31,6 +31,10 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Documented legacy exception: this tag predates the publish pipeline and intentionally has no
+    # GitHub Release. The final reconciliation step only reports snapshot tags outside this allowlist.
+    env:
+      LEGACY_UNRELEASED_TAGS: "v0.1.2"
     # Job-level permissions are explicit because this job also mints a short-lived OIDC token and
     # writes a build-provenance attestation record, in addition to pushing the snapshot and
     # reconciling its issue.
@@ -244,13 +248,37 @@ jobs:
           )
           cat dist/SHA256SUMS
 
-      # Order: build -> verify -> copy stable alias -> checksum -> attest -> tag -> release. The
-      # attestation only needs the versioned zip to exist, so creating it before the tag/release means
-      # a failed attestation cannot leave a tagged snapshot without provenance. Only the immutable
-      # versioned zip is attested; the `-latest` alias and SHA256SUMS are convenience artifacts.
+      # The standalone verifier ships as a release asset so a consumer can check a bundle with only a
+      # Python 3 interpreter (no uv, no checkout). Copy it verbatim from the repository and run it
+      # against the freshly built bundle as an extra gate before the tag is pushed. It is NOT attested:
+      # the versioned zip remains the only attested subject.
+      - name: Package and run standalone verifier
+        if: steps.state.outputs.publish == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          cp src/maa_llm_wiki/verify_bundle.py dist/verify_bundle.py
+          # Prefer `python`; fall back to `python3` if the runner image has no `python` alias.
+          PYTHON_BIN=python
+          command -v "${PYTHON_BIN}" >/dev/null 2>&1 || PYTHON_BIN=python3
+          "${PYTHON_BIN}" dist/verify_bundle.py \
+            --bundle "dist/maa-llm-wiki-catalog-${VERSION}.zip" \
+            --expect-version "${VERSION}" \
+            --expect-revision "$(git rev-parse HEAD)" \
+            --checksums dist/SHA256SUMS
+
+      # Order: build -> verify -> copy stable alias -> checksum -> standalone verifier -> attest ->
+      # tag -> release. The attestation only needs the versioned zip to exist, so creating it before
+      # the tag/release means a failed attestation cannot leave a tagged snapshot without provenance.
+      # Only the immutable versioned zip is attested; the `-latest` alias, SHA256SUMS and
+      # verify_bundle.py are convenience artifacts.
+      # v4.2.2 is the newest attest-build-provenance tag; it delegates to actions/attest v4.2.1,
+      # which runs on Node 24. The Node 20 deprecation warning came from v2.4.0's bundled `predicate`
+      # action, so this pin removes that warning; re-pin by SHA when a newer tag ships.
       - name: Attest build provenance
         if: steps.state.outputs.publish == 'true'
-        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: dist/maa-llm-wiki-catalog-${{ steps.version.outputs.version }}.zip
 
@@ -292,6 +320,7 @@ jobs:
             dist/maa-llm-wiki-catalog-${{ steps.version.outputs.version }}.zip
             dist/maa-llm-wiki-catalog-latest.zip
             dist/SHA256SUMS
+            dist/verify_bundle.py
           generate_release_notes: true
           overwrite_files: true
           fail_on_unmatched_files: true
@@ -346,3 +375,59 @@ jobs:
           else
             gh issue create --title "${ISSUE_TITLE}" --label "${ISSUE_LABEL}" --body-file "${report}"
           fi
+
+      # Informational only: every snapshot tag should have a release, and every release should carry
+      # its catalog asset. LEGACY_UNRELEASED_TAGS is the documented allowlist (v0.1.2 predates the
+      # pipeline and intentionally has no release). This step never fails the job and stays completely
+      # silent on a healthy repository; unexpected findings are surfaced as ::warning:: annotations
+      # plus a job-summary entry, so nothing is hidden and nothing is deleted or fabricated.
+      - name: Reconcile snapshot tags with releases
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ env.CATALOG_TOKEN }}
+        run: |
+          set -uo pipefail
+          unexpected=0
+          notes=()
+          releases="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/releases?per_page=100" \
+            --jq '.[] | [.tag_name, (.assets | map(.name) | join(","))] | @tsv' 2>/dev/null || true)"
+          if [ -z "${releases}" ]; then
+            echo "::warning::Could not list GitHub Releases while reconciling snapshot tags; skipping."
+            exit 0
+          fi
+          has_release() { printf '%s\n' "${releases}" | cut -f1 | grep -Fxq "$1"; }
+          release_assets() {
+            printf '%s\n' "${releases}" | awk -F '\t' -v tag="$1" '$1 == tag { print $2; exit }'
+          }
+          while IFS= read -r tag; do
+            [ -n "${tag}" ] || continue
+            if ! has_release "${tag}"; then
+              case " ${LEGACY_UNRELEASED_TAGS} " in
+                (*" ${tag} "*) continue ;;
+              esac
+              echo "::warning::Snapshot tag ${tag} has no GitHub Release (and is not in LEGACY_UNRELEASED_TAGS)."
+              notes+=("- tag \`${tag}\` has no GitHub Release")
+              unexpected=1
+              continue
+            fi
+            assets="$(release_assets "${tag}")"
+            expected="maa-llm-wiki-catalog-${tag}.zip"
+            if ! printf '%s\n' "${assets}" | tr ',' '\n' | grep -Fxq "${expected}"; then
+              echo "::warning::Release ${tag} has no catalog asset ${expected}."
+              notes+=("- release \`${tag}\` has no catalog asset \`${expected}\`")
+              unexpected=1
+            fi
+          done < <(git tag -l 'v[0-9]*' --sort=version:refname)
+          if [ "${unexpected}" -eq 1 ]; then
+            {
+              echo "### Snapshot tag / release reconciliation"
+              echo
+              echo "Unexpected mismatches were found; nothing was modified:"
+              printf '%s\n' "${notes[@]}"
+              echo
+              echo "Tags and releases are only created by a publish run, so resolve these manually."
+              echo "v0.1.2 is the documented legacy exception (CATALOG-CONTRACT.md section 7.4)."
+            } >> "${GITHUB_STEP_SUMMARY}"
+          fi
+          exit 0
