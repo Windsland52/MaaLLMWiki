@@ -497,3 +497,80 @@ def test_build_release_notes_against_the_temp_git_repo(catalog_git_repo: Path) -
     assert "- `MaaFramework 5.16.0` — 1 records: enum-value 1" in body
     assert "- `framework.new`: New behaviour." in body
     assert "| MaaFramework | 0 | 0 | 0 |" in body
+
+
+def _add_catalog_baseline(repository: Path) -> None:
+    generated = repository / "generated" / "maa-framework"
+    generated.mkdir(parents=True, exist_ok=True)
+    (generated / "keep.md").write_text("# keep\n", encoding="utf-8")
+    (generated / "gone.md").write_text("# gone\n", encoding="utf-8")
+    (repository / "schemas").mkdir(parents=True, exist_ok=True)
+    (repository / "schemas" / "catalog.schema.json").write_text("{}\n", encoding="utf-8")
+    _git(repository, "add", "-A")
+    _git(repository, "commit", "-q", "-m", "catalog baseline")
+    _git(repository, "tag", "v0.2.1")
+
+
+def _move_catalog_files(repository: Path) -> None:
+    generated = repository / "generated" / "maa-framework"
+    (generated / "added.md").write_text("# added\n", encoding="utf-8")
+    (generated / "gone.md").unlink()
+    (generated / "keep.md").write_text("# keep, edited\n", encoding="utf-8")
+    (repository / "schemas" / "catalog.schema.json").write_text('{"a": 1}\n', encoding="utf-8")
+    _git(repository, "add", "-A")
+    _git(repository, "commit", "-q", "-m", "catalog files moved")
+
+
+def test_catalog_files_section_quantifies_the_catalog_itself(catalog_git_repo: Path) -> None:
+    _add_catalog_baseline(catalog_git_repo)
+    _move_catalog_files(catalog_git_repo)
+    current = load_current_snapshot(catalog_git_repo)
+    previous = load_previous_snapshot(catalog_git_repo, "v0.2.1")
+
+    notes = render_release_notes(
+        version="v0.3.0",
+        previous_tag="v0.2.1",
+        current=current,
+        previous=previous,
+        wiki_revision=COMMIT_B,
+        root=catalog_git_repo,
+    )
+
+    assert "## Catalog files changed" in notes
+    assert "1 added, 1 removed, 2 changed since `v0.2.1`." in notes
+    assert "| `generated/` | 1 | 1 | 1 |" in notes
+    assert "| `schemas/` | 0 | 0 | 1 |" in notes
+    assert "- added: `generated/maa-framework/added.md`" in notes
+    assert "- removed: `generated/maa-framework/gone.md`" in notes
+    assert "- changed: `generated/maa-framework/keep.md`" in notes
+    assert notes.index("## Indexed material moved") < notes.index("## Catalog files changed")
+
+
+def test_catalog_files_section_reports_no_change(catalog_git_repo: Path) -> None:
+    current = load_current_snapshot(catalog_git_repo)
+    previous = load_previous_snapshot(catalog_git_repo, "v0.2.0")
+
+    notes = render_release_notes(
+        version="v0.3.0",
+        previous_tag="v0.2.0",
+        current=current,
+        previous=previous,
+        wiki_revision=COMMIT_B,
+        root=catalog_git_repo,
+    )
+
+    assert "No catalog files changed since the previous snapshot." in notes
+
+
+def test_initial_snapshot_counts_published_catalog_files(catalog_git_repo: Path) -> None:
+    notes = render_release_notes(
+        version="v0.1.0",
+        previous_tag=None,
+        current=load_current_snapshot(catalog_git_repo),
+        previous=None,
+        wiki_revision=COMMIT_A,
+        root=catalog_git_repo,
+    )
+
+    assert "Initial snapshot:" in notes
+    assert "catalog files published for the first time." in notes

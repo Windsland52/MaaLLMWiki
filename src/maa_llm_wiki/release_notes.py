@@ -316,6 +316,95 @@ def _curated_section(
     return lines
 
 
+_CATALOG_ROOTS = ("generated", "sources", "schemas")
+_CATALOG_FILE_CAP = 20
+
+
+def _git_text(root: Path, *arguments: str) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(root), "-c", "core.quotepath=false", *arguments],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if result.returncode != 0:
+        raise ValueError(f"git {' '.join(arguments)} failed: {result.stderr.strip()}")
+    return result.stdout
+
+
+def _catalog_files_section(root: Path, previous_tag: str | None) -> list[str]:
+    """Count the catalog's own files that moved since the previous snapshot.
+
+    The upstream sections describe what the *indexed material* did; a packaging or navigation
+    change moves the catalog itself and would otherwise show up as "nothing changed".
+    """
+    heading = "## Catalog files changed"
+    if previous_tag is None:
+        tracked = _git_text(root, "ls-files", "--", *_CATALOG_ROOTS).splitlines()
+        if not tracked:
+            return []
+        return [
+            heading,
+            "",
+            f"Initial snapshot: {len(tracked)} catalog files published for the first time.",
+        ]
+
+    output = _git_text(
+        root, "diff", "--name-status", f"{previous_tag}..HEAD", "--", *_CATALOG_ROOTS
+    )
+    added: list[str] = []
+    removed: list[str] = []
+    changed: list[str] = []
+    for line in output.splitlines():
+        if "\t" not in line:
+            continue
+        status, path = line.split("\t", 1)[0], line.split("\t")[-1]
+        if status.startswith("A"):
+            added.append(path)
+        elif status.startswith("D"):
+            removed.append(path)
+        else:
+            changed.append(path)
+    if not (added or removed or changed):
+        return [heading, "", "No catalog files changed since the previous snapshot."]
+
+    counts = {"added": added, "removed": removed, "changed": changed}
+    summary = (
+        f"{len(added)} added, {len(removed)} removed, {len(changed)} changed "
+        f"since `{previous_tag}`."
+    )
+    lines = [
+        heading,
+        "",
+        summary,
+        "",
+        "| Area | added | removed | changed |",
+        "| --- | --- | --- | --- |",
+    ]
+    for area in _CATALOG_ROOTS:
+        prefix = f"{area}/"
+        lines.append(
+            f"| `{prefix}` | {sum(1 for x in added if x.startswith(prefix))} | "
+            f"{sum(1 for x in removed if x.startswith(prefix))} | "
+            f"{sum(1 for x in changed if x.startswith(prefix))} |"
+        )
+    lines.append("")
+    listed = 0
+    for label, paths in counts.items():
+        for path in sorted(paths):
+            if listed >= _CATALOG_FILE_CAP:
+                break
+            lines.append(f"- {label}: `{path}`")
+            listed += 1
+        if listed >= _CATALOG_FILE_CAP:
+            break
+    remaining = len(added) + len(removed) + len(changed) - listed
+    if remaining > 0:
+        lines.append(f"- ... and {remaining} more files")
+    return lines
+
+
 def _moved_section(current: Snapshot, previous: Snapshot) -> list[str]:
     previous_inventories = {
         source.source_id: source.inventory
@@ -434,6 +523,7 @@ def render_release_notes(
     previous: Snapshot | None,
     wiki_revision: str,
     bundle: BundleDetails | None = None,
+    root: Path | None = None,
 ) -> str:
     """Render the release body for ``version``; deterministic for identical inputs."""
     _require_version(version)
@@ -448,6 +538,10 @@ def render_release_notes(
         lines.extend(["Initial catalog snapshot.", ""])
         lines.extend(_upstream_section(current))
         lines.append("")
+        catalog_files = _catalog_files_section(root, None) if root is not None else []
+        if catalog_files:
+            lines.extend(catalog_files)
+            lines.append("")
         lines.extend(_verification_section(version))
         lines.append("")
         lines.extend(_assets_section(version, bundle))
@@ -470,6 +564,10 @@ def render_release_notes(
     moved = _moved_section(current, previous)
     if moved:
         lines.extend(moved)
+        lines.append("")
+    catalog_files = _catalog_files_section(root, previous_tag) if root is not None else []
+    if catalog_files:
+        lines.extend(catalog_files)
         lines.append("")
     lines.extend(_verification_section(version))
     lines.append("")
@@ -498,4 +596,5 @@ def build_release_notes(
         previous=previous,
         wiki_revision=_wiki_revision(root),
         bundle=details,
+        root=root,
     )

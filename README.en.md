@@ -184,7 +184,9 @@ table), `New upstream releases since <previous tag>` (or a statement that there 
 `Machine-extracted changes` (machine-extracted facts for the new releases with counts by kind; it
 also explains when the machine layer first appears), `Curated behaviour changes` (only when new
 curated entries exist; may be absent), `Indexed material moved` (per-source added/removed/content-
-changed counts table), `Verification` (checksum, attestation, and stand-alone verifier commands),
+changed counts table), `Catalog files changed` (how many files under `generated/`, `sources/` and
+`schemas/` were added, removed or changed since the previous snapshot, so packaging-only snapshots
+are quantified too), `Verification` (checksum, attestation, and stand-alone verifier commands),
 `Assets` (with `--bundle`, the zip's sha256, size, and file count, plus the latest alias,
 `SHA256SUMS`, and `verify_bundle.py`), and `Documentation` (contract, §8 known gaps, machine/behaviour
 pages, and the full changelog link). The full changelog link remains at the end of the body.

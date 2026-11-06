@@ -40,7 +40,8 @@ The release body is generated from the catalog, not written by hand. Its section
 versions the snapshot pins (Upstream snapshot), the upstream releases that appeared since the
 previous snapshot (New upstream releases), the machine-extracted facts and any curated behaviour
 entries for those releases (Machine-extracted changes, Curated behaviour changes), per-source counts
-of indexed material that moved (Indexed material moved), the exact verification commands, the
+of indexed material that moved (Indexed material moved), how many catalog files the snapshot itself
+added, removed or changed (Catalog files changed), the exact verification commands, the
 released assets with their digests, sizes and file counts, and documentation links including a
 compare URL for the change range. The publish workflow is scheduled twice a day (03:17 and 15:17
 UTC) and can also be dispatched manually.
