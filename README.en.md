@@ -27,7 +27,7 @@ binding APIs follow the MaaFramework version.
 ## Using the catalog
 
 1. Download the versioned `maa-llm-wiki-catalog-vX.Y.Z.zip` from the Releases API or release page,
-   together with that release's `SHA256SUMS` and `verify_bundle.py`. The zip carries its own README,
+   together with that release's `SHA256SUMS` and `verify_bundle.py`. The zip starts with `START-HERE.md` and carries its own README,
    contract, operations guide and licence files, so it is readable offline once extracted.
 2. Verify in order:
    - `sha256sum -c SHA256SUMS`

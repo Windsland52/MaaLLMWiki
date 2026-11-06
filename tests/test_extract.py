@@ -299,7 +299,7 @@ def test_renderer_lists_records_and_kind_counts(tmp_path: Path) -> None:
     assert "# Machine changes" in page
     assert "| Kind | Records |" in page
     assert "| `enum-value` |" in page
-    assert "## 1.1.0" in page
+    assert "## [1.1.0](./1.1.0/index.md)" in page
     assert "- `enum-value` `MaaFoo_Three` (added):" in page
     assert "- `schema-property` `task.id` (added):" in page
     assert f"[`include/MaaFramework/MaaDef.h`]({REPOSITORY_URL}/blob/" in page
@@ -360,8 +360,9 @@ def test_machine_page_lists_per_release_counts() -> None:
     page = render_machine_changes_page(catalog, "https://github.com/example/catalog")
 
     assert "| Release | Records | Unclassified |" in page
-    assert "| 5.15.0 | 1 |  |" in page
-    assert "| 5.14.0 | 1 | yes |" in page
+    assert "| [5.15.0](./5.15.0/index.md) | 1 |  |" in page
+    assert "| [5.14.0](./5.14.0/index.md) | 1 | yes |" in page
+    assert "## [5.15.0](./5.15.0/index.md)" in page
 
 
 def test_machine_symbols_page_indexes_by_symbol() -> None:

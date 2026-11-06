@@ -149,6 +149,7 @@ def test_catalog_bundle_is_self_describing_and_integrity_checked(tmp_path: Path)
         assert {source.source_id for source in bundled.sources} == {"maafw", *BINDING_SPECS}
         bundled_paths = {record.path for record in bundled.files}
         for name in (
+            "START-HERE.md",
             "README.md",
             "CATALOG-CONTRACT.md",
             "LICENSE",

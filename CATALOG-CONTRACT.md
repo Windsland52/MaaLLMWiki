@@ -47,9 +47,9 @@ compare URL for the change range. The publish workflow is scheduled twice a day 
 UTC) and can also be dispatched manually.
 
 The bundle contains the catalog data (`sources/`, `generated/`, `schemas/`), the manifest
-(`catalog-manifest.json`), and the consumer documents that describe and license it (the READMEs,
-this contract, `CONTRIBUTING.md`, `SECURITY.md`, `docs/operations.md` with its Chinese mirror,
-`LICENSE`, `LICENSE-DATA`, `NOTICE`). It contains no Python code, no workflows, and no upstream
+(`catalog-manifest.json`), and the consumer documents that describe and license it (`START-HERE.md`,
+the READMEs, this contract, `CONTRIBUTING.md`, `SECURITY.md`, `docs/operations.md` with its Chinese
+mirror, `LICENSE`, `LICENSE-DATA`, `NOTICE`). It contains no Python code, no workflows, and no upstream
 source code.
 `generated/` includes the rendered navigation pages described in §7.1 (see also §3).
 

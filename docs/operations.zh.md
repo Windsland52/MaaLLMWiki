@@ -130,7 +130,7 @@ notes → attest provenance → push tag → 发布 release。release 正文在 
 | `SHA256SUMS` | 覆盖两个 zip 下载名的校验和。 |
 | `verify_bundle.py` | `src/maa_llm_wiki/verify_bundle.py` 的逐字节副本；零依赖校验器。 |
 
-版本化 zip 包含目录数据（`sources/`、`generated/`、`schemas/`）、manifest（`catalog-manifest.json`）以及说明与授权它的随包文档（README、契约、贡献/安全说明、运维指南、`LICENSE`、`LICENSE-DATA`、`NOTICE`）。manifest 的
+版本化 zip 包含目录数据（`sources/`、`generated/`、`schemas/`）、manifest（`catalog-manifest.json`）以及说明与授权它的随包文档（`START-HERE.md`、README、契约、贡献/安全说明、运维指南、`LICENSE`、`LICENSE-DATA`、`NOTICE`）。manifest 的
 `api_version` 为 `maa-llm-wiki-catalog/v1`；`wiki_revision` 记录构建提交；`working_tree_clean` 记录
 构建是否来自干净树；`catalog_version` 记录 bundle 的 tag（旧 bundle 可能没有该字段）；`sources` 固定
 MaaFramework、Go、Rust 与 C# 的版本与 40 位 commit；`files` 为除 manifest 自身外每个文件的 `path`、

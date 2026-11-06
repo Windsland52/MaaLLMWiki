@@ -517,7 +517,11 @@ def _documentation_section(version: str, previous_tag: str | None) -> list[str]:
     lines = [
         "## Documentation",
         "",
+        "- Start here: `generated/maa-framework/index.md` (versions) and "
+        "`generated/maa-framework/machine-symbols.md` (symbol -> version)",
         "- Consumer contract and guarantees: `CATALOG-CONTRACT.md`",
+        "- The zip is self-describing: `START-HERE.md`, the READMEs, the contract, the operations "
+        "guide and the licence files are inside it",
         "- Known gaps: §8 of the contract",
         "- Extracted change facts: `generated/maa-framework/machine-changes.md`",
         "- Curated behaviour history: `generated/maa-framework/behaviour-changes.md`",

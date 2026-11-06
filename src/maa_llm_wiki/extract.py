@@ -661,12 +661,20 @@ def render_machine_changes_page(catalog: MachineChangeCatalog, repository_url: s
     for version in versions:
         group = by_version[version]
         unclassified = sum(1 for change in group if change.kind is MachineChangeKind.UNCLASSIFIED)
-        lines.append(f"| {version} | {len(group)} | {'yes' if unclassified else ''} |")
+        label = f"[{version}](./{version}/index.md)"
+        lines.append(f"| {label} | {len(group)} | {'yes' if unclassified else ''} |")
     lines.append("")
 
     for version in versions:
         group = by_version[version]
-        lines.extend([f"## {version}", "", f"Revision: `{group[0].commit}`", ""])
+        lines.extend(
+            [
+                f"## [{version}](./{version}/index.md)",
+                "",
+                f"Revision: `{group[0].commit}`",
+                "",
+            ]
+        )
         for change in group:
             links = ", ".join(
                 f"[`{path}`]({base_url}/blob/{change.commit}/{quote(path, safe='/')})"

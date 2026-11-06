@@ -27,6 +27,8 @@ _BUNDLE_ROOT_FILES = (
     "NOTICE",
 )
 _BUNDLE_DOC_FILES = ("docs/operations.md", "docs/operations.zh.md")
+# Renamed on the way into the zip: the archive needs an entry point at its root.
+_BUNDLE_RENAMED = {"docs/bundle-start-here.md": "START-HERE.md"}
 _ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 _MANIFEST_NAME = "catalog-manifest.json"
 _CATALOG_VERSION_PATTERN = re.compile(r"^v\d+\.\d+\.\d+$")
@@ -98,6 +100,7 @@ def _bundle_paths(root: Path) -> list[Path]:
         for candidate in (
             *(root / name for name in _BUNDLE_ROOT_FILES),
             *(root / name for name in _BUNDLE_DOC_FILES),
+            *(root / name for name in _BUNDLE_RENAMED),
         )
         if candidate.is_file()
     ]
@@ -189,11 +192,12 @@ def build_catalog_bundle(
     records: list[CatalogBundleFile] = []
     for path in _bundle_paths(root):
         relative = path.relative_to(root).as_posix()
+        archive_path = _BUNDLE_RENAMED.get(relative, relative)
         content = path.read_bytes()
-        files.append((relative, content))
+        files.append((archive_path, content))
         records.append(
             CatalogBundleFile(
-                path=relative,
+                path=archive_path,
                 size_bytes=len(content),
                 sha256=hashlib.sha256(content).hexdigest(),
             )

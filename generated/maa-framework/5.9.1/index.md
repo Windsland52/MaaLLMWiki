@@ -7,19 +7,19 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 
 ## Documentation
 
-[Browse documentation](documentation/index.md)
+[Browse documentation](documentation/index.md) — 32 files
 
 ## Bindings
 
-[Browse in-tree binding APIs](bindings/index.md)
+[Browse in-tree binding APIs](bindings/index.md) — 33 files
 
 ## Native API
 
-[Browse native API](native-api/index.md)
+[Browse native API](native-api/index.md) — 21 files
 
 ## Schemas
 
-[Browse schemas](schemas.md)
+[Browse schemas](schemas.md) — 6 files
 
 ## Changed since `5.9.0`
 

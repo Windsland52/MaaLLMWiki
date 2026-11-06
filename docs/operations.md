@@ -152,7 +152,7 @@ tag without its intended body.
 | `verify_bundle.py` | Byte-for-byte copy of `src/maa_llm_wiki/verify_bundle.py`; the dependency-free verifier. |
 
 The versioned zip contains `sources/`, `generated/`, `schemas/`, `catalog-manifest.json`, and the
-consumer documents (READMEs, `CATALOG-CONTRACT.md`, `CONTRIBUTING.md`, `SECURITY.md`,
+consumer documents (`START-HERE.md`, READMEs, `CATALOG-CONTRACT.md`, `CONTRIBUTING.md`, `SECURITY.md`,
 `docs/operations.md` and its Chinese mirror, `LICENSE`, `LICENSE-DATA`, `NOTICE`). The
 manifest's `api_version` is `maa-llm-wiki-catalog/v1`; `wiki_revision` records the build commit;
 `working_tree_clean` records whether the build came from a clean tree; `catalog_version` records the

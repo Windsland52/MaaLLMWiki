@@ -18,55 +18,55 @@ Source of truth: `sources/maa-framework/machine-changes.yaml` (768 records over 
 
 | Release | Records | Unclassified |
 | --- | --- | --- |
-| 5.0.2 | 1 | yes |
-| 5.0.4 | 52 |  |
-| 5.1.0 | 47 |  |
-| 5.1.1 | 24 |  |
-| 5.1.2 | 18 |  |
-| 5.1.3 | 4 |  |
-| 5.1.4 | 55 |  |
-| 5.2.0 | 4 |  |
-| 5.2.1 | 5 |  |
-| 5.2.2 | 1 | yes |
-| 5.2.6 | 1 | yes |
-| 5.3.0 | 70 |  |
-| 5.3.1 | 14 |  |
-| 5.3.2 | 16 |  |
-| 5.4.0 | 22 |  |
-| 5.4.1 | 12 |  |
-| 5.4.2 | 2 |  |
-| 5.4.3 | 1 | yes |
-| 5.5.0 | 26 |  |
-| 5.6.0 | 16 |  |
-| 5.7.0 | 17 |  |
-| 5.7.2 | 2 |  |
-| 5.8.0 | 26 |  |
-| 5.8.1 | 1 | yes |
-| 5.9.0 | 25 |  |
-| 5.10.0 | 40 |  |
-| 5.10.1 | 1 | yes |
-| 5.10.2 | 4 |  |
-| 5.10.3 | 5 |  |
-| 5.10.5 | 1 | yes |
-| 5.11.0 | 138 |  |
-| 5.11.1 | 1 | yes |
-| 5.11.2 | 13 |  |
-| 5.12.1 | 2 |  |
-| 5.12.3 | 3 |  |
-| 5.13.0 | 60 |  |
-| 5.13.1 | 4 |  |
-| 5.14.0 | 6 |  |
-| 5.14.1 | 3 |  |
-| 5.14.3 | 5 |  |
-| 5.15.0 | 20 |  |
+| [5.0.2](./5.0.2/index.md) | 1 | yes |
+| [5.0.4](./5.0.4/index.md) | 52 |  |
+| [5.1.0](./5.1.0/index.md) | 47 |  |
+| [5.1.1](./5.1.1/index.md) | 24 |  |
+| [5.1.2](./5.1.2/index.md) | 18 |  |
+| [5.1.3](./5.1.3/index.md) | 4 |  |
+| [5.1.4](./5.1.4/index.md) | 55 |  |
+| [5.2.0](./5.2.0/index.md) | 4 |  |
+| [5.2.1](./5.2.1/index.md) | 5 |  |
+| [5.2.2](./5.2.2/index.md) | 1 | yes |
+| [5.2.6](./5.2.6/index.md) | 1 | yes |
+| [5.3.0](./5.3.0/index.md) | 70 |  |
+| [5.3.1](./5.3.1/index.md) | 14 |  |
+| [5.3.2](./5.3.2/index.md) | 16 |  |
+| [5.4.0](./5.4.0/index.md) | 22 |  |
+| [5.4.1](./5.4.1/index.md) | 12 |  |
+| [5.4.2](./5.4.2/index.md) | 2 |  |
+| [5.4.3](./5.4.3/index.md) | 1 | yes |
+| [5.5.0](./5.5.0/index.md) | 26 |  |
+| [5.6.0](./5.6.0/index.md) | 16 |  |
+| [5.7.0](./5.7.0/index.md) | 17 |  |
+| [5.7.2](./5.7.2/index.md) | 2 |  |
+| [5.8.0](./5.8.0/index.md) | 26 |  |
+| [5.8.1](./5.8.1/index.md) | 1 | yes |
+| [5.9.0](./5.9.0/index.md) | 25 |  |
+| [5.10.0](./5.10.0/index.md) | 40 |  |
+| [5.10.1](./5.10.1/index.md) | 1 | yes |
+| [5.10.2](./5.10.2/index.md) | 4 |  |
+| [5.10.3](./5.10.3/index.md) | 5 |  |
+| [5.10.5](./5.10.5/index.md) | 1 | yes |
+| [5.11.0](./5.11.0/index.md) | 138 |  |
+| [5.11.1](./5.11.1/index.md) | 1 | yes |
+| [5.11.2](./5.11.2/index.md) | 13 |  |
+| [5.12.1](./5.12.1/index.md) | 2 |  |
+| [5.12.3](./5.12.3/index.md) | 3 |  |
+| [5.13.0](./5.13.0/index.md) | 60 |  |
+| [5.13.1](./5.13.1/index.md) | 4 |  |
+| [5.14.0](./5.14.0/index.md) | 6 |  |
+| [5.14.1](./5.14.1/index.md) | 3 |  |
+| [5.14.3](./5.14.3/index.md) | 5 |  |
+| [5.15.0](./5.15.0/index.md) | 20 |  |
 
-## 5.0.2
+## [5.0.2](./5.0.2/index.md)
 
 Revision: `078d3fa4c4b3950e5956bc2e8bd529894bccdfdf`
 
 - `unclassified` `unclassified` (modified): 8 indexed files changed without a structured change — [`docs/en_us/2.3-CallbackProtocol.md`](https://github.com/MaaXYZ/MaaFramework/blob/078d3fa4c4b3950e5956bc2e8bd529894bccdfdf/docs/en_us/2.3-CallbackProtocol.md), [`docs/en_us/3.1-PipelineProtocol.md`](https://github.com/MaaXYZ/MaaFramework/blob/078d3fa4c4b3950e5956bc2e8bd529894bccdfdf/docs/en_us/3.1-PipelineProtocol.md), [`docs/zh_cn/2.3-回调协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/078d3fa4c4b3950e5956bc2e8bd529894bccdfdf/docs/zh_cn/2.3-%E5%9B%9E%E8%B0%83%E5%8D%8F%E8%AE%AE.md), [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/078d3fa4c4b3950e5956bc2e8bd529894bccdfdf/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md), [`include/MaaFramework/MaaMsg.h`](https://github.com/MaaXYZ/MaaFramework/blob/078d3fa4c4b3950e5956bc2e8bd529894bccdfdf/include/MaaFramework/MaaMsg.h), [`source/binding/Python/maa/context.py`](https://github.com/MaaXYZ/MaaFramework/blob/078d3fa4c4b3950e5956bc2e8bd529894bccdfdf/source/binding/Python/maa/context.py), [`source/binding/Python/maa/define.py`](https://github.com/MaaXYZ/MaaFramework/blob/078d3fa4c4b3950e5956bc2e8bd529894bccdfdf/source/binding/Python/maa/define.py), [`source/binding/Python/maa/tasker.py`](https://github.com/MaaXYZ/MaaFramework/blob/078d3fa4c4b3950e5956bc2e8bd529894bccdfdf/source/binding/Python/maa/tasker.py)
 
-## 5.0.4
+## [5.0.4](./5.0.4/index.md)
 
 Revision: `6ee9141da7b05e2e00eac79eb0ec6955a2849a44`
 
@@ -123,7 +123,7 @@ Revision: `6ee9141da7b05e2e00eac79eb0ec6955a2849a44`
 - `callback-message` `MaaMsg_Node_RecognitionNode_Starting` (added): #define MaaMsg_Node_RecognitionNode_Starting ("Node.RecognitionNode.Starting") — [`include/MaaFramework/MaaMsg.h`](https://github.com/MaaXYZ/MaaFramework/blob/6ee9141da7b05e2e00eac79eb0ec6955a2849a44/include/MaaFramework/MaaMsg.h)
 - `callback-message` `MaaMsg_Node_RecognitionNode_Succeeded` (added): #define MaaMsg_Node_RecognitionNode_Succeeded ("Node.RecognitionNode.Succeeded") — [`include/MaaFramework/MaaMsg.h`](https://github.com/MaaXYZ/MaaFramework/blob/6ee9141da7b05e2e00eac79eb0ec6955a2849a44/include/MaaFramework/MaaMsg.h)
 
-## 5.1.0
+## [5.1.0](./5.1.0/index.md)
 
 Revision: `d51e6fcce9fed54774696881158fe79f61a7b675`
 
@@ -175,7 +175,7 @@ Revision: `d51e6fcce9fed54774696881158fe79f61a7b675`
 - `schema-property` `$defs.Node.anchor` (added): {"$ref": "#/$defs/jsonStringOrList", "description": "锚点名称。可选，默认空。", "markdownDescription": "*string* | *list<string, >*\n\n锚点名称。可选，默认空。\n\n当节点执行成功后，会将该锚点名设置为当前节点。多个节点可设置同一个锚点名，后执行的会覆盖先执行的。\n\n在 `next` 或 `on_error` 中可通过 `[Anchor]` 属性引用该锚点，运行时会解析为最后设置该锚点的节点。\n\n详见文档中的「节点属性」章节。", "title": "Anchor Prope — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/d51e6fcce9fed54774696881158fe79f61a7b675/tools/pipeline.schema.json)
 - `schema-property` `$defs.Node.max_hit` (added): {"$ref": "#/$defs/jsonUInt32", "description": "该节点最多可被识别成功多少次。可选，默认 UINT_MAX ，即无限制。", "markdownDescription": "*uint*\n\n该节点最多可被识别成功多少次。可选，默认 UINT_MAX ，即无限制。\n\n若超过该次数，其他 node 的 next 列表中的该 node 会被跳过，既不会被识别也不会被执行。", "title": "Max Hit Property"} — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/d51e6fcce9fed54774696881158fe79f61a7b675/tools/pipeline.schema.json)
 
-## 5.1.1
+## [5.1.1](./5.1.1/index.md)
 
 Revision: `6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0`
 
@@ -204,7 +204,7 @@ Revision: `6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0`
 - `schema-property` `version` (added): {"description": "Client 可以展示给用户，同时用于版本更新检查", "title": "项目版本号", "type": "string"} — [`tools/interface_v2.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0/tools/interface_v2.schema.json)
 - `schema-property` `welcome` (added): {"$ref": "#/definitions/i18nString", "description": "在用户首次使用时弹窗显示，亦可作为公告使用。支持文件路径、URL或直接文本，内容支持Markdown格式。系统会记录显示内容，当内容更新时会再次弹窗显示", "title": "欢迎消息"} — [`tools/interface_v2.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0/tools/interface_v2.schema.json)
 
-## 5.1.2
+## [5.1.2](./5.1.2/index.md)
 
 Revision: `2f6938faaa9e17adca21ec43eb8e7f922c1ab696`
 
@@ -227,7 +227,7 @@ Revision: `2f6938faaa9e17adca21ec43eb8e7f922c1ab696`
 - `schema-property` `definitions.controllerItem.adb` (removed): {"additionalProperties": false, "description": "Adb 控制器的具体配置", "properties": {"config": {"description": "覆盖控制器的部分默认逻辑，通常用于 EmulatorExtras 多开场景", "title": "额外配置", "type": "object"}, "input": {"description": "按位或合并的输入方式值。1: AdbShell, 2: MinitouchAndAdbKey, 4: Maatouch, 8: EmulatorExtras", "title": "输入 — [`tools/interface_v2.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/2f6938faaa9e17adca21ec43eb8e7f922c1ab696/tools/interface_v2.schema.json)
 - `schema-property` `definitions.controllerItem.win32.input` (removed): {"description": "Win32 输入方式值。1: Seize, 2: SendMessage, 4: PostMessage, 8: LegacyEvent, 16: PostThreadMessage", "title": "输入方式", "type": "integer"} — [`tools/interface_v2.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/2f6938faaa9e17adca21ec43eb8e7f922c1ab696/tools/interface_v2.schema.json)
 
-## 5.1.3
+## [5.1.3](./5.1.3/index.md)
 
 Revision: `fdb3d46cd1bd4d35b5d69dc06c41c9ae0bcff475`
 
@@ -236,7 +236,7 @@ Revision: `fdb3d46cd1bd4d35b5d69dc06c41c9ae0bcff475`
 - `schema-enum` `definitions.controllerItem.win32.mouse = "PostMessageWithCursorPos"` (added): "PostMessageWithCursorPos" — [`tools/interface_v2.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/fdb3d46cd1bd4d35b5d69dc06c41c9ae0bcff475/tools/interface_v2.schema.json)
 - `schema-enum` `definitions.controllerItem.win32.mouse = "SendMessageWithCursorPos"` (added): "SendMessageWithCursorPos" — [`tools/interface_v2.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/fdb3d46cd1bd4d35b5d69dc06c41c9ae0bcff475/tools/interface_v2.schema.json)
 
-## 5.1.4
+## [5.1.4](./5.1.4/index.md)
 
 Revision: `c03b933d8b36030a7d21ff27f2b77f167ef4ec5d`
 
@@ -296,7 +296,7 @@ Revision: `c03b933d8b36030a7d21ff27f2b77f167ef4ec5d`
 - `schema-required` `task.items.entry` (removed): "entry" — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/c03b933d8b36030a7d21ff27f2b77f167ef4ec5d/tools/interface.schema.json)
 - `schema-required` `task.items.name` (removed): "name" — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/c03b933d8b36030a7d21ff27f2b77f167ef4ec5d/tools/interface.schema.json)
 
-## 5.2.0
+## [5.2.0](./5.2.0/index.md)
 
 Revision: `81c02ff14a5080a3a9e3cf57782b699b0900083c`
 
@@ -305,7 +305,7 @@ Revision: `81c02ff14a5080a3a9e3cf57782b699b0900083c`
 - `binding-api` `post_action` (added): def post_action( — [`source/binding/Python/maa/tasker.py`](https://github.com/MaaXYZ/MaaFramework/blob/81c02ff14a5080a3a9e3cf57782b699b0900083c/source/binding/Python/maa/tasker.py)
 - `binding-api` `post_recognition` (added): def post_recognition( — [`source/binding/Python/maa/tasker.py`](https://github.com/MaaXYZ/MaaFramework/blob/81c02ff14a5080a3a9e3cf57782b699b0900083c/source/binding/Python/maa/tasker.py)
 
-## 5.2.1
+## [5.2.1](./5.2.1/index.md)
 
 Revision: `09e5d240b778ea5e2539861c457a389261289cf7`
 
@@ -315,19 +315,19 @@ Revision: `09e5d240b778ea5e2539861c457a389261289cf7`
 - `binding-api` `timeout` (added): timeout?: number — [`source/binding/NodeJS/src/apis/pipeline.d.ts`](https://github.com/MaaXYZ/MaaFramework/blob/09e5d240b778ea5e2539861c457a389261289cf7/source/binding/NodeJS/src/apis/pipeline.d.ts)
 - `schema-enum` `$defs.TemplateMatch.method = 10001` (added): 10001 — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/09e5d240b778ea5e2539861c457a389261289cf7/tools/pipeline.schema.json)
 
-## 5.2.2
+## [5.2.2](./5.2.2/index.md)
 
 Revision: `fc2af341f0cd16f1a644e5bae593b84fe21d1c62`
 
 - `unclassified` `unclassified` (modified): 6 indexed files changed without a structured change — [`docs/en_us/2.4-ControlMethods.md`](https://github.com/MaaXYZ/MaaFramework/blob/fc2af341f0cd16f1a644e5bae593b84fe21d1c62/docs/en_us/2.4-ControlMethods.md), [`docs/en_us/3.1-PipelineProtocol.md`](https://github.com/MaaXYZ/MaaFramework/blob/fc2af341f0cd16f1a644e5bae593b84fe21d1c62/docs/en_us/3.1-PipelineProtocol.md), [`docs/en_us/3.3-ProjectInterfaceV2.md`](https://github.com/MaaXYZ/MaaFramework/blob/fc2af341f0cd16f1a644e5bae593b84fe21d1c62/docs/en_us/3.3-ProjectInterfaceV2.md), [`docs/zh_cn/2.4-控制方式说明.md`](https://github.com/MaaXYZ/MaaFramework/blob/fc2af341f0cd16f1a644e5bae593b84fe21d1c62/docs/zh_cn/2.4-%E6%8E%A7%E5%88%B6%E6%96%B9%E5%BC%8F%E8%AF%B4%E6%98%8E.md), [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/fc2af341f0cd16f1a644e5bae593b84fe21d1c62/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md), [`docs/zh_cn/3.3-ProjectInterfaceV2协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/fc2af341f0cd16f1a644e5bae593b84fe21d1c62/docs/zh_cn/3.3-ProjectInterfaceV2%E5%8D%8F%E8%AE%AE.md)
 
-## 5.2.6
+## [5.2.6](./5.2.6/index.md)
 
 Revision: `694d4d470b6129c784dd9598f5b3841244b4a033`
 
 - `unclassified` `unclassified` (modified): 8 indexed files changed without a structured change — [`docs/en_us/2.2-IntegratedInterfaceOverview.md`](https://github.com/MaaXYZ/MaaFramework/blob/694d4d470b6129c784dd9598f5b3841244b4a033/docs/en_us/2.2-IntegratedInterfaceOverview.md), [`docs/en_us/3.1-PipelineProtocol.md`](https://github.com/MaaXYZ/MaaFramework/blob/694d4d470b6129c784dd9598f5b3841244b4a033/docs/en_us/3.1-PipelineProtocol.md), [`docs/zh_cn/2.2-集成接口一览.md`](https://github.com/MaaXYZ/MaaFramework/blob/694d4d470b6129c784dd9598f5b3841244b4a033/docs/zh_cn/2.2-%E9%9B%86%E6%88%90%E6%8E%A5%E5%8F%A3%E4%B8%80%E8%A7%88.md), [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/694d4d470b6129c784dd9598f5b3841244b4a033/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md), [`include/MaaFramework/Instance/MaaController.h`](https://github.com/MaaXYZ/MaaFramework/blob/694d4d470b6129c784dd9598f5b3841244b4a033/include/MaaFramework/Instance/MaaController.h), [`source/binding/NodeJS/src/apis/controller.d.ts`](https://github.com/MaaXYZ/MaaFramework/blob/694d4d470b6129c784dd9598f5b3841244b4a033/source/binding/NodeJS/src/apis/controller.d.ts), [`source/binding/Python/maa/controller.py`](https://github.com/MaaXYZ/MaaFramework/blob/694d4d470b6129c784dd9598f5b3841244b4a033/source/binding/Python/maa/controller.py), [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/694d4d470b6129c784dd9598f5b3841244b4a033/tools/pipeline.schema.json)
 
-## 5.3.0
+## [5.3.0](./5.3.0/index.md)
 
 Revision: `49d01e903b67ec22c3dd3d64a7760bc6886beece`
 
@@ -402,7 +402,7 @@ Revision: `49d01e903b67ec22c3dd3d64a7760bc6886beece`
 - `schema-property` `definitions.taskItem.doc` (added): {"anyOf": [{"$ref": "#/definitions/i18nString"}, {"items": {"$ref": "#/definitions/i18nString"}, "type": "array"}], "description": "任务的详细文档说明，支持字符串或字符串数组", "title": "任务文档"} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/49d01e903b67ec22c3dd3d64a7760bc6886beece/tools/interface.schema.json)
 - `schema-property` `playcover` (added): {"properties": {"address": {"title": "服务地址", "type": "string"}, "uuid": {"title": "Bundle Identifier", "type": "string"}}, "title": "PlayCover配置", "type": "object"} — [`tools/interface_config.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/49d01e903b67ec22c3dd3d64a7760bc6886beece/tools/interface_config.schema.json)
 
-## 5.3.1
+## [5.3.1](./5.3.1/index.md)
 
 Revision: `b14ab140b5ab87be09f6a779a30a1380697e462e`
 
@@ -421,7 +421,7 @@ Revision: `b14ab140b5ab87be09f6a779a30a1380697e462e`
 - `schema-property` `definitions.controllerItem.playcover.address` (removed): {"description": "PlayTools 服务的默认地址，格式为 host:port", "examples": ["127.0.0.1:1717"], "title": "默认服务地址", "type": "string"} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/b14ab140b5ab87be09f6a779a30a1380697e462e/tools/interface.schema.json)
 - `schema-property` `definitions.resourceItem.option` (added): {"description": "可选。资源包的全局选项配置，为一个字符串数组，数组元素应与外层 option 配置中的键名对应。该选项生成的参数会参与到所有任务的 pipeline override 中", "items": {"type": "string"}, "title": "全局选项配置", "type": "array"} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/b14ab140b5ab87be09f6a779a30a1380697e462e/tools/interface.schema.json)
 
-## 5.3.2
+## [5.3.2](./5.3.2/index.md)
 
 Revision: `d103e2e16950405d4806288a4da03d730b430aef`
 
@@ -442,7 +442,7 @@ Revision: `d103e2e16950405d4806288a4da03d730b430aef`
 - `binding-api` `version` (added): def version(cls) -> str: — [`source/binding/Python/maa/library.py`](https://github.com/MaaXYZ/MaaFramework/blob/d103e2e16950405d4806288a4da03d730b430aef/source/binding/Python/maa/library.py)
 - `binding-api` `version` (removed): def version() -> str: — [`source/binding/Python/maa/library.py`](https://github.com/MaaXYZ/MaaFramework/blob/d103e2e16950405d4806288a4da03d730b430aef/source/binding/Python/maa/library.py)
 
-## 5.4.0
+## [5.4.0](./5.4.0/index.md)
 
 Revision: `274612a236dd4e85780d714a63dbb7b4a07b6e5c`
 
@@ -469,7 +469,7 @@ Revision: `274612a236dd4e85780d714a63dbb7b4a07b6e5c`
 - `schema-property` `$defs.Swipe.pressure` (added): {"$ref": "#/$defs/jsonInt32", "default": 1, "description": "触点力度。可选，默认 1 。", "markdownDescription": "*int*\n\n触点力度。可选，默认 1 。", "title": "Pressure Property"} — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/274612a236dd4e85780d714a63dbb7b4a07b6e5c/tools/pipeline.schema.json)
 - `schema-property` `definitions.controllerItem.gamepad` (added): {"additionalProperties": false, "description": "虚拟游戏手柄控制器的具体配置（仅 Windows）。需要安装 ViGEm Bus Driver", "properties": {"class_regex": {"description": "可选。搜索窗口类名使用的正则表达式，用于截图功能", "title": "窗口类名正则", "type": "string"}, "gamepad_type": {"default": "Xbox360", "description": "可选。虚拟手柄类型，不提供则默认使用 Xbox360", "enum" — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/274612a236dd4e85780d714a63dbb7b4a07b6e5c/tools/interface.schema.json)
 
-## 5.4.1
+## [5.4.1](./5.4.1/index.md)
 
 Revision: `46b3a5bf0886302f8523e2bf7de4af00e0b87122`
 
@@ -486,20 +486,20 @@ Revision: `46b3a5bf0886302f8523e2bf7de4af00e0b87122`
 - `binding-api` `on_error` (added): on_error?: MaybeArray<RemoveIfDump<NodeName, Mode> | NodeAttr<Mode>, Mode> — [`source/binding/NodeJS/src/apis/pipeline.d.ts`](https://github.com/MaaXYZ/MaaFramework/blob/46b3a5bf0886302f8523e2bf7de4af00e0b87122/source/binding/NodeJS/src/apis/pipeline.d.ts)
 - `binding-api` `on_error` (removed): on_error?: MaybeArray<NodeAttr, Mode> — [`source/binding/NodeJS/src/apis/pipeline.d.ts`](https://github.com/MaaXYZ/MaaFramework/blob/46b3a5bf0886302f8523e2bf7de4af00e0b87122/source/binding/NodeJS/src/apis/pipeline.d.ts)
 
-## 5.4.2
+## [5.4.2](./5.4.2/index.md)
 
 Revision: `648fb4ec1225ef620ba3ecc8c039a5b9222ef510`
 
 - `schema-property` `definitions.controllerItem.permission_required` (added): {"default": false, "description": "该控制器是否需要以管理员权限运行（例如某些 Win32 输入方式需要更高权限）。不设置则默认为 false", "title": "需要管理员权限", "type": "boolean"} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/648fb4ec1225ef620ba3ecc8c039a5b9222ef510/tools/interface.schema.json)
 - `schema-property` `definitions.taskItem.controller` (added): {"description": "指定该任务支持的控制器类型列表。数组元素应与 controller 配置中的 name 字段对应。若不指定，则表示该任务在所有控制器类型中都可用", "items": {"type": "string"}, "title": "支持的控制器", "type": "array"} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/648fb4ec1225ef620ba3ecc8c039a5b9222ef510/tools/interface.schema.json)
 
-## 5.4.3
+## [5.4.3](./5.4.3/index.md)
 
 Revision: `6e927179bd55484e44393872c2faa62a042700f6`
 
 - `unclassified` `unclassified` (modified): 7 indexed files changed without a structured change — [`docs/en_us/2.1-Integration.md`](https://github.com/MaaXYZ/MaaFramework/blob/6e927179bd55484e44393872c2faa62a042700f6/docs/en_us/2.1-Integration.md), [`docs/en_us/3.1-PipelineProtocol.md`](https://github.com/MaaXYZ/MaaFramework/blob/6e927179bd55484e44393872c2faa62a042700f6/docs/en_us/3.1-PipelineProtocol.md), [`docs/en_us/3.3-ProjectInterfaceV2.md`](https://github.com/MaaXYZ/MaaFramework/blob/6e927179bd55484e44393872c2faa62a042700f6/docs/en_us/3.3-ProjectInterfaceV2.md), [`docs/zh_cn/2.1-集成文档.md`](https://github.com/MaaXYZ/MaaFramework/blob/6e927179bd55484e44393872c2faa62a042700f6/docs/zh_cn/2.1-%E9%9B%86%E6%88%90%E6%96%87%E6%A1%A3.md), [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/6e927179bd55484e44393872c2faa62a042700f6/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md), [`docs/zh_cn/3.3-ProjectInterfaceV2协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/6e927179bd55484e44393872c2faa62a042700f6/docs/zh_cn/3.3-ProjectInterfaceV2%E5%8D%8F%E8%AE%AE.md), [`source/binding/NodeJS/src/apis/tasker.d.ts`](https://github.com/MaaXYZ/MaaFramework/blob/6e927179bd55484e44393872c2faa62a042700f6/source/binding/NodeJS/src/apis/tasker.d.ts)
 
-## 5.5.0
+## [5.5.0](./5.5.0/index.md)
 
 Revision: `143e99490afcfa7229e315b4197651ee8bde7773`
 
@@ -530,7 +530,7 @@ Revision: `143e99490afcfa7229e315b4197651ee8bde7773`
 - `schema-property` `$defs.Scroll.target` (added): {"$ref": "#/$defs/jsonTarget", "description": "滚动目标的位置，鼠标会先移动到该位置再进行滚动。可选，默认 true 。", "markdownDescription": "*true* | *string* | *array<int, 4>*\n\n滚动目标的位置，鼠标会先移动到该位置再进行滚动。可选，默认 true 。\n\n- *true*: 目标为本节点中刚刚识别到的位置（即自身）。\n\n- *string*: 填写节点名，目标为之前执行过的某节点识别到的位置。\n\n- *array<int, 4>*: 目标为固定坐标区域内随机一点，[ — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/143e99490afcfa7229e315b4197651ee8bde7773/tools/pipeline.schema.json)
 - `schema-property` `$defs.Scroll.target_offset` (added): {"$ref": "#/$defs/jsonRect", "description": "在 `target` 的基础上额外移动再作为滚动目标，四个值分别相加。可选，默认 [0, 0, 0, 0] 。", "markdownDescription": "*array<int, 4>*\n\n在 `target` 的基础上额外移动再作为滚动目标，四个值分别相加。可选，默认 [0, 0, 0, 0] 。", "title": "Target Offset Property"} — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/143e99490afcfa7229e315b4197651ee8bde7773/tools/pipeline.schema.json)
 
-## 5.6.0
+## [5.6.0](./5.6.0/index.md)
 
 Revision: `f2f929b90ee25eb2c4b3dfd6f2c75144138f212e`
 
@@ -551,7 +551,7 @@ Revision: `f2f929b90ee25eb2c4b3dfd6f2c75144138f212e`
 - `schema-required` `$defs.NeuralNetworkClassify.anyOf.expected` (removed): "expected" — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/f2f929b90ee25eb2c4b3dfd6f2c75144138f212e/tools/pipeline.schema.json)
 - `schema-required` `$defs.NeuralNetworkDetect.anyOf.expected` (removed): "expected" — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/f2f929b90ee25eb2c4b3dfd6f2c75144138f212e/tools/pipeline.schema.json)
 
-## 5.7.0
+## [5.7.0](./5.7.0/index.md)
 
 Revision: `732605ab60ad8df0651c342dd42f0a9cca542ec0`
 
@@ -573,14 +573,14 @@ Revision: `732605ab60ad8df0651c342dd42f0a9cca542ec0`
 - `schema-property` `$defs.SubRecognition.sub_name` (removed): {"description": "子识别别名。可选。后续子识别可通过 `roi: sub_name` 引用之前子识别的 `filtered` 作为 ROI；同名以最后一个为准；仅当前节点内有效。（仅支持 `And`）", "markdownDescription": "*string*\n\n子识别别名。可选。\n\n后续子识别可通过 `roi: sub_name` 引用之前子识别的 `filtered` 作为 ROI；同名以最后一个为准；仅当前节点内有效。（仅支持 `And`）", "title": "Sub Name Property", "type": "string"} — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/732605ab60ad8df0651c342dd42f0a9cca542ec0/tools/pipeline.schema.json)
 - `schema-property` `definitions.taskItem.desc` (added): {"anyOf": [{"$ref": "#/definitions/i18nString"}, {"items": {"$ref": "#/definitions/i18nString"}, "type": "array"}], "description": "任务的详细文档说明，支持字符串或字符串数组", "title": "任务文档"} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/732605ab60ad8df0651c342dd42f0a9cca542ec0/tools/interface.schema.json)
 
-## 5.7.2
+## [5.7.2](./5.7.2/index.md)
 
 Revision: `c5df68bc658c1d12bd82df7da2d76f808d0e4130`
 
 - `schema-property` `$defs.Shell.shell_timeout` (added): {"default": 20000, "description": "超时时间（毫秒）。可选，默认 20000 (20秒)。设置为 -1 表示无限等待。", "markdownDescription": "*int*\n\n超时时间（毫秒）。可选，默认 20000 (20秒)。\n\n设置为 -1 表示无限等待，永不超时。", "title": "Shell Timeout Property", "type": "integer"} — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/c5df68bc658c1d12bd82df7da2d76f808d0e4130/tools/pipeline.schema.json)
 - `schema-property` `$defs.Shell.timeout` (removed): {"default": 20000, "description": "超时时间（毫秒）。可选，默认 20000 (20秒)。设置为 -1 表示无限等待。", "markdownDescription": "*int*\n\n超时时间（毫秒）。可选，默认 20000 (20秒)。\n\n设置为 -1 表示无限等待，永不超时。", "title": "Timeout Property", "type": "integer"} — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/c5df68bc658c1d12bd82df7da2d76f808d0e4130/tools/pipeline.schema.json)
 
-## 5.8.0
+## [5.8.0](./5.8.0/index.md)
 
 Revision: `c59e7682705142a5e3107629e8563d3a2d6978db`
 
@@ -611,13 +611,13 @@ Revision: `c59e7682705142a5e3107629e8563d3a2d6978db`
 - `schema-property` `task` (added): {"description": "为一个对象数组，包含可执行任务的信息", "items": {"$ref": "#/definitions/taskItem"}, "title": "任务配置", "type": "array"} — [`tools/interface_import.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/c59e7682705142a5e3107629e8563d3a2d6978db/tools/interface_import.schema.json)
 - `schema-required` `task` (removed): "task" — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/c59e7682705142a5e3107629e8563d3a2d6978db/tools/interface.schema.json)
 
-## 5.8.1
+## [5.8.1](./5.8.1/index.md)
 
 Revision: `716ebcf9801191829aa091b7f1bed4db37f29c33`
 
 - `unclassified` `unclassified` (modified): 3 indexed files changed without a structured change — [`docs/en_us/3.1-PipelineProtocol.md`](https://github.com/MaaXYZ/MaaFramework/blob/716ebcf9801191829aa091b7f1bed4db37f29c33/docs/en_us/3.1-PipelineProtocol.md), [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/716ebcf9801191829aa091b7f1bed4db37f29c33/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md), [`source/binding/Python/maa/context.py`](https://github.com/MaaXYZ/MaaFramework/blob/716ebcf9801191829aa091b7f1bed4db37f29c33/source/binding/Python/maa/context.py)
 
-## 5.9.0
+## [5.9.0](./5.9.0/index.md)
 
 Revision: `17324f86394c4e426766857da790e53040552ae3`
 
@@ -647,7 +647,7 @@ Revision: `17324f86394c4e426766857da790e53040552ae3`
 - `schema-property` `definitions.taskItem.group` (added): {"description": "💡 v2.4.0 可选。指定该任务所属的分组列表。数组元素应与顶层 group 配置中的 name 字段对应。若不指定，则表示该任务不属于任何显式分组", "items": {"type": "string"}, "title": "所属分组", "type": "array"} — [`tools/interface_import.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/17324f86394c4e426766857da790e53040552ae3/tools/interface_import.schema.json)
 - `schema-property` `group` (added): {"description": "💡 v2.4.0 可选。为一个对象数组，用于声明任务分组及其展示属性", "items": {"$ref": "#/definitions/groupItem"}, "title": "任务分组配置", "type": "array"} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/17324f86394c4e426766857da790e53040552ae3/tools/interface.schema.json)
 
-## 5.10.0
+## [5.10.0](./5.10.0/index.md)
 
 Revision: `09af59ea0365f666497535eb5cc116c4586fc6bb`
 
@@ -692,13 +692,13 @@ Revision: `09af59ea0365f666497535eb5cc116c4586fc6bb`
 - `schema-enum` `definitions.controllerItem.type = "MacOS"` (added): "MacOS" — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/09af59ea0365f666497535eb5cc116c4586fc6bb/tools/interface.schema.json)
 - `schema-property` `definitions.controllerItem.macos` (added): {"additionalProperties": false, "description": "MacOS 控制器的具体配置", "properties": {"input": {"description": "可选。MacOS 控制器的输入控制方式，不提供则使用默认", "enum": ["GlobalEvent", "PostToPid"], "title": "输入控制方式", "type": "string"}, "screencap": {"description": "可选。MacOS 控制器的截图方式，不提供则使用默认", "enum": ["ScreenCaptureKit"] — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/09af59ea0365f666497535eb5cc116c4586fc6bb/tools/interface.schema.json)
 
-## 5.10.1
+## [5.10.1](./5.10.1/index.md)
 
 Revision: `790aee8adc6a6918befc40df2d4a8b7e5310674b`
 
 - `unclassified` `unclassified` (modified): 4 indexed files changed without a structured change — [`docs/en_us/1.1-QuickStarted.md`](https://github.com/MaaXYZ/MaaFramework/blob/790aee8adc6a6918befc40df2d4a8b7e5310674b/docs/en_us/1.1-QuickStarted.md), [`docs/en_us/5.1-Troubleshooting.md`](https://github.com/MaaXYZ/MaaFramework/blob/790aee8adc6a6918befc40df2d4a8b7e5310674b/docs/en_us/5.1-Troubleshooting.md), [`docs/zh_cn/1.1-快速开始.md`](https://github.com/MaaXYZ/MaaFramework/blob/790aee8adc6a6918befc40df2d4a8b7e5310674b/docs/zh_cn/1.1-%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B.md), [`docs/zh_cn/5.1-问题反馈.md`](https://github.com/MaaXYZ/MaaFramework/blob/790aee8adc6a6918befc40df2d4a8b7e5310674b/docs/zh_cn/5.1-%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88.md)
 
-## 5.10.2
+## [5.10.2](./5.10.2/index.md)
 
 Revision: `8885479e34d81f7073ed9e87b2280ede606e51da`
 
@@ -707,7 +707,7 @@ Revision: `8885479e34d81f7073ed9e87b2280ede606e51da`
 - `schema-property` `definitions.controllerItem.wlroots` (added): {"additionalProperties": false, "description": "WlRoots 控制器的具体配置（仅 Linux）", "properties": {"use_win32_vk_code": {"description": "可选。为 true 时按键被视为 Win32 Virtual-Key 码，内部转换为 Linux evdev 码；否则按原始 evdev 码处理。默认 false", "title": "使用 Win32 VK 键码", "type": "boolean"}, "wlr_socket_path": {"description": "可选。W — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/8885479e34d81f7073ed9e87b2280ede606e51da/tools/interface.schema.json)
 - `schema-property` `wlroots` (added): {"properties": {"wlr_socket_path": {"title": "Wayland Socket路径", "type": "string"}}, "title": "WlRoots配置", "type": "object"} — [`tools/interface_config.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/8885479e34d81f7073ed9e87b2280ede606e51da/tools/interface_config.schema.json)
 
-## 5.10.3
+## [5.10.3](./5.10.3/index.md)
 
 Revision: `89e14e984a2bd3621ae4537bc0bd89a5d85d0e4e`
 
@@ -717,13 +717,13 @@ Revision: `89e14e984a2bd3621ae4537bc0bd89a5d85d0e4e`
 - `enum-value` `MaaCtrlOption_BackgroundManagedKeys` (added): MaaCtrlOption_BackgroundManagedKeys = 7, — [`include/MaaFramework/MaaDef.h`](https://github.com/MaaXYZ/MaaFramework/blob/89e14e984a2bd3621ae4537bc0bd89a5d85d0e4e/include/MaaFramework/MaaDef.h)
 - `schema-property` `definitions.resourceItem.hash` (added): {"description": "资源校验值，通过 MaaResourceGetHash 获取。校验时机为加载 resource.path 后、加载 controller.attach_resource_path 之前", "minLength": 1, "title": "资源 hash", "type": "string"} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/89e14e984a2bd3621ae4537bc0bd89a5d85d0e4e/tools/interface.schema.json)
 
-## 5.10.5
+## [5.10.5](./5.10.5/index.md)
 
 Revision: `13ff95cdfa2b20fa6bdd361779278115bc03c0b4`
 
 - `unclassified` `unclassified` (modified): 4 indexed files changed without a structured change — [`docs/en_us/2.4-ControlMethods.md`](https://github.com/MaaXYZ/MaaFramework/blob/13ff95cdfa2b20fa6bdd361779278115bc03c0b4/docs/en_us/2.4-ControlMethods.md), [`docs/en_us/3.1-PipelineProtocol.md`](https://github.com/MaaXYZ/MaaFramework/blob/13ff95cdfa2b20fa6bdd361779278115bc03c0b4/docs/en_us/3.1-PipelineProtocol.md), [`docs/zh_cn/2.4-控制方式说明.md`](https://github.com/MaaXYZ/MaaFramework/blob/13ff95cdfa2b20fa6bdd361779278115bc03c0b4/docs/zh_cn/2.4-%E6%8E%A7%E5%88%B6%E6%96%B9%E5%BC%8F%E8%AF%B4%E6%98%8E.md), [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/13ff95cdfa2b20fa6bdd361779278115bc03c0b4/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md)
 
-## 5.11.0
+## [5.11.0](./5.11.0/index.md)
 
 Revision: `4e0659987005354f5f97d72f145b2899863badbf`
 
@@ -866,13 +866,13 @@ Revision: `4e0659987005354f5f97d72f145b2899863badbf`
 - `binding-api` `wrapper_sink` (added): def wrapper_sink(sink: type["TaskerEventSink"]) -> type["TaskerEventSink"]: — [`source/binding/Python/maa/agent/agent_server.py`](https://github.com/MaaXYZ/MaaFramework/blob/4e0659987005354f5f97d72f145b2899863badbf/source/binding/Python/maa/agent/agent_server.py)
 - `binding-api` `wrapper_sink` (removed): def wrapper_sink(sink): — [`source/binding/Python/maa/agent/agent_server.py`](https://github.com/MaaXYZ/MaaFramework/blob/4e0659987005354f5f97d72f145b2899863badbf/source/binding/Python/maa/agent/agent_server.py)
 
-## 5.11.1
+## [5.11.1](./5.11.1/index.md)
 
 Revision: `3d27ff4cf84ef19c672ab501a6dbb29e4b41aed8`
 
 - `unclassified` `unclassified` (modified): 1 indexed files changed without a structured change — [`include/MaaFramework/Instance/MaaController.h`](https://github.com/MaaXYZ/MaaFramework/blob/3d27ff4cf84ef19c672ab501a6dbb29e4b41aed8/include/MaaFramework/Instance/MaaController.h)
 
-## 5.11.2
+## [5.11.2](./5.11.2/index.md)
 
 Revision: `741c4ddf71748668c23e45afbc92f11ba0237ef2`
 
@@ -890,14 +890,14 @@ Revision: `741c4ddf71748668c23e45afbc92f11ba0237ef2`
 - `schema-property` `pretask` (added): {"description": "💡 v2.7.0 可选。Controller 启动前执行的预任务配置。若配置 option，Client 应将 option 取值序列化为最后一个参数", "oneOf": [{"$ref": "#/definitions/pretaskConfig"}, {"description": "多个预任务配置。Client 应在 Controller 启动前按数组顺序执行", "items": {"$ref": "#/definitions/pretaskConfig"}, "title": "预任务配置数组", "type": "array"}]} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/741c4ddf71748668c23e45afbc92f11ba0237ef2/tools/interface.schema.json)
 - `schema-property` `setting` (added): {"description": "💡 v2.8.0 可选。任务设置页 UI 声明，供 Client 渲染全局任务配置专用设置区域。Client 应将其视为展示层元数据", "items": {"$ref": "#/definitions/settingSection"}, "title": "任务设置页 UI 声明", "type": "array"} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/741c4ddf71748668c23e45afbc92f11ba0237ef2/tools/interface.schema.json)
 
-## 5.12.1
+## [5.12.1](./5.12.1/index.md)
 
 Revision: `e6aa89259ff6907197becebdeb8efc0074f13dfc`
 
 - `binding-api` `pressure` (added): pressure?: number — [`source/binding/NodeJS/src/apis/pipeline.d.ts`](https://github.com/MaaXYZ/MaaFramework/blob/e6aa89259ff6907197becebdeb8efc0074f13dfc/source/binding/NodeJS/src/apis/pipeline.d.ts)
 - `schema-enum` `definitions.controllerItem.win32.mouse = "Interception"` (added): "Interception" — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/e6aa89259ff6907197becebdeb8efc0074f13dfc/tools/interface.schema.json)
 
-## 5.12.3
+## [5.12.3](./5.12.3/index.md)
 
 Revision: `0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb`
 
@@ -905,7 +905,7 @@ Revision: `0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb`
 - `documentation-version` `v2.9.0` (added): | 2026-7-22 | v2.9.0 | 新增 `telemetry` 匿名遥测（数据埋点）配置字段 | — [`docs/zh_cn/3.3-ProjectInterfaceV2协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb/docs/zh_cn/3.3-ProjectInterfaceV2%E5%8D%8F%E8%AE%AE.md)
 - `schema-property` `telemetry` (added): {"additionalProperties": false, "description": "💡 v2.9.0 可选。匿名遥测（数据埋点）配置容器，用于向资源作者自己的遥测平台上报崩溃与任务运行统计。并非所有 Client 都会支持。未配置时不进行任何遥测", "properties": {"sentry": {"additionalProperties": false, "description": "基于 Sentry 的遥测配置", "properties": {"dsn": {"description": "Sentry 项目的 DSN。必填；缺省或为空字符串时不启用 Sentry  — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb/tools/interface.schema.json)
 
-## 5.13.0
+## [5.13.0](./5.13.0/index.md)
 
 Revision: `2bcfa85c66a2eac6ca3e5937f175495275ee0643`
 
@@ -970,7 +970,7 @@ Revision: `2bcfa85c66a2eac6ca3e5937f175495275ee0643`
 - `schema-property` `telemetry.sentry.failure_attachments_sample_rate` (added): {"description": "💡 v2.9.2 可选。取值 0~1，默认 1.0；仅控制随失败 / 错误事件上传的附件，不影响对应的 Error Event、Sentry Logs 或事务采样", "maximum": 1, "minimum": 0, "title": "失败诊断附件采样率", "type": "number"} — [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/2bcfa85c66a2eac6ca3e5937f175495275ee0643/tools/interface.schema.json)
 - `schema-property` `wlroots` (removed): {"properties": {"wlr_socket_path": {"title": "Wayland Socket路径", "type": "string"}}, "title": "WlRoots配置", "type": "object"} — [`tools/interface_config.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/2bcfa85c66a2eac6ca3e5937f175495275ee0643/tools/interface_config.schema.json)
 
-## 5.13.1
+## [5.13.1](./5.13.1/index.md)
 
 Revision: `9c20d69a9412fc52537f61c48077a7e024737896`
 
@@ -979,7 +979,7 @@ Revision: `9c20d69a9412fc52537f61c48077a7e024737896`
 - `schema-property` `last_resolved_welcome` (added): {"oneOf": [{"type": "null"}, {"$ref": "#/definitions/welcome"}], "title": "上次显示的公告内容"} — [`tools/interface_config.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/9c20d69a9412fc52537f61c48077a7e024737896/tools/interface_config.schema.json)
 - `schema-property` `last_welcome` (added): {"oneOf": [{"type": "null"}, {"$ref": "#/definitions/welcome"}], "title": "上次显示的公告声明"} — [`tools/interface_config.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/9c20d69a9412fc52537f61c48077a7e024737896/tools/interface_config.schema.json)
 
-## 5.14.0
+## [5.14.0](./5.14.0/index.md)
 
 Revision: `b96ab05ace1c14533144fedfcbb7358dad785579`
 
@@ -990,7 +990,7 @@ Revision: `b96ab05ace1c14533144fedfcbb7358dad785579`
 - `schema-property` `$defs.KeyUp.auto_up` (added): {"$ref": "#/$defs/jsonBooleanFalse", "default": false, "description": "仅对 KeyDown 生效，KeyUp 忽略该字段。可选，默认 false 。", "markdownDescription": "*bool*\n\n仅对 `KeyDown` 生效，`KeyUp` 忽略该字段。可选，默认 false 。", "title": "Auto Up Property"} — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/b96ab05ace1c14533144fedfcbb7358dad785579/tools/pipeline.schema.json)
 - `schema-property` `$defs.Touch.auto_up` (added): {"$ref": "#/$defs/jsonBooleanFalse", "default": false, "description": "任务停止、结束或控制器销毁时是否自动抬起仍按住的触点。可选，默认 false 。仅对 TouchDown 生效。", "markdownDescription": "*bool*\n\n任务停止、结束或控制器销毁时是否自动抬起仍按住的触点。可选，默认 false 。\n\n仅对 `TouchDown` 生效。设为 true 后，若用户中途停止任务、任务正常结束或控制器销毁时仍未 `TouchUp`，将自动抬起以免设备保持按下。已配对 `TouchUp`  — [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/b96ab05ace1c14533144fedfcbb7358dad785579/tools/pipeline.schema.json)
 
-## 5.14.1
+## [5.14.1](./5.14.1/index.md)
 
 Revision: `adba94d694569643d0517bc7c5220d1fdf603800`
 
@@ -998,7 +998,7 @@ Revision: `adba94d694569643d0517bc7c5220d1fdf603800`
 - `schema-property` `pretask` (added): {"description": "💡 v2.7.0 可选。Controller 启动前执行的预任务配置。若配置 option，Client 应将 option 取值序列化为最后一个参数", "oneOf": [{"$ref": "#/definitions/pretaskConfig"}, {"description": "多个预任务配置。Client 应在 Controller 启动前按数组顺序执行", "items": {"$ref": "#/definitions/pretaskConfig"}, "title": "预任务配置数组", "type": "array"}]} — [`tools/interface_import.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/adba94d694569643d0517bc7c5220d1fdf603800/tools/interface_import.schema.json)
 - `schema-property` `setting` (added): {"description": "💡 v2.8.0 可选。任务设置页 UI 声明，供 Client 渲染全局任务配置专用设置区域。Client 应将其视为展示层元数据", "items": {"$ref": "#/definitions/settingSection"}, "title": "任务设置页 UI 声明", "type": "array"} — [`tools/interface_import.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/adba94d694569643d0517bc7c5220d1fdf603800/tools/interface_import.schema.json)
 
-## 5.14.3
+## [5.14.3](./5.14.3/index.md)
 
 Revision: `8963191215ca49d6b037802acd07d20a4213160a`
 
@@ -1008,7 +1008,7 @@ Revision: `8963191215ca49d6b037802acd07d20a4213160a`
 - `enum-value` `MaaInferenceExecutionProvider_WebGPU` (added): MaaInferenceExecutionProvider_WebGPU = 5, — [`include/MaaFramework/MaaDef.h`](https://github.com/MaaXYZ/MaaFramework/blob/8963191215ca49d6b037802acd07d20a4213160a/include/MaaFramework/MaaDef.h)
 - `schema-property` `group` (added): {"description": "💡 v2.4.0 可选。为一个对象数组，用于声明任务分组及其展示属性", "items": {"$ref": "#/definitions/groupItem"}, "title": "任务分组配置", "type": "array"} — [`tools/interface_import.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/8963191215ca49d6b037802acd07d20a4213160a/tools/interface_import.schema.json)
 
-## 5.15.0
+## [5.15.0](./5.15.0/index.md)
 
 Revision: `172ec7b97df3e5b10adf69e36df01f8dc495b6f6`
 

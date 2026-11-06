@@ -24,7 +24,7 @@ Go、Rust 与 C# 绑定作为独立外部源登记，各自有锁定清单与兼
 
 ## 使用
 
-1. 从 Releases API 或 release 页面下载带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip`，并同时下载该 release 的 `SHA256SUMS` 与 `verify_bundle.py`。zip 内自带 README、契约、运维指南与许可文件，解压即可离线阅读。
+1. 从 Releases API 或 release 页面下载带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip`，并同时下载该 release 的 `SHA256SUMS` 与 `verify_bundle.py`。zip 根目录有 `START-HERE.md`，并自带 README、契约、运维指南与许可文件，解压即可离线阅读。
 2. 按顺序校验：
    - `sha256sum -c SHA256SUMS`
    - `gh attestation verify maa-llm-wiki-catalog-vX.Y.Z.zip --repo Windsland52/MaaLLMWiki`
