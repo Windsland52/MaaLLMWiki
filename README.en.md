@@ -39,7 +39,7 @@ sources/repositories.yaml       Registered upstream repositories
 sources/maa-framework/          Release, inventory, semantic-change, and source-route metadata
 sources/maa-framework-{go,rs}/  Independent binding releases and source inventories
 sources/compatibility/          Evidence-backed binding compatibility metadata
-generated/maa-framework/        Generated release and domain navigation indexes
+generated/maa-framework/        Generated release, domain, topic, and behaviour-change navigation indexes
 generated/maa-framework-{go,rs}/ Generated binding release navigation indexes
 schemas/                        Generated metadata JSON schemas
 skills/maallmwiki/              Installable agent skill for the routing procedure
@@ -59,6 +59,8 @@ Generated navigation is layered as follows:
 
 ```text
 generated/maa-framework/index.md
+  -> topics.md                     # curated topic routes (rendered from source-map.yaml)
+  -> behaviour-changes.md          # recorded behaviour changes (rendered from semantic-changes.yaml)
   -> <version>/index.md
        -> documentation/index.md -> {en-us,zh-cn,nodejs,tools}.md
        -> documentation/diagrams.md        # since 5.10.3
@@ -71,8 +73,19 @@ generated/maa-framework/index.md
 `diagrams.md` and `control-units.md` exist only in some versions; other version directories do not
 contain them.
 
+`topics.md` and `behaviour-changes.md` are rendered navigation for hand-authored metadata: the
+former lists, per topic, every variant's applicable release (`applies_to`), revision, pinned file
+links, symbols, and literal search terms; the latter groups recorded cross-version behaviour changes
+by the release that first carried them and links each entry to its pinned source. Both are rendered
+from `sources/maa-framework/source-map.yaml` and `sources/maa-framework/semantic-changes.yaml` — the
+YAML files remain the hand-authored source of truth, and the pages simply let a model walk the
+navigation without knowing those two paths in advance; `index.md` links both.
+
 `sources/maa-framework/inventory.yaml` remains the flat canonical artifact manifest used for
-coverage checks. It is not the navigation interface.
+coverage checks. It is not the navigation interface. Every indexed artifact records the git blob id
+of its content (`blob`, a 40-character SHA): copies of the same file across releases are therefore
+distinguishable by content hash, and `maa-wiki-report-semantic-gaps` can make content-level
+comparisons from the committed inventories alone, without cloning the upstream repository.
 
 ## Development
 
@@ -83,6 +96,7 @@ uv run maa-wiki-sync-maafw-history --repository tmp/MaaFramework --major 5
 uv run maa-wiki-sync-bindings-history --go-repository tmp/maa-framework-go --rust-repository tmp/maa-framework-rs
 uv run maa-wiki-build-bundle --output dist/maa-llm-wiki-catalog-vX.Y.Z.zip --version vX.Y.Z
 uv run maa-wiki-verify-bundle --bundle dist/maa-llm-wiki-catalog-vX.Y.Z.zip --expect-version vX.Y.Z --expect-revision <40-char SHA>
+uv run maa-wiki-diff --from 5.14.3 --to 5.15.0
 uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework
 uv run maa-wiki-validate
 uv run maa-wiki-generate-schemas
@@ -96,6 +110,12 @@ git diff --check
 `vX.Y.Z` and `<40-char SHA>` are placeholders. The sync commands require the upstream clones to be
 checked out under `tmp/` first, using the repository URLs from the publish workflow
 (`tmp/MaaFramework`, `tmp/maa-framework-go`, `tmp/maa-framework-rs`).
+
+`maa-wiki-diff` compares the inventories of two indexed releases and lists added, removed, and
+content-changed artifacts. It uses the `blob` recorded in each inventory to decide whether content
+changed and needs no upstream clone; `--source` selects the source (default `maafw`), and
+`--format json` is available for machine consumption. Example:
+`uv run maa-wiki-diff --from 5.14.3 --to 5.15.0`.
 
 The single-version command only regenerates the default inventory:
 `uv run maa-wiki-sync-maafw --version <version> --repository tmp/MaaFramework` only rebuilds
@@ -201,11 +221,12 @@ Two rules keep human-authored content out of the automation:
   files change only through review.
 - The workflow never infers semantic changes. At the end of every run (`if: always()`) it runs
   `uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework`, which compares titles and
-  first-paragraph excerpts as well as content diffs of indexed paths for indexed releases newer than
-  the newest `semantic-changes.yaml` entry, and closes the tracking issue when the queue is empty.
-  The report names the releases and artifacts to inspect; each item is a suspected trigger, not a
-  verified change. Paths the inventory does not index remain invisible — see §7 of
-  `CATALOG-CONTRACT.md` for coverage and blind spots.
+  first-paragraph excerpts as well as the `blob` recorded in each inventory (an offline
+  content-level comparison; `--repository` additionally cross-checks indexed paths with `git diff`)
+  for indexed releases newer than the newest `semantic-changes.yaml` entry, and closes the tracking
+  issue when the queue is empty. The report names the releases and artifacts to inspect; each item is
+  a suspected trigger, not a verified change. Paths the inventory does not index remain invisible —
+  see §7 of `CATALOG-CONTRACT.md` for coverage and blind spots.
 
 The job authenticates with the repository `GITHUB_TOKEN`. If the default branch requires pull
 requests, add a `CATALOG_PUSH_TOKEN` secret — a fine-grained token with contents and issues write

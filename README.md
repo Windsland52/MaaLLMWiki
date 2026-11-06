@@ -30,7 +30,7 @@ sources/repositories.yaml       已注册的上游仓库
 sources/maa-framework/          发布、清单、语义变更与源路由元数据
 sources/maa-framework-{go,rs}/  独立绑定发布与源清单
 sources/compatibility/          有证据支撑的绑定兼容性元数据
-generated/maa-framework/        生成的发布与分域导航索引
+generated/maa-framework/        生成的发布、分域、主题与行为变更导航索引
 generated/maa-framework-{go,rs}/ 生成的绑定发布导航索引
 schemas/                        生成的元数据 JSON schema
 skills/maallmwiki/              可安装的路由 agent skill
@@ -47,6 +47,8 @@ NOTICE                          上游文档摘录的许可与归属
 
 ```text
 generated/maa-framework/index.md
+  -> topics.md                     # 人工主题路由（由 source-map.yaml 渲染）
+  -> behaviour-changes.md          # 人工行为变更（由 semantic-changes.yaml 渲染）
   -> <version>/index.md
        -> documentation/index.md -> {en-us,zh-cn,nodejs,tools}.md
        -> documentation/diagrams.md        # 自 5.10.3 起
@@ -58,7 +60,9 @@ generated/maa-framework/index.md
 
 `diagrams.md` 与 `control-units.md` 只存在于部分版本；其余版本目录中没有这两个文件。
 
-`sources/maa-framework/inventory.yaml` 仍是用于覆盖率检查的扁平权威产物清单，它不是导航接口。
+`topics.md` 与 `behaviour-changes.md` 是人工维护元数据的渲染导航：前者按主题列出每个变体的适用版本（`applies_to`）、revision、pinned 文件链接、符号与字面搜索词；后者按首次发布版本分组记录跨版本行为变更并链到 pinned 出处。两者分别由 `sources/maa-framework/source-map.yaml` 与 `sources/maa-framework/semantic-changes.yaml` 渲染——YAML 仍是人工维护的权威源，页面只是让模型无需预先知道这两个路径；`index.md` 直接链接两者。
+
+`sources/maa-framework/inventory.yaml` 仍是用于覆盖率检查的扁平权威产物清单，它不是导航接口。每个被索引 artifact 记录其内容的 git blob id（`blob`，40 位 SHA）：同一文件在不同 release 中的副本可按内容哈希区分，`maa-wiki-report-semantic-gaps` 也能只凭已提交的清单做内容级比较，无需克隆上游。
 
 ## 开发
 
@@ -69,6 +73,7 @@ uv run maa-wiki-sync-maafw-history --repository tmp/MaaFramework --major 5
 uv run maa-wiki-sync-bindings-history --go-repository tmp/maa-framework-go --rust-repository tmp/maa-framework-rs
 uv run maa-wiki-build-bundle --output dist/maa-llm-wiki-catalog-vX.Y.Z.zip --version vX.Y.Z
 uv run maa-wiki-verify-bundle --bundle dist/maa-llm-wiki-catalog-vX.Y.Z.zip --expect-version vX.Y.Z --expect-revision <40 位 SHA>
+uv run maa-wiki-diff --from 5.14.3 --to 5.15.0
 uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework
 uv run maa-wiki-validate
 uv run maa-wiki-generate-schemas
@@ -80,6 +85,8 @@ git diff --check
 ```
 
 `vX.Y.Z` 与 `<40 位 SHA>` 是占位符。同步命令需要先按 publish workflow 的仓库地址把上游检出到 `tmp/`（`tmp/MaaFramework`、`tmp/maa-framework-go`、`tmp/maa-framework-rs`）。
+
+`maa-wiki-diff` 比较两个已索引 release 的清单，列出新增、删除与内容变化的 artifact。它用清单里的 `blob` 判断内容变化，不依赖上游克隆；`--source` 选择源（默认 `maafw`），`--format json` 供程序消费。示例：`uv run maa-wiki-diff --from 5.14.3 --to 5.15.0`。
 
 单版本命令只用于重新生成默认清单：`uv run maa-wiki-sync-maafw --version <版本> --repository tmp/MaaFramework` 只重建 `sources/maa-framework/inventory.yaml`，且只接受 `sources/maa-framework/releases.yaml` 中已注册的发布；它必须指向当前已索引的最新发布，否则 `maa-wiki-validate` 会失败。需要重建全部历史清单时运行 `maa-wiki-sync-maafw-history`。
 
@@ -129,7 +136,7 @@ npx skills add https://github.com/Windsland52/MaaLLMWiki --skill maallmwiki --gl
 两条规则把人工内容挡在自动化之外：
 
 - 当同步触碰了 `sources/maa-framework/source-map.yaml` 或 `sources/maa-framework/semantic-changes.yaml` 时，运行拒绝发布；这两个文件只能经人工 review 变更。
-- workflow 绝不推断语义变更。每次运行结束前（`if: always()`）会运行 `uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework`，对晚于最新 `semantic-changes.yaml` 条目的已索引发布比较标题/首段摘要以及已索引路径的内容差异，并在队列为空时关闭跟踪 issue。报告会列出待检查的发布与产物；每条都是疑似触发，不是已验证的变更。目录未索引的路径仍不可见——覆盖范围与盲区见 `CATALOG-CONTRACT.md` §7。
+- workflow 绝不推断语义变更。每次运行结束前（`if: always()`）会运行 `uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework`，对晚于最新 `semantic-changes.yaml` 条目的已索引发布比较标题/首段摘要以及清单中记录的 `blob`（离线内容级比较；提供 `--repository` 时再以 git diff 交叉核验已索引路径），并在队列为空时关闭跟踪 issue。报告会列出待检查的发布与产物；每条都是疑似触发，不是已验证的变更。目录未索引的路径仍不可见——覆盖范围与盲区见 `CATALOG-CONTRACT.md` §7。
 
 该 job 使用仓库 `GITHUB_TOKEN` 认证。若默认分支强制 pull request，请添加 `CATALOG_PUSH_TOKEN` secret——一个具 contents 与 issues 写权限、来自允许绕过该规则身份的 fine-grained token——workflow 会自动优先使用它。
 
