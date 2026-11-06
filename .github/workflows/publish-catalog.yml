@@ -14,10 +14,6 @@ concurrency:
   group: publish-catalog
   cancel-in-progress: false
 
-permissions:
-  contents: write
-  issues: write
-
 env:
   CATALOG_BRANCH: ${{ github.event.repository.default_branch }}
   CATALOG_TOKEN: ${{ secrets.CATALOG_PUSH_TOKEN || github.token }}
@@ -30,6 +26,14 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Job-level permissions are explicit because this job also mints a short-lived OIDC token and
+    # writes a build-provenance attestation record, in addition to pushing the snapshot and
+    # reconciling its issue.
+    permissions:
+      contents: write
+      issues: write
+      id-token: write
+      attestations: write
     steps:
       - name: Check out catalog history
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -205,6 +209,35 @@ jobs:
           cp "dist/maa-llm-wiki-catalog-${VERSION}.zip" dist/maa-llm-wiki-catalog-latest.zip
           ls -l dist
 
+      # The alias is a byte-identical copy, so one checksum file covers both download names. Generate
+      # it from inside dist/ so `sha256sum -c SHA256SUMS` works in the directory a consumer downloaded
+      # the assets to. Argument order fixes the line order; the versioned bundle is listed first.
+      - name: Write checksums
+        if: steps.state.outputs.publish == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          (
+            cd dist
+            sha256sum \
+              "maa-llm-wiki-catalog-${VERSION}.zip" \
+              maa-llm-wiki-catalog-latest.zip \
+              > SHA256SUMS
+            sha256sum -c SHA256SUMS
+          )
+          cat dist/SHA256SUMS
+
+      # Order: build -> verify -> copy stable alias -> checksum -> attest -> tag -> release. The
+      # attestation only needs the versioned zip to exist, so creating it before the tag/release means
+      # a failed attestation cannot leave a tagged snapshot without provenance. Only the immutable
+      # versioned zip is attested; the `-latest` alias and SHA256SUMS are convenience artifacts.
+      - name: Attest build provenance
+        if: steps.state.outputs.publish == 'true'
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+        with:
+          subject-path: dist/maa-llm-wiki-catalog-${{ steps.version.outputs.version }}.zip
+
       - name: Push snapshot tag
         if: steps.state.outputs.publish == 'true'
         env:
@@ -242,6 +275,7 @@ jobs:
           files: |
             dist/maa-llm-wiki-catalog-${{ steps.version.outputs.version }}.zip
             dist/maa-llm-wiki-catalog-latest.zip
+            dist/SHA256SUMS
           generate_release_notes: true
           overwrite_files: true
           fail_on_unmatched_files: true

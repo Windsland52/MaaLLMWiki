@@ -5,8 +5,10 @@
 （`wiki_revision`）、目录版本（`catalog_version`）、三个上游来源的 40 位提交 SHA，以及每个打包
 文件的体积与 SHA-256。manifest 的格式版本是 `api_version: "maa-llm-wiki-catalog/v1"`：v1 内只允许
 向后兼容的新增字段，消费者必须忽略未知字段；删除/重命名字段或改变语义需要升到 v2。消费方应下载
-**带版本**的产物（不可变）并运行 `uv run maa-wiki-verify-bundle` 校验；`-latest.zip` 只是便利别名，
-内容会随新版本变化，不应用于复现。浏览与版本差异工具见 §7，覆盖边界与已知局限见 §8。
+**带版本**的产物（不可变），运行 `uv run maa-wiki-verify-bundle` 校验，并用发布页的 `SHA256SUMS`
+（`sha256sum -c`）与 build provenance 证明（`gh attestation verify`）确认下载完整性和构建来源；
+`-latest.zip` 只是便利别名，内容会随新版本变化，不应用于复现。浏览与版本差异工具见 §7，覆盖边界与
+已知局限见 §8。
 
 This document is the consumer-facing contract for catalog snapshots. It is the authoritative
 description of what the publish workflow produces and what consumers may rely on. The
@@ -17,12 +19,17 @@ gaps are stated in §8; the repository-wide rules are in `AGENTS.md`.
 
 A snapshot is an annotated Git tag named `vMAJOR.MINOR.PATCH` on a commit of the default branch. The
 tag commit is the Wiki revision whose committed catalog data the bundle carries. Each snapshot tag
-has exactly one GitHub Release with two assets:
+published by the current workflow has exactly one GitHub Release with three assets (releases
+published before checksums were introduced have only the two zips):
 
 | Asset | Meaning |
 |-------|---------|
-| `maa-llm-wiki-catalog-vX.Y.Z.zip` | The immutable versioned bundle for that tag. |
-| `maa-llm-wiki-catalog-latest.zip` | A convenience copy of the newest published bundle. It is overwritten by every release, so it is **not** reproducible. |
+| `maa-llm-wiki-catalog-vX.Y.Z.zip` | The immutable versioned bundle for that tag. This is the primary, attested subject. |
+| `maa-llm-wiki-catalog-latest.zip` | A convenience copy of the newest published bundle. It is a byte-identical copy of the versioned zip and is overwritten by every release, so it is **not** reproducible. |
+| `SHA256SUMS` | `sha256sum` output covering both zip names above; verify with `sha256sum -c SHA256SUMS`. |
+
+The build-provenance attestation is **not** a release asset: it is stored in this repository's
+immutable attestation store (§5).
 
 The bundle contains only catalog data: `sources/`, `generated/`, `schemas/`, and
 `catalog-manifest.json`. It contains no Python code, no workflows, and no upstream source code.
@@ -120,6 +127,46 @@ Checks performed:
 downloaded bytes to the tag and commit you intended to consume. The workflow runs the same
 verification against the freshly built bundle before uploading it.
 
+### 5.1 Release-level integrity: checksums
+
+Download `SHA256SUMS` alongside the bundle, then check it in the directory that contains the
+downloaded assets:
+
+```bash
+sha256sum -c SHA256SUMS
+```
+
+The file lists both download names, so it verifies whichever asset you fetched. The `-latest.zip`
+alias is copied from the versioned bundle before the checksum file is written, so both lines have
+the same digest for a given release. `SHA256SUMS` is itself a release asset but is **not** an
+attested subject: it is a convenience index. The authoritative integrity binding is the provenance
+attestation on the versioned zip (§5.2), which in turn covers every file hash recorded in the
+bundle's manifest.
+
+### 5.2 Release-level integrity: build provenance
+
+The versioned bundle is the primary attested subject. Verify it with GitHub CLI (network access and
+a published release/attestation record are required):
+
+```bash
+gh attestation verify maa-llm-wiki-catalog-vX.Y.Z.zip --repo Windsland52/MaaLLMWiki
+```
+
+The publish workflow mints a short-lived OIDC token, records a keyless Sigstore build-provenance
+attestation for the versioned zip digest, and only then tags and uploads the release. A successful
+verification means the artifact digest was produced by **this repository's publish workflow at the
+attested commit** — not that the catalog content is correct or that the publisher acted in good
+faith. The attestation is meaningful only relative to this repository's workflow, and it is not a
+long-lived project signing key.
+
+Limits of this check:
+
+- it needs network access and the published attestation record, so it cannot be verified offline or
+  from the zip alone;
+- the `-latest` alias and `SHA256SUMS` are convenience artifacts and are **not** attested subjects;
+- releases published before provenance attestation was introduced have no attestation, so the first
+  release produced with this step is the first one that can be verified this way.
+
 ## 6. Guarantees and non-guarantees
 
 Guaranteed for bundles published by the current workflow:
@@ -134,6 +181,10 @@ Guaranteed for bundles published by the current workflow:
   `sources/maa-framework/semantic-changes.yaml`) are human-reviewed; automation refuses to modify
   them.
 - Every source reference is a full 40-character commit SHA, never a moving branch.
+- From the first release published with provenance attestation, the versioned zip carries a keyless
+  Sigstore build-provenance attestation created by the publish workflow; `gh attestation verify` ties
+  the asset digest to this repository's workflow and commit, and a `SHA256SUMS` asset covers both
+  download names.
 
 Not guaranteed (measured coverage in §8):
 
@@ -147,8 +198,10 @@ Not guaranteed (measured coverage in §8):
 - Runtime verification of binding compatibility (`status: declared` is textual evidence only).
 - Availability, refresh cadence, or response times; there is no SLA and the bundle is republished
   only when catalog data changes.
-- Authenticity beyond HTTPS and GitHub's release integrity. The bundle is not signed (yet); the
-  manifest's hashes detect corruption, not a compromised publisher.
+- Provenance is not correctness or intent: the attestation proves which workflow and commit produced
+  the versioned zip, not that the catalog data is accurate or that the publisher acted in good faith.
+  It is meaningful only relative to this repository's workflow; the `-latest` alias and `SHA256SUMS`
+  are not attested subjects.
 - The `-latest.zip` alias contents at a later point in time; only the versioned asset is immutable.
 
 ## 7. Navigating, diffing and change detection
@@ -288,8 +341,13 @@ data files. If a number disagrees with the files, the files win.
   unofficial convenience with cache delay, outside this contract.
 - `maa-llm-wiki-catalog-latest.zip` is overwritten by every release; pin the versioned asset for
   anything reproducible.
-- Bundles are **not signed**. `maa-wiki-verify-bundle` detects corruption and manifest/zip
-  inconsistency, not a compromised publisher.
+- Bundles published by the current workflow carry **keyless Sigstore build provenance** created by
+  the publish workflow (`actions/attest-build-provenance`), not a long-lived project signing key.
+  `gh attestation verify maa-llm-wiki-catalog-vX.Y.Z.zip --repo Windsland52/MaaLLMWiki` checks the
+  attestation against GitHub's attestation store: it proves which workflow and commit produced the
+  versioned zip, not intent or correctness, is only meaningful relative to this repository's
+  workflow, and cannot be verified offline. The `-latest` alias and `SHA256SUMS` are convenience
+  artifacts and are not attested subjects.
 - **No SLA**: no availability, response-time or refresh guarantee. The workflow runs daily and
   publishes only when catalog data changes.
 
