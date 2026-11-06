@@ -20,3 +20,10 @@ repositories:
   enabled: true
   default_revision: df0836bc9943368a1c70c18bb0839adf2b6e7b54
   note: The default revision follows the latest indexed stable Rust binding release.
+- id: maa-framework-csharp
+  name: MaaFramework C# binding
+  url: https://github.com/MaaXYZ/MaaFramework.Binding.CSharp
+  role: authoritative
+  enabled: true
+  default_revision: 27c69a5b8ff41b6002ead71f403a16f442a7168e
+  note: The default revision follows the latest indexed stable C# binding release.

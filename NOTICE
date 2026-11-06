@@ -8,6 +8,7 @@ the GNU Lesser General Public License version 3.0 (LGPL-3.0):
 - MaaFramework — https://github.com/MaaXYZ/MaaFramework — LGPL-3.0
 - MaaFramework Go binding — https://github.com/MaaXYZ/maa-framework-go — LGPL-3.0
 - MaaFramework Rust binding — https://github.com/MaaXYZ/maa-framework-rs — LGPL-3.0
+- MaaFramework C# binding — https://github.com/MaaXYZ/MaaFramework.Binding.CSharp — LGPL-3.0
 
 The licence statement above is recorded as we understand it at the pinned revisions indexed by this
 catalog. It is not a restatement of the upstream licences and it does not replace them; consult each

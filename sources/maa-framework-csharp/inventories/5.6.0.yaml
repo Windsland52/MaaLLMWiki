@@ -1,0 +1,701 @@
+source_id: maa-framework-csharp
+version: 5.6.0
+revision: 56ae01a93aabfd2b67878cbe78289104fca9192f
+artifacts:
+- path: CHANGELOG.md
+  kind: documentation
+  blob: 4b3e95b192b6261818158fe1cdc83e11f937ad06
+  title: CHANGELOG
+  summary: '**Full Changelog**: https://github.com/MaaXYZ/MaaFramework.Binding.CSharp/compare/v5.4.1...v5.6.0'
+- path: README.md
+  kind: documentation
+  blob: 83ac65e2cdfc2b704f5faa8622342944b8d55e9f
+  title: MaaFramework.Binding.CSharp
+  summary: _✨ C# Binding for MaaFramework ✨_
+- path: README.zh_cn.md
+  kind: documentation
+  blob: 5c17f323f13ec2b024f222d578a8cfd44cedfb6d
+  title: MaaFramework.Binding.CSharp
+  summary: _✨ MaaFramework 的 C# 绑定 ✨_
+- path: docs/api/index.md
+  kind: documentation
+  blob: eccd8975ff564108d18677cfe8657583bd7881cb
+  title: MaaFramework.Binding.CSharp
+  summary: Use the table of contents to browse API documentation for the `MaaFramework.Binding.CSharp`
+    library.
+- path: docs/articles/changelog-all-version.md
+  kind: documentation
+  blob: 75a564cd0f654b1edcf352f1b9549ee932a6750f
+  title: changelog-all-version
+  summary: '**Full Changelog**: https://github.com/MaaXYZ/MaaFramework.Binding.CSharp/compare/v5.4.1...v5.6.0'
+- path: docs/articles/nightly-builds.md
+  kind: documentation
+  blob: e9705bce672c07dbc2125f1920c76d9821e04da4
+  title: Early access to MaaFramework.Binding.CSharp packages
+  summary: Stable versions (and selected previews) of MaaFramework.Binding.CSharp,
+    and related packages, are distributed through (see add packages).
+- path: docs/articles/overview-of-wrapper-and-api.md
+  kind: documentation
+  blob: f549530bf44f059478bcb4f134406fb60b2a20a3
+  title: Overview of Wrapper (v5.6.0) and Api ([v5.6.0](https://github.com/MaaXYZ/MaaFramework/tree/v5.6.0))
+  summary: 'Derived:'
+- path: docs/index.md
+  kind: documentation
+  blob: 4b9622a795e8768eabd6ebe1bdb051e1c45c071f
+  title: index
+  summary: See README.md.
+- path: src/Directory.Build.props
+  kind: package-manifest
+  blob: 232df7c14eff5164fb385f6555fe8fc4ac54bc97
+  title: Directory.Build.props
+  summary: Package and dependency metadata for the C# binding.
+- path: src/Directory.Packages.props
+  kind: package-manifest
+  blob: 06c12fa890ea34186f11d683b44ca0271c130b33
+  title: Directory.Packages.props
+  summary: Package and dependency metadata for the C# binding.
+- path: src/MaaFramework.Binding.Extensions/MaaFramework.Binding.Extensions.csproj
+  kind: package-manifest
+  blob: ba228d03215f83cddf9d1240c1cc224325aab4ab
+  title: MaaFramework.Binding.Extensions.csproj
+  summary: Package and dependency metadata for the C# binding.
+- path: src/MaaFramework.Binding.Extensions/Notification/NotificationDetail.cs
+  kind: binding-api
+  blob: 5304dea5baf7d6415de441b34851c1ae0d0fbb03
+  title: NotificationDetail.cs
+  summary: Public C# binding declarations for the NotificationDetail module.
+- path: src/MaaFramework.Binding.Extensions/Notification/NotificationDetailContext.cs
+  kind: binding-api
+  blob: 6708a2362dbd2b0adb633cf91101b2182e87ec6f
+  title: NotificationDetailContext.cs
+  summary: Public C# binding declarations for the NotificationDetailContext module.
+- path: src/MaaFramework.Binding.Extensions/Notification/NotificationHandler.cs
+  kind: binding-api
+  blob: fb5135ffecbc64e887c315f6ce58a7307eec50d9
+  title: NotificationHandler.cs
+  summary: Public C# binding declarations for the NotificationHandler module.
+- path: src/MaaFramework.Binding.Extensions/Notification/NotificationHandlerRegistry.cs
+  kind: binding-api
+  blob: 055329acaf7f838063a47ed27e8068334834c7f6
+  title: NotificationHandlerRegistry.cs
+  summary: Public C# binding declarations for the NotificationHandlerRegistry module.
+- path: src/MaaFramework.Binding.Extensions/Notification/NotificationType.cs
+  kind: binding-api
+  blob: 49e8560f8bfe8c03cc4af2605c1977cf87063d82
+  title: NotificationType.cs
+  summary: Public C# binding declarations for the NotificationType module.
+- path: src/MaaFramework.Binding.Extensions/README.md
+  kind: documentation
+  blob: 3d48478620247ed9c405c375e33168550c69f8d8
+  title: MaaFramework.Binding.Extensions
+  summary: 'Document Language: 简体中文 / English'
+- path: src/MaaFramework.Binding.Extensions/README.zh_cn.md
+  kind: documentation
+  blob: 22a71b697d3cb165fc9dcc22616e0ec58aa11f4e
+  title: MaaFramework.Binding.Extensions
+  summary: '文档语言: 简体中文 / English'
+- path: src/MaaFramework.Binding.Native/Abstractions/MaaCommon.cs
+  kind: binding-api
+  blob: 14cf44d58d88e391e03e4ffdc86dbd916eea9fb1
+  title: MaaCommon.cs
+  summary: Public C# binding declarations for the MaaCommon module.
+- path: src/MaaFramework.Binding.Native/Buffers/MaaImageBuffer.cs
+  kind: binding-api
+  blob: 13b40a3f0d703f866e22179b03137de8689f64cb
+  title: MaaImageBuffer.cs
+  summary: Public C# binding declarations for the MaaImageBuffer module.
+- path: src/MaaFramework.Binding.Native/Buffers/MaaImageListBuffer.cs
+  kind: binding-api
+  blob: b122b21a562269c8cc9d8876dd42885ef277cb48
+  title: MaaImageListBuffer.cs
+  summary: Public C# binding declarations for the MaaImageListBuffer module.
+- path: src/MaaFramework.Binding.Native/Buffers/MaaRectBuffer.cs
+  kind: binding-api
+  blob: f8d1a7651fde223144c0eda0a8c9943b14f33d71
+  title: MaaRectBuffer.cs
+  summary: Public C# binding declarations for the MaaRectBuffer module.
+- path: src/MaaFramework.Binding.Native/Buffers/MaaStringBuffer.cs
+  kind: binding-api
+  blob: 1c89c54178a32fc52d87dd94e26ac7161015efab
+  title: MaaStringBuffer.cs
+  summary: Public C# binding declarations for the MaaStringBuffer module.
+- path: src/MaaFramework.Binding.Native/Buffers/MaaStringListBuffer.cs
+  kind: binding-api
+  blob: 19d37bfb1fd48094fb047ad7ca2d6eadf1adda71
+  title: MaaStringListBuffer.cs
+  summary: Public C# binding declarations for the MaaStringListBuffer module.
+- path: src/MaaFramework.Binding.Native/Buffers/Toolkit/AdbDeviceListBuffer.cs
+  kind: binding-api
+  blob: fd52069185b974cb53abae264c03eca2b80f2eb1
+  title: AdbDeviceListBuffer.cs
+  summary: Public C# binding declarations for the AdbDeviceListBuffer module.
+- path: src/MaaFramework.Binding.Native/Buffers/Toolkit/DesktopWindowListBuffer.cs
+  kind: binding-api
+  blob: 7373e9b35dcbdd2e3b9d7a9a8dcc504dfac6338e
+  title: DesktopWindowListBuffer.cs
+  summary: Public C# binding declarations for the DesktopWindowListBuffer module.
+- path: src/MaaFramework.Binding.Native/Extensions/ActionDetailExtensions.cs
+  kind: binding-api
+  blob: 734d32d1ed01cf52063b4a9baf853eaca617b93d
+  title: ActionDetailExtensions.cs
+  summary: Public C# binding declarations for the ActionDetailExtensions module.
+- path: src/MaaFramework.Binding.Native/Extensions/AdbDeviceInfoExtensions.cs
+  kind: binding-api
+  blob: 9b8f931b197cc625bff118a439a863e8931c9235
+  title: AdbDeviceInfoExtensions.cs
+  summary: Public C# binding declarations for the AdbDeviceInfoExtensions module.
+- path: src/MaaFramework.Binding.Native/Extensions/DesktopWindowInfoExtensions.cs
+  kind: binding-api
+  blob: aa99766e54ce3a37adeedd0a249a7634ba5dba52
+  title: DesktopWindowInfoExtensions.cs
+  summary: Public C# binding declarations for the DesktopWindowInfoExtensions module.
+- path: src/MaaFramework.Binding.Native/Extensions/RecognitionDetailExtensions.cs
+  kind: binding-api
+  blob: 538aa9f3d696e45edee5cee142ab3b3e807ee324
+  title: RecognitionDetailExtensions.cs
+  summary: Public C# binding declarations for the RecognitionDetailExtensions module.
+- path: src/MaaFramework.Binding.Native/Interop/AgentClient/MaaAgentClientAPI.cs
+  kind: binding-api
+  blob: f7c28a12e6484c44bc18dda28c3ce9735acce4fd
+  title: MaaAgentClientAPI.cs
+  summary: Public C# binding declarations for the MaaAgentClientAPI module.
+- path: src/MaaFramework.Binding.Native/Interop/AgentClient/MaaAgentClientDef.cs
+  kind: binding-api
+  blob: ac2ae0cfd85d6d253a63529a4a47e66ff81fb21a
+  title: MaaAgentClientDef.cs
+  summary: Public C# binding declarations for the MaaAgentClientDef module.
+- path: src/MaaFramework.Binding.Native/Interop/AgentServer/MaaAgentServerAPI.cs
+  kind: binding-api
+  blob: 64afa67b821347fa0529cd8e98814befc8363da6
+  title: MaaAgentServerAPI.cs
+  summary: Public C# binding declarations for the MaaAgentServerAPI module.
+- path: src/MaaFramework.Binding.Native/Interop/Framework/Global/MaaGlobal.cs
+  kind: binding-api
+  blob: 70bae2cee957c83a56bb5ebef9a5fd5b4d1c66d9
+  title: MaaGlobal.cs
+  summary: Public C# binding declarations for the MaaGlobal module.
+- path: src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaContext.cs
+  kind: binding-api
+  blob: d950a3984be55ba5794d8a0e3016f9b42bdbb5f1
+  title: MaaContext.cs
+  summary: Public C# binding declarations for the MaaContext module.
+- path: src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaController.cs
+  kind: binding-api
+  blob: 6e0acd564b67342e6a8a6aec7b659c4df460a65b
+  title: MaaController.cs
+  summary: Public C# binding declarations for the MaaController module.
+- path: src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaCustomController.cs
+  kind: binding-api
+  blob: 2e6b535ce3892daefc3d68e8d22a1357f788a84d
+  title: MaaCustomController.cs
+  summary: Public C# binding declarations for the MaaCustomController module.
+- path: src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaResource.cs
+  kind: binding-api
+  blob: 1e31b1e3847f372328d524f1de1de0760d679dda
+  title: MaaResource.cs
+  summary: Public C# binding declarations for the MaaResource module.
+- path: src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaTasker.cs
+  kind: binding-api
+  blob: 0046b3e6fc9c6489ae16a7c6c3f617d6d74404bd
+  title: MaaTasker.cs
+  summary: Public C# binding declarations for the MaaTasker module.
+- path: src/MaaFramework.Binding.Native/Interop/Framework/MaaDef.cs
+  kind: binding-api
+  blob: 34a5784a947b6c879eb0a1249b96ad28911e329c
+  title: MaaDef.cs
+  summary: Public C# binding declarations for the MaaDef module.
+- path: src/MaaFramework.Binding.Native/Interop/Framework/Utility/MaaBuffer.cs
+  kind: binding-api
+  blob: 20041aba4a2090fd5be24467be4b209a09237b3d
+  title: MaaBuffer.cs
+  summary: Public C# binding declarations for the MaaBuffer module.
+- path: src/MaaFramework.Binding.Native/Interop/Framework/Utility/MaaUtility.cs
+  kind: binding-api
+  blob: 5590561012137c41187c174984a2cf659dc9722d
+  title: MaaUtility.cs
+  summary: Public C# binding declarations for the MaaUtility module.
+- path: src/MaaFramework.Binding.Native/Interop/MaaCustomExtensions.cs
+  kind: binding-api
+  blob: 9c3a5748c704bca2ec9ebdb952657f5f2caa3a04
+  title: MaaCustomExtensions.cs
+  summary: Public C# binding declarations for the MaaCustomExtensions module.
+- path: src/MaaFramework.Binding.Native/Interop/MaaExtraInterop.cs
+  kind: binding-api
+  blob: 72ca55f594678308d95e4c257f9c603aba4dd019
+  title: MaaExtraInterop.cs
+  summary: Public C# binding declarations for the MaaExtraInterop module.
+- path: src/MaaFramework.Binding.Native/Interop/MaaMarshaledApiRegistry.cs
+  kind: binding-api
+  blob: 5889fc841b528d28a5681246b3620393a71882cf
+  title: MaaMarshaledApiRegistry.cs
+  summary: Public C# binding declarations for the MaaMarshaledApiRegistry module.
+- path: src/MaaFramework.Binding.Native/Interop/MaaMarshaller.cs
+  kind: binding-api
+  blob: 8c9fbbe195501edeeaa6146cd97089cddad3a392
+  title: MaaMarshaller.cs
+  summary: Public C# binding declarations for the MaaMarshaller module.
+- path: src/MaaFramework.Binding.Native/Interop/MaaMarshallingExtensions.cs
+  kind: binding-api
+  blob: 65f602c89cc950886c331100e09b43a370270eb6
+  title: MaaMarshallingExtensions.cs
+  summary: Public C# binding declarations for the MaaMarshallingExtensions module.
+- path: src/MaaFramework.Binding.Native/Interop/NativeLibrary.cs
+  kind: binding-api
+  blob: 8f646df3dc0e9dc1c84f10a2b456f06450eaa798
+  title: NativeLibrary.cs
+  summary: Public C# binding declarations for the NativeLibrary module.
+- path: src/MaaFramework.Binding.Native/Interop/NativeLibraryForNetcoreapp3.cs
+  kind: binding-api
+  blob: 28b91fafe9f9aa759cac3e10169128ddc86dd024
+  title: NativeLibraryForNetcoreapp3.cs
+  summary: Public C# binding declarations for the NativeLibraryForNetcoreapp3 module.
+- path: src/MaaFramework.Binding.Native/Interop/Toolkit/AdbDevice/MaaToolkitAdbDevice.cs
+  kind: binding-api
+  blob: f6d3cbe3069b87ae7fa0057a5b4eae4fe3e5c58f
+  title: MaaToolkitAdbDevice.cs
+  summary: Public C# binding declarations for the MaaToolkitAdbDevice module.
+- path: src/MaaFramework.Binding.Native/Interop/Toolkit/Config/MaaToolkitConfig.cs
+  kind: binding-api
+  blob: 60d5d42a462a0e80147962802effa4f87a27f976
+  title: MaaToolkitConfig.cs
+  summary: Public C# binding declarations for the MaaToolkitConfig module.
+- path: src/MaaFramework.Binding.Native/Interop/Toolkit/DesktopWindow/MaaToolkitDesktopWindow.cs
+  kind: binding-api
+  blob: 374a43fb1fd939e2ecd4f826fd64319d12ab60a7
+  title: MaaToolkitDesktopWindow.cs
+  summary: Public C# binding declarations for the MaaToolkitDesktopWindow module.
+- path: src/MaaFramework.Binding.Native/Interop/Toolkit/MaaToolkitDef.cs
+  kind: binding-api
+  blob: bc13a1a72429a2dec86a2bf2f889c9416ce56e6d
+  title: MaaToolkitDef.cs
+  summary: Public C# binding declarations for the MaaToolkitDef module.
+- path: src/MaaFramework.Binding.Native/MaaAgentClient.cs
+  kind: binding-api
+  blob: 878272ebd9eed213cc01efe0a84f21493dcdc460
+  title: MaaAgentClient.cs
+  summary: Public C# binding declarations for the MaaAgentClient module.
+- path: src/MaaFramework.Binding.Native/MaaAgentServer.cs
+  kind: binding-api
+  blob: 996265ff54eca32cceaf4f2e78074ddf3963e71c
+  title: MaaAgentServer.cs
+  summary: Public C# binding declarations for the MaaAgentServer module.
+- path: src/MaaFramework.Binding.Native/MaaContext.cs
+  kind: binding-api
+  blob: adfd9d457ad7175c7efcd175bf6dece3d8aef1d2
+  title: MaaContext.cs
+  summary: Public C# binding declarations for the MaaContext module.
+- path: src/MaaFramework.Binding.Native/MaaController.cs
+  kind: binding-api
+  blob: b4a693cb88e76b6dac7b2305dc456e34b138c8e1
+  title: MaaController.cs
+  summary: Public C# binding declarations for the MaaController module.
+- path: src/MaaFramework.Binding.Native/MaaController/MaaAdbController.cs
+  kind: binding-api
+  blob: 0b6e8840739c5b267d54ad32b80b7af081307c82
+  title: MaaAdbController.cs
+  summary: Public C# binding declarations for the MaaAdbController module.
+- path: src/MaaFramework.Binding.Native/MaaController/MaaCustomController.cs
+  kind: binding-api
+  blob: cc19ce4039fa4dff370b9b9af78af58169d9706f
+  title: MaaCustomController.cs
+  summary: Public C# binding declarations for the MaaCustomController module.
+- path: src/MaaFramework.Binding.Native/MaaController/MaaDbgController.cs
+  kind: binding-api
+  blob: 274910a37e13a32bbf8646bb5c3812f0c9e9b009
+  title: MaaDbgController.cs
+  summary: Public C# binding declarations for the MaaDbgController module.
+- path: src/MaaFramework.Binding.Native/MaaController/MaaGamepadController.cs
+  kind: binding-api
+  blob: d8f8950190070c4f223bb0b3f0828a3afd413aaa
+  title: MaaGamepadController.cs
+  summary: Public C# binding declarations for the MaaGamepadController module.
+- path: src/MaaFramework.Binding.Native/MaaController/MaaPlayCoverController.cs
+  kind: binding-api
+  blob: 7fa068c1439e1b9ee14914caf2969ca17564064b
+  title: MaaPlayCoverController.cs
+  summary: Public C# binding declarations for the MaaPlayCoverController module.
+- path: src/MaaFramework.Binding.Native/MaaController/MaaWin32Controller.cs
+  kind: binding-api
+  blob: d64d3bd0a4f665289ffb545668de7a6d33c1045b
+  title: MaaWin32Controller.cs
+  summary: Public C# binding declarations for the MaaWin32Controller module.
+- path: src/MaaFramework.Binding.Native/MaaFramework.Binding.Native.csproj
+  kind: package-manifest
+  blob: f18f6660853fb63444f66fb2c45e7ac07b7ffc5b
+  title: MaaFramework.Binding.Native.csproj
+  summary: Package and dependency metadata for the C# binding.
+- path: src/MaaFramework.Binding.Native/MaaGlobal.cs
+  kind: binding-api
+  blob: db8a07451ab7b156578cf2c6a85c5b64f98bcbfc
+  title: MaaGlobal.cs
+  summary: Public C# binding declarations for the MaaGlobal module.
+- path: src/MaaFramework.Binding.Native/MaaResource.cs
+  kind: binding-api
+  blob: 83d28eab0dafa5885c8efe8f42c49f9cf6392241
+  title: MaaResource.cs
+  summary: Public C# binding declarations for the MaaResource module.
+- path: src/MaaFramework.Binding.Native/MaaTasker.cs
+  kind: binding-api
+  blob: b6e11e98fa0f28aef84bd16d8e4bf3c0df6fee2b
+  title: MaaTasker.cs
+  summary: Public C# binding declarations for the MaaTasker module.
+- path: src/MaaFramework.Binding.Native/MaaToolkit.cs
+  kind: binding-api
+  blob: 74c0c80bc54e580daf07eba0ffd7373e98944018
+  title: MaaToolkit.cs
+  summary: Public C# binding declarations for the MaaToolkit module.
+- path: src/MaaFramework.Binding.Native/NativeBindingContext.cs
+  kind: binding-api
+  blob: 0339c9189967a8c14863dd79081a266bbc7cc49c
+  title: NativeBindingContext.cs
+  summary: Public C# binding declarations for the NativeBindingContext module.
+- path: src/MaaFramework.Binding/Abstractions/IMaaCommon.cs
+  kind: binding-api
+  blob: b1cc0196c5ef8e80107dd8f89ff87ccf878a0ec0
+  title: IMaaCommon.cs
+  summary: Public C# binding declarations for the IMaaCommon module.
+- path: src/MaaFramework.Binding/Abstractions/IMaaDisposable.cs
+  kind: binding-api
+  blob: 5e1899f2e7ce176921e199693b7f1149eb655f32
+  title: IMaaDisposable.cs
+  summary: Public C# binding declarations for the IMaaDisposable module.
+- path: src/MaaFramework.Binding/Abstractions/IMaaDisposableHandle.cs
+  kind: binding-api
+  blob: 36b6e70aa2e74e7c4b6d02529fc5a395b36f65a8
+  title: IMaaDisposableHandle.cs
+  summary: Public C# binding declarations for the IMaaDisposableHandle module.
+- path: src/MaaFramework.Binding/Abstractions/IMaaOption.cs
+  kind: binding-api
+  blob: 1ce71d206e4306d7ba08a4f944c9d731522519dd
+  title: IMaaOption.cs
+  summary: Public C# binding declarations for the IMaaOption module.
+- path: src/MaaFramework.Binding/Abstractions/IMaaPost.cs
+  kind: binding-api
+  blob: a59eacf43a57bf2bfcb86d1cc11dcaec3c1af6a3
+  title: IMaaPost.cs
+  summary: Public C# binding declarations for the IMaaPost module.
+- path: src/MaaFramework.Binding/Abstractions/MaaDisposableHandle.cs
+  kind: binding-api
+  blob: b91c068899b6f0e6d78fe0b7a1ed24da13160ca5
+  title: MaaDisposableHandle.cs
+  summary: Public C# binding declarations for the MaaDisposableHandle module.
+- path: src/MaaFramework.Binding/Buffers/IMaaBuffer.cs
+  kind: binding-api
+  blob: 6d84e26f71ba0d086d3f8880bf8fb701b898be84
+  title: IMaaBuffer.cs
+  summary: Public C# binding declarations for the IMaaBuffer module.
+- path: src/MaaFramework.Binding/Buffers/IMaaImageBuffer.cs
+  kind: binding-api
+  blob: bd0f496e6afce5ce50878ba9cc9fcc784d03d9e0
+  title: IMaaImageBuffer.cs
+  summary: Public C# binding declarations for the IMaaImageBuffer module.
+- path: src/MaaFramework.Binding/Buffers/IMaaListBuffer.cs
+  kind: binding-api
+  blob: c7f343bf8ee32b33b77c3486de4f5886b5d3335e
+  title: IMaaListBuffer.cs
+  summary: Public C# binding declarations for the IMaaListBuffer module.
+- path: src/MaaFramework.Binding/Buffers/IMaaListBufferStatic.cs
+  kind: binding-api
+  blob: 81da5e3e80a203700ad4ca231873c9dab8e5c6e9
+  title: IMaaListBufferStatic.cs
+  summary: Public C# binding declarations for the IMaaListBufferStatic module.
+- path: src/MaaFramework.Binding/Buffers/IMaaRectBuffer.cs
+  kind: binding-api
+  blob: 39b9ed31e362a5cbd5cb99203004187fd71a7f62
+  title: IMaaRectBuffer.cs
+  summary: Public C# binding declarations for the IMaaRectBuffer module.
+- path: src/MaaFramework.Binding/Buffers/IMaaStringBuffer.cs
+  kind: binding-api
+  blob: 5153f04381cff6aa72a41d876a19345bf2381577
+  title: IMaaStringBuffer.cs
+  summary: Public C# binding declarations for the IMaaStringBuffer module.
+- path: src/MaaFramework.Binding/Buffers/MaaListBuffer.cs
+  kind: binding-api
+  blob: e1fb624fe31a7f12bb3e38027bca2c7560b59d51
+  title: MaaListBuffer.cs
+  summary: Public C# binding declarations for the MaaListBuffer module.
+- path: src/MaaFramework.Binding/Custom/IMaaCustom.cs
+  kind: binding-api
+  blob: 6dc79fbce55ad94c5a920515b5e7f1d7ef602695
+  title: IMaaCustom.cs
+  summary: Public C# binding declarations for the IMaaCustom module.
+- path: src/MaaFramework.Binding/Custom/IMaaCustomAction.cs
+  kind: binding-api
+  blob: 8ca34aa0e66319df26283de2220618d972a5209e
+  title: IMaaCustomAction.cs
+  summary: Public C# binding declarations for the IMaaCustomAction module.
+- path: src/MaaFramework.Binding/Custom/IMaaCustomController.cs
+  kind: binding-api
+  blob: 2387f80dec7c429b2acd250d1860ccad2300952e
+  title: IMaaCustomController.cs
+  summary: Public C# binding declarations for the IMaaCustomController module.
+- path: src/MaaFramework.Binding/Custom/IMaaCustomRecognition.cs
+  kind: binding-api
+  blob: 71720fb3585626b732522b0911d2d079e0df969c
+  title: IMaaCustomRecognition.cs
+  summary: Public C# binding declarations for the IMaaCustomRecognition module.
+- path: src/MaaFramework.Binding/Enums/Binding/ApiInfoFlags.cs
+  kind: binding-api
+  blob: 6bd2f6bb6bbff51835069c850db1b29b48dbfcf0
+  title: ApiInfoFlags.cs
+  summary: Public C# binding declarations for the ApiInfoFlags module.
+- path: src/MaaFramework.Binding/Enums/Binding/CheckStatusOption.cs
+  kind: binding-api
+  blob: 7352ca1c298bfeb3eb9e15c1eb7b065ed0101038
+  title: CheckStatusOption.cs
+  summary: Public C# binding declarations for the CheckStatusOption module.
+- path: src/MaaFramework.Binding/Enums/Binding/DisposeOptions.cs
+  kind: binding-api
+  blob: 87544981591195fde7ee09af69b48889b04d674b
+  title: DisposeOptions.cs
+  summary: Public C# binding declarations for the DisposeOptions module.
+- path: src/MaaFramework.Binding/Enums/Binding/InferenceCoreMLFlags.cs
+  kind: binding-api
+  blob: 443e877d63aac5d5836b240e0730607b74c20615
+  title: InferenceCoreMLFlags.cs
+  summary: Public C# binding declarations for the InferenceCoreMLFlags module.
+- path: src/MaaFramework.Binding/Enums/Binding/LinkOption.cs
+  kind: binding-api
+  blob: 953fde37e9b6db337902e3652d7e991b11f2942f
+  title: LinkOption.cs
+  summary: Public C# binding declarations for the LinkOption module.
+- path: src/MaaFramework.Binding/Enums/Binding/MaaHandleType.cs
+  kind: binding-api
+  blob: 57c28c22c3d0afdcb2cb3884cf18d3d16417564a
+  title: MaaHandleType.cs
+  summary: Public C# binding declarations for the MaaHandleType module.
+- path: src/MaaFramework.Binding/Enums/ControllerFeatures.cs
+  kind: binding-api
+  blob: ee4fe2136141e9cf9fde5c589d8b7a0e2e7d462b
+  title: ControllerFeatures.cs
+  summary: Public C# binding declarations for the ControllerFeatures module.
+- path: src/MaaFramework.Binding/Enums/Controllers/AdbInputMethods.cs
+  kind: binding-api
+  blob: 06a2c51cca0546dee9745e21d522b801c792bf04
+  title: AdbInputMethods.cs
+  summary: Public C# binding declarations for the AdbInputMethods module.
+- path: src/MaaFramework.Binding/Enums/Controllers/AdbScreencapMethods.cs
+  kind: binding-api
+  blob: 2a5fc68d26ecd306c696f91d62afac391d5ad58c
+  title: AdbScreencapMethods.cs
+  summary: Public C# binding declarations for the AdbScreencapMethods module.
+- path: src/MaaFramework.Binding/Enums/Controllers/DbgControllerType.cs
+  kind: binding-api
+  blob: 4c8914cbbe510476c0218cc58a150813664bb64b
+  title: DbgControllerType.cs
+  summary: Public C# binding declarations for the DbgControllerType module.
+- path: src/MaaFramework.Binding/Enums/Controllers/GamepadButton.cs
+  kind: binding-api
+  blob: 4a39fb3cc8a06fc69bc580cc55d2f569097cbf72
+  title: GamepadButton.cs
+  summary: Public C# binding declarations for the GamepadButton module.
+- path: src/MaaFramework.Binding/Enums/Controllers/GamepadTouch.cs
+  kind: binding-api
+  blob: af7722b84425a5a2a8433c04b8b5724256dbaa40
+  title: GamepadTouch.cs
+  summary: Public C# binding declarations for the GamepadTouch module.
+- path: src/MaaFramework.Binding/Enums/Controllers/GamepadType.cs
+  kind: binding-api
+  blob: 267482fa4d23aadbad6eea541b0b79b99d6a577f
+  title: GamepadType.cs
+  summary: Public C# binding declarations for the GamepadType module.
+- path: src/MaaFramework.Binding/Enums/Controllers/Win32InputMethod.cs
+  kind: binding-api
+  blob: 11904064caba1af5f6e255f7aad14905246b42bf
+  title: Win32InputMethod.cs
+  summary: Public C# binding declarations for the Win32InputMethod module.
+- path: src/MaaFramework.Binding/Enums/Controllers/Win32ScreencapMethod.cs
+  kind: binding-api
+  blob: 63a9bfe444cdb8826fa7d084a50bb17309ec3689
+  title: Win32ScreencapMethod.cs
+  summary: Public C# binding declarations for the Win32ScreencapMethod module.
+- path: src/MaaFramework.Binding/Enums/InferenceDevice.cs
+  kind: binding-api
+  blob: 4753850e520bd07b099c806fef1dc3abe8929c5f
+  title: InferenceDevice.cs
+  summary: Public C# binding declarations for the InferenceDevice module.
+- path: src/MaaFramework.Binding/Enums/InferenceExecutionProvider.cs
+  kind: binding-api
+  blob: 4366a458e2c8cfd1230f72936b39a81fb205f0d9
+  title: InferenceExecutionProvider.cs
+  summary: Public C# binding declarations for the InferenceExecutionProvider module.
+- path: src/MaaFramework.Binding/Enums/LoggingLevel.cs
+  kind: binding-api
+  blob: ca8b9ab1ae009f2d3cfc6489c56390076b975d46
+  title: LoggingLevel.cs
+  summary: Public C# binding declarations for the LoggingLevel module.
+- path: src/MaaFramework.Binding/Enums/MaaJobStatus.cs
+  kind: binding-api
+  blob: 48aec3ed93b0c4f51da1e82bb54c34ee1d749cad
+  title: MaaJobStatus.cs
+  summary: Public C# binding declarations for the MaaJobStatus module.
+- path: src/MaaFramework.Binding/Enums/Options/ControllerOption.cs
+  kind: binding-api
+  blob: 20a0fea214915d65591d5ec25db2ebc117d24711
+  title: ControllerOption.cs
+  summary: Public C# binding declarations for the ControllerOption module.
+- path: src/MaaFramework.Binding/Enums/Options/GlobalOption.cs
+  kind: binding-api
+  blob: e998aa84af5163168095be941feb1d9e55dd6ec4
+  title: GlobalOption.cs
+  summary: Public C# binding declarations for the GlobalOption module.
+- path: src/MaaFramework.Binding/Enums/Options/ResourceOption.cs
+  kind: binding-api
+  blob: 097870d150a7fc946f5072ba0d07f08248a4284b
+  title: ResourceOption.cs
+  summary: Public C# binding declarations for the ResourceOption module.
+- path: src/MaaFramework.Binding/Enums/Options/TaskerOption.cs
+  kind: binding-api
+  blob: 6f9e192e8b217a31d976c043cef1045fa28c4972
+  title: TaskerOption.cs
+  summary: Public C# binding declarations for the TaskerOption module.
+- path: src/MaaFramework.Binding/Exceptions/MaaException.cs
+  kind: binding-api
+  blob: a1a5db80667d90512d2f1da939d736c5de11013d
+  title: MaaException.cs
+  summary: Public C# binding declarations for the MaaException module.
+- path: src/MaaFramework.Binding/Exceptions/MaaJobStatusException.cs
+  kind: binding-api
+  blob: c6a9a055cb1768e563befe7f7354b91cd0433fb8
+  title: MaaJobStatusException.cs
+  summary: Public C# binding declarations for the MaaJobStatusException module.
+- path: src/MaaFramework.Binding/Exceptions/MaaOperationException.cs
+  kind: binding-api
+  blob: 6a0bd4e8047da4ffc8c71e1f9ef3fea008d9f241
+  title: MaaOperationException.cs
+  summary: Public C# binding declarations for the MaaOperationException module.
+- path: src/MaaFramework.Binding/Extensions/MaaJobStatusExtensions.cs
+  kind: binding-api
+  blob: 6ccb165054bcfe5825f2dbd3132efd8872078269
+  title: MaaJobStatusExtensions.cs
+  summary: Public C# binding declarations for the MaaJobStatusExtensions module.
+- path: src/MaaFramework.Binding/Extensions/MaaOptionExtensions.cs
+  kind: binding-api
+  blob: 28e4d28db6d37118f5b1cb9c02e23acb4e2020ee
+  title: MaaOptionExtensions.cs
+  summary: Public C# binding declarations for the MaaOptionExtensions module.
+- path: src/MaaFramework.Binding/IMaaAgentClient.cs
+  kind: binding-api
+  blob: 59a0f30412ca683de23e1e73fa3fb9095689fa9b
+  title: IMaaAgentClient.cs
+  summary: Public C# binding declarations for the IMaaAgentClient module.
+- path: src/MaaFramework.Binding/IMaaAgentServer.cs
+  kind: binding-api
+  blob: eebc0438098afa721051faae314f617f4bc775b2
+  title: IMaaAgentServer.cs
+  summary: Public C# binding declarations for the IMaaAgentServer module.
+- path: src/MaaFramework.Binding/IMaaContext.cs
+  kind: binding-api
+  blob: 55beb627e23a7bcf47821702964d8e60dcb22199
+  title: IMaaContext.cs
+  summary: Public C# binding declarations for the IMaaContext module.
+- path: src/MaaFramework.Binding/IMaaController.cs
+  kind: binding-api
+  blob: 2a5a776f57ab43feb3614d08c0bfb7e15fe65519
+  title: IMaaController.cs
+  summary: Public C# binding declarations for the IMaaController module.
+- path: src/MaaFramework.Binding/IMaaGlobal.cs
+  kind: binding-api
+  blob: 1f5270f01bea95adb082945242b8d98b62e1f24f
+  title: IMaaGlobal.cs
+  summary: Public C# binding declarations for the IMaaGlobal module.
+- path: src/MaaFramework.Binding/IMaaResource.cs
+  kind: binding-api
+  blob: 2b6b41a9ee0886cde7fc92481c7e028de0f8d78e
+  title: IMaaResource.cs
+  summary: Public C# binding declarations for the IMaaResource module.
+- path: src/MaaFramework.Binding/IMaaTasker.cs
+  kind: binding-api
+  blob: 4b282b7e408733182d7f5f09fcc8d65f56bd4300
+  title: IMaaTasker.cs
+  summary: Public C# binding declarations for the IMaaTasker module.
+- path: src/MaaFramework.Binding/IMaaToolkit.cs
+  kind: binding-api
+  blob: 4ba0ecd8ba20d76083350e4ec6896c3a8b4871c9
+  title: IMaaToolkit.cs
+  summary: Public C# binding declarations for the IMaaToolkit module.
+- path: src/MaaFramework.Binding/Infos/ActionDetail.cs
+  kind: binding-api
+  blob: 8bca6afbf0c6025538c1404ac9d1e948ba1a2fa1
+  title: ActionDetail.cs
+  summary: Public C# binding declarations for the ActionDetail module.
+- path: src/MaaFramework.Binding/Infos/AdbDeviceInfo.cs
+  kind: binding-api
+  blob: 8dc6a69fe888cd77692ce95a59f6cd2f6558d4ee
+  title: AdbDeviceInfo.cs
+  summary: Public C# binding declarations for the AdbDeviceInfo module.
+- path: src/MaaFramework.Binding/Infos/DesktopWindowInfo.cs
+  kind: binding-api
+  blob: f038d9be7c410c10a9a14164a868986657d22556
+  title: DesktopWindowInfo.cs
+  summary: Public C# binding declarations for the DesktopWindowInfo module.
+- path: src/MaaFramework.Binding/Infos/ImageInfo.cs
+  kind: binding-api
+  blob: 48f47eb8b57a217bbab11db5b2bfd43446a46c5c
+  title: ImageInfo.cs
+  summary: Public C# binding declarations for the ImageInfo module.
+- path: src/MaaFramework.Binding/Infos/NodeDetail.cs
+  kind: binding-api
+  blob: b6d12c4264a89c0bb4c8c429da3bc92445b94581
+  title: NodeDetail.cs
+  summary: Public C# binding declarations for the NodeDetail module.
+- path: src/MaaFramework.Binding/Infos/RecognitionDetail.cs
+  kind: binding-api
+  blob: 88ef58416e6a1e0a6870c44054bbe846072f338d
+  title: RecognitionDetail.cs
+  summary: Public C# binding declarations for the RecognitionDetail module.
+- path: src/MaaFramework.Binding/Infos/TaskDetail.cs
+  kind: binding-api
+  blob: 619e81936fc583138a9d358f1c0d6a9b53e2439d
+  title: TaskDetail.cs
+  summary: Public C# binding declarations for the TaskDetail module.
+- path: src/MaaFramework.Binding/MaaDef.cs
+  kind: binding-api
+  blob: 3883e8b1d105dc1594928b8d6abe5342c15f2b2f
+  title: MaaDef.cs
+  summary: Public C# binding declarations for the MaaDef module.
+- path: src/MaaFramework.Binding/MaaFramework.Binding.csproj
+  kind: package-manifest
+  blob: a32697b984a0f2a4a40d293b6c2d6f01a7c920c1
+  title: MaaFramework.Binding.csproj
+  summary: Package and dependency metadata for the C# binding.
+- path: src/MaaFramework.Binding/MaaImage.cs
+  kind: binding-api
+  blob: 9d97dcb2ce066dbfe7401d75d94dcbaeea16761a
+  title: MaaImage.cs
+  summary: Public C# binding declarations for the MaaImage module.
+- path: src/MaaFramework.Binding/MaaJob.cs
+  kind: binding-api
+  blob: 23d55c5a098a8006084c6e4c5936d102d05e9737
+  title: MaaJob.cs
+  summary: Public C# binding declarations for the MaaJob module.
+- path: src/MaaFramework.Binding/MaaMsg.cs
+  kind: binding-api
+  blob: d120395188582d3223cfc4ca37ea4cd5d0d14a99
+  title: MaaMsg.cs
+  summary: Public C# binding declarations for the MaaMsg module.
+- path: src/MaaFramework.Binding/MaaTaskJob.cs
+  kind: binding-api
+  blob: f42a9ef1191a238cdf7c7ef073588c21ecb10e20
+  title: MaaTaskJob.cs
+  summary: Public C# binding declarations for the MaaTaskJob module.
+- path: src/MaaFramework.Native/MaaFramework.Native.csproj
+  kind: package-manifest
+  blob: 44efcc6183782b26dd3711274bbae7509cb077fe
+  title: MaaFramework.Native.csproj
+  summary: Package and dependency metadata for the C# binding.
+- path: src/MaaFramework.Native/README.md
+  kind: documentation
+  blob: 34f3e7a370cf8a102b877397c55dcac62e563074
+  title: Maa.Framework
+  summary: '`Maa.Framework` is a metapackage with references to:'
+- path: src/MaaFramework/MaaFramework.csproj
+  kind: package-manifest
+  blob: 3cea5634aba81336d091a7c65bf5c579b75e79a3
+  title: MaaFramework.csproj
+  summary: Package and dependency metadata for the C# binding.
+- path: src/MaaFramework/README.md
+  kind: documentation
+  blob: 158792bfe931db0061e5125f4abc1843d32d25ef
+  title: Maa.Framework
+  summary: '`Maa.Framework` is a metapackage with references to:'

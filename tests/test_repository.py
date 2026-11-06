@@ -2,6 +2,7 @@ import hashlib
 from pathlib import Path
 from zipfile import ZipFile
 
+from maa_llm_wiki.bindings import BINDING_SPECS
 from maa_llm_wiki.bundle import build_catalog_bundle
 from maa_llm_wiki.inventory import parse_stable_tag
 from maa_llm_wiki.models import CatalogBundleManifest
@@ -103,10 +104,12 @@ def _go_module_path(tag: str) -> str:
 def test_external_bindings_have_independent_versioned_indexes() -> None:
     go_releases = load_release_catalog(ROOT, "maa-framework-go")
     rust_releases = load_release_catalog(ROOT, "maa-framework-rs")
+    csharp_releases = load_release_catalog(ROOT, "maa-framework-csharp")
 
     for source_id, releases in (
         ("maa-framework-go", go_releases),
         ("maa-framework-rs", rust_releases),
+        ("maa-framework-csharp", csharp_releases),
     ):
         latest = releases.releases[-1]
         assert (ROOT / "generated" / source_id / "index.md").is_file()
@@ -125,10 +128,7 @@ def test_external_bindings_have_independent_versioned_indexes() -> None:
 def test_binding_compatibility_is_evidence_backed_or_unknown() -> None:
     catalog = load_binding_compatibility(ROOT)
 
-    assert {item.source_id for item in catalog.bindings} == {
-        "maa-framework-go",
-        "maa-framework-rs",
-    }
+    assert {item.source_id for item in catalog.bindings} == set(BINDING_SPECS)
     for item in catalog.bindings:
         if item.framework_version is None:
             assert item.status.value == "unknown"
@@ -145,11 +145,7 @@ def test_catalog_bundle_is_self_describing_and_integrity_checked(tmp_path: Path)
     with ZipFile(output) as archive:
         bundled = CatalogBundleManifest.model_validate_json(archive.read("catalog-manifest.json"))
         assert bundled == manifest
-        assert {source.source_id for source in bundled.sources} == {
-            "maafw",
-            "maa-framework-go",
-            "maa-framework-rs",
-        }
+        assert {source.source_id for source in bundled.sources} == {"maafw", *BINDING_SPECS}
         for record in bundled.files:
             content = archive.read(record.path)
             assert len(content) == record.size_bytes

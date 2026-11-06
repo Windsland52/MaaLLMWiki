@@ -1,4 +1,67 @@
 bindings:
+- source_id: maa-framework-csharp
+  binding_version: 5.1.0
+  binding_revision: ca34dd25bf6ce4dd20a24c19dae0b7190f4d7bcb
+  framework_version: 5.1.4
+  status: declared
+  evidence_paths:
+  - src/Directory.Packages.props
+  note: The package manifest declares Maa.Framework.Runtimes 5.1.4; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-csharp
+  binding_version: 5.10.0
+  binding_revision: 27c69a5b8ff41b6002ead71f403a16f442a7168e
+  framework_version: 5.10.5
+  status: declared
+  evidence_paths:
+  - src/Directory.Packages.props
+  note: The package manifest declares Maa.Framework.Runtimes 5.10.5; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-csharp
+  binding_version: 5.3.0
+  binding_revision: 58442b7de8294ba5f98599f52f17141f4ab9156b
+  framework_version: 5.3.3
+  status: declared
+  evidence_paths:
+  - src/Directory.Packages.props
+  note: The package manifest declares Maa.Framework.Runtimes 5.3.3; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-csharp
+  binding_version: 5.4.0
+  binding_revision: 0120396d93e57ebdddf926c5d29b161d8f938355
+  framework_version: 5.4.3
+  status: declared
+  evidence_paths:
+  - src/Directory.Packages.props
+  note: The package manifest declares Maa.Framework.Runtimes 5.4.3; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-csharp
+  binding_version: 5.4.1
+  binding_revision: 61a2036dc57eead29f5cc4f2ea64b21eb82e5b1b
+  framework_version: 5.4.3
+  status: declared
+  evidence_paths:
+  - src/Directory.Packages.props
+  note: The package manifest declares Maa.Framework.Runtimes 5.4.3; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-csharp
+  binding_version: 5.6.0
+  binding_revision: 56ae01a93aabfd2b67878cbe78289104fca9192f
+  framework_version: 5.6.0
+  status: declared
+  evidence_paths:
+  - src/Directory.Packages.props
+  note: The package manifest declares Maa.Framework.Runtimes 5.6.0; runtime compatibility
+    has not been independently verified.
+- source_id: maa-framework-csharp
+  binding_version: 5.8.0
+  binding_revision: 41f49adb4a373e77af586b8bfc33c4316ea1da1f
+  framework_version: 5.8.1
+  status: declared
+  evidence_paths:
+  - src/Directory.Packages.props
+  note: The package manifest declares Maa.Framework.Runtimes 5.8.1; runtime compatibility
+    has not been independently verified.
 - source_id: maa-framework-go
   binding_version: 0.1.0
   binding_revision: c6a24d651a3b7d3f7189c9d58403ad3685a34f57

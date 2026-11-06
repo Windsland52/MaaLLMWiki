@@ -10,8 +10,11 @@ import yaml
 
 from maa_llm_wiki import inventory
 from maa_llm_wiki.bindings import (
+    BINDING_SPECS,
     BindingSourceSpec,
     _binding_compatibility,
+    _classify_binding_path,
+    _describe_binding_artifact,
     sync_binding_history,
 )
 from maa_llm_wiki.inventory import (
@@ -51,6 +54,12 @@ RUST_SPEC = BindingSourceSpec(
     source_id="maa-framework-rs",
     display_name="MaaFramework Rust binding",
     language="Rust",
+)
+CSHARP_SPEC = BindingSourceSpec(
+    source_id="maa-framework-csharp",
+    display_name="MaaFramework C# binding",
+    language="C#",
+    tag_major=5,
 )
 FIXED_DATE = date(2026, 1, 2)
 ABSENT_COMMIT = "b" * 40
@@ -956,3 +965,178 @@ def test_sync_maafw_inventory_uses_the_previous_registered_inventory(tmp_path: P
     )
     assert "## Changed since `1.0.0`" in index
     assert "- Added: `0`, removed: `0`, content changed: `1`" in index
+
+
+CSHARP_PACKAGES_PROPS = (
+    "<Project>\n"
+    "  <ItemGroup>\n"
+    '    <PackageVersion Include="Maa.Framework.Runtimes" Version="5.10.5" />\n'
+    "  </ItemGroup>\n"
+    "</Project>\n"
+)
+
+
+def test_csharp_binding_classification_and_specs() -> None:
+    assert BINDING_SPECS["maa-framework-csharp"].tag_major == 5
+    assert BINDING_SPECS["maa-framework-go"].tag_major is None
+    assert BINDING_SPECS["maa-framework-rs"].tag_major is None
+
+    classify = _classify_binding_path
+    assert classify("maa-framework-csharp", "README.md") is ArtifactKind.DOCUMENTATION
+    assert classify("maa-framework-csharp", "README.zh_cn.md") is ArtifactKind.DOCUMENTATION
+    assert classify("maa-framework-csharp", "CHANGELOG.md") is ArtifactKind.DOCUMENTATION
+    assert (
+        classify("maa-framework-csharp", "docs/articles/overview-of-wrapper-and-api.md")
+        is ArtifactKind.DOCUMENTATION
+    )
+    assert (
+        classify("maa-framework-csharp", "src/MaaFramework.Binding/MaaTasker.cs")
+        is ArtifactKind.BINDING_API
+    )
+    assert (
+        classify("maa-framework-csharp", "src/MaaFramework.Binding.UnitTests/Test_Common.cs")
+        is None
+    )
+    assert (
+        classify("maa-framework-csharp", "src/MaaFramework/MaaFramework.csproj")
+        is ArtifactKind.PACKAGE_MANIFEST
+    )
+    assert (
+        classify("maa-framework-csharp", "src/Directory.Packages.props")
+        is ArtifactKind.PACKAGE_MANIFEST
+    )
+    assert (
+        classify("maa-framework-csharp", "src/Directory.Build.props")
+        is ArtifactKind.PACKAGE_MANIFEST
+    )
+    assert classify("maa-framework-csharp", "sample/csharp/1.main.cs") is None
+    assert classify("maa-framework-csharp", "sample/README.md") is None
+    assert classify("maa-framework-csharp", ".github/workflows/ci.yml") is None
+    assert classify("maa-framework-csharp", "docs/build.ps1") is None
+
+    # Go and Rust classification must be unaffected by the new source.
+    assert classify("maa-framework-go", "controller/adb.go") is ArtifactKind.BINDING_API
+    assert classify("maa-framework-go", "go.mod") is ArtifactKind.PACKAGE_MANIFEST
+    assert classify("maa-framework-rs", "maa-framework/src/lib.rs") is ArtifactKind.BINDING_API
+    assert classify("maa-framework-rs", "Cargo.toml") is ArtifactKind.PACKAGE_MANIFEST
+
+
+def test_csharp_binding_descriptions() -> None:
+    assert _describe_binding_artifact(
+        CSHARP_SPEC, "src/MaaFramework.Binding/MaaTasker.cs", ArtifactKind.BINDING_API, {}
+    ) == ("MaaTasker.cs", "Public C# binding declarations for the MaaTasker module.")
+    assert _describe_binding_artifact(
+        CSHARP_SPEC, "src/Directory.Packages.props", ArtifactKind.PACKAGE_MANIFEST, {}
+    ) == ("Directory.Packages.props", "Package and dependency metadata for the C# binding.")
+
+
+def test_csharp_compatibility_from_packages_props(tmp_path: Path) -> None:
+    repository, commit = _binding_repository(
+        tmp_path,
+        {
+            "src/Directory.Packages.props": CSHARP_PACKAGES_PROPS,
+            "src/MaaTasker.cs": "class MaaTasker {}\n",
+        },
+    )
+
+    compatibility = _binding_compatibility(repository, _release(commit), CSHARP_SPEC)
+
+    assert compatibility.status is CompatibilityStatus.DECLARED
+    assert compatibility.framework_version == "5.10.5"
+    assert compatibility.evidence_paths == ["src/Directory.Packages.props"]
+    assert "Maa.Framework.Runtimes" in compatibility.note
+
+
+def test_csharp_compatibility_falls_back_to_readme_link(tmp_path: Path) -> None:
+    repository, commit = _binding_repository(
+        tmp_path,
+        {
+            "README.md": (
+                "C# binding for [MaaFramework]"
+                "(https://github.com/MaaXYZ/MaaFramework/blob/v5.9.2).\n"
+            ),
+            "src/MaaTasker.cs": "class MaaTasker {}\n",
+        },
+    )
+
+    compatibility = _binding_compatibility(repository, _release(commit), CSHARP_SPEC)
+
+    assert compatibility.status is CompatibilityStatus.DECLARED
+    assert compatibility.framework_version == "5.9.2"
+    assert compatibility.evidence_paths == ["README.md"]
+    assert "links" in compatibility.note
+
+
+def test_csharp_compatibility_unknown_without_evidence(tmp_path: Path) -> None:
+    repository, commit = _binding_repository(
+        tmp_path,
+        {"README.md": "# C# binding\n", "src/MaaTasker.cs": "class MaaTasker {}\n"},
+    )
+
+    compatibility = _binding_compatibility(repository, _release(commit), CSHARP_SPEC)
+
+    assert compatibility.status is CompatibilityStatus.UNKNOWN
+    assert compatibility.framework_version is None
+    assert compatibility.evidence_paths == []
+
+
+def test_csharp_sync_filters_legacy_major_tags_and_resolves_prereleases(
+    tmp_path: Path,
+) -> None:
+    repository = _init_repository(tmp_path / "csharp")
+    default_branch = _git(repository, "symbolic-ref", "--short", "HEAD")
+    first = _commit_files(
+        repository,
+        {
+            "README.md": "# C# binding\n",
+            "src/Directory.Packages.props": CSHARP_PACKAGES_PROPS,
+            "src/MaaTasker.cs": "class MaaTasker {}\n",
+        },
+    )
+    _git(repository, "tag", "v4.5.0")
+    _git(repository, "tag", "v5.0.0-preview.1")
+    _git(repository, "checkout", "-q", "-b", "preview")
+    prerelease_commit = _commit_files(
+        repository, {"src/MaaTasker.cs": "class MaaTasker { int Version => 13; }\n"}
+    )
+    _git(repository, "tag", "v5.13.0-preview.1")
+    _git(repository, "checkout", "-q", default_branch)
+    stable_commit = _commit_files(
+        repository, {"src/MaaTasker.cs": "class MaaTasker { int Version => 2; }\n"}
+    )
+    _git(repository, "tag", "v5.1.0")
+    assert first != stable_commit != prerelease_commit
+
+    root = tmp_path / "root"
+    _write_yaml(
+        root / "sources" / "repositories.yaml",
+        RepositoryCatalog(
+            repositories=[_repository_source("maa-framework-csharp", stable_commit)]
+        ).model_dump(mode="json"),
+    )
+
+    releases, prereleases = sync_binding_history(
+        root=root, repository=repository, source_id="maa-framework-csharp"
+    )
+
+    assert [release.version for release in releases] == ["5.1.0"]
+    assert [prerelease.version for prerelease in prereleases] == [
+        "5.0.0-preview.1",
+        "5.13.0-preview.1",
+    ]
+    assert prereleases[0].included_in == "5.1.0"
+    assert prereleases[1].included_in is None
+    assert all(prerelease.version != "4.5.0" for prerelease in prereleases)
+
+    inventory = SourceInventory.model_validate(
+        yaml.safe_load(
+            (root / "sources" / "maa-framework-csharp" / "inventories" / "5.1.0.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+    )
+    kinds = {artifact.path: artifact.kind for artifact in inventory.artifacts}
+    assert kinds["src/MaaTasker.cs"] is ArtifactKind.BINDING_API
+    assert kinds["src/Directory.Packages.props"] is ArtifactKind.PACKAGE_MANIFEST
+    assert kinds["README.md"] is ArtifactKind.DOCUMENTATION
+    assert (root / "generated" / "maa-framework-csharp" / "5.1.0" / "index.md").is_file()

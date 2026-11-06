@@ -40,6 +40,7 @@ class BindingSourceSpec:
     source_id: str
     display_name: str
     language: str
+    tag_major: int | None = None
 
 
 @dataclass(frozen=True)
@@ -59,11 +60,34 @@ BINDING_SPECS = {
         display_name="MaaFramework Rust binding",
         language="Rust",
     ),
+    "maa-framework-csharp": BindingSourceSpec(
+        source_id="maa-framework-csharp",
+        display_name="MaaFramework C# binding",
+        language="C#",
+        tag_major=5,
+    ),
 }
 
 
 def _classify_binding_path(source_id: str, path: str) -> ArtifactKind | None:
     lowered = path.lower()
+    if source_id == "maa-framework-csharp":
+        if path.startswith(("sample/", "src/MaaFramework.Binding.UnitTests/")):
+            return None
+        name = PurePosixPath(path).name
+        if (
+            name.startswith("README")
+            or path == "CHANGELOG.md"
+            or (path.startswith("docs/") and lowered.endswith(".md"))
+        ):
+            return ArtifactKind.DOCUMENTATION
+        if path.startswith("src/") and lowered.endswith(".cs"):
+            return ArtifactKind.BINDING_API
+        if path.startswith("src/") and lowered.endswith(".csproj"):
+            return ArtifactKind.PACKAGE_MANIFEST
+        if path in {"src/Directory.Build.props", "src/Directory.Packages.props"}:
+            return ArtifactKind.PACKAGE_MANIFEST
+        return None
     if path in {"README.md", "README_zh.md", "CHANGELOG.md"}:
         return ArtifactKind.DOCUMENTATION
     if source_id == "maa-framework-go":
@@ -177,6 +201,13 @@ RUST_FRAMEWORK_DEPENDENCY_PATTERN = re.compile(
     r"maa-framework-sys\s*=\s*\{[^}]*version\s*=\s*\""
     r"(?P<version>\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)\""
 )
+CSHARP_RUNTIME_PACKAGE_PATTERN = re.compile(
+    r'Maa\.Framework\.Runtimes"\s+Version="(?P<version>\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)"'
+)
+CSHARP_README_LINK_PATTERN = re.compile(
+    r"MaaFramework/blob/v(?P<version>\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)\)",
+    flags=re.IGNORECASE,
+)
 
 
 def _go_compatibility_evidence(content: str) -> tuple[str, str] | None:
@@ -219,7 +250,7 @@ def _binding_compatibility(
                         "runtime compatibility has not been independently verified."
                     ),
                 )
-    else:
+    elif spec.source_id == "maa-framework-rs":
         content = _read_revision_file(repository, release.commit, "Cargo.toml")
         if content is not None:
             match = RUST_FRAMEWORK_DEPENDENCY_PATTERN.search(content)
@@ -234,6 +265,43 @@ def _binding_compatibility(
                     evidence_paths=["Cargo.toml"],
                     note=(
                         "The workspace manifest declares this maa-framework-sys version; "
+                        "runtime compatibility has not been independently verified."
+                    ),
+                )
+    else:
+        packages = _read_revision_file(repository, release.commit, "src/Directory.Packages.props")
+        if packages is not None:
+            match = CSHARP_RUNTIME_PACKAGE_PATTERN.search(packages)
+            if match is not None:
+                version = match["version"]
+                return BindingCompatibility(
+                    source_id=spec.source_id,
+                    binding_version=release.version,
+                    binding_revision=release.commit,
+                    framework_version=version,
+                    status=CompatibilityStatus.DECLARED,
+                    evidence_paths=["src/Directory.Packages.props"],
+                    note=(
+                        "The package manifest declares Maa.Framework.Runtimes "
+                        f"{version}; runtime compatibility has not been independently verified."
+                    ),
+                )
+        for path in ("README.md", "README.zh_cn.md"):
+            content = _read_revision_file(repository, release.commit, path)
+            if content is None:
+                continue
+            match = CSHARP_README_LINK_PATTERN.search(content)
+            if match is not None:
+                version = match["version"]
+                return BindingCompatibility(
+                    source_id=spec.source_id,
+                    binding_version=release.version,
+                    binding_revision=release.commit,
+                    framework_version=version,
+                    status=CompatibilityStatus.DECLARED,
+                    evidence_paths=[path],
+                    note=(
+                        f"The binding README links MaaFramework v{version}; "
                         "runtime compatibility has not been independently verified."
                     ),
                 )
@@ -426,8 +494,8 @@ def sync_binding_history(
     if source is None:
         raise ValueError(f"Unknown repository source: {source_id}")
 
-    releases = discover_stable_releases(repository)
-    prereleases = discover_prereleases(repository)
+    releases = discover_stable_releases(repository, major=spec.tag_major)
+    prereleases = discover_prereleases(repository, major=spec.tag_major)
     registered_releases, registered_prereleases = registered_release_versions(root, source_id)
     guard_registry_shrink(
         registered_releases,
