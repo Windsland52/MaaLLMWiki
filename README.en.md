@@ -31,7 +31,8 @@ binding APIs follow the MaaFramework version.
 2. **What is in that version** → that version's `index.md`: per-domain file counts and a Navigation
    block (previous/next release, top-level pages);
 3. **Which release introduced a field/API/enum** → `generated/maa-framework/machine-symbols.md`
-   (symbol to first appearance);
+   (symbol to its earliest recorded addition). It is a lead only: C API functions are not extracted,
+   so confirm the release in the pinned source (`CATALOG-CONTRACT.md` §8.1);
 4. **What moved between two releases** → the `Changed since` summary on the version page, or
    `uv run maa-wiki-diff --from <old> --to <new>`;
 5. **Need a citable source** → the page links are pinned to 40-character commits; quote the

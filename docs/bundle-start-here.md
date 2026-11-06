@@ -10,7 +10,7 @@ It points at the upstream sources; it does not replace them.
 | --- | --- |
 | `catalog-manifest.json` | The snapshot itself: `catalog_version` (the release tag), `wiki_revision`, source versions and commits, and every file with its size and SHA-256. |
 | `generated/` | Rendered navigation pages. Start at `generated/maa-framework/index.md` for the version list, then `generated/maa-framework/<version>/index.md`. |
-| `generated/maa-framework/machine-symbols.md` | Which release introduced a symbol, and where it moved afterwards. |
+| `generated/maa-framework/machine-symbols.md` | The earliest recorded addition of a symbol and where it moved afterwards; a lead, not proof (`CATALOG-CONTRACT.md` §8.1). |
 | `generated/maa-framework/machine-changes.md` | The per-release extracted facts with their upstream evidence. |
 | `sources/` | The committed catalog data the pages were rendered from (inventories, release registries, compatibility metadata, curated source map and semantic changes). |
 | `schemas/` | JSON Schemas for the data files above. |
@@ -35,7 +35,9 @@ python verify_bundle.py --bundle maa-llm-wiki-catalog-vX.Y.Z.zip --expect-versio
 - Resolve each fact to the pinned upstream commit that the page links to, and quote that source
   rather than the catalog index.
 - For "when did this change / which version introduced it", read `machine-symbols.md` and then the
-  per-release `machine-changes.md` records.
+  per-release `machine-changes.md` records, then confirm the release in the pinned source: the
+  symbol exists there and is absent from the previous indexed release. The machine layer does not
+  record C API function declarations, so a missing row is not evidence that nothing changed.
 
 ## Licence
 

@@ -8,7 +8,7 @@ description: 把 MaaFramework 事实问题路由到版本锁定的原始出处�
 MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官方文档、schema 与源码，并把每条引用锁定到不可变 commit（40 位 SHA）。它不复制全文、不替代原始内容——索引只保留标题、自动摘取的首段摘要与 pinned 出处链接；回答事实问题必须**回源**到它指向的原始出处。目录内容托管在 https://github.com/Windsland52/MaaLLMWiki ，本文所有相对路径均相对该仓库根。消费者契约、保证边界与已知局限见 `CATALOG-CONTRACT.md`；目录数据以 CC BY 4.0 发布，上游文档摘录保留 LGPL-3.0（归属见 `NOTICE`）。
 
 本 skill 是标准路由流程；MaaTutorial 的 maafw-* 开发 skill 中"路由 MaaLLMWiki"指的就是执行本流程。
-**skill 版本**：2026-11-06（要求目录结构 ≥ v0.1.21）。安装到本地的是本文件的快照；结构与流程升级后需要重装（见下方"版本纪律"）。
+**skill 版本**：2026-11-07（要求目录结构 ≥ v0.1.21）。安装到本地的是本文件的快照；结构与流程升级后需要重装（见下方"版本纪律"）。
 
 ## 版本纪律（每次使用先做，防止拿旧目录作答）
 
@@ -35,7 +35,9 @@ MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官�
 
     注册了哪些信息源见 `sources/repositories.yaml`。
 4. **回源作答**：打开条目给出的 pinned commit 链接读**原文**再回答；引用时注明上游文档 + MaaFW 版本 + commit。禁止把目录索引本身当作字段语义的出处，禁止把链接换成移动分支（main / master）。
-5. **主题级定位与跨版本比较**：优先查渲染页 `generated/maa-framework/topics.md`——主题 → 按版本适用的变体 → pinned 原始路径 + 符号 + 字面搜索词，可直接跳到源码级出处；跨版本**行为变更**查 `generated/maa-framework/behaviour-changes.md`（按首次发布分组，每条链到 pinned 出处）。想知道某符号/枚举值/字段/函数是哪个版本出现的，先查 `generated/maa-framework/machine-symbols.md`（按符号索引：首次出现版本 + 之后触及它的 release）；需要逐条上游证据时再看 `generated/maa-framework/machine-changes.md`：它由 sync 从上游 diff 机器抽取，每条带上游证据（文本行为逐字引用，schema 值为规范化 JSON）；证据只证明该事实在版本中出现，不证明运行时语义或“变化是否重要”。`topics.md` 与 `behaviour-changes.md` 分别由 `sources/maa-framework/source-map.yaml` 与 `sources/maa-framework/semantic-changes.yaml` 渲染：YAML 是策展的权威源（改数据改 YAML，不改页面）；`machine-changes.md` 由 sync 从上游 diff 生成（源文件 `sources/maa-framework/machine-changes.yaml`），随每次 sync 自动更新；`behaviour-changes.md` 只是可选的解读层。
+5. **主题级定位与跨版本比较**：优先查渲染页 `generated/maa-framework/topics.md`——主题 → 按版本适用的变体 → pinned 原始路径 + 符号 + 字面搜索词，可直接跳到源码级出处；跨版本**行为变更**查 `generated/maa-framework/behaviour-changes.md`（按首次发布分组，每条链到 pinned 出处）。想知道某符号/枚举值/字段/绑定函数是哪个版本出现的，可以先查 `generated/maa-framework/machine-symbols.md`（按符号名索引：最早的新增记录 + 之后触及它的 release），但它只给线索（盲区见下）；需要逐条上游证据时再看 `generated/maa-framework/machine-changes.md`：它由 sync 从上游 diff 机器抽取，每条带上游证据（文本行为逐字引用，schema 值为规范化 JSON）；证据只证明该事实在版本中出现，不证明运行时语义或“变化是否重要”。`topics.md` 与 `behaviour-changes.md` 分别由 `sources/maa-framework/source-map.yaml` 与 `sources/maa-framework/semantic-changes.yaml` 渲染：YAML 是策展的权威源（改数据改 YAML，不改页面）；`machine-changes.md` 由 sync 从上游 diff 生成（源文件 `sources/maa-framework/machine-changes.yaml`），随每次 sync 自动更新；`behaviour-changes.md` 只是可选的解读层。
+    - **机器层的已知盲区**：不收录 C API 函数声明（上游用 `MAA_FRAMEWORK_API` 等宏声明函数，抽取规则只读含 `MAA_CALL` 的行）和 `MaaMsg_*` 以外的 `#define` 常量（如 `MaaWin32InputMethod_*`），也不记录新出现的 `$defs`/`definitions` 条目和新增对象内部的字段；`unclassified` 只在一对相邻版本完全没抽到结构化记录时才出现。
+    - **First added 不等于引入版本**：同名符号跨文件合并成一行，签名改动记为同一版本的删除 + 新增，首个已索引版本 5.0.0 里已有的符号没有首次版本。要说“X 在版本 N 引入”，必须回源确认：X 在 N 的 pinned 文件里存在，在上一已索引版本里不存在。
 6. **消费通道**（按连通性择优）：
     - 本地 Git 检出：一次克隆长期可用，弱网环境最稳；
     - raw 直链：`https://raw.githubusercontent.com/Windsland52/MaaLLMWiki/<tag>/<相对路径>`（`<tag>` 取第 1 步解析出的版本，**不要用 `main`**），如 `generated/maa-framework/<版本>/documentation/zh-cn.md`；
@@ -73,5 +75,6 @@ uv run maa-wiki-diff --from 5.14.2 --to 5.15.0 --format json
 - **旧快照即未验证**：安装副本或本地检出落后时不静默沿用，按「版本纪律」刷新并声明所用 `catalog_version`。
 - **不可达即未验证**：目录或上游拿不到 → 回答显式标注"未验证"，不用记忆补；宁可少答。
 - **内容边界**：本仓库只做路由，不收项目实践/教程/日志/诊断——开发实践在 MaaTutorial，项目事实在各项目仓库。
+- **机器层没有记录 ≠ 没变**：版本归属以相邻两个已索引版本的 pinned 原文比对为准（盲区见路由步骤第 5 步）。
 - **派生页不是权威源**：`topics.md` / `behaviour-changes.md` / `machine-changes.md` / `machine-symbols.md` 都是渲染或抽取导航；引用仍要回源到 pinned commit，数据改动分别走策展 YAML 或 sync。
 - **引用与许可**：上游文档摘录保留 LGPL-3.0（见 `NOTICE`），目录数据为 CC BY 4.0（见 `LICENSE-DATA`）；引用时保留上游仓库、版本与 commit，再分发时保留归属声明。

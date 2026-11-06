@@ -26,7 +26,7 @@ Go、Rust 与 C# 绑定作为独立外部源登记，各自有锁定清单与兼
 
 1. **用哪个 MaaFramework 版本** → `generated/maa-framework/index.md` 顶部的 Current snapshot（最新版本与总数），或列表里挑一个；
 2. **这一版里有什么** → 该版本 `index.md`：各域文件数、页尾 Navigation（上一版/下一版/顶层页）；
-3. **某字段/API/枚举是哪个版本引入的** → `generated/maa-framework/machine-symbols.md`（符号 → 首次出现版本）；
+3. **某字段/API/枚举是哪个版本引入的** → `generated/maa-framework/machine-symbols.md`（符号 → 最早的新增记录）。它只是线索：不含 C API 函数，版本要回源核对，见 `CATALOG-CONTRACT.md` §8.1；
 4. **两版之间哪些被索引材料变了** → 版本页的 `Changed since` 摘要，或 `uv run maa-wiki-diff --from <旧> --to <新>`；
 5. **需要事实出处** → 页面链接钉到 40 位 commit，回源引用。
 

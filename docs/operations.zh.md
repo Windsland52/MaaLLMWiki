@@ -43,8 +43,8 @@ MaaFramework 5.x tag，且每个 release 在 pinned commit 的 `src/Directory.Pa
 | `generated/maa-framework/index.md` | 带 pinned revision 的 release 列表、预发布登记，以及指向下方三个顶层索引的链接。 |
 | `topics.md` | 由 `sources/maa-framework/source-map.yaml` 渲染的策展主题路由：每个主题的每个变体给出适用版本（`applies_to`）、revision、pinned 文件链接、符号与字面搜索词。 |
 | `behaviour-changes.md` | 由 `sources/maa-framework/semantic-changes.yaml` 渲染的策展行为历史，按首次承载该变更的 release 分组并带 pinned 链接。可选的解读层。 |
-| `machine-changes.md` | 从上游 diff 机器抽取的事实：枚举值、公开函数、回调消息、JSON-schema properties/enums/defaults/required、interface 协议版本与绑定 API 名称。每条结构化记录带上游证据（文本改动为逐字 added/removed 行，schema 改动为规范化 JSON 片段）与已索引路径。某对 release 的已索引材料发生变化但未产生结构化记录时，会显式记录一条 `unclassified` 条目。 |
-| `machine-symbols.md` | 同样的记录按符号重新索引：该符号首次出现的 release 与之后每次触及它的 release，并链接到对应版本页。回答“哪个版本引入 X”最快的一页。 |
+| `machine-changes.md` | 从上游 diff 机器抽取的事实：枚举值、回调消息、JSON-schema properties/enums/defaults/required、interface 协议版本与绑定 API 名称。每条结构化记录带上游证据（文本改动为逐字 added/removed 行，schema 改动为规范化 JSON 片段）与已索引路径。只有当某对 release 的已索引材料发生变化、却一条结构化记录都没产生时，才会记录一条 `unclassified` 条目。C API 函数声明、`MaaMsg_*` 以外的 `#define` 常量、新出现的 `$defs`/`definitions` 条目和新增对象内部的字段不在抽取范围内（见 `CATALOG-CONTRACT.md` §8.1）。 |
+| `machine-symbols.md` | 同样的记录按符号名重新索引：该符号最早一条 `added` 记录所在的 release 与之后每次触及它的 release，并链接到对应版本页。查“哪个版本引入 X”时可以先看这页拿线索，但要回源核对：同名符号跨文件合并成一行，5.0.0 里已有的符号没有首次版本。 |
 绑定版本页同样有兼容性证据、注册表链接、由逐版本清单算出的 `Changed since <上一版>` 段，以及带上一版/下一版、全部版本与预发布登记的 Navigation 段。
 每个版本页末尾有 Navigation 段：上一版、下一版、全部版本，以及主题/机器变更/预发布等顶层页。
 | `<version>/index.md` | 单个 release 的分域索引。末尾的 `Changed since <previous indexed release>` 列出相对上一版的已索引材料新增、内容变化（按 git blob id）与删除，并给出计数、每类列出上限与 `... and K more <label>` 溢出提示。首个索引版本写 `Changed since the previous release` 并说明没有上一份清单。这是已索引**材料**移动，不是行为变更。 |
