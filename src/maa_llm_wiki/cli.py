@@ -123,11 +123,62 @@ def sync_maafw_history_main() -> int:
     return 0
 
 
+def _parse_binding_repository(value: str) -> tuple[str, Path]:
+    source_id, separator, raw_path = value.partition("=")
+    if not separator or not source_id or not raw_path:
+        raise ValueError(f"invalid --repository value, expected SOURCE_ID=PATH: {value!r}")
+    return source_id, Path(raw_path)
+
+
+def _binding_repositories(
+    *,
+    explicit: list[str],
+    go_repository: Path | None,
+    rust_repository: Path | None,
+) -> dict[str, Path]:
+    repositories: dict[str, Path] = {}
+    for value in explicit:
+        source_id, path = _parse_binding_repository(value)
+        if source_id not in BINDING_SPECS:
+            raise ValueError(f"unsupported binding source: {source_id}")
+        if source_id in repositories:
+            raise ValueError(f"duplicate --repository entry for binding source: {source_id}")
+        repositories[source_id] = path.resolve()
+    legacy = {
+        "maa-framework-go": go_repository,
+        "maa-framework-rs": rust_repository,
+    }
+    for source_id, path in legacy.items():
+        if path is not None and source_id not in repositories:
+            repositories[source_id] = path.resolve()
+    if not repositories:
+        raise ValueError("no binding repositories given")
+    return repositories
+
+
 @_error_boundary
 def sync_bindings_history_main() -> int:
-    parser = _root_parser("Index all stable Go and Rust binding releases")
-    parser.add_argument("--go-repository", type=Path, required=True)
-    parser.add_argument("--rust-repository", type=Path, required=True)
+    parser = _root_parser("Index all stable releases for registered binding sources")
+    parser.add_argument(
+        "--repository",
+        action="append",
+        default=None,
+        metavar="SOURCE_ID=PATH",
+        help=(
+            "binding source id and clone path, repeat once per source "
+            "(e.g. maa-framework-go=../maa-framework-go)"
+        ),
+    )
+    parser.add_argument(
+        "--go-repository",
+        type=Path,
+        help="legacy alias for --repository maa-framework-go=PATH (optional)",
+    )
+    parser.add_argument(
+        "--rust-repository",
+        type=Path,
+        help="legacy alias for --repository maa-framework-rs=PATH (optional)",
+    )
     parser.add_argument(
         "--prune",
         action="store_true",
@@ -137,11 +188,15 @@ def sync_bindings_history_main() -> int:
         ),
     )
     args = parser.parse_args()
-    repositories = {
-        "maa-framework-go": args.go_repository.resolve(),
-        "maa-framework-rs": args.rust_repository.resolve(),
-    }
-    for source_id, repository in repositories.items():
+    repositories = _binding_repositories(
+        explicit=args.repository if args.repository is not None else [],
+        go_repository=args.go_repository,
+        rust_repository=args.rust_repository,
+    )
+    for source_id in BINDING_SPECS:
+        repository = repositories.get(source_id)
+        if repository is None:
+            continue
         releases, prereleases = sync_binding_history(
             root=args.root.resolve(),
             repository=repository,
