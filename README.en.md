@@ -68,9 +68,9 @@ generated/maa-framework/index.md
   -> behaviour-changes.md          # curated behaviour changes (rendered from semantic-changes.yaml; optional interpretation layer)
   -> machine-changes.md            # machine-extracted change facts (generated from upstream diffs)
   -> <version>/index.md            # ends with a "Changed since <previous indexed release>" section
-       -> documentation/index.md -> {en-us,zh-cn,nodejs,tools}.md
+       -> documentation/index.md -> {en-us,zh-cn,tools}.md
        -> documentation/diagrams.md        # since 5.10.3
-       -> bindings/index.md -> {python,nodejs}.md
+       -> bindings/index.md -> {python,nodejs,readmes}.md
        -> native-api/index.md -> {framework,toolkit,agents}.md
        -> native-api/control-units.md      # since 5.10.0
        -> schemas.md

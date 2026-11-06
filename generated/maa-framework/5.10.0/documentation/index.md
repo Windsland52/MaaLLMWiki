@@ -11,10 +11,6 @@ MaaFramework `5.10.0` at `09af59ea0365f666497535eb5cc116c4586fc6bb`.
 
 [English documentation](en-us.md)
 
-## NodeJS documentation
-
-[NodeJS documentation](nodejs.md)
-
 ## Tool documentation
 
 [Tool documentation](tools.md)

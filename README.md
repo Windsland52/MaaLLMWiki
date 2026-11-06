@@ -55,9 +55,9 @@ generated/maa-framework/index.md
   -> behaviour-changes.md          # 策展行为变更（由 semantic-changes.yaml 渲染，可选解读层）
   -> machine-changes.md            # 机器抽取的变更事实（从上游 diff 生成）
   -> <version>/index.md            # 末尾含 "Changed since <上一已索引版本>" 段落
-       -> documentation/index.md -> {en-us,zh-cn,nodejs,tools}.md
+       -> documentation/index.md -> {en-us,zh-cn,tools}.md
        -> documentation/diagrams.md        # 自 5.10.3 起
-       -> bindings/index.md -> {python,nodejs}.md
+       -> bindings/index.md -> {python,nodejs,readmes}.md
        -> native-api/index.md -> {framework,toolkit,agents}.md
        -> native-api/control-units.md      # 自 5.10.0 起
        -> schemas.md

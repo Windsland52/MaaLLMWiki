@@ -313,6 +313,8 @@ def _artifact_category(artifact: SourceArtifact) -> tuple[str, str]:
         return "schemas.md", "Schemas"
     if artifact.kind is ArtifactKind.DOCUMENTATION_ASSET:
         return "documentation/diagrams.md", "Architecture diagrams"
+    if path.startswith("source/binding/") and path.lower().endswith("/readme.md"):
+        return "bindings/readmes.md", "Binding documentation"
     if artifact.kind is ArtifactKind.BINDING_API:
         if path.startswith("source/binding/Python/"):
             return "bindings/python.md", "Python binding API"
@@ -325,10 +327,6 @@ def _artifact_category(artifact: SourceArtifact) -> tuple[str, str]:
         if path.startswith("include/MaaControlUnit/"):
             return "native-api/control-units.md", "Control-unit native API"
         return "native-api/agents.md", "Agent client and server API"
-    if path.startswith("docs/en_us/NodeJS/"):
-        return "documentation/nodejs.md", "NodeJS documentation"
-    if path.startswith("docs/zh_cn/NodeJS/"):
-        return "documentation/nodejs.md", "NodeJS documentation"
     if path.startswith("docs/en_us/"):
         return "documentation/en-us.md", "English documentation"
     if path.startswith("docs/zh_cn/"):

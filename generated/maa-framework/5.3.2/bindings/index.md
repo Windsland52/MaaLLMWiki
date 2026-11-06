@@ -3,6 +3,10 @@
 
 MaaFramework `5.3.2` at `d103e2e16950405d4806288a4da03d730b430aef`.
 
+## Binding documentation
+
+[Binding documentation](readmes.md)
+
 ## NodeJS binding API
 
 [NodeJS binding API](nodejs.md)
