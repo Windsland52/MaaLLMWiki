@@ -568,3 +568,34 @@ def test_bundle_zip_entries_pin_the_host_field(tmp_path: Path) -> None:
     assert {entry.create_system for entry in entries} == {3}
     assert {entry.external_attr for entry in entries} == {0o100644 << 16}
     assert {entry.date_time for entry in entries} == {(1980, 1, 1, 0, 0, 0)}
+
+
+def _corrupt_member(path: Path, member: str) -> None:
+    """Flip one byte inside a member's compressed data, keeping the zip structure valid."""
+    data = bytearray(path.read_bytes())
+    with ZipFile(path) as archive:
+        info = archive.getinfo(member)
+    header_offset = info.header_offset
+    name_length = int.from_bytes(data[header_offset + 26 : header_offset + 28], "little")
+    extra_length = int.from_bytes(data[header_offset + 28 : header_offset + 30], "little")
+    data_start = header_offset + 30 + name_length + extra_length
+    data[data_start + info.compress_size // 2] ^= 0xFF
+    path.write_bytes(bytes(data))
+
+
+def test_corrupt_member_is_reported_without_a_traceback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    output = tmp_path / "corrupt.zip"
+    build_catalog_bundle(root=ROOT, output=output, allow_dirty=True, version="v0.0.5")
+    _corrupt_member(output, "catalog-manifest.json")
+
+    # The package verifier reports the problem as a ValueError instead of letting BadZipFile escape.
+    with pytest.raises(ValueError):
+        verify_catalog_bundle(bundle=output)
+
+    monkeypatch.setattr(sys, "argv", ["maa-wiki-verify-bundle", "--bundle", str(output)])
+    assert verify_bundle_main() == 1
+    captured = capsys.readouterr()
+    assert captured.err.startswith("error: ")
+    assert "Traceback" not in captured.err

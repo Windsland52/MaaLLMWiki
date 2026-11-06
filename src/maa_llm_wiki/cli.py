@@ -6,6 +6,7 @@ import sys
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from zipfile import BadZipFile
 
 from .bindings import BINDING_SPECS, sync_binding_history
 from .bundle import build_catalog_bundle, bundle_sha256, verify_catalog_bundle
@@ -26,7 +27,7 @@ def _error_boundary(action: Callable[[], int]) -> Callable[[], int]:
     def run() -> int:
         try:
             return action()
-        except (OSError, RuntimeError, ValueError) as error:
+        except (OSError, RuntimeError, ValueError, BadZipFile) as error:
             print(f"error: {error}", file=sys.stderr)
             return 1
 

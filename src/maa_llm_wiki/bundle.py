@@ -219,7 +219,11 @@ def verify_catalog_bundle(
         if _MANIFEST_NAME not in names:
             raise ValueError(f"{_MANIFEST_NAME} is missing from {bundle}")
         try:
-            manifest = CatalogBundleManifest.model_validate_json(archive.read(_MANIFEST_NAME))
+            raw_manifest = archive.read(_MANIFEST_NAME)
+        except BadZipFile as error:
+            raise ValueError(f"{_MANIFEST_NAME} could not be read: {error}") from error
+        try:
+            manifest = CatalogBundleManifest.model_validate_json(raw_manifest)
         except ValidationError as error:
             raise ValueError(f"{_MANIFEST_NAME} is invalid: {error}") from error
 
@@ -231,7 +235,11 @@ def verify_catalog_bundle(
             if path not in present:
                 problems.append(f"manifest file is missing from the bundle: {path}")
                 continue
-            content = archive.read(path)
+            try:
+                content = archive.read(path)
+            except BadZipFile as error:
+                problems.append(f"bundle member is not readable: {path} ({error})")
+                continue
             if len(content) != record.size_bytes:
                 problems.append(
                     f"size mismatch for {path}: manifest {record.size_bytes}, bundle {len(content)}"
