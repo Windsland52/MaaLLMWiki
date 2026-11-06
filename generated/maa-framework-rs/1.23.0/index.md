@@ -12,7 +12,8 @@ Revision: `e10d6b00bb86c22089193b67f5ec93f56ce266cc`
 
 ## Crates
 
-[Browse maa-framework on docs.rs](https://docs.rs/maa-framework/1.23.0)
+- [maa-framework](https://docs.rs/maa-framework/1.23.0)
+- [maa-framework-sys](https://docs.rs/maa-framework-sys/5.13.0-beta.5)
 
 ## Sources
 

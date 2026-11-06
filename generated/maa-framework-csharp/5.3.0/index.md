@@ -12,7 +12,11 @@ Revision: `58442b7de8294ba5f98599f52f17141f4ab9156b`
 
 ## NuGet packages
 
-[Browse Maa.Framework on nuget.org](https://www.nuget.org/packages/Maa.Framework/5.3.0)
+- [Maa.Framework](https://www.nuget.org/packages/Maa.Framework/5.3.0)
+- [Maa.Framework.Binding](https://www.nuget.org/packages/Maa.Framework.Binding/5.3.0)
+- [Maa.Framework.Binding.Extensions](https://www.nuget.org/packages/Maa.Framework.Binding.Extensions/5.3.0)
+- [Maa.Framework.Binding.Native](https://www.nuget.org/packages/Maa.Framework.Binding.Native/5.3.0)
+- [Maa.Framework.Native](https://www.nuget.org/packages/Maa.Framework.Native/5.3.0)
 
 ## Sources
 

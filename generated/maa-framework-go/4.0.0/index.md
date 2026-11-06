@@ -12,7 +12,11 @@ Revision: `c958c7bebd312c804c4e603325a4072bc854fa1f`
 
 ## Go API documentation
 
-[Browse root package on pkg.go.dev](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v4@v4.0.0)
+- [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v4@v4.0.0)
+- [controller/adb](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v4/controller/adb@v4.0.0)
+- [controller/gamepad](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v4/controller/gamepad@v4.0.0)
+- [controller/macos](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v4/controller/macos@v4.0.0)
+- [controller/win32](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v4/controller/win32@v4.0.0)
 
 ## Sources
 

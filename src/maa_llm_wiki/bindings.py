@@ -42,7 +42,6 @@ class BindingSourceSpec:
     language: str
     tag_major: int | None = None
     package_heading: str = "## Package documentation"
-    package_registry: str | None = None
 
 
 @dataclass(frozen=True)
@@ -57,14 +56,12 @@ BINDING_SPECS = {
         display_name="MaaFramework Go binding",
         language="Go",
         package_heading="## Go API documentation",
-        package_registry="pkg.go.dev",
     ),
     "maa-framework-rs": BindingSourceSpec(
         source_id="maa-framework-rs",
         display_name="MaaFramework Rust binding",
         language="Rust",
         package_heading="## Crates",
-        package_registry="docs.rs",
     ),
     "maa-framework-csharp": BindingSourceSpec(
         source_id="maa-framework-csharp",
@@ -72,7 +69,6 @@ BINDING_SPECS = {
         language="C#",
         tag_major=5,
         package_heading="## NuGet packages",
-        package_registry="nuget.org",
     ),
 }
 
@@ -457,16 +453,8 @@ def render_binding_version(
             links.append(f"[`{path}`]({url})")
         index_lines.append(f"- Evidence: {', '.join(links)}")
     if package_documentation:
-        package_link = package_documentation[0]
-        registry = spec.package_registry or "the package registry"
-        index_lines.extend(
-            [
-                "",
-                spec.package_heading,
-                "",
-                f"[Browse {package_link.label} on {registry}]({package_link.url})",
-            ]
-        )
+        index_lines.extend(["", spec.package_heading, ""])
+        index_lines.extend(f"- [{item.label}]({item.url})" for item in package_documentation)
     index_lines.extend(
         [
             "",

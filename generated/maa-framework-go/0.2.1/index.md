@@ -11,7 +11,7 @@ Revision: `147e84d5257ce0830b052e1401a655f4c05aaf76`
 
 ## Go API documentation
 
-[Browse root package on pkg.go.dev](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.2.1)
+- [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.2.1)
 
 ## Sources
 

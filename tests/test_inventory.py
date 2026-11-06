@@ -1254,3 +1254,30 @@ def test_rust_package_documentation_links_both_crates(tmp_path: Path) -> None:
     assert [link.label for link in links] == ["maa-framework", "maa-framework-sys"]
     assert links[0].url == "https://docs.rs/maa-framework/1.27.0"
     assert links[1].url == "https://docs.rs/maa-framework-sys/5.15.0-beta.1"
+
+
+def test_version_index_lists_every_package_of_the_registry() -> None:
+    inventory = _inventory("4.0.0", [_artifact("README.md")])
+    compatibility = BindingCompatibility(
+        source_id="maa-framework-go",
+        binding_version="4.0.0",
+        binding_revision="a" * 40,
+        framework_version="5.15.0",
+        status=CompatibilityStatus.DECLARED,
+        evidence_paths=["README.md"],
+        note="declared",
+    )
+    pages = render_binding_version(
+        BINDING_SPECS["maa-framework-go"],
+        inventory,
+        compatibility,
+        "https://github.com/MaaXYZ/maa-framework-go",
+        [
+            PackageDocumentation(label="root package", url="https://pkg.go.dev/x@v4.0.0"),
+            PackageDocumentation(label="controller", url="https://pkg.go.dev/x/controller@v4.0.0"),
+        ],
+    )
+
+    assert "## Go API documentation" in pages["index.md"]
+    assert "- [root package](https://pkg.go.dev/x@v4.0.0)" in pages["index.md"]
+    assert "- [controller](https://pkg.go.dev/x/controller@v4.0.0)" in pages["index.md"]
