@@ -72,3 +72,7 @@ Select a version before using framework facts or APIs.
 ## Behaviour changes
 
 [Browse recorded behaviour changes](./behaviour-changes.md)
+
+## Machine changes
+
+[Browse structured machine changes](./machine-changes.md)

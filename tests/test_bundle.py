@@ -211,9 +211,11 @@ def test_build_catalog_bundle_records_catalog_version(tmp_path: Path) -> None:
     manifest = build_catalog_bundle(root=ROOT, output=output, allow_dirty=True, version="v1.2.3")
 
     assert manifest.catalog_version == "v1.2.3"
-    # Snapshot-size guard: the published layout currently contains exactly 1275 files.
-    # Update this constant only when the catalog legitimately grows.
-    assert len(manifest.files) == 1275
+    # The manifest must list exactly the allowlisted published layout (grows with the catalog,
+    # e.g. when sources/maa-framework/machine-changes.yaml is added by the sync).
+    assert {record.path for record in manifest.files} == {
+        path.relative_to(ROOT).as_posix() for path in bundle_paths(ROOT)
+    }
     with ZipFile(output) as archive:
         bundled = CatalogBundleManifest.model_validate_json(archive.read("catalog-manifest.json"))
     assert bundled.catalog_version == "v1.2.3"
@@ -497,6 +499,7 @@ def _write_published_layout(root: Path) -> dict[str, str]:
         "sources/maa-framework-go/inventories/1.0.0.yaml": inventory,
         "sources/maa-framework/source-map.yaml": "topics: []\n",
         "sources/maa-framework/semantic-changes.yaml": "source_id: maa-framework-go\nchanges: []\n",
+        "sources/maa-framework/machine-changes.yaml": "source_id: maafw\nchanges: []\n",
     }
     for relative, content in files.items():
         path = root / relative
@@ -599,3 +602,15 @@ def test_corrupt_member_is_reported_without_a_traceback(
     captured = capsys.readouterr()
     assert captured.err.startswith("error: ")
     assert "Traceback" not in captured.err
+
+
+def test_bundle_paths_accept_machine_change_catalog_and_reject_near_misses(tmp_path: Path) -> None:
+    _write_published_layout(tmp_path)
+    relative = [path.relative_to(tmp_path).as_posix() for path in bundle_paths(tmp_path)]
+    assert "sources/maa-framework/machine-changes.yaml" in relative
+
+    (tmp_path / "sources" / "maa-framework" / "machine-changes.yml").write_text(
+        "source_id: maafw\nchanges: []\n", encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match="machine-changes.yml"):
+        bundle_paths(tmp_path)

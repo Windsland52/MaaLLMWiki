@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from .models import (
     BindingCompatibilityCatalog,
     CatalogBundleManifest,
+    MachineChangeCatalog,
     ReleaseCatalog,
     RepositoryCatalog,
     SemanticChangeCatalog,
@@ -18,6 +19,7 @@ from .models import (
 SCHEMA_MODELS: dict[str, type[BaseModel]] = {
     "binding-compatibility-catalog.schema.json": BindingCompatibilityCatalog,
     "catalog-bundle-manifest.schema.json": CatalogBundleManifest,
+    "machine-change-catalog.schema.json": MachineChangeCatalog,
     "release-catalog.schema.json": ReleaseCatalog,
     "repository-catalog.schema.json": RepositoryCatalog,
     "semantic-change-catalog.schema.json": SemanticChangeCatalog,

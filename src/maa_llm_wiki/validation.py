@@ -9,6 +9,7 @@ from pydantic import ValidationError
 from .models import (
     BindingCompatibility,
     BindingCompatibilityCatalog,
+    MachineChangeCatalog,
     ReleaseCatalog,
     RepositoryCatalog,
     RepositorySource,
@@ -58,6 +59,12 @@ def load_binding_compatibility(root: Path) -> BindingCompatibilityCatalog:
 def load_source_map(root: Path) -> SourceMap:
     return SourceMap.model_validate(
         _load_yaml(root / "sources" / "maa-framework" / "source-map.yaml")
+    )
+
+
+def load_machine_changes(root: Path) -> MachineChangeCatalog:
+    return MachineChangeCatalog.model_validate(
+        _load_yaml(root / "sources" / "maa-framework" / "machine-changes.yaml")
     )
 
 
@@ -403,6 +410,7 @@ def _check_sources_layout(
         if directory == _MAAFW_DIRECTORY:
             allowed.add(f"{prefix}/source-map.yaml")
             allowed.add(f"{prefix}/semantic-changes.yaml")
+            allowed.add(f"{prefix}/machine-changes.yaml")
     for path in sorted(p for p in sources_root.rglob("*") if p.is_file()):
         relative = f"sources/{path.relative_to(sources_root).as_posix()}"
         if relative not in allowed:
@@ -442,6 +450,52 @@ def _check_compatibility_registry(
                 f"{entry.source_id} compatibility is not a registered release: "
                 f"{entry.binding_version}"
             )
+
+
+def _check_machine_changes(
+    root: Path,
+    catalog: MachineChangeCatalog,
+    releases: ReleaseCatalog,
+    inventories: list[SourceInventory],
+    source: RepositorySource,
+    errors: list[str],
+) -> None:
+    """The machine catalog is generated: its facts and its page must match the renderer."""
+    release_commits = {release.version: release.commit for release in releases.releases}
+    ordered = sorted(inventories, key=lambda item: _version_key(item.version))
+    previous_by_version: dict[str, set[str]] = {}
+    for index, inventory in enumerate(ordered):
+        paths = {artifact.path for artifact in inventory.artifacts}
+        if index > 0:
+            paths |= {artifact.path for artifact in ordered[index - 1].artifacts}
+        previous_by_version[inventory.version] = paths
+
+    for change in catalog.changes:
+        expected_commit = release_commits.get(change.version)
+        if expected_commit is None:
+            errors.append(f"machine change references unknown release: {change.version}")
+            continue
+        if change.commit != expected_commit:
+            errors.append(
+                f"machine change revision does not match release {change.version}: "
+                f"{change.kind} {change.symbol}"
+            )
+        indexed = previous_by_version.get(change.version, set())
+        for path in change.paths:
+            if path not in indexed:
+                errors.append(
+                    f"machine change references an unindexed path: {change.version}/{path}"
+                )
+
+    from .extract import render_machine_changes_page
+
+    _check_page(
+        root / "generated" / "maa-framework" / "machine-changes.md",
+        render_machine_changes_page(catalog, source.url),
+        label="MaaFramework",
+        description="machine change catalog",
+        errors=errors,
+    )
 
 
 def _check_release_registry(
@@ -670,12 +724,31 @@ def validate_repository(root: Path) -> list[str]:
     _check_generated_layout(
         root,
         {
-            _MAAFW_DIRECTORY: {"index.md", "prereleases.md", "topics.md", "behaviour-changes.md"},
+            _MAAFW_DIRECTORY: {
+                "index.md",
+                "prereleases.md",
+                "topics.md",
+                "behaviour-changes.md",
+                "machine-changes.md",
+            },
             **{source_id: {"index.md", "prereleases.md"} for source_id in BINDING_SPECS},
         },
         errors=errors,
     )
     _check_compatibility_registry(binding_compatibility, binding_catalogs, errors=errors)
+    try:
+        machine_changes = load_machine_changes(root)
+    except (OSError, ValueError, ValidationError, yaml.YAMLError) as error:
+        errors.append(f"machine-change catalog: {error}")
+    else:
+        _check_machine_changes(
+            root,
+            machine_changes,
+            releases,
+            historical_inventories,
+            maafw_source,
+            errors,
+        )
     errors.extend(_check_source_map(source_map, release_commits, repository_ids))
     errors.extend(
         _check_semantic_changes(

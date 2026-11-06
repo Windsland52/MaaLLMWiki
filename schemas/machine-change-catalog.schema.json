@@ -1,0 +1,97 @@
+{
+  "$defs": {
+    "MachineChange": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Commit",
+          "type": "string"
+        },
+        "change": {
+          "enum": [
+            "added",
+            "removed",
+            "modified"
+          ],
+          "title": "Change",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/MachineChangeKind"
+        },
+        "symbol": {
+          "minLength": 1,
+          "title": "Symbol",
+          "type": "string"
+        },
+        "quote": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Quote",
+          "type": "string"
+        },
+        "paths": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Paths",
+          "type": "array"
+        }
+      },
+      "required": [
+        "version",
+        "commit",
+        "change",
+        "kind",
+        "symbol",
+        "quote",
+        "paths"
+      ],
+      "title": "MachineChange",
+      "type": "object"
+    },
+    "MachineChangeKind": {
+      "enum": [
+        "enum-value",
+        "public-function",
+        "callback-message",
+        "schema-property",
+        "schema-enum",
+        "schema-default",
+        "schema-required",
+        "documentation-version",
+        "binding-api",
+        "unclassified"
+      ],
+      "title": "MachineChangeKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_id": {
+      "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "changes": {
+      "items": {
+        "$ref": "#/$defs/MachineChange"
+      },
+      "title": "Changes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_id"
+  ],
+  "title": "MachineChangeCatalog",
+  "type": "object"
+}

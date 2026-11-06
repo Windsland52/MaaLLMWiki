@@ -298,3 +298,36 @@ class SourceMap(StrictModel):
         if len(ids) != len(set(ids)):
             raise ValueError("Source-map topic IDs must be unique")
         return self
+
+
+class MachineChangeKind(StrEnum):
+    ENUM_VALUE = "enum-value"
+    PUBLIC_FUNCTION = "public-function"
+    CALLBACK_MESSAGE = "callback-message"
+    SCHEMA_PROPERTY = "schema-property"
+    SCHEMA_ENUM = "schema-enum"
+    SCHEMA_DEFAULT = "schema-default"
+    SCHEMA_REQUIRED = "schema-required"
+    DOCUMENTATION_VERSION = "documentation-version"
+    BINDING_API = "binding-api"
+    UNCLASSIFIED = "unclassified"
+
+
+class MachineChange(StrictModel):
+    version: str = Field(min_length=1)
+    commit: str = Field(pattern=COMMIT_PATTERN)
+    change: Literal["added", "removed", "modified"]
+    kind: MachineChangeKind
+    symbol: str = Field(min_length=1)
+    quote: str = Field(min_length=1, max_length=300)
+    paths: list[str] = Field(min_length=1)
+
+    @field_validator("paths")
+    @classmethod
+    def validate_paths(cls, value: list[str]) -> list[str]:
+        return [_normalize_relative_path(path) for path in value]
+
+
+class MachineChangeCatalog(StrictModel):
+    source_id: str = Field(pattern=ID_PATTERN)
+    changes: list[MachineChange] = Field(default_factory=list[MachineChange])

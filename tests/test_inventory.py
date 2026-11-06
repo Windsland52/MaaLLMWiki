@@ -29,6 +29,7 @@ from maa_llm_wiki.inventory import (
 from maa_llm_wiki.models import (
     ArtifactKind,
     CompatibilityStatus,
+    MachineChangeCatalog,
     PrereleaseRecord,
     ReleaseCatalog,
     ReleaseRecord,
@@ -750,6 +751,7 @@ def test_sync_maafw_history_renders_top_level_pages_once(
         semantic_changes: SemanticChangeCatalog,
         *,
         source_id: str,
+        machine_changes: MachineChangeCatalog | None = None,
     ) -> None:
         calls["release"] += 1
         real_release_pages(
@@ -760,6 +762,7 @@ def test_sync_maafw_history_renders_top_level_pages_once(
             source_map,
             semantic_changes,
             source_id=source_id,
+            machine_changes=machine_changes,
         )
 
     monkeypatch.setattr(inventory, "_write_version_indexes", counting_version_indexes)
@@ -775,6 +778,7 @@ def test_sync_maafw_history_renders_top_level_pages_once(
     assert "# Topic routes" in pages["topics.md"]
     assert "# Behaviour changes" in pages["behaviour-changes.md"]
     generated = root / "generated" / "maa-framework"
+    assert "# Machine changes" in (generated / "machine-changes.md").read_text(encoding="utf-8")
     first_index = (generated / "1.0.0" / "index.md").read_text(encoding="utf-8")
     second_index = (generated / "1.1.0" / "index.md").read_text(encoding="utf-8")
     assert "## Changed since the previous release" in first_index

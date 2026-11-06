@@ -12,8 +12,10 @@ from urllib.parse import quote
 
 import yaml
 
+from .extract import build_machine_changes, render_machine_changes_page
 from .models import (
     ArtifactKind,
+    MachineChangeCatalog,
     PrereleaseRecord,
     ReleaseCatalog,
     ReleaseRecord,
@@ -556,6 +558,10 @@ def render_release_index(
             "## Behaviour changes",
             "",
             "[Browse recorded behaviour changes](./behaviour-changes.md)",
+            "",
+            "## Machine changes",
+            "",
+            "[Browse structured machine changes](./machine-changes.md)",
         ]
     )
     return "\n".join(lines) + "\n"
@@ -592,6 +598,7 @@ def _write_release_pages(
     semantic_changes: SemanticChangeCatalog,
     *,
     source_id: str,
+    machine_changes: MachineChangeCatalog | None = None,
 ) -> None:
     output_root = root / "generated" / "maa-framework"
     output_root.mkdir(parents=True, exist_ok=True)
@@ -638,6 +645,12 @@ def _write_release_pages(
         encoding="utf-8",
         newline="\n",
     )
+    if machine_changes is not None:
+        (output_root / "machine-changes.md").write_text(
+            render_machine_changes_page(machine_changes, repository_url),
+            encoding="utf-8",
+            newline="\n",
+        )
 
 
 def _load_historical_inventory(root: Path, version: str) -> SourceInventory | None:
@@ -688,6 +701,14 @@ def sync_maafw_inventory(*, root: Path, repository: Path, version: str) -> None:
         newline="\n",
     )
 
+    machine_changes: MachineChangeCatalog | None = None
+    if previous_inventory is not None:
+        machine_changes = build_machine_changes(root, repository)
+        write_yaml(
+            root / "sources" / "maa-framework" / "machine-changes.yaml",
+            machine_changes.model_dump(mode="json"),
+        )
+
     _write_version_indexes(root, inventory, source.url, previous_inventory)
     _write_release_pages(
         root,
@@ -697,6 +718,7 @@ def sync_maafw_inventory(*, root: Path, repository: Path, version: str) -> None:
         source_map,
         semantic_changes,
         source_id=releases.source_id,
+        machine_changes=machine_changes,
     )
 
 
@@ -986,6 +1008,11 @@ def sync_maafw_history(
             )
         _write_version_indexes(root, inventory, source.url, previous_inventory)
         previous_inventory = inventory
+    machine_changes = build_machine_changes(root, repository)
+    write_yaml(
+        root / "sources" / "maa-framework" / "machine-changes.yaml",
+        machine_changes.model_dump(mode="json"),
+    )
     _write_release_pages(
         root,
         releases,
@@ -994,5 +1021,6 @@ def sync_maafw_history(
         source_map,
         semantic_changes,
         source_id=release_catalog.source_id,
+        machine_changes=machine_changes,
     )
     return releases, prereleases

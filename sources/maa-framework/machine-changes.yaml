@@ -1,0 +1,2364 @@
+source_id: maafw
+changes:
+- version: 5.0.2
+  commit: 078d3fa4c4b3950e5956bc2e8bd529894bccdfdf
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 8 indexed files changed without a structured change
+  paths:
+  - docs/en_us/2.3-CallbackProtocol.md
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/zh_cn/2.3-回调协议.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+  - include/MaaFramework/MaaMsg.h
+  - source/binding/Python/maa/context.py
+  - source/binding/Python/maa/define.py
+  - source/binding/Python/maa/tasker.py
+- version: 5.0.4
+  commit: 6ee9141da7b05e2e00eac79eb0ec6955a2849a44
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_ActionNode_Failed
+  quote: '#define MaaMsg_Node_ActionNode_Failed ("Node.ActionNode.Failed")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.0.4
+  commit: 6ee9141da7b05e2e00eac79eb0ec6955a2849a44
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_ActionNode_Starting
+  quote: '#define MaaMsg_Node_ActionNode_Starting ("Node.ActionNode.Starting")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.0.4
+  commit: 6ee9141da7b05e2e00eac79eb0ec6955a2849a44
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_ActionNode_Succeeded
+  quote: '#define MaaMsg_Node_ActionNode_Succeeded ("Node.ActionNode.Succeeded")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.0.4
+  commit: 6ee9141da7b05e2e00eac79eb0ec6955a2849a44
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_PipelineNode_Failed
+  quote: '#define MaaMsg_Node_PipelineNode_Failed ("Node.PipelineNode.Failed")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.0.4
+  commit: 6ee9141da7b05e2e00eac79eb0ec6955a2849a44
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_PipelineNode_Starting
+  quote: '#define MaaMsg_Node_PipelineNode_Starting ("Node.PipelineNode.Starting")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.0.4
+  commit: 6ee9141da7b05e2e00eac79eb0ec6955a2849a44
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_PipelineNode_Succeeded
+  quote: '#define MaaMsg_Node_PipelineNode_Succeeded ("Node.PipelineNode.Succeeded")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.0.4
+  commit: 6ee9141da7b05e2e00eac79eb0ec6955a2849a44
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_RecognitionNode_Failed
+  quote: '#define MaaMsg_Node_RecognitionNode_Failed ("Node.RecognitionNode.Failed")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.0.4
+  commit: 6ee9141da7b05e2e00eac79eb0ec6955a2849a44
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_RecognitionNode_Starting
+  quote: '#define MaaMsg_Node_RecognitionNode_Starting ("Node.RecognitionNode.Starting")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.0.4
+  commit: 6ee9141da7b05e2e00eac79eb0ec6955a2849a44
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_RecognitionNode_Succeeded
+  quote: '#define MaaMsg_Node_RecognitionNode_Succeeded ("Node.RecognitionNode.Succeeded")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.1.0
+  commit: d51e6fcce9fed54774696881158fe79f61a7b675
+  change: added
+  kind: binding-api
+  symbol: ContextEventSink
+  quote: 'class ContextEventSink(EventSink):'
+  paths:
+  - source/binding/Python/maa/context.py
+- version: 5.1.0
+  commit: d51e6fcce9fed54774696881158fe79f61a7b675
+  change: removed
+  kind: binding-api
+  symbol: ContextEventSink
+  quote: 'class ContextEventSink(EventSink):'
+  paths:
+  - source/binding/Python/maa/context.py
+- version: 5.1.0
+  commit: d51e6fcce9fed54774696881158fe79f61a7b675
+  change: added
+  kind: binding-api
+  symbol: JNodeAttr
+  quote: 'class JNodeAttr:'
+  paths:
+  - source/binding/Python/maa/pipeline.py
+- version: 5.1.0
+  commit: d51e6fcce9fed54774696881158fe79f61a7b675
+  change: added
+  kind: binding-api
+  symbol: JScroll
+  quote: 'class JScroll:'
+  paths:
+  - source/binding/Python/maa/pipeline.py
+- version: 5.1.0
+  commit: d51e6fcce9fed54774696881158fe79f61a7b675
+  change: added
+  kind: enum-value
+  symbol: MaaGlobalOption_SaveOnError
+  quote: MaaGlobalOption_SaveOnError = 7,
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: agent
+  quote: '{"$ref": "#/definitions/agentConfig"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: contact
+  quote: '{"$ref": "#/definitions/i18nString", "description": "显示在“关于”页面。支持文件路径、URL或直接文本，内容支持Markdown格式",
+    "title": "联系方式"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: controller
+  quote: '{"description": "为一个对象数组，含有预设的控制器信息", "items": {"$ref": "#/definitions/controllerItem"},
+    "title": "控制器配置", "type": "array"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: description
+  quote: '{"$ref": "#/definitions/i18nString", "description": "显示在“关于”页面。支持文件路径、URL或直接文本，内容支持Markdown格式",
+    "title": "项目描述"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: github
+  quote: '{"description": "项目GitHub仓库地址，用于版本更新检查和问题反馈", "format": "uri", "title":
+    "GitHub 仓库地址", "type": "string"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: icon
+  quote: '{"$ref": "#/definitions/i18nString", "description": "应用图标文件路径，相对于项目根目录。若不指定，则使用默认图标",
+    "title": "应用图标"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: interface_version
+  quote: '{"const": 2, "description": "当前为 2，固定且必须设置。用于标识 ProjectInterface 协议版本",
+    "title": "接口版本号", "type": "number"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: label
+  quote: '{"$ref": "#/definitions/i18nString", "description": "用于在用户界面中展示，支持国际化。如果未设置，则显示
+    name 字段的值", "title": "项目显示名称"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: languages
+  quote: '{"additionalProperties": {"type": "string"}, "description": "键为语言代码，值为对应的翻译文件路径。文件相对路径为
+    interface.json 同目录下的相对路径", "examples": [{"en_us": "interface_en.json", "zh_cn":
+    "interface_zh.json"}], "title": "多语言支持配置", "type": "object"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: license
+  quote: '{"$ref": "#/definitions/i18nString", "description": "显示在“关于”页面。支持文件路径、URL或直接文本，内容支持Markdown格式",
+    "title": "许可证信息"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: mirrorchyan_multiplatform
+  quote: '{"description": "是否支持多平台，影响资源包的打包和分发策略", "title": "多平台支持", "type": "boolean"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: mirrorchyan_rid
+  quote: '{"description": "用于资源管理和分发", "title": "MirrorChyan 资源包标识符", "type": "string"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: name
+  quote: '{"description": "用作项目ID", "title": "项目唯一标识符", "type": "string"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: option
+  quote: '{"additionalProperties": {"$ref": "#/definitions/optionDefinition"}, "description":
+    "为一个对象映射，含有配置项的信息", "title": "配置项定义", "type": "object"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: resource
+  quote: '{"description": "为一个对象数组，含有资源加载的信息", "items": {"$ref": "#/definitions/resourceItem"},
+    "title": "资源配置", "type": "array"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: task
+  quote: '{"description": "为一个对象数组，含有可执行任务的信息", "items": {"$ref": "#/definitions/taskItem"},
+    "title": "任务配置", "type": "array"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: title
+  quote: '{"$ref": "#/definitions/i18nString", "description": "Client 会直接显示该内容，不添加其他修饰。默认使用
+    name 和 version 拼接生成", "title": "窗口标题"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: version
+  quote: '{"description": "Client 可以展示给用户，同时用于版本更新检查", "title": "项目版本号", "type": "string"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.1
+  commit: 6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0
+  change: added
+  kind: schema-property
+  symbol: welcome
+  quote: '{"$ref": "#/definitions/i18nString", "description": "在用户首次使用时弹窗显示，亦可作为公告使用。支持文件路径、URL或直接文本，内容支持Markdown格式。系统会记录显示内容，当内容更新时会再次弹窗显示",
+    "title": "欢迎消息"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.keyboard = "LegacyEvent"
+  quote: '"LegacyEvent"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.keyboard = "PostMessage"
+  quote: '"PostMessage"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.keyboard = "PostThreadMessage"
+  quote: '"PostThreadMessage"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.keyboard = "Seize"
+  quote: '"Seize"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.keyboard = "SendMessage"
+  quote: '"SendMessage"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "LegacyEvent"
+  quote: '"LegacyEvent"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "PostMessage"
+  quote: '"PostMessage"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "PostThreadMessage"
+  quote: '"PostThreadMessage"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "Seize"
+  quote: '"Seize"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "SendMessage"
+  quote: '"SendMessage"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.screencap = "DXGI_DesktopDup"
+  quote: '"DXGI_DesktopDup"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.screencap = "DXGI_DesktopDup_Window"
+  quote: '"DXGI_DesktopDup_Window"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.screencap = "FramePool"
+  quote: '"FramePool"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.screencap = "GDI"
+  quote: '"GDI"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.screencap = "PrintWindow"
+  quote: '"PrintWindow"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: added
+  kind: schema-enum
+  symbol: win32.screencap = "ScreenDC"
+  quote: '"ScreenDC"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.2
+  commit: 2f6938faaa9e17adca21ec43eb8e7f922c1ab696
+  change: removed
+  kind: schema-property
+  symbol: win32.input
+  quote: '{"description": "Win32 输入方式值。1: Seize, 2: SendMessage, 4: PostMessage, 8:
+    LegacyEvent, 16: PostThreadMessage", "title": "输入方式", "type": "integer"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.3
+  commit: fdb3d46cd1bd4d35b5d69dc06c41c9ae0bcff475
+  change: added
+  kind: schema-enum
+  symbol: win32.keyboard = "PostMessageWithCursorPos"
+  quote: '"PostMessageWithCursorPos"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.3
+  commit: fdb3d46cd1bd4d35b5d69dc06c41c9ae0bcff475
+  change: added
+  kind: schema-enum
+  symbol: win32.keyboard = "SendMessageWithCursorPos"
+  quote: '"SendMessageWithCursorPos"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.3
+  commit: fdb3d46cd1bd4d35b5d69dc06c41c9ae0bcff475
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "PostMessageWithCursorPos"
+  quote: '"PostMessageWithCursorPos"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.3
+  commit: fdb3d46cd1bd4d35b5d69dc06c41c9ae0bcff475
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "SendMessageWithCursorPos"
+  quote: '"SendMessageWithCursorPos"'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: agent
+  quote: '{"$ref": "#/definitions/agentConfig"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: agent.child_args
+  quote: '{"title": "子进程参数", "type": "array"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: agent.child_exec
+  quote: '{"title": "子进程路径", "type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: agent.identifier
+  quote: '{"title": "连接标识符", "type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: contact
+  quote: '{"$ref": "#/definitions/i18nString", "description": "显示在“关于”页面。支持文件路径、URL或直接文本，内容支持Markdown格式",
+    "title": "联系方式"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: contact
+  quote: '{"$ref": "#/definitions/i18nString", "description": "显示在“关于”页面。支持文件路径、URL或直接文本，内容支持Markdown格式",
+    "title": "联系方式"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: controller
+  quote: '{"description": "为一个对象数组，含有预设的控制器信息", "items": {"$ref": "#/definitions/controllerItem"},
+    "title": "控制器配置", "type": "array"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: description
+  quote: '{"$ref": "#/definitions/i18nString", "description": "显示在“关于”页面。支持文件路径、URL或直接文本，内容支持Markdown格式",
+    "title": "项目描述"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: description
+  quote: '{"$ref": "#/definitions/i18nString", "description": "显示在“关于”页面。支持文件路径、URL或直接文本，内容支持Markdown格式",
+    "title": "项目描述"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: github
+  quote: '{"description": "项目GitHub仓库地址，用于版本更新检查和问题反馈", "format": "uri", "title":
+    "GitHub 仓库地址", "type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: github
+  quote: '{"description": "项目GitHub仓库地址，用于版本更新检查和问题反馈", "format": "uri", "title":
+    "GitHub 仓库地址", "type": "string"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: icon
+  quote: '{"$ref": "#/definitions/i18nString", "description": "应用图标文件路径，相对于项目根目录。若不指定，则使用默认图标",
+    "title": "应用图标"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: icon
+  quote: '{"$ref": "#/definitions/i18nString", "description": "应用图标文件路径，相对于项目根目录。若不指定，则使用默认图标",
+    "title": "应用图标"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: interface_version
+  quote: '{"const": 2, "description": "当前为 2，固定且必须设置。用于标识 ProjectInterface 协议版本",
+    "title": "接口版本号", "type": "number"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: interface_version
+  quote: '{"const": 2, "description": "当前为 2，固定且必须设置。用于标识 ProjectInterface 协议版本",
+    "title": "接口版本号", "type": "number"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: label
+  quote: '{"$ref": "#/definitions/i18nString", "description": "用于在用户界面中展示，支持国际化。如果未设置，则显示
+    name 字段的值", "title": "项目显示名称"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: label
+  quote: '{"$ref": "#/definitions/i18nString", "description": "用于在用户界面中展示，支持国际化。如果未设置，则显示
+    name 字段的值", "title": "项目显示名称"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: languages
+  quote: '{"additionalProperties": {"type": "string"}, "description": "键为语言代码，值为对应的翻译文件路径。文件相对路径为
+    interface.json 同目录下的相对路径", "examples": [{"en_us": "interface_en.json", "zh_cn":
+    "interface_zh.json"}], "title": "多语言支持配置", "type": "object"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: languages
+  quote: '{"additionalProperties": {"type": "string"}, "description": "键为语言代码，值为对应的翻译文件路径。文件相对路径为
+    interface.json 同目录下的相对路径", "examples": [{"en_us": "interface_en.json", "zh_cn":
+    "interface_zh.json"}], "title": "多语言支持配置", "type": "object"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: license
+  quote: '{"$ref": "#/definitions/i18nString", "description": "显示在“关于”页面。支持文件路径、URL或直接文本，内容支持Markdown格式",
+    "title": "许可证信息"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: license
+  quote: '{"$ref": "#/definitions/i18nString", "description": "显示在“关于”页面。支持文件路径、URL或直接文本，内容支持Markdown格式",
+    "title": "许可证信息"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: message
+  quote: '{"title": "信息", "type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: mirrorchyan_multiplatform
+  quote: '{"description": "是否支持多平台，影响资源包的打包和分发策略", "title": "多平台支持", "type": "boolean"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: mirrorchyan_multiplatform
+  quote: '{"description": "是否支持多平台，影响资源包的打包和分发策略", "title": "多平台支持", "type": "boolean"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: mirrorchyan_rid
+  quote: '{"description": "用于资源管理和分发", "title": "MirrorChyan 资源包标识符", "type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: mirrorchyan_rid
+  quote: '{"description": "用于资源管理和分发", "title": "MirrorChyan 资源包标识符", "type": "string"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: name
+  quote: '{"description": "用作项目ID", "title": "项目唯一标识符", "type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: name
+  quote: '{"description": "用作项目ID", "title": "项目唯一标识符", "type": "string"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: option
+  quote: '{"additionalProperties": {"$ref": "#/definitions/optionDefinition"}, "description":
+    "为一个对象映射，含有配置项的信息", "title": "配置项定义", "type": "object"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: resource
+  quote: '{"description": "为一个对象数组，含有资源加载的信息", "items": {"$ref": "#/definitions/resourceItem"},
+    "title": "资源配置", "type": "array"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: task
+  quote: '{"description": "为一个对象数组，含有可执行任务的信息", "items": {"$ref": "#/definitions/taskItem"},
+    "title": "任务配置", "type": "array"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: title
+  quote: '{"$ref": "#/definitions/i18nString", "description": "Client 会直接显示该内容，不添加其他修饰。默认使用
+    name 和 version 拼接生成", "title": "窗口标题"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: title
+  quote: '{"$ref": "#/definitions/i18nString", "description": "Client 会直接显示该内容，不添加其他修饰。默认使用
+    name 和 version 拼接生成", "title": "窗口标题"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: version
+  quote: '{"description": "Client 可以展示给用户，同时用于版本更新检查", "title": "项目版本号", "type": "string"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-property
+  symbol: welcome
+  quote: '{"$ref": "#/definitions/i18nString", "description": "在用户首次使用时弹窗显示，亦可作为公告使用。支持文件路径、URL或直接文本，内容支持Markdown格式。系统会记录显示内容，当内容更新时会再次弹窗显示",
+    "title": "欢迎消息"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-property
+  symbol: welcome
+  quote: '{"$ref": "#/definitions/i18nString", "description": "在用户首次使用时弹窗显示，亦可作为公告使用。支持文件路径、URL或直接文本，内容支持Markdown格式。系统会记录显示内容，当内容更新时会再次弹窗显示",
+    "title": "欢迎消息"}'
+  paths:
+  - tools/interface_v2.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: removed
+  kind: schema-required
+  symbol: agent.child_exec
+  quote: '"child_exec"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-required
+  symbol: interface_version
+  quote: '"interface_version"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.1.4
+  commit: c03b933d8b36030a7d21ff27f2b77f167ef4ec5d
+  change: added
+  kind: schema-required
+  symbol: name
+  quote: '"name"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: binding-api
+  symbol: AndroidNativeController
+  quote: 'class AndroidNativeController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: removed
+  kind: binding-api
+  symbol: MaaDbgControllerTypeEnum
+  quote: 'class MaaDbgControllerTypeEnum(IntEnum):'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: binding-api
+  symbol: MaaMacOSInputMethodEnum
+  quote: 'class MaaMacOSInputMethodEnum(IntEnum):'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: binding-api
+  symbol: MaaMacOSPermissionEnum
+  quote: 'class MaaMacOSPermissionEnum(IntEnum):'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: binding-api
+  symbol: MaaMacOSScreencapMethodEnum
+  quote: 'class MaaMacOSScreencapMethodEnum(IntEnum):'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: binding-api
+  symbol: MacOSController
+  quote: 'class MacOSController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: binding-api
+  symbol: RecordController
+  quote: 'class RecordController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: binding-api
+  symbol: ReplayController
+  quote: 'class ReplayController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: binding-api
+  symbol: WaitFreezesDetail
+  quote: 'class WaitFreezesDetail:'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_WaitFreezes_Failed
+  quote: '#define MaaMsg_Node_WaitFreezes_Failed ("Node.WaitFreezes.Failed")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_WaitFreezes_Starting
+  quote: '#define MaaMsg_Node_WaitFreezes_Starting ("Node.WaitFreezes.Starting")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: callback-message
+  symbol: MaaMsg_Node_WaitFreezes_Succeeded
+  quote: '#define MaaMsg_Node_WaitFreezes_Succeeded ("Node.WaitFreezes.Succeeded")'
+  paths:
+  - include/MaaFramework/MaaMsg.h
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: documentation-version
+  symbol: v2.5.0
+  quote: '| 2026-03-23 | v2.5.0  | Convention for `PI_*` environment variables when
+    the Client starts Agent subprocesses (UI / Client metadata and the selected controller
+    and resource with i18n resolved) |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: documentation-version
+  symbol: v2.5.0
+  quote: '| 2026-3-23 | v2.5.0 | 约定 Client 启动 Agent 子进程时注入 `PI_*` 环境变量，传递 UI / Client
+    属性及当前选中的控制器与资源（i18n 已解析） |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: enum-value
+  symbol: MaaCtrlOption_MouseLockFollow
+  quote: MaaCtrlOption_MouseLockFollow = 4,
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: enum-value
+  symbol: MaaCtrlOption_ScreenshotResizeMethod
+  quote: MaaCtrlOption_ScreenshotResizeMethod = 6,
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: enum-value
+  symbol: MaaMacOSPermissionAccessibility
+  quote: MaaMacOSPermissionAccessibility = 2
+  paths:
+  - include/MaaToolkit/MaaToolkitDef.h
+- version: 5.10.0
+  commit: 09af59ea0365f666497535eb5cc116c4586fc6bb
+  change: added
+  kind: enum-value
+  symbol: MaaMacOSPermissionScreenCapture
+  quote: MaaMacOSPermissionScreenCapture = 1,
+  paths:
+  - include/MaaToolkit/MaaToolkitDef.h
+- version: 5.10.1
+  commit: 790aee8adc6a6918befc40df2d4a8b7e5310674b
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 4 indexed files changed without a structured change
+  paths:
+  - docs/en_us/1.1-QuickStarted.md
+  - docs/en_us/5.1-Troubleshooting.md
+  - docs/zh_cn/1.1-快速开始.md
+  - docs/zh_cn/5.1-问题反馈.md
+- version: 5.10.2
+  commit: 8885479e34d81f7073ed9e87b2280ede606e51da
+  change: added
+  kind: schema-enum
+  symbol: controller.type = "WlRoots"
+  quote: '"WlRoots"'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.10.2
+  commit: 8885479e34d81f7073ed9e87b2280ede606e51da
+  change: added
+  kind: schema-property
+  symbol: wlroots
+  quote: '{"properties": {"wlr_socket_path": {"title": "Wayland Socket路径", "type":
+    "string"}}, "title": "WlRoots配置", "type": "object"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.10.3
+  commit: 89e14e984a2bd3621ae4537bc0bd89a5d85d0e4e
+  change: added
+  kind: documentation-version
+  symbol: v2.6.0
+  quote: '| 2026-04-18 | v2.6.0  | Added `resource.hash` resource integrity check
+    field |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.10.3
+  commit: 89e14e984a2bd3621ae4537bc0bd89a5d85d0e4e
+  change: added
+  kind: documentation-version
+  symbol: v2.6.0
+  quote: '| 2026-4-18 | v2.6.0 | 新增 `resource.hash` 资源完整性校验字段 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.10.3
+  commit: 89e14e984a2bd3621ae4537bc0bd89a5d85d0e4e
+  change: added
+  kind: enum-value
+  symbol: MaaCtrlOption_BackgroundManagedKeys
+  quote: MaaCtrlOption_BackgroundManagedKeys = 7,
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.10.5
+  commit: 13ff95cdfa2b20fa6bdd361779278115bc03c0b4
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 4 indexed files changed without a structured change
+  paths:
+  - docs/en_us/2.4-ControlMethods.md
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/zh_cn/2.4-控制方式说明.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+- version: 5.11.0
+  commit: 4e0659987005354f5f97d72f145b2899863badbf
+  change: added
+  kind: binding-api
+  symbol: EventSink
+  quote: 'class EventSink:'
+  paths:
+  - source/binding/Python/maa/event_sink.py
+- version: 5.11.0
+  commit: 4e0659987005354f5f97d72f145b2899863badbf
+  change: removed
+  kind: binding-api
+  symbol: EventSink
+  quote: 'class EventSink(ABC):'
+  paths:
+  - source/binding/Python/maa/event_sink.py
+- version: 5.11.0
+  commit: 4e0659987005354f5f97d72f145b2899863badbf
+  change: added
+  kind: binding-api
+  symbol: JobWithResult
+  quote: 'class JobWithResult(Job, Generic[TResult]):'
+  paths:
+  - source/binding/Python/maa/job.py
+- version: 5.11.0
+  commit: 4e0659987005354f5f97d72f145b2899863badbf
+  change: removed
+  kind: binding-api
+  symbol: JobWithResult
+  quote: 'class JobWithResult(Job):'
+  paths:
+  - source/binding/Python/maa/job.py
+- version: 5.11.0
+  commit: 4e0659987005354f5f97d72f145b2899863badbf
+  change: added
+  kind: binding-api
+  symbol: TaskJob
+  quote: 'class TaskJob(JobWithResult[Optional["TaskDetail"]]):'
+  paths:
+  - source/binding/Python/maa/job.py
+- version: 5.11.0
+  commit: 4e0659987005354f5f97d72f145b2899863badbf
+  change: removed
+  kind: binding-api
+  symbol: TaskJob
+  quote: 'class TaskJob(JobWithResult):'
+  paths:
+  - source/binding/Python/maa/job.py
+- version: 5.11.1
+  commit: 3d27ff4cf84ef19c672ab501a6dbb29e4b41aed8
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 1 indexed files changed without a structured change
+  paths:
+  - include/MaaFramework/Instance/MaaController.h
+- version: 5.11.2
+  commit: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+  change: added
+  kind: binding-api
+  symbol: KWinController
+  quote: 'class KWinController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.11.2
+  commit: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+  change: added
+  kind: documentation-version
+  symbol: v2.7.0
+  quote: '| 2026-05-06 | v2.7.0  | Added the `pretask` field for running custom programs
+    before Controller startup, with support for passing option values as the last
+    argument |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.11.2
+  commit: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+  change: added
+  kind: documentation-version
+  symbol: v2.7.0
+  quote: '| 2026-5-6 | v2.7.0 | 新增 `pretask` 字段，用于在 Controller 启动前执行自定义程序，并支持将 option
+    取值作为最后一个参数传入 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.11.2
+  commit: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+  change: added
+  kind: documentation-version
+  symbol: v2.8.0
+  quote: '| 2026-06-30 | v2.8.0  | Added `setting` task settings page UI declaration
+    field; `import` supports importing `global_option` and `setting` fields; added
+    `hotkey` option type |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.11.2
+  commit: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+  change: added
+  kind: documentation-version
+  symbol: v2.8.0
+  quote: '| 2026-6-30 | v2.8.0 | 新增 `setting` 任务设置页 UI 声明字段；`import` 支持导入 `global_option`
+    与 `setting` 字段；新增 `hotkey` 配置项类型 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.11.2
+  commit: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+  change: added
+  kind: documentation-version
+  symbol: v2.8.1
+  quote: '| 2026-07-01 | v2.8.1  | Added `controller` / `resource` filters for `pretask`,
+    with the same semantics as `task.controller` / `task.resource` |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.11.2
+  commit: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+  change: added
+  kind: documentation-version
+  symbol: v2.8.1
+  quote: '| 2026-7-1 | v2.8.1 | `pretask` 支持 `controller` / `resource` 过滤字段，与 `task.controller`
+    / `task.resource` 语义一致 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.11.2
+  commit: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+  change: added
+  kind: schema-property
+  symbol: pretask
+  quote: '{"description": "💡 v2.7.0 可选。Controller 启动前执行的预任务配置。若配置 option，Client 应将
+    option 取值序列化为最后一个参数", "oneOf": [{"$ref": "#/definitions/pretaskConfig"}, {"description":
+    "多个预任务配置。Client 应在 Controller 启动前按数组顺序执行", "items": {"$ref": "#/definitions/pretaskConfig"},
+    "title": "预任务配置数组", "type": "array"}]}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.11.2
+  commit: 741c4ddf71748668c23e45afbc92f11ba0237ef2
+  change: added
+  kind: schema-property
+  symbol: setting
+  quote: '{"description": "💡 v2.8.0 可选。任务设置页 UI 声明，供 Client 渲染全局任务配置专用设置区域。Client
+    应将其视为展示层元数据", "items": {"$ref": "#/definitions/settingSection"}, "title": "任务设置页
+    UI 声明", "type": "array"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.12.1
+  commit: e6aa89259ff6907197becebdeb8efc0074f13dfc
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "Interception"
+  quote: '"Interception"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.12.3
+  commit: 0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb
+  change: added
+  kind: documentation-version
+  symbol: v2.9.0
+  quote: '| 2026-07-22 | v2.9.0  | Added the `telemetry` anonymous telemetry (data
+    reporting) configuration field |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.12.3
+  commit: 0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb
+  change: added
+  kind: documentation-version
+  symbol: v2.9.0
+  quote: '| 2026-7-22 | v2.9.0 | 新增 `telemetry` 匿名遥测（数据埋点）配置字段 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.12.3
+  commit: 0c3f6454902b8ff9f7697cc6b09a7a935a41cdbb
+  change: added
+  kind: schema-property
+  symbol: telemetry
+  quote: '{"additionalProperties": false, "description": "💡 v2.9.0 可选。匿名遥测（数据埋点）配置容器，用于向资源作者自己的遥测平台上报崩溃与任务运行统计。并非所有
+    Client 都会支持。未配置时不进行任何遥测", "properties": {"sentry": {"additionalProperties": false,
+    "description": "基于 Sentry 的遥测配置", "properties": {"dsn": {"description": "Sentry
+    项目的 DSN。必填；缺省或为空字符串时不启用 Sentry '
+  paths:
+  - tools/interface.schema.json
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: binding-api
+  symbol: GamescopeInstance
+  quote: 'class GamescopeInstance:'
+  paths:
+  - source/binding/Python/maa/toolkit.py
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: binding-api
+  symbol: LinuxController
+  quote: 'class LinuxController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: binding-api
+  symbol: MaaLinuxInputMethodEnum
+  quote: 'class MaaLinuxInputMethodEnum(IntEnum):'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: binding-api
+  symbol: MaaLinuxScreencapMethodEnum
+  quote: 'class MaaLinuxScreencapMethodEnum(IntEnum):'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: binding-api
+  symbol: PortalHelper
+  quote: 'class PortalHelper:'
+  paths:
+  - source/binding/Python/maa/toolkit.py
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: documentation-version
+  symbol: v2.10.0
+  quote: '| 2026-08-24 | v2.10.0 | Added the `password` field on `input` option `inputs[]`
+    to mark password/secret fields |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: documentation-version
+  symbol: v2.10.0
+  quote: '| 2026-8-24 | v2.10.0 | `input` 类型选项的 `inputs[]` 新增 `password` 字段，用于标记密码/密钥输入
+    |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: documentation-version
+  symbol: v2.10.1
+  quote: '| 2026-09-06 | v2.10.1 | Added `min_count` / `max_count` on `checkbox` options
+    to limit the minimum / maximum number of selections |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: documentation-version
+  symbol: v2.10.1
+  quote: '| 2026-9-6 | v2.10.1 | `checkbox` 类型新增 `min_count` / `max_count` 字段，用于限制最小
+    / 最大选择数量 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: documentation-version
+  symbol: v2.9.1
+  quote: '| 2026-08-05 | v2.9.1  | Added the `trace` field on `focus` message template
+    objects for controlling whether node results are uploaded to telemetry by callback
+    message type |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: documentation-version
+  symbol: v2.9.1
+  quote: '| 2026-8-5 | v2.9.1 | 新增 `focus` 消息模板对象的 `trace` 字段，用于按回调消息类型控制遥测是否上传节点结果
+    |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: documentation-version
+  symbol: v2.9.2
+  quote: '| 2026-08-23 | v2.9.2  | Added the `telemetry.sentry.failure_attachments_sample_rate`
+    field for independent failure diagnostic attachment sampling |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: documentation-version
+  symbol: v2.9.2
+  quote: '| 2026-8-23 | v2.9.2 | 新增 `telemetry.sentry.failure_attachments_sample_rate`
+    失败诊断附件独立采样率字段 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: enum-value
+  symbol: MaaCtrlOption_ScreenshotTargetExpand
+  quote: MaaCtrlOption_ScreenshotTargetExpand = 8,
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: schema-enum
+  symbol: controller.type = "Linux"
+  quote: '"Linux"'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: removed
+  kind: schema-enum
+  symbol: controller.type = "WlRoots"
+  quote: '"WlRoots"'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "AnchoredTouch"
+  quote: '"AnchoredTouch"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: schema-property
+  symbol: linux
+  quote: '{"properties": {"eis_socket_path": {"title": "EIS socket 路径", "type": "string"},
+    "uinput_screen_height": {"title": "UInput 屏幕高度（像素）", "type": "integer"}, "uinput_screen_width":
+    {"title": "UInput 屏幕宽度（像素）", "type": "integer"}, "wlr_socket_path": {"title":
+    "Wayland Socket 路径", "type": "string"}}, "tit'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: added
+  kind: schema-property
+  symbol: telemetry.sentry.failure_attachments_sample_rate
+  quote: '{"description": "💡 v2.9.2 可选。取值 0~1，默认 1.0；仅控制随失败 / 错误事件上传的附件，不影响对应的 Error
+    Event、Sentry Logs 或事务采样", "maximum": 1, "minimum": 0, "title": "失败诊断附件采样率", "type":
+    "number"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.13.0
+  commit: 2bcfa85c66a2eac6ca3e5937f175495275ee0643
+  change: removed
+  kind: schema-property
+  symbol: wlroots
+  quote: '{"properties": {"wlr_socket_path": {"title": "Wayland Socket路径", "type":
+    "string"}}, "title": "WlRoots配置", "type": "object"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.13.1
+  commit: 9c20d69a9412fc52537f61c48077a7e024737896
+  change: added
+  kind: documentation-version
+  symbol: v2.10.2
+  quote: '| 2026-09-08 | v2.10.2 | Added string arrays to `welcome` |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.13.1
+  commit: 9c20d69a9412fc52537f61c48077a7e024737896
+  change: added
+  kind: documentation-version
+  symbol: v2.10.2
+  quote: '| 2026-9-8 | v2.10.2 | `welcome` 支持字符串数组 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.13.1
+  commit: 9c20d69a9412fc52537f61c48077a7e024737896
+  change: added
+  kind: schema-property
+  symbol: last_resolved_welcome
+  quote: '{"oneOf": [{"type": "null"}, {"$ref": "#/definitions/welcome"}], "title":
+    "上次显示的公告内容"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.13.1
+  commit: 9c20d69a9412fc52537f61c48077a7e024737896
+  change: added
+  kind: schema-property
+  symbol: last_welcome
+  quote: '{"oneOf": [{"type": "null"}, {"$ref": "#/definitions/welcome"}], "title":
+    "上次显示的公告声明"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.14.0
+  commit: b96ab05ace1c14533144fedfcbb7358dad785579
+  change: added
+  kind: schema-enum
+  symbol: win32.keyboard = "Interception"
+  quote: '"Interception"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.14.1
+  commit: adba94d694569643d0517bc7c5220d1fdf603800
+  change: added
+  kind: schema-property
+  symbol: global_option
+  quote: '{"description": "💡 v2.3.0 可选。全局选项配置，为一个字符串数组，数组元素应与 option 配置中的键名对应。该选项生成的参数会参与到所有任务的
+    pipeline override 中，无论用户选择了什么资源包或控制器", "items": {"type": "string"}, "title": "全局选项配置",
+    "type": "array"}'
+  paths:
+  - tools/interface_import.schema.json
+- version: 5.14.1
+  commit: adba94d694569643d0517bc7c5220d1fdf603800
+  change: added
+  kind: schema-property
+  symbol: pretask
+  quote: '{"description": "💡 v2.7.0 可选。Controller 启动前执行的预任务配置。若配置 option，Client 应将
+    option 取值序列化为最后一个参数", "oneOf": [{"$ref": "#/definitions/pretaskConfig"}, {"description":
+    "多个预任务配置。Client 应在 Controller 启动前按数组顺序执行", "items": {"$ref": "#/definitions/pretaskConfig"},
+    "title": "预任务配置数组", "type": "array"}]}'
+  paths:
+  - tools/interface_import.schema.json
+- version: 5.14.1
+  commit: adba94d694569643d0517bc7c5220d1fdf603800
+  change: added
+  kind: schema-property
+  symbol: setting
+  quote: '{"description": "💡 v2.8.0 可选。任务设置页 UI 声明，供 Client 渲染全局任务配置专用设置区域。Client
+    应将其视为展示层元数据", "items": {"$ref": "#/definitions/settingSection"}, "title": "任务设置页
+    UI 声明", "type": "array"}'
+  paths:
+  - tools/interface_import.schema.json
+- version: 5.14.3
+  commit: 8963191215ca49d6b037802acd07d20a4213160a
+  change: added
+  kind: binding-api
+  symbol: _normalize_image
+  quote: 'def _normalize_image(value: numpy.ndarray) -> numpy.ndarray:'
+  paths:
+  - source/binding/Python/maa/buffer.py
+- version: 5.14.3
+  commit: 8963191215ca49d6b037802acd07d20a4213160a
+  change: added
+  kind: enum-value
+  symbol: MaaInferenceExecutionProvider_WebGPU
+  quote: MaaInferenceExecutionProvider_WebGPU = 5,
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.14.3
+  commit: 8963191215ca49d6b037802acd07d20a4213160a
+  change: added
+  kind: schema-property
+  symbol: group
+  quote: '{"description": "💡 v2.4.0 可选。为一个对象数组，用于声明任务分组及其展示属性", "items": {"$ref":
+    "#/definitions/groupItem"}, "title": "任务分组配置", "type": "array"}'
+  paths:
+  - tools/interface_import.schema.json
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.1.0
+  quote: '| 2026-01-30 | v2.1.0 | Standalone release |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.1.0
+  quote: '| 2026-01-30 | v2.1.0  | Standalone release |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.10.3
+  quote: '| 2026-10-15 | v2.10.3 | Added `preset.pretask` so presets can set the checked
+    state and option values of pre-tasks |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.10.3
+  quote: '| 2026-10-15 | v2.10.3 | 新增 `preset.pretask`，预设可配置预任务的勾选状态与选项值 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.10.4
+  quote: '| 2026-10-23 | v2.10.4 | Added the `controller` filter for `preset`, with
+    the same semantics as `task.controller` |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.10.4
+  quote: '| 2026-10-23 | v2.10.4 | `preset` 支持 `controller` 过滤字段，与 `task.controller`
+    语义一致 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.10.5
+  quote: '| 2026-10-23 | v2.10.5 | Added `input_type` on `input` option `inputs[]`
+    to choose text / file / directory editing controls |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.10.5
+  quote: '| 2026-10-23 | v2.10.5 | `input` 类型选项的 `inputs[]` 新增 `input_type` 字段，可选文本
+    / 文件 / 文件夹编辑控件 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.11.0
+  quote: '| 2026-10-24 | v2.11.0 | Added the `PI_USER_DATA_DIR` subprocess environment
+    variable, convention for the user data directory shared by the general UI and
+    subprocesses |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.11.0
+  quote: '| 2026-10-24 | v2.11.0 | 新增 `PI_USER_DATA_DIR` 子进程环境变量，约定通用 UI 与子进程共同使用的用户数据目录
+    |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.2.0
+  quote: '| 2026-01-30 | v2.2.0 | Added `attach_resource_path` and `import` fields
+    |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.2.0
+  quote: '| 2026-01-30 | v2.2.0  | Added `attach_resource_path` and `import` fields
+    |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.3.0
+  quote: '| 2026-02-23 | v2.3.0 | Added `checkbox` multi-select type, `option.controller`,
+    `option.resource`, global/resource/controller-level options, `focus.display` display
+    channel tag, `preset` field, `import` supports importing `preset` |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.3.0
+  quote: '| 2026-02-23 | v2.3.0  | Added `checkbox` multi-select type, `option.controller`,
+    `option.resource`, global/resource/controller-level options, `focus.display` display
+    channel tag, `preset` field, `import` supports importing `preset` |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.3.1
+  quote: '| 2026-03-05 | v2.3.1 | Clarified option applicability filtering |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.3.1
+  quote: '| 2026-03-05 | v2.3.1  | Clarified option applicability filtering |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.4.0
+  quote: '| 2026-03-09 | v2.4.0 | Added top-level `group` declarations and `task.group`
+    task grouping |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.4.0
+  quote: '| 2026-03-09 | v2.4.0  | Added top-level `group` declarations and `task.group`
+    task grouping |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.5.0
+  quote: '| 2026-03-23 | v2.5.0 | Convention for `PI_*` environment variables when
+    the Client starts Agent subprocesses (UI / Client metadata and the selected controller
+    and resource with i18n resolved) |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.5.0
+  quote: '| 2026-03-23 | v2.5.0  | Convention for `PI_*` environment variables when
+    the Client starts Agent subprocesses (UI / Client metadata and the selected controller
+    and resource with i18n resolved) |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.6.0
+  quote: '| 2026-04-18 | v2.6.0 | Added `resource.hash` resource integrity check field
+    |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.6.0
+  quote: '| 2026-04-18 | v2.6.0  | Added `resource.hash` resource integrity check
+    field |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.7.0
+  quote: '| 2026-05-06 | v2.7.0 | Added the `pretask` field for running custom programs
+    before Controller startup, with support for passing option values as the last
+    argument |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.7.0
+  quote: '| 2026-05-06 | v2.7.0  | Added the `pretask` field for running custom programs
+    before Controller startup, with support for passing option values as the last
+    argument |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.8.0
+  quote: '| 2026-06-30 | v2.8.0 | Added `setting` task settings page UI declaration
+    field; `import` supports importing `global_option` and `setting` fields; added
+    `hotkey` option type |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.8.0
+  quote: '| 2026-06-30 | v2.8.0  | Added `setting` task settings page UI declaration
+    field; `import` supports importing `global_option` and `setting` fields; added
+    `hotkey` option type |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.8.1
+  quote: '| 2026-07-01 | v2.8.1 | Added `controller` / `resource` filters for `pretask`,
+    with the same semantics as `task.controller` / `task.resource` |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.8.1
+  quote: '| 2026-07-01 | v2.8.1  | Added `controller` / `resource` filters for `pretask`,
+    with the same semantics as `task.controller` / `task.resource` |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.9.0
+  quote: '| 2026-07-22 | v2.9.0 | Added the `telemetry` anonymous telemetry (data
+    reporting) configuration field |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.9.0
+  quote: '| 2026-07-22 | v2.9.0  | Added the `telemetry` anonymous telemetry (data
+    reporting) configuration field |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.9.1
+  quote: '| 2026-08-05 | v2.9.1 | Added the `trace` field on `focus` message template
+    objects for controlling whether node results are uploaded to telemetry by callback
+    message type |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.9.1
+  quote: '| 2026-08-05 | v2.9.1  | Added the `trace` field on `focus` message template
+    objects for controlling whether node results are uploaded to telemetry by callback
+    message type |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: documentation-version
+  symbol: v2.9.2
+  quote: '| 2026-08-23 | v2.9.2 | Added the `telemetry.sentry.failure_attachments_sample_rate`
+    field for independent failure diagnostic attachment sampling |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: removed
+  kind: documentation-version
+  symbol: v2.9.2
+  quote: '| 2026-08-23 | v2.9.2  | Added the `telemetry.sentry.failure_attachments_sample_rate`
+    field for independent failure diagnostic attachment sampling |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.15.0
+  commit: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+  change: added
+  kind: enum-value
+  symbol: MaaInferenceExecutionProvider_NCNN
+  quote: MaaInferenceExecutionProvider_NCNN = 6,
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.2.0
+  commit: 81c02ff14a5080a3a9e3cf57782b699b0900083c
+  change: added
+  kind: binding-api
+  symbol: JActionType
+  quote: 'class JActionType(StrEnum):'
+  paths:
+  - source/binding/Python/maa/pipeline.py
+- version: 5.2.0
+  commit: 81c02ff14a5080a3a9e3cf57782b699b0900083c
+  change: added
+  kind: binding-api
+  symbol: JRecognitionType
+  quote: 'class JRecognitionType(StrEnum):'
+  paths:
+  - source/binding/Python/maa/pipeline.py
+- version: 5.2.1
+  commit: 09e5d240b778ea5e2539861c457a389261289cf7
+  change: added
+  kind: schema-enum
+  symbol: method = 10001
+  quote: '10001'
+  paths:
+  - tools/pipeline.schema.json
+- version: 5.2.2
+  commit: fc2af341f0cd16f1a644e5bae593b84fe21d1c62
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 6 indexed files changed without a structured change
+  paths:
+  - docs/en_us/2.4-ControlMethods.md
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+  - docs/zh_cn/2.4-控制方式说明.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.2.6
+  commit: 694d4d470b6129c784dd9598f5b3841244b4a033
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 8 indexed files changed without a structured change
+  paths:
+  - docs/en_us/2.2-IntegratedInterfaceOverview.md
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/zh_cn/2.2-集成接口一览.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+  - include/MaaFramework/Instance/MaaController.h
+  - source/binding/NodeJS/src/apis/controller.d.ts
+  - source/binding/Python/maa/controller.py
+  - tools/pipeline.schema.json
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: added
+  kind: binding-api
+  symbol: JAnd
+  quote: 'class JAnd:'
+  paths:
+  - source/binding/Python/maa/pipeline.py
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: added
+  kind: binding-api
+  symbol: JOr
+  quote: 'class JOr:'
+  paths:
+  - source/binding/Python/maa/pipeline.py
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: added
+  kind: binding-api
+  symbol: JShell
+  quote: 'class JShell:'
+  paths:
+  - source/binding/Python/maa/pipeline.py
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: added
+  kind: binding-api
+  symbol: PlayCoverController
+  quote: 'class PlayCoverController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: added
+  kind: binding-api
+  symbol: ScrollActionResult
+  quote: 'class ScrollActionResult:'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: added
+  kind: enum-value
+  symbol: MaaGlobalOption_DrawQuality
+  quote: MaaGlobalOption_DrawQuality = 8,
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: added
+  kind: enum-value
+  symbol: MaaGlobalOption_RecoImageCacheLimit
+  quote: MaaGlobalOption_RecoImageCacheLimit = 9,
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: added
+  kind: schema-enum
+  symbol: controller.type = "PlayCover"
+  quote: '"PlayCover"'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: removed
+  kind: schema-enum
+  symbol: type = "input"
+  quote: '"input"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: removed
+  kind: schema-enum
+  symbol: type = "select"
+  quote: '"select"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: removed
+  kind: schema-enum
+  symbol: type = "switch"
+  quote: '"switch"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.3.0
+  commit: 49d01e903b67ec22c3dd3d64a7760bc6886beece
+  change: added
+  kind: schema-property
+  symbol: playcover
+  quote: '{"properties": {"address": {"title": "服务地址", "type": "string"}, "uuid":
+    {"title": "Bundle Identifier", "type": "string"}}, "title": "PlayCover配置", "type":
+    "object"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.3.1
+  commit: b14ab140b5ab87be09f6a779a30a1380697e462e
+  change: added
+  kind: binding-api
+  symbol: AndRecognitionResult
+  quote: 'class AndRecognitionResult:'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.3.1
+  commit: b14ab140b5ab87be09f6a779a30a1380697e462e
+  change: added
+  kind: binding-api
+  symbol: OrRecognitionResult
+  quote: 'class OrRecognitionResult:'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.3.1
+  commit: b14ab140b5ab87be09f6a779a30a1380697e462e
+  change: added
+  kind: binding-api
+  symbol: ShellActionResult
+  quote: 'class ShellActionResult:'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.3.1
+  commit: b14ab140b5ab87be09f6a779a30a1380697e462e
+  change: added
+  kind: binding-api
+  symbol: TouchActionResult
+  quote: 'class TouchActionResult:'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.3.1
+  commit: b14ab140b5ab87be09f6a779a30a1380697e462e
+  change: removed
+  kind: schema-property
+  symbol: playcover.address
+  quote: '{"description": "PlayTools 服务的默认地址，格式为 host:port", "examples": ["127.0.0.1:1717"],
+    "title": "默认服务地址", "type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.3.2
+  commit: d103e2e16950405d4806288a4da03d730b430aef
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 4 indexed files changed without a structured change
+  paths:
+  - source/binding/NodeJS/src/apis/tasker.d.ts
+  - source/binding/Python/maa/define.py
+  - source/binding/Python/maa/library.py
+  - source/binding/Python/maa/tasker.py
+- version: 5.4.0
+  commit: 274612a236dd4e85780d714a63dbb7b4a07b6e5c
+  change: added
+  kind: binding-api
+  symbol: CustomController
+  quote: 'class CustomController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.4.0
+  commit: 274612a236dd4e85780d714a63dbb7b4a07b6e5c
+  change: removed
+  kind: binding-api
+  symbol: CustomController
+  quote: 'class CustomController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.4.0
+  commit: 274612a236dd4e85780d714a63dbb7b4a07b6e5c
+  change: added
+  kind: binding-api
+  symbol: GamepadController
+  quote: 'class GamepadController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.4.0
+  commit: 274612a236dd4e85780d714a63dbb7b4a07b6e5c
+  change: added
+  kind: binding-api
+  symbol: MaaGamepadButtonEnum
+  quote: 'class MaaGamepadButtonEnum(IntEnum):'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.4.0
+  commit: 274612a236dd4e85780d714a63dbb7b4a07b6e5c
+  change: added
+  kind: binding-api
+  symbol: MaaGamepadContactEnum
+  quote: 'class MaaGamepadContactEnum(IntEnum):'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.4.0
+  commit: 274612a236dd4e85780d714a63dbb7b4a07b6e5c
+  change: added
+  kind: binding-api
+  symbol: MaaGamepadTypeEnum
+  quote: 'class MaaGamepadTypeEnum(IntEnum):'
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.4.0
+  commit: 274612a236dd4e85780d714a63dbb7b4a07b6e5c
+  change: modified
+  kind: schema-default
+  symbol: pressure
+  quote: '1'
+  paths:
+  - tools/pipeline.schema.json
+- version: 5.4.1
+  commit: 46b3a5bf0886302f8523e2bf7de4af00e0b87122
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 3 indexed files changed without a structured change
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+  - source/binding/NodeJS/src/apis/pipeline.d.ts
+- version: 5.4.2
+  commit: 648fb4ec1225ef620ba3ecc8c039a5b9222ef510
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 21 indexed files changed without a structured change
+  paths:
+  - docs/en_us/1.1-QuickStarted.md
+  - docs/en_us/1.2-ExplanationOfTerms.md
+  - docs/en_us/2.1-Integration.md
+  - docs/en_us/2.2-IntegratedInterfaceOverview.md
+  - docs/en_us/2.4-ControlMethods.md
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+  - docs/en_us/4.1-BuildGuide.md
+  - docs/en_us/5.1-Troubleshooting.md
+  - docs/zh_cn/1.1-快速开始.md
+  - docs/zh_cn/1.2-术语解释.md
+  - docs/zh_cn/2.1-集成文档.md
+  - docs/zh_cn/2.2-集成接口一览.md
+  - docs/zh_cn/2.4-控制方式说明.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+  - docs/zh_cn/4.1-构建指南.md
+  - docs/zh_cn/5.1-问题反馈.md
+  - source/binding/NodeJS/src/apis/controller.d.ts
+  - tools/ImageCropper/README.md
+- version: 5.4.3
+  commit: 6e927179bd55484e44393872c2faa62a042700f6
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 7 indexed files changed without a structured change
+  paths:
+  - docs/en_us/2.1-Integration.md
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+  - docs/zh_cn/2.1-集成文档.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+  - source/binding/NodeJS/src/apis/tasker.d.ts
+- version: 5.5.0
+  commit: 143e99490afcfa7229e315b4197651ee8bde7773
+  change: added
+  kind: binding-api
+  symbol: TaskJob
+  quote: 'class TaskJob(JobWithResult):'
+  paths:
+  - source/binding/Python/maa/job.py
+- version: 5.6.0
+  commit: f2f929b90ee25eb2c4b3dfd6f2c75144138f212e
+  change: added
+  kind: documentation-version
+  symbol: v2.1.0
+  quote: '| 2026-01-30 | v2.1.0  | Standalone release |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.6.0
+  commit: f2f929b90ee25eb2c4b3dfd6f2c75144138f212e
+  change: added
+  kind: documentation-version
+  symbol: v2.1.0
+  quote: '| 2026-1-30 | v2.1.0 | 独立版本发布 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.6.0
+  commit: f2f929b90ee25eb2c4b3dfd6f2c75144138f212e
+  change: added
+  kind: documentation-version
+  symbol: v2.2.0
+  quote: '| 2026-01-30 | v2.2.0  | Added `attach_resource_path` and `import` fields
+    |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.6.0
+  commit: f2f929b90ee25eb2c4b3dfd6f2c75144138f212e
+  change: added
+  kind: documentation-version
+  symbol: v2.2.0
+  quote: '| 2026-1-30 | v2.2.0 | 新增 `attach_resource_path` 和 `import` 字段 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.6.0
+  commit: f2f929b90ee25eb2c4b3dfd6f2c75144138f212e
+  change: added
+  kind: schema-property
+  symbol: import
+  quote: '{"description": "可选。导入其他 PI 文件的路径数组。文件相对路径为 interface.json 同目录下的相对路径。仅支持导入这些文件中的
+    task 和 option 字段", "items": {"type": "string"}, "title": "导入其他 PI 文件", "type":
+    "array"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.7.0
+  commit: 732605ab60ad8df0651c342dd42f0a9cca542ec0
+  change: added
+  kind: schema-enum
+  symbol: win32.keyboard = "PostMessageWithWindowPos"
+  quote: '"PostMessageWithWindowPos"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.7.0
+  commit: 732605ab60ad8df0651c342dd42f0a9cca542ec0
+  change: added
+  kind: schema-enum
+  symbol: win32.keyboard = "SendMessageWithWindowPos"
+  quote: '"SendMessageWithWindowPos"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.7.0
+  commit: 732605ab60ad8df0651c342dd42f0a9cca542ec0
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "PostMessageWithWindowPos"
+  quote: '"PostMessageWithWindowPos"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.7.0
+  commit: 732605ab60ad8df0651c342dd42f0a9cca542ec0
+  change: added
+  kind: schema-enum
+  symbol: win32.mouse = "SendMessageWithWindowPos"
+  quote: '"SendMessageWithWindowPos"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.7.2
+  commit: c5df68bc658c1d12bd82df7da2d76f808d0e4130
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 4 indexed files changed without a structured change
+  paths:
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+  - source/binding/Python/maa/pipeline.py
+  - tools/pipeline.schema.json
+- version: 5.8.0
+  commit: c59e7682705142a5e3107629e8563d3a2d6978db
+  change: added
+  kind: binding-api
+  symbol: JScreencap
+  quote: 'class JScreencap:'
+  paths:
+  - source/binding/Python/maa/pipeline.py
+- version: 5.8.0
+  commit: c59e7682705142a5e3107629e8563d3a2d6978db
+  change: added
+  kind: binding-api
+  symbol: WlRootsController
+  quote: 'class WlRootsController(Controller):'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.8.0
+  commit: c59e7682705142a5e3107629e8563d3a2d6978db
+  change: added
+  kind: documentation-version
+  symbol: v2.3.0
+  quote: '| 2026-02-23 | v2.3.0  | Added `checkbox` multi-select type, `option.controller`,
+    `option.resource`, global/resource/controller-level options, `focus.display` display
+    channel tag, `preset` field, `import` supports importing `preset` |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.8.0
+  commit: c59e7682705142a5e3107629e8563d3a2d6978db
+  change: added
+  kind: documentation-version
+  symbol: v2.3.0
+  quote: '| 2026-2-23 | v2.3.0 | 新增 `checkbox` 多选类型、`option.controller`、`option.resource`、全局/resource/controller
+    级 option、`focus.display` 展示渠道标签、`preset` 预设配置字段、`import` 支持导入 `preset` |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.8.0
+  commit: c59e7682705142a5e3107629e8563d3a2d6978db
+  change: added
+  kind: schema-property
+  symbol: global_option
+  quote: '{"description": "💡 v2.3.0 可选。全局选项配置，为一个字符串数组，数组元素应与 option 配置中的键名对应。该选项生成的参数会参与到所有任务的
+    pipeline override 中，无论用户选择了什么资源包或控制器", "items": {"type": "string"}, "title": "全局选项配置",
+    "type": "array"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.8.0
+  commit: c59e7682705142a5e3107629e8563d3a2d6978db
+  change: added
+  kind: schema-property
+  symbol: option
+  quote: '{"additionalProperties": {"$ref": "#/definitions/optionDefinition"}, "description":
+    "为一个对象映射，包含配置项的信息", "title": "配置项定义", "type": "object"}'
+  paths:
+  - tools/interface_import.schema.json
+- version: 5.8.0
+  commit: c59e7682705142a5e3107629e8563d3a2d6978db
+  change: added
+  kind: schema-property
+  symbol: preset
+  quote: '{"description": "💡 v2.3.0 可选。预设配置，为一个对象数组。每个预设是一套预定义的任务勾选状态与选项值的快照，用户可一键应用，快速切换不同使用场景",
+    "items": {"additionalProperties": false, "properties": {"description": {"$ref":
+    "#/definitions/i18nString", "description": "帮助用户理解该预设的适用场景。支持文件路径、URL 或直接文本，内容支持
+    Markdown 格式", "title": "详细描述"}, "icon": {"$ref": "#'
+  paths:
+  - tools/interface.schema.json
+- version: 5.8.0
+  commit: c59e7682705142a5e3107629e8563d3a2d6978db
+  change: added
+  kind: schema-property
+  symbol: preset
+  quote: '{"description": "💡 v2.3.0 可选。预设配置，为一个对象数组。每个预设是一套预定义的任务勾选状态与选项值的快照，用户可一键应用，快速切换不同使用场景",
+    "items": {"additionalProperties": false, "properties": {"description": {"$ref":
+    "#/definitions/i18nString", "description": "帮助用户理解该预设的适用场景。支持文件路径、URL 或直接文本，内容支持
+    Markdown 格式", "title": "详细描述"}, "icon": {"$ref": "#'
+  paths:
+  - tools/interface_import.schema.json
+- version: 5.8.0
+  commit: c59e7682705142a5e3107629e8563d3a2d6978db
+  change: added
+  kind: schema-property
+  symbol: task
+  quote: '{"description": "为一个对象数组，包含可执行任务的信息", "items": {"$ref": "#/definitions/taskItem"},
+    "title": "任务配置", "type": "array"}'
+  paths:
+  - tools/interface_import.schema.json
+- version: 5.8.0
+  commit: c59e7682705142a5e3107629e8563d3a2d6978db
+  change: removed
+  kind: schema-required
+  symbol: task
+  quote: '"task"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.8.1
+  commit: 716ebcf9801191829aa091b7f1bed4db37f29c33
+  change: modified
+  kind: unclassified
+  symbol: unclassified
+  quote: 3 indexed files changed without a structured change
+  paths:
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+  - source/binding/Python/maa/context.py
+- version: 5.9.0
+  commit: 17324f86394c4e426766857da790e53040552ae3
+  change: added
+  kind: documentation-version
+  symbol: v2.3.1
+  quote: '| 2026-03-05 | v2.3.1  | Clarified option applicability filtering |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.9.0
+  commit: 17324f86394c4e426766857da790e53040552ae3
+  change: added
+  kind: documentation-version
+  symbol: v2.3.1
+  quote: '| 2026-3-5 | v2.3.1 | 明确 option 适用性过滤规则 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.9.0
+  commit: 17324f86394c4e426766857da790e53040552ae3
+  change: added
+  kind: documentation-version
+  symbol: v2.4.0
+  quote: '| 2026-03-09 | v2.4.0  | Added top-level `group` declarations and `task.group`
+    task grouping |'
+  paths:
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+- version: 5.9.0
+  commit: 17324f86394c4e426766857da790e53040552ae3
+  change: added
+  kind: documentation-version
+  symbol: v2.4.0
+  quote: '| 2026-3-9 | v2.4.0 | 新增顶层 `group` 分组声明与 `task.group` 任务分组字段 |'
+  paths:
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+- version: 5.9.0
+  commit: 17324f86394c4e426766857da790e53040552ae3
+  change: removed
+  kind: schema-enum
+  symbol: win32.keyboard = "PostThreadMessage"
+  quote: '"PostThreadMessage"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.9.0
+  commit: 17324f86394c4e426766857da790e53040552ae3
+  change: removed
+  kind: schema-enum
+  symbol: win32.mouse = "PostThreadMessage"
+  quote: '"PostThreadMessage"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.9.0
+  commit: 17324f86394c4e426766857da790e53040552ae3
+  change: added
+  kind: schema-enum
+  symbol: win32.screencap = "Background"
+  quote: '"Background"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.9.0
+  commit: 17324f86394c4e426766857da790e53040552ae3
+  change: added
+  kind: schema-enum
+  symbol: win32.screencap = "Foreground"
+  quote: '"Foreground"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.9.0
+  commit: 17324f86394c4e426766857da790e53040552ae3
+  change: added
+  kind: schema-property
+  symbol: group
+  quote: '{"description": "💡 v2.4.0 可选。为一个对象数组，用于声明任务分组及其展示属性", "items": {"$ref":
+    "#/definitions/groupItem"}, "title": "任务分组配置", "type": "array"}'
+  paths:
+  - tools/interface.schema.json

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import shutil
 from pathlib import Path
+from typing import Any, cast
 
 import pytest
 
@@ -161,3 +162,57 @@ def test_orphan_inventory_and_compatibility_entry_are_rejected(catalog_copy: Pat
     joined = "\n".join(errors)
     assert "sources/maa-framework/inventories/9.9.9.yaml" in joined
     assert "compatibility is not a registered release: 9.9.9" in joined
+
+
+def _machine_catalog(catalog_copy: Path) -> Path:
+    return catalog_copy / "sources" / "maa-framework" / "machine-changes.yaml"
+
+
+def test_machine_change_invariants_are_enforced(catalog_copy: Path) -> None:
+    import yaml
+
+    path = _machine_catalog(catalog_copy)
+    original = path.read_text(encoding="utf-8")
+    payload = cast(dict[str, Any], yaml.safe_load(original))
+    changes = payload["changes"]
+    assert changes, "the machine catalog should not be empty once the extractor has run"
+    try:
+        payload["changes"] = [
+            {
+                **changes[0],
+                "version": "9.9.9",
+            },
+            {
+                **changes[0],
+                "commit": "a" * 40,
+            },
+            {
+                **changes[0],
+                "paths": ["docs/zh_cn/does-not-exist.md"],
+            },
+        ]
+        path.write_text(
+            yaml.safe_dump(payload, allow_unicode=True, sort_keys=False),
+            encoding="utf-8",
+            newline="\n",
+        )
+        errors = validate_repository(catalog_copy)
+    finally:
+        path.write_text(original, encoding="utf-8", newline="\n")
+
+    joined = "\n".join(errors)
+    assert "machine change references unknown release: 9.9.9" in joined
+    assert "machine change revision does not match release" in joined
+    assert "machine change references an unindexed path" in joined
+
+
+def test_stale_machine_change_page_is_detected(catalog_copy: Path) -> None:
+    page = catalog_copy / "generated" / "maa-framework" / "machine-changes.md"
+    backup = page.read_text(encoding="utf-8")
+    try:
+        _append_line(page, "hand-written line")
+        errors = validate_repository(catalog_copy)
+    finally:
+        page.write_text(backup, encoding="utf-8", newline="\n")
+
+    assert any("machine change catalog is stale" in error for error in errors)
