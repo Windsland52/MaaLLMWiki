@@ -23,6 +23,7 @@ from maa_llm_wiki.inventory import (
     render_release_index,
     resolve_included_in,
     sync_maafw_history,
+    sync_maafw_inventory,
 )
 from maa_llm_wiki.models import (
     CompatibilityStatus,
@@ -33,6 +34,9 @@ from maa_llm_wiki.models import (
     RepositoryRole,
     RepositorySource,
     RepositoryStatus,
+    SemanticChangeCatalog,
+    SourceInventory,
+    SourceMap,
 )
 
 GO_SPEC = BindingSourceSpec(
@@ -319,7 +323,15 @@ def test_sync_maafw_history_prune_allows_dropping_registered_versions(tmp_path: 
     )
     assert [release.version for release in catalog.releases] == ["1.0.0"]
     assert (root / "sources" / "maa-framework" / "inventories" / "1.0.0.yaml").is_file()
-    assert (root / "generated" / "maa-framework" / "1.0.0" / "index.md").is_file()
+    generated = root / "generated" / "maa-framework"
+    assert (generated / "1.0.0" / "index.md").is_file()
+    index = (generated / "index.md").read_text(encoding="utf-8")
+    assert "- [1.0.0](./1.0.0/index.md)" in index
+    assert "[Browse curated topic routes](./topics.md)" in index
+    assert "[Browse recorded behaviour changes](./behaviour-changes.md)" in index
+    assert "# MaaFramework prerelease registry" in (generated / "prereleases.md").read_text("utf-8")
+    assert "# Topic routes" in (generated / "topics.md").read_text(encoding="utf-8")
+    assert "# Behaviour changes" in (generated / "behaviour-changes.md").read_text(encoding="utf-8")
 
 
 def test_sync_maafw_history_rejects_newer_upstream_major(tmp_path: Path) -> None:
@@ -663,3 +675,94 @@ def test_render_release_index_links_topics_and_behaviour_pages() -> None:
     assert "[Browse recorded behaviour changes](./behaviour-changes.md)" in page
     assert "## Topics" in page
     assert "## Behaviour changes" in page
+
+
+def _generated_maafw_pages(root: Path) -> dict[str, str]:
+    generated = root / "generated" / "maa-framework"
+    return {
+        name: (generated / name).read_text(encoding="utf-8")
+        for name in ("index.md", "prereleases.md", "topics.md", "behaviour-changes.md")
+    }
+
+
+def test_sync_maafw_inventory_writes_top_level_pages(tmp_path: Path) -> None:
+    repository = _init_repository(tmp_path / "upstream")
+    first = _commit_files(repository, {"docs/test.md": "# Test\n\nSome documentation.\n"})
+    _git(repository, "tag", "v1.0.0")
+    root = _write_maafw_root(
+        tmp_path,
+        [ReleaseRecord(version="1.0.0", tag="v1.0.0", commit=first, released_at=FIXED_DATE)],
+        revision=first,
+    )
+
+    sync_maafw_inventory(root=root, repository=repository, version="1.0.0")
+
+    assert (root / "sources" / "maa-framework" / "inventory.yaml").is_file()
+    generated = root / "generated" / "maa-framework"
+    assert (generated / "1.0.0" / "index.md").is_file()
+    pages = _generated_maafw_pages(root)
+    assert "- [1.0.0](./1.0.0/index.md)" in pages["index.md"]
+    assert "[Browse curated topic routes](./topics.md)" in pages["index.md"]
+    assert "[Browse recorded behaviour changes](./behaviour-changes.md)" in pages["index.md"]
+    assert "# MaaFramework prerelease registry" in pages["prereleases.md"]
+    assert "# Topic routes" in pages["topics.md"]
+    assert "# Behaviour changes" in pages["behaviour-changes.md"]
+
+
+def test_sync_maafw_history_renders_top_level_pages_once(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = _init_repository(tmp_path / "upstream")
+    first = _commit_files(repository, {"docs/test.md": "# Test\n\nFirst.\n"})
+    _git(repository, "tag", "v1.0.0")
+    second = _commit_files(repository, {"docs/test.md": "# Test\n\nSecond.\n"})
+    _git(repository, "tag", "v1.1.0")
+    registered = [
+        ReleaseRecord(version="1.0.0", tag="v1.0.0", commit=first, released_at=FIXED_DATE),
+        ReleaseRecord(version="1.1.0", tag="v1.1.0", commit=second, released_at=FIXED_DATE),
+    ]
+    root = _write_maafw_root(tmp_path, registered, revision=second)
+
+    calls = {"version": 0, "release": 0}
+    real_version_indexes = inventory._write_version_indexes
+    real_release_pages = inventory._write_release_pages
+
+    def counting_version_indexes(
+        root_path: Path, source_inventory: SourceInventory, repository_url: str
+    ) -> None:
+        calls["version"] += 1
+        real_version_indexes(root_path, source_inventory, repository_url)
+
+    def counting_release_pages(
+        root_path: Path,
+        releases: list[ReleaseRecord],
+        prereleases: list[PrereleaseRecord],
+        repository_url: str,
+        source_map: SourceMap,
+        semantic_changes: SemanticChangeCatalog,
+        *,
+        source_id: str,
+    ) -> None:
+        calls["release"] += 1
+        real_release_pages(
+            root_path,
+            releases,
+            prereleases,
+            repository_url,
+            source_map,
+            semantic_changes,
+            source_id=source_id,
+        )
+
+    monkeypatch.setattr(inventory, "_write_version_indexes", counting_version_indexes)
+    monkeypatch.setattr(inventory, "_write_release_pages", counting_release_pages)
+
+    releases, _prereleases = sync_maafw_history(root=root, repository=repository, major=1)
+
+    assert [release.version for release in releases] == ["1.0.0", "1.1.0"]
+    assert calls == {"version": 2, "release": 1}
+    pages = _generated_maafw_pages(root)
+    assert "- [1.0.0](./1.0.0/index.md)" in pages["index.md"]
+    assert "- [1.1.0](./1.1.0/index.md)" in pages["index.md"]
+    assert "# Topic routes" in pages["topics.md"]
+    assert "# Behaviour changes" in pages["behaviour-changes.md"]

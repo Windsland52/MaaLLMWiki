@@ -498,13 +498,10 @@ def render_release_index(
     return "\n".join(lines) + "\n"
 
 
-def _write_generated_indexes(
+def _write_version_indexes(
     root: Path,
     inventory: SourceInventory,
     repository_url: str,
-    catalog: ReleaseCatalog,
-    source_map: SourceMap,
-    semantic_changes: SemanticChangeCatalog,
 ) -> None:
     output_root = root / "generated" / "maa-framework"
     version_root = output_root / inventory.version
@@ -518,13 +515,25 @@ def _write_generated_indexes(
         path = version_root / relative_path
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8", newline="\n")
+
+
+def _write_release_pages(
+    root: Path,
+    releases: list[ReleaseRecord],
+    prereleases: list[PrereleaseRecord],
+    repository_url: str,
+    source_map: SourceMap,
+    semantic_changes: SemanticChangeCatalog,
+    *,
+    source_id: str,
+) -> None:
+    output_root = root / "generated" / "maa-framework"
     output_root.mkdir(parents=True, exist_ok=True)
-    releases = catalog.releases
     indexed_releases = [
         release for release in releases if (output_root / release.version / "index.md").is_file()
     ]
     (output_root / "index.md").write_text(
-        render_release_index(indexed_releases, catalog.prereleases),
+        render_release_index(indexed_releases, prereleases),
         encoding="utf-8",
         newline="\n",
     )
@@ -534,7 +543,7 @@ def _write_generated_indexes(
             generator="maa-wiki-sync-maafw-history",
             repository_url=repository_url,
             releases=releases,
-            prereleases=catalog.prereleases,
+            prereleases=prereleases,
         ),
         encoding="utf-8",
         newline="\n",
@@ -550,10 +559,14 @@ def _write_generated_indexes(
     )
     (output_root / "behaviour-changes.md").write_text(
         render_semantic_changes_page(
-            source_id=catalog.source_id,
+            source_id=source_id,
             semantic_changes=semantic_changes,
             source_map=source_map,
-            releases=catalog,
+            releases=ReleaseCatalog(
+                source_id=source_id,
+                releases=releases,
+                prereleases=prereleases,
+            ),
             repository_url=repository_url,
         ),
         encoding="utf-8",
@@ -593,7 +606,16 @@ def sync_maafw_inventory(*, root: Path, repository: Path, version: str) -> None:
         newline="\n",
     )
 
-    _write_generated_indexes(root, inventory, source.url, releases, source_map, semantic_changes)
+    _write_version_indexes(root, inventory, source.url)
+    _write_release_pages(
+        root,
+        releases.releases,
+        releases.prereleases,
+        source.url,
+        source_map,
+        semantic_changes,
+        source_id=releases.source_id,
+    )
 
 
 def parse_stable_tag(tag: str) -> tuple[int, int, int] | None:
@@ -879,7 +901,14 @@ def sync_maafw_history(
                 root / "sources" / "maa-framework" / "inventory.yaml",
                 inventory.model_dump(mode="json"),
             )
-        _write_generated_indexes(
-            root, inventory, source.url, release_catalog, source_map, semantic_changes
-        )
+        _write_version_indexes(root, inventory, source.url)
+    _write_release_pages(
+        root,
+        releases,
+        prereleases,
+        source.url,
+        source_map,
+        semantic_changes,
+        source_id=release_catalog.source_id,
+    )
     return releases, prereleases
