@@ -6,7 +6,69 @@ and where to read the pinned source. One entry per reviewed change, not one per 
 so a release with no entry is not evidence that nothing changed.
 
 Source of truth: `sources/maa-framework/semantic-changes.yaml` (source `maafw`;
-33 entries over 17 releases).
+48 entries over 27 releases).
+
+## 5.0.4
+
+Revision: `6ee9141da7b05e2e00eac79eb0ec6955a2849a44`
+
+- `diagnostics.failure-event-levels` at `6ee9141da7b05e2e00eac79eb0ec6955a2849a44`: Callback protocol added Node.PipelineNode.Starting/Succeeded/Failed and Node.RecognitionNode.Starting/Succeeded/Failed messages.
+  - Route: [`include/MaaFramework/MaaMsg.h`](https://github.com/MaaXYZ/MaaFramework/blob/6ee9141da7b05e2e00eac79eb0ec6955a2849a44/include/MaaFramework/MaaMsg.h), [`docs/zh_cn/2.3-回调协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/6ee9141da7b05e2e00eac79eb0ec6955a2849a44/docs/zh_cn/2.3-%E5%9B%9E%E8%B0%83%E5%8D%8F%E8%AE%AE.md)
+
+## 5.1.0
+
+Revision: `d51e6fcce9fed54774696881158fe79f61a7b675`
+
+- `framework.pipeline-control-flow` at `d51e6fcce9fed54774696881158fe79f61a7b675`: Pipeline v5.1 added anchor and max_hit node fields, node-level jump_back, and the Scroll action.
+  - Route: [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/d51e6fcce9fed54774696881158fe79f61a7b675/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md), [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/d51e6fcce9fed54774696881158fe79f61a7b675/tools/pipeline.schema.json)
+- `framework.controller-api` at `d51e6fcce9fed54774696881158fe79f61a7b675`: Added MaaControllerPostScroll and the custom-controller scroll callback.
+  - Route: [`include/MaaFramework/Instance/MaaController.h`](https://github.com/MaaXYZ/MaaFramework/blob/d51e6fcce9fed54774696881158fe79f61a7b675/include/MaaFramework/Instance/MaaController.h), [`include/MaaFramework/Instance/MaaCustomController.h`](https://github.com/MaaXYZ/MaaFramework/blob/d51e6fcce9fed54774696881158fe79f61a7b675/include/MaaFramework/Instance/MaaCustomController.h)
+
+## 5.1.1
+
+Revision: `6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0`
+
+- `framework.interface-protocol` at `6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0`: Published the Project Interface V2 protocol (tools/interface_v2.schema.json and docs 3.3) alongside the legacy v1 interface schema.
+  - Route: [`tools/interface_v2.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0/tools/interface_v2.schema.json), [`docs/zh_cn/3.3-ProjectInterfaceV2协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/6de7b6fdb5b8a62eadb65b73877eaee6bcbac2c0/docs/zh_cn/3.3-ProjectInterfaceV2%E5%8D%8F%E8%AE%AE.md)
+
+## 5.1.2
+
+Revision: `2f6938faaa9e17adca21ec43eb8e7f922c1ab696`
+
+- `framework.interface-protocol` at `2f6938faaa9e17adca21ec43eb8e7f922c1ab696`: Project Interface V2 options gained typed select/switch cases with default_case and input field definitions (inputs).
+  - Route: [`tools/interface_v2.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/2f6938faaa9e17adca21ec43eb8e7f922c1ab696/tools/interface_v2.schema.json)
+
+## 5.2.0
+
+Revision: `81c02ff14a5080a3a9e3cf57782b699b0900083c`
+
+- `framework.tasker-api` at `81c02ff14a5080a3a9e3cf57782b699b0900083c`: Added MaaTaskerPostRecognition and MaaTaskerPostAction to run a one-shot recognition or action without a pipeline task.
+  - Route: [`include/MaaFramework/Instance/MaaTasker.h`](https://github.com/MaaXYZ/MaaFramework/blob/81c02ff14a5080a3a9e3cf57782b699b0900083c/include/MaaFramework/Instance/MaaTasker.h), [`docs/zh_cn/2.2-集成接口一览.md`](https://github.com/MaaXYZ/MaaFramework/blob/81c02ff14a5080a3a9e3cf57782b699b0900083c/docs/zh_cn/2.2-%E9%9B%86%E6%88%90%E6%8E%A5%E5%8F%A3%E4%B8%80%E8%A7%88.md)
+
+## 5.2.1
+
+Revision: `09e5d240b778ea5e2539861c457a389261289cf7`
+
+- `framework.pipeline-control-flow` at `09e5d240b778ea5e2539861c457a389261289cf7`: Pipeline added the Shell action with cmd and timeout.
+  - Route: [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/09e5d240b778ea5e2539861c457a389261289cf7/tools/pipeline.schema.json), [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/09e5d240b778ea5e2539861c457a389261289cf7/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md)
+- `framework.controller-api` at `09e5d240b778ea5e2539861c457a389261289cf7`: Added MaaControllerPostShell and MaaControllerGetShellOutput to run a shell command on the controller.
+  - Route: [`include/MaaFramework/Instance/MaaController.h`](https://github.com/MaaXYZ/MaaFramework/blob/09e5d240b778ea5e2539861c457a389261289cf7/include/MaaFramework/Instance/MaaController.h), [`docs/zh_cn/2.4-控制方式说明.md`](https://github.com/MaaXYZ/MaaFramework/blob/09e5d240b778ea5e2539861c457a389261289cf7/docs/zh_cn/2.4-%E6%8E%A7%E5%88%B6%E6%96%B9%E5%BC%8F%E8%AF%B4%E6%98%8E.md)
+
+## 5.3.0
+
+Revision: `49d01e903b67ec22c3dd3d64a7760bc6886beece`
+
+- `framework.pipeline-control-flow` at `49d01e903b67ec22c3dd3d64a7760bc6886beece`: Pipeline v5.3 added the And and Or recognition types with all_of sub-recognitions and sub_name aliases.
+  - Route: [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/49d01e903b67ec22c3dd3d64a7760bc6886beece/tools/pipeline.schema.json), [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/49d01e903b67ec22c3dd3d64a7760bc6886beece/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md)
+- `framework.controller-api` at `49d01e903b67ec22c3dd3d64a7760bc6886beece`: Added MaaPlayCoverControllerCreate and interface.json adb/playcover controller configurations.
+  - Route: [`include/MaaFramework/Instance/MaaController.h`](https://github.com/MaaXYZ/MaaFramework/blob/49d01e903b67ec22c3dd3d64a7760bc6886beece/include/MaaFramework/Instance/MaaController.h), [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/49d01e903b67ec22c3dd3d64a7760bc6886beece/tools/interface.schema.json)
+
+## 5.4.0
+
+Revision: `274612a236dd4e85780d714a63dbb7b4a07b6e5c`
+
+- `framework.controller-api` at `274612a236dd4e85780d714a63dbb7b4a07b6e5c`: Added the gamepad controller (MaaGamepadControllerCreate), MaaControllerPostClickV2/PostSwipeV2 with contact and pressure, and a custom-controller connected callback.
+  - Route: [`include/MaaFramework/Instance/MaaController.h`](https://github.com/MaaXYZ/MaaFramework/blob/274612a236dd4e85780d714a63dbb7b4a07b6e5c/include/MaaFramework/Instance/MaaController.h), [`include/MaaFramework/Instance/MaaCustomController.h`](https://github.com/MaaXYZ/MaaFramework/blob/274612a236dd4e85780d714a63dbb7b4a07b6e5c/include/MaaFramework/Instance/MaaCustomController.h)
 
 ## 5.5.0
 
@@ -14,6 +76,20 @@ Revision: `143e99490afcfa7229e315b4197651ee8bde7773`
 
 - `framework.pipeline-control-flow` at `143e99490afcfa7229e315b4197651ee8bde7773`: Pipeline timeout added -1 as an infinite-wait value.
   - Route: [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/143e99490afcfa7229e315b4197651ee8bde7773/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md), [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/143e99490afcfa7229e315b4197651ee8bde7773/tools/pipeline.schema.json)
+
+## 5.6.0
+
+Revision: `f2f929b90ee25eb2c4b3dfd6f2c75144138f212e`
+
+- `framework.interface-protocol` at `f2f929b90ee25eb2c4b3dfd6f2c75144138f212e`: Project Interface v2.2 added attach_resource_path and import fields for splitting and attaching resources.
+  - Route: [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/f2f929b90ee25eb2c4b3dfd6f2c75144138f212e/tools/interface.schema.json), [`docs/zh_cn/3.3-ProjectInterfaceV2协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/f2f929b90ee25eb2c4b3dfd6f2c75144138f212e/docs/zh_cn/3.3-ProjectInterfaceV2%E5%8D%8F%E8%AE%AE.md)
+
+## 5.7.2
+
+Revision: `c5df68bc658c1d12bd82df7da2d76f808d0e4130`
+
+- `framework.pipeline-control-flow` at `c5df68bc658c1d12bd82df7da2d76f808d0e4130`: Renamed the Shell action timeout field to shell_timeout.
+  - Route: [`tools/pipeline.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/c5df68bc658c1d12bd82df7da2d76f808d0e4130/tools/pipeline.schema.json), [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/c5df68bc658c1d12bd82df7da2d76f808d0e4130/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md)
 
 ## 5.8.0
 
@@ -140,6 +216,10 @@ Revision: `adba94d694569643d0517bc7c5220d1fdf603800`
   - Route: [`source/MaaLinuxControlUnit/Input/UInput.cpp`](https://github.com/MaaXYZ/MaaFramework/blob/adba94d694569643d0517bc7c5220d1fdf603800/source/MaaLinuxControlUnit/Input/UInput.cpp)
 - `framework.interface-protocol` at `adba94d694569643d0517bc7c5220d1fdf603800`: Expanded tools/interface_import.schema.json so imported Project Interface fragments validate against the full field set, including hotkey definitions.
   - Route: [`tools/interface_import.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/adba94d694569643d0517bc7c5220d1fdf603800/tools/interface_import.schema.json)
+- `framework.agent-ipc` at `adba94d694569643d0517bc7c5220d1fdf603800`: The Agent server stopped ACKing one-way Resource/Controller/Tasker event notifications, removing a ZMQ backpressure deadlock.
+  - Route: [`source/MaaAgentServer/Server/AgentServer.cpp`](https://github.com/MaaXYZ/MaaFramework/blob/adba94d694569643d0517bc7c5220d1fdf603800/source/MaaAgentServer/Server/AgentServer.cpp)
+- `framework.controller-api` at `adba94d694569643d0517bc7c5220d1fdf603800`: The Python binding exposed the existing controller shell API (MaaControllerPostShell/MaaControllerGetShellOutput).
+  - Route: [`source/binding/Python/maa/controller.py`](https://github.com/MaaXYZ/MaaFramework/blob/adba94d694569643d0517bc7c5220d1fdf603800/source/binding/Python/maa/controller.py)
 
 ## 5.14.3
 

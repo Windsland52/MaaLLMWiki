@@ -269,3 +269,57 @@ topics:
         terms:
           - NCNN
           - ncnn
+
+  - id: framework.tasker-api
+    source_id: maafw
+    variants:
+      - applies_to: "5.2.0"
+        revision: 81c02ff14a5080a3a9e3cf57782b699b0900083c
+        paths:
+          - include/MaaFramework/Instance/MaaTasker.h
+          - docs/zh_cn/2.2-集成接口一览.md
+        symbols:
+          - MaaTaskerPostRecognition
+          - MaaTaskerPostAction
+        terms:
+          - PostRecognition
+          - PostAction
+      - applies_to: "5.15.0"
+        revision: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+        paths:
+          - include/MaaFramework/Instance/MaaTasker.h
+          - docs/zh_cn/2.2-集成接口一览.md
+        symbols:
+          - MaaTaskerPostRecognition
+          - MaaTaskerPostAction
+        terms:
+          - PostRecognition
+          - PostAction
+
+  - id: framework.agent-ipc
+    source_id: maafw
+    variants:
+      - applies_to: "5.14.1"
+        revision: adba94d694569643d0517bc7c5220d1fdf603800
+        paths:
+          - source/MaaAgentServer/Server/AgentServer.cpp
+          - include/MaaAgentClient/MaaAgentClientAPI.h
+        symbols:
+          - AgentServer::handle_resource_event
+          - MaaAgentClientCreateTcp
+        terms:
+          - ResourceEventResponse
+          - ControllerEventResponse
+          - TaskerEventResponse
+      - applies_to: "5.15.0"
+        revision: 172ec7b97df3e5b10adf69e36df01f8dc495b6f6
+        paths:
+          - source/MaaAgentServer/Server/AgentServer.cpp
+          - include/MaaAgentClient/MaaAgentClientAPI.h
+        symbols:
+          - AgentServer::handle_resource_event
+          - MaaAgentClientCreateTcp
+        terms:
+          - ResourceEventResponse
+          - ControllerEventResponse
+          - TaskerEventResponse

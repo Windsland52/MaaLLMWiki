@@ -129,3 +129,29 @@ Source: `maafw`.
   - Files: [`include/MaaFramework/MaaDef.h`](https://github.com/MaaXYZ/MaaFramework/blob/172ec7b97df3e5b10adf69e36df01f8dc495b6f6/include/MaaFramework/MaaDef.h), [`docs/zh_cn/2.2-集成接口一览.md`](https://github.com/MaaXYZ/MaaFramework/blob/172ec7b97df3e5b10adf69e36df01f8dc495b6f6/docs/zh_cn/2.2-%E9%9B%86%E6%88%90%E6%8E%A5%E5%8F%A3%E4%B8%80%E8%A7%88.md)
   - Symbols: `MaaInferenceExecutionProvider_NCNN`
   - Terms: `NCNN`, `ncnn`
+
+## framework.tasker-api
+
+Source: `maafw`.
+
+- Applies to `5.2.0` at `81c02ff14a5080a3a9e3cf57782b699b0900083c`
+  - Files: [`include/MaaFramework/Instance/MaaTasker.h`](https://github.com/MaaXYZ/MaaFramework/blob/81c02ff14a5080a3a9e3cf57782b699b0900083c/include/MaaFramework/Instance/MaaTasker.h), [`docs/zh_cn/2.2-集成接口一览.md`](https://github.com/MaaXYZ/MaaFramework/blob/81c02ff14a5080a3a9e3cf57782b699b0900083c/docs/zh_cn/2.2-%E9%9B%86%E6%88%90%E6%8E%A5%E5%8F%A3%E4%B8%80%E8%A7%88.md)
+  - Symbols: `MaaTaskerPostRecognition`, `MaaTaskerPostAction`
+  - Terms: `PostRecognition`, `PostAction`
+- Applies to `5.15.0` at `172ec7b97df3e5b10adf69e36df01f8dc495b6f6`
+  - Files: [`include/MaaFramework/Instance/MaaTasker.h`](https://github.com/MaaXYZ/MaaFramework/blob/172ec7b97df3e5b10adf69e36df01f8dc495b6f6/include/MaaFramework/Instance/MaaTasker.h), [`docs/zh_cn/2.2-集成接口一览.md`](https://github.com/MaaXYZ/MaaFramework/blob/172ec7b97df3e5b10adf69e36df01f8dc495b6f6/docs/zh_cn/2.2-%E9%9B%86%E6%88%90%E6%8E%A5%E5%8F%A3%E4%B8%80%E8%A7%88.md)
+  - Symbols: `MaaTaskerPostRecognition`, `MaaTaskerPostAction`
+  - Terms: `PostRecognition`, `PostAction`
+
+## framework.agent-ipc
+
+Source: `maafw`.
+
+- Applies to `5.14.1` at `adba94d694569643d0517bc7c5220d1fdf603800`
+  - Files: [`source/MaaAgentServer/Server/AgentServer.cpp`](https://github.com/MaaXYZ/MaaFramework/blob/adba94d694569643d0517bc7c5220d1fdf603800/source/MaaAgentServer/Server/AgentServer.cpp), [`include/MaaAgentClient/MaaAgentClientAPI.h`](https://github.com/MaaXYZ/MaaFramework/blob/adba94d694569643d0517bc7c5220d1fdf603800/include/MaaAgentClient/MaaAgentClientAPI.h)
+  - Symbols: `AgentServer::handle_resource_event`, `MaaAgentClientCreateTcp`
+  - Terms: `ResourceEventResponse`, `ControllerEventResponse`, `TaskerEventResponse`
+- Applies to `5.15.0` at `172ec7b97df3e5b10adf69e36df01f8dc495b6f6`
+  - Files: [`source/MaaAgentServer/Server/AgentServer.cpp`](https://github.com/MaaXYZ/MaaFramework/blob/172ec7b97df3e5b10adf69e36df01f8dc495b6f6/source/MaaAgentServer/Server/AgentServer.cpp), [`include/MaaAgentClient/MaaAgentClientAPI.h`](https://github.com/MaaXYZ/MaaFramework/blob/172ec7b97df3e5b10adf69e36df01f8dc495b6f6/include/MaaAgentClient/MaaAgentClientAPI.h)
+  - Symbols: `AgentServer::handle_resource_event`, `MaaAgentClientCreateTcp`
+  - Terms: `ResourceEventResponse`, `ControllerEventResponse`, `TaskerEventResponse`
