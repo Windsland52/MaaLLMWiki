@@ -3,16 +3,25 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections import Counter
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from zipfile import BadZipFile
 
+import yaml
+
 from .bindings import BINDING_SPECS, sync_binding_history
 from .bundle import build_catalog_bundle, bundle_sha256, verify_catalog_bundle
 from .gaps import artifact_changed, render_review_queue
-from .inventory import sync_latest_maafw, sync_maafw_history, sync_maafw_inventory
-from .models import ArtifactKind, SourceArtifact, SourceInventory
+from .inventory import sync_latest_maafw, sync_maafw_history, sync_maafw_inventory, write_yaml
+from .models import (
+    ArtifactKind,
+    MachineChange,
+    MachineChangeCatalog,
+    SourceArtifact,
+    SourceInventory,
+)
 from .schemas import generate_schemas
 from .validation import (
     load_repository_catalog,
@@ -384,3 +393,98 @@ def diff_main() -> int:
     else:
         print(_diff_markdown(args.source, before, after, diff), end="")
     return 0
+
+
+_MACHINE_CHANGES_PATH = "sources/maa-framework/machine-changes.yaml"
+_MachineChangeKey = tuple[str, str, str, str, str, str, tuple[str, ...]]
+
+
+def _machine_version_key(version: str) -> tuple[int, ...]:
+    return tuple(int(part) if part.isdigit() else -1 for part in version.split("."))
+
+
+def _machine_change_key(change: MachineChange) -> _MachineChangeKey:
+    return (
+        change.version,
+        change.commit,
+        change.change,
+        change.kind.value,
+        change.symbol,
+        change.quote,
+        tuple(change.paths),
+    )
+
+
+def _load_committed_machine_changes(path: Path) -> MachineChangeCatalog:
+    if not path.is_file():
+        raise ValueError(f"committed machine change catalog is missing: {path}")
+    try:
+        payload: object = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except yaml.YAMLError as error:
+        raise ValueError(f"committed machine change catalog is not valid YAML: {error}") from error
+    return MachineChangeCatalog.model_validate(payload)
+
+
+def _machine_changes_diff(
+    fresh: MachineChangeCatalog, committed: MachineChangeCatalog
+) -> tuple[Counter[_MachineChangeKey], Counter[_MachineChangeKey]]:
+    fresh_counter = Counter(_machine_change_key(change) for change in fresh.changes)
+    committed_counter = Counter(_machine_change_key(change) for change in committed.changes)
+    return fresh_counter - committed_counter, committed_counter - fresh_counter
+
+
+def _print_machine_changes_counts(label: str, keys: Counter[_MachineChangeKey]) -> None:
+    if not keys:
+        return
+    counts: Counter[tuple[str, str]] = Counter()
+    for key in keys.elements():
+        counts[(key[0], key[3])] += 1
+    print(f"  {label}:")
+    for (version, kind), count in sorted(
+        counts.items(), key=lambda item: (_machine_version_key(item[0][0]), item[0][1])
+    ):
+        print(f"    {version} {kind}: {count}")
+
+
+def _build_machine_changes(*, root: Path, repository: Path) -> MachineChangeCatalog:
+    """Extractor hook kept separate so tests can stub the sync-side implementation."""
+    from .extract import build_machine_changes
+
+    return build_machine_changes(root=root, repository=repository)
+
+
+@_error_boundary
+def extract_changes_main() -> int:
+    parser = _root_parser("Extract the machine-change catalog from a pinned MaaFramework clone")
+    parser.add_argument("--repository", type=Path, required=True)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="compare with the committed YAML instead of writing it (release gate)",
+    )
+    args = parser.parse_args()
+    root = args.root.resolve()
+    catalog = _build_machine_changes(root=root, repository=args.repository.resolve())
+    path = root / _MACHINE_CHANGES_PATH
+    if not args.check:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        write_yaml(path, catalog.model_dump(mode="json"))
+        print(f"Wrote {_MACHINE_CHANGES_PATH} with {len(catalog.changes)} machine change(s)")
+        return 0
+    committed = _load_committed_machine_changes(path)
+    added, missing = _machine_changes_diff(catalog, committed)
+    added_count = sum(added.values())
+    missing_count = sum(missing.values())
+    if not added_count and not missing_count:
+        print(
+            f"Machine change catalog matches {_MACHINE_CHANGES_PATH} "
+            f"({len(catalog.changes)} change(s))"
+        )
+        return 0
+    print(
+        f"Machine change catalog differs from {_MACHINE_CHANGES_PATH}: "
+        f"{added_count} new, {missing_count} missing, {len(catalog.changes)} extracted total"
+    )
+    _print_machine_changes_counts("new", added)
+    _print_machine_changes_counts("missing", missing)
+    return 1

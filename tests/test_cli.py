@@ -5,8 +5,10 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
 
-from maa_llm_wiki.cli import diff_main
+from maa_llm_wiki.cli import diff_main, extract_changes_main
+from maa_llm_wiki.models import MachineChange, MachineChangeCatalog, MachineChangeKind
 
 COMMIT_A = "a" * 40
 COMMIT_B = "b" * 40
@@ -258,3 +260,164 @@ def test_diff_unknown_source_uses_error_boundary(
     assert err.startswith("error: ")
     assert "unknown source: no-such-source" in err
     assert "Traceback" not in err
+
+
+def _machine_change(
+    version: str,
+    kind: MachineChangeKind,
+    symbol: str,
+    *,
+    quote: str | None = None,
+    paths: tuple[str, ...] = ("include/MaaFramework/MaaDef.h",),
+) -> MachineChange:
+    return MachineChange(
+        version=version,
+        commit="a" * 40,
+        change="added",
+        kind=kind,
+        symbol=symbol,
+        quote=quote or f"#define {symbol} 1",
+        paths=list(paths),
+    )
+
+
+def _machine_catalog() -> MachineChangeCatalog:
+    return MachineChangeCatalog(
+        source_id="maafw",
+        changes=[
+            _machine_change("5.15.0", MachineChangeKind.ENUM_VALUE, "MaaThing_X"),
+            _machine_change("5.16.0", MachineChangeKind.PUBLIC_FUNCTION, "MaaDoThing"),
+            _machine_change("5.17.0", MachineChangeKind.SCHEMA_PROPERTY, "option.only_rec"),
+        ],
+    )
+
+
+def _write_machine_changes(root: Path, catalog: MachineChangeCatalog) -> Path:
+    path = root / "sources" / "maa-framework" / "machine-changes.yaml"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        yaml.safe_dump(catalog.model_dump(mode="json"), allow_unicode=True, sort_keys=False),
+        encoding="utf-8",
+    )
+    return path
+
+
+def _run_extract(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    root: Path,
+    catalog: MachineChangeCatalog,
+    *extra: str,
+) -> tuple[int, str, str]:
+    def fake_build(*, root: Path, repository: Path) -> MachineChangeCatalog:
+        _ = root, repository
+        return catalog
+
+    monkeypatch.setattr("maa_llm_wiki.cli._build_machine_changes", fake_build)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["maa-wiki-extract-changes", "--root", str(root), "--repository", str(root), *extra],
+    )
+    code = extract_changes_main()
+    captured = capsys.readouterr()
+    return code, captured.out, captured.err
+
+
+def test_extract_changes_check_matches_committed_catalog(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    catalog = _machine_catalog()
+    _write_machine_changes(tmp_path, catalog)
+
+    code, out, err = _run_extract(monkeypatch, capsys, tmp_path, catalog, "--check")
+
+    assert code == 0
+    assert err == ""
+    assert "matches sources/maa-framework/machine-changes.yaml (3 change(s))" in out
+
+
+def test_extract_changes_check_is_order_insensitive(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    catalog = _machine_catalog()
+    reordered = MachineChangeCatalog(source_id="maafw", changes=list(reversed(catalog.changes)))
+    _write_machine_changes(tmp_path, reordered)
+
+    code, out, err = _run_extract(monkeypatch, capsys, tmp_path, catalog, "--check")
+
+    assert code == 0
+    assert err == ""
+    assert "matches" in out
+
+
+def test_extract_changes_check_reports_per_version_and_kind_counts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    committed = MachineChangeCatalog(
+        source_id="maafw",
+        changes=[
+            _machine_change("5.15.0", MachineChangeKind.ENUM_VALUE, "MaaThing_X", quote="old"),
+            _machine_change("5.16.0", MachineChangeKind.PUBLIC_FUNCTION, "MaaDoThing"),
+        ],
+    )
+    _write_machine_changes(tmp_path, committed)
+    fresh = MachineChangeCatalog(
+        source_id="maafw",
+        changes=[
+            _machine_change("5.15.0", MachineChangeKind.ENUM_VALUE, "MaaThing_X", quote="new"),
+            _machine_change("5.17.0", MachineChangeKind.SCHEMA_PROPERTY, "option.only_rec"),
+        ],
+    )
+
+    code, out, err = _run_extract(monkeypatch, capsys, tmp_path, fresh, "--check")
+
+    assert code == 1
+    assert err == ""
+    assert "differs from sources/maa-framework/machine-changes.yaml: 2 new, 2 missing" in out
+    assert "  5.17.0 schema-property: 1" in out
+    assert "  5.16.0 public-function: 1" in out
+    assert "5.15.0 enum-value: 1" in out
+
+
+def test_extract_changes_check_requires_committed_catalog(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    code, out, err = _run_extract(monkeypatch, capsys, tmp_path, _machine_catalog(), "--check")
+
+    assert code == 1
+    assert out == ""
+    assert err.startswith("error: ")
+    assert "committed machine change catalog is missing" in err
+    assert "Traceback" not in err
+
+
+def test_extract_changes_check_rejects_broken_yaml(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    path = tmp_path / "sources" / "maa-framework" / "machine-changes.yaml"
+    path.parent.mkdir(parents=True)
+    path.write_text("changes: [unclosed\n", encoding="utf-8")
+
+    code, out, err = _run_extract(monkeypatch, capsys, tmp_path, _machine_catalog(), "--check")
+
+    assert code == 1
+    assert out == ""
+    assert err.startswith("error: ")
+    assert "not valid YAML" in err
+
+
+def test_extract_changes_writes_committed_catalog(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    catalog = _machine_catalog()
+
+    code, out, err = _run_extract(monkeypatch, capsys, tmp_path, catalog)
+
+    path = tmp_path / "sources" / "maa-framework" / "machine-changes.yaml"
+    assert code == 0
+    assert err == ""
+    assert path.is_file()
+    assert f"Wrote sources/maa-framework/machine-changes.yaml with {len(catalog.changes)}" in out
+    written = MachineChangeCatalog.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
+    assert written == catalog

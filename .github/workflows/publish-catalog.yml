@@ -95,6 +95,13 @@ jobs:
             --rust-repository tmp/maa-framework-rs
           uv run maa-wiki-generate-schemas
 
+      # The sync above writes the machine-extracted change catalog from the same clone. `--check`
+      # re-extracts and compares it with the committed YAML, so a stale catalog (or a sync wiring
+      # regression) fails the release before anything is committed, tagged, or published.
+      - name: Check machine change catalog is current
+        run: |
+          uv run maa-wiki-extract-changes --repository tmp/MaaFramework --check
+
       - name: Classify catalog state
         id: state
         env:
@@ -339,9 +346,25 @@ jobs:
             exit 0
           fi
           report=/tmp/semantic-gaps.md
+          body=/tmp/semantic-gaps-body.md
           uv run maa-wiki-report-semantic-gaps \
             --repository tmp/MaaFramework \
             --output "${report}"
+          # The report's closing paragraph asks for a curated semantic-changes.yaml entry. That is
+          # optional now that machine-extracted facts are published automatically, so drop the old
+          # instruction (everything from that paragraph to EOF) and append the current framing. The
+          # create/update/close lifecycle below is unchanged.
+          sed '/^Review each release against its pinned commit/,$d' "${report}" > /tmp/semantic-gaps-lead.md
+          {
+            cat /tmp/semantic-gaps-lead.md
+            echo
+            echo "Machine-extracted change facts for these releases are published automatically in"
+            echo "\`generated/maa-framework/machine-changes.md\` and in the bundle; detection is not a"
+            echo "manual step. A curated \`semantic-changes.yaml\` entry is **optional**: it adds"
+            echo "interpretation (why a change matters for routing), not detection."
+            echo
+            echo "Opened by \`.github/workflows/publish-catalog.yml\`."
+          } > "${body}"
           gh label create "${ISSUE_LABEL}" --color ededed \
             --description "Releases awaiting semantic-change review" >/dev/null 2>&1 || true
           number="$(gh issue list --state open --label "${ISSUE_LABEL}" --limit 100 \
@@ -359,21 +382,21 @@ jobs:
             echo "No releases are waiting for a semantic-change review."
             if [ -n "${number}" ]; then
               gh issue close "${number}" \
-                --comment "The review queue is empty again; closing automatically. The next non-empty report creates or reopens the tracking issue."
+                --comment "The change-review queue is empty again; closing automatically. Machine facts continue to be published in generated/maa-framework/machine-changes.md; the next non-empty report reopens or creates this tracking issue."
             fi
             exit 0
           fi
-          new_sha="$(printf '%s' "$(cat "${report}")" | sha256sum | cut -d' ' -f1)"
+          new_sha="$(printf '%s' "$(cat "${body}")" | sha256sum | cut -d' ' -f1)"
           if [ -n "${number}" ]; then
             current="$(gh issue view "${number}" --json body --jq .body)"
             current_sha="$(printf '%s' "${current}" | sha256sum | cut -d' ' -f1)"
             if [ "${current_sha}" != "${new_sha}" ]; then
-              gh issue edit "${number}" --body-file "${report}"
+              gh issue edit "${number}" --body-file "${body}"
               gh issue comment "${number}" \
-                --body "Review queue changed. The issue body lists the current releases; each item is a suspected trigger, not a verified behaviour change."
+                --body "Change queue updated. Machine-extracted facts are published automatically in generated/maa-framework/machine-changes.md; a curated narrative entry is optional (it adds interpretation, not detection)."
             fi
           else
-            gh issue create --title "${ISSUE_TITLE}" --label "${ISSUE_LABEL}" --body-file "${report}"
+            gh issue create --title "${ISSUE_TITLE}" --label "${ISSUE_LABEL}" --body-file "${body}"
           fi
 
       # Informational only: every snapshot tag should have a release, and every release should carry
