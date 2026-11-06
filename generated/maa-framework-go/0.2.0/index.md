@@ -13,6 +13,28 @@ Revision: `4d73c63952e35be1d7df08885b8802c3c5904291`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.2.0)
 
+## Changed since `0.1.0`
+
+- Added: `0`, removed: `0`, content changed: `11`
+- changed: `README.md` (documentation)
+- changed: `callback_agent.go` (binding-api)
+- changed: `controller_adb.go` (binding-api)
+- changed: `controller_custom.go` (binding-api)
+- changed: `controller_dbg.go` (binding-api)
+- changed: `controller_thrift.go` (binding-api)
+- changed: `controller_win32.go` (binding-api)
+- changed: `custom_action.go` (binding-api)
+- changed: `custom_recognizer.go` (binding-api)
+- changed: `instance.go` (binding-api)
+- changed: `resource.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.1.0](../0.1.0/index.md)
+- Next release: [0.2.1](../0.2.1/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

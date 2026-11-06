@@ -13,6 +13,22 @@ Revision: `f8f019ed4dc049873bc43c669b76c7833838a4cd`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.5.3)
 
+## Changed since `0.5.2`
+
+- Added: `2`, removed: `1`, content changed: `2`
+- added: `option.go` (binding-api)
+- added: `version.go` (binding-api)
+- changed: `instance.go` (binding-api)
+- changed: `task_job.go` (binding-api)
+- removed: `utility.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.5.2](../0.5.2/index.md)
+- Next release: [0.5.4](../0.5.4/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

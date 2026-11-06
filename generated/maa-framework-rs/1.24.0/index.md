@@ -15,6 +15,28 @@ Revision: `43908f69d4604e52d3993460d83dbda6bbd5d8fc`
 - [maa-framework](https://docs.rs/maa-framework/1.24.0)
 - [maa-framework-sys](https://docs.rs/maa-framework-sys/5.13.1)
 
+## Changed since `1.23.0`
+
+- Added: `0`, removed: `0`, content changed: `11`
+- changed: `Cargo.toml` (package-manifest)
+- changed: `maa-framework-sys/Cargo.toml` (package-manifest)
+- changed: `maa-framework-sys/src/bindings/dynamic_bindings.rs` (binding-api)
+- changed: `maa-framework-sys/src/bindings/static_bindings.rs` (binding-api)
+- changed: `maa-framework/src/agent_client.rs` (binding-api)
+- changed: `maa-framework/src/agent_server.rs` (binding-api)
+- changed: `maa-framework/src/common.rs` (binding-api)
+- changed: `maa-framework/src/controller.rs` (binding-api)
+- changed: `maa-framework/src/custom.rs` (binding-api)
+- changed: `maa-framework/src/pipeline.rs` (binding-api)
+- changed: `maa-framework/src/tasker.rs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.23.0](../1.23.0/index.md)
+- Next release: [1.25.0](../1.25.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

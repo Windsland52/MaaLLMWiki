@@ -18,6 +18,39 @@ Revision: `58442b7de8294ba5f98599f52f17141f4ab9156b`
 - [Maa.Framework.Binding.Native](https://www.nuget.org/packages/Maa.Framework.Binding.Native/5.3.0)
 - [Maa.Framework.Native](https://www.nuget.org/packages/Maa.Framework.Native/5.3.0)
 
+## Changed since `5.1.0`
+
+- Added: `1`, removed: `0`, content changed: `37`
+- added: `src/MaaFramework.Binding.Native/MaaController/MaaPlayCoverController.cs` (binding-api)
+- changed: `CHANGELOG.md` (documentation)
+- changed: `README.md` (documentation)
+- changed: `README.zh_cn.md` (documentation)
+- changed: `docs/articles/changelog-all-version.md` (documentation)
+- changed: `docs/articles/overview-of-wrapper-and-api.md` (documentation)
+- changed: `src/Directory.Packages.props` (package-manifest)
+- changed: `src/MaaFramework.Binding.Extensions/Notification/NotificationDetail.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Buffers/MaaImageBuffer.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Buffers/MaaImageListBuffer.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Buffers/MaaRectBuffer.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Buffers/MaaStringBuffer.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Buffers/MaaStringListBuffer.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Buffers/Toolkit/AdbDeviceListBuffer.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Buffers/Toolkit/DesktopWindowListBuffer.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaResource.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaTasker.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/MaaMarshaller.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/MaaMarshallingExtensions.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaAgentClient.cs` (binding-api)
+- ... and 17 more changed
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [5.1.0](../5.1.0/index.md)
+- Next release: [5.4.0](../5.4.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

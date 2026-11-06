@@ -18,6 +18,44 @@ Revision: `0120396d93e57ebdddf926c5d29b161d8f938355`
 - [Maa.Framework.Binding.Native](https://www.nuget.org/packages/Maa.Framework.Binding.Native/5.4.0)
 - [Maa.Framework.Native](https://www.nuget.org/packages/Maa.Framework.Native/5.4.0)
 
+## Changed since `5.3.0`
+
+- Added: `6`, removed: `0`, content changed: `30`
+- added: `src/MaaFramework.Binding.Native/Extensions/MaaCallbackEventArgsExtensions.cs` (binding-api)
+- added: `src/MaaFramework.Binding.Native/MaaController/MaaGamepadController.cs` (binding-api)
+- added: `src/MaaFramework.Binding/Enums/Binding/MaaHandleType.cs` (binding-api)
+- added: `src/MaaFramework.Binding/Enums/Controllers/GamepadButton.cs` (binding-api)
+- added: `src/MaaFramework.Binding/Enums/Controllers/GamepadTouch.cs` (binding-api)
+- added: `src/MaaFramework.Binding/Enums/Controllers/GamepadType.cs` (binding-api)
+- changed: `CHANGELOG.md` (documentation)
+- changed: `README.md` (documentation)
+- changed: `README.zh_cn.md` (documentation)
+- changed: `docs/articles/changelog-all-version.md` (documentation)
+- changed: `docs/articles/overview-of-wrapper-and-api.md` (documentation)
+- changed: `src/Directory.Packages.props` (package-manifest)
+- changed: `src/MaaFramework.Binding.Native/Abstractions/MaaCommon.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Extensions/DesktopWindowInfoExtensions.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaCustomController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/MaaDef.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaAgentServer.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaContext.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaController/MaaAdbController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaController/MaaCustomController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaController/MaaDbgController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaController/MaaPlayCoverController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaController/MaaWin32Controller.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaResource.cs` (binding-api)
+- ... and 10 more changed
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [5.3.0](../5.3.0/index.md)
+- Next release: [5.4.1](../5.4.1/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

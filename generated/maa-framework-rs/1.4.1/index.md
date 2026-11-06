@@ -15,6 +15,21 @@ Revision: `3c8f243c890e451a30ab3bd68d7ce1d2b54969f9`
 - [maa-framework](https://docs.rs/maa-framework/1.4.1)
 - [maa-framework-sys](https://docs.rs/maa-framework-sys/5.6.0)
 
+## Changed since `1.4.0`
+
+- Added: `0`, removed: `0`, content changed: `4`
+- changed: `Cargo.toml` (package-manifest)
+- changed: `maa-framework/src/controller.rs` (binding-api)
+- changed: `maa-framework/src/lib.rs` (binding-api)
+- changed: `maa-framework/src/toolkit.rs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.4.0](../1.4.0/index.md)
+- Next release: [1.5.0](../1.5.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

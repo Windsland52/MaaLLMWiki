@@ -13,6 +13,30 @@ Revision: `94a893a6122f618d2e5f9f626573edf1a4a3ec3d`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.3.0)
 
+## Changed since `0.2.5`
+
+- Added: `0`, removed: `0`, content changed: `13`
+- changed: `README.md` (documentation)
+- changed: `buffer_image.go` (binding-api)
+- changed: `buffer_image_list.go` (binding-api)
+- changed: `buffer_rect.go` (binding-api)
+- changed: `buffer_string.go` (binding-api)
+- changed: `buffer_string_list.go` (binding-api)
+- changed: `controller.go` (binding-api)
+- changed: `custom_action.go` (binding-api)
+- changed: `custom_recognizer.go` (binding-api)
+- changed: `custom_sync_context.go` (binding-api)
+- changed: `go.mod` (package-manifest)
+- changed: `resource.go` (binding-api)
+- changed: `utility.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.2.5](../0.2.5/index.md)
+- Next release: [0.4.0](../0.4.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

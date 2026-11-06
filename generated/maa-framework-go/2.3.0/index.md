@@ -14,6 +14,26 @@ Revision: `4c07a4f0f97dcd0f980c38000eae199466d2044d`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v2@v2.3.0)
 
+## Changed since `2.2.0`
+
+- Added: `0`, removed: `0`, content changed: `9`
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+- changed: `context.go` (binding-api)
+- changed: `controller.go` (binding-api)
+- changed: `go.mod` (package-manifest)
+- changed: `option.go` (binding-api)
+- changed: `resource.go` (binding-api)
+- changed: `tasker.go` (binding-api)
+- changed: `toolkit.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [2.2.0](../2.2.0/index.md)
+- Next release: [3.0.0](../3.0.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

@@ -18,6 +18,54 @@ Revision: `c958c7bebd312c804c4e603325a4072bc854fa1f`
 - [controller/macos](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v4/controller/macos@v4.0.0)
 - [controller/win32](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v4/controller/win32@v4.0.0)
 
+## Changed since `3.5.1`
+
+- Added: `16`, removed: `1`, content changed: `25`
+- added: `CHANGELOG.md` (documentation)
+- added: `action.go` (binding-api)
+- added: `action_result.go` (binding-api)
+- added: `blank_controller.go` (binding-api)
+- added: `class_selector.go` (binding-api)
+- added: `context_state.go` (binding-api)
+- added: `controller/macos/macos.go` (binding-api)
+- added: `doc.go` (binding-api)
+- added: `handle_state.go` (binding-api)
+- added: `json_codec.go` (binding-api)
+- added: `millis.go` (binding-api)
+- added: `raw_param.go` (binding-api)
+- added: `recognition.go` (binding-api)
+- added: `recognition_result.go` (binding-api)
+- added: `string_list.go` (binding-api)
+- added: `wait_freezes.go` (binding-api)
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+- changed: `agent_client.go` (binding-api)
+- changed: `agent_server.go` (binding-api)
+- changed: `context.go` (binding-api)
+- changed: `controller.go` (binding-api)
+- changed: `controller/adb/adb.go` (binding-api)
+- changed: `controller/gamepad/gamepad.go` (binding-api)
+- changed: `controller/win32/win32.go` (binding-api)
+- changed: `custom_action.go` (binding-api)
+- changed: `custom_controller.go` (binding-api)
+- changed: `custom_recognition.go` (binding-api)
+- changed: `event.go` (binding-api)
+- changed: `go.mod` (package-manifest)
+- changed: `job.go` (binding-api)
+- changed: `maa.go` (binding-api)
+- changed: `node.go` (binding-api)
+- changed: `pipeline.go` (binding-api)
+- changed: `rect.go` (binding-api)
+- changed: `resource.go` (binding-api)
+- ... and 5 more changed
+- removed: `dbg_controller.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [3.5.1](../3.5.1/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

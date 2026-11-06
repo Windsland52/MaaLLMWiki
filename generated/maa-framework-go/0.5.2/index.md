@@ -13,6 +13,18 @@ Revision: `7d25c7c1a53cd00d89d2a15557ee59ec19f69099`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.5.2)
 
+## Changed since `0.5.1`
+
+- Added: `0`, removed: `0`, content changed: `1`
+- changed: `controller.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.5.1](../0.5.1/index.md)
+- Next release: [0.5.3](../0.5.3/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

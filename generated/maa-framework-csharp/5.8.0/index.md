@@ -18,6 +18,34 @@ Revision: `41f49adb4a373e77af586b8bfc33c4316ea1da1f`
 - [Maa.Framework.Binding.Native](https://www.nuget.org/packages/Maa.Framework.Binding.Native/5.8.0)
 - [Maa.Framework.Native](https://www.nuget.org/packages/Maa.Framework.Native/5.8.0)
 
+## Changed since `5.6.0`
+
+- Added: `1`, removed: `0`, content changed: `16`
+- added: `src/MaaFramework.Binding.Native/MaaController/MaaWlRootsController.cs` (binding-api)
+- changed: `CHANGELOG.md` (documentation)
+- changed: `README.md` (documentation)
+- changed: `README.zh_cn.md` (documentation)
+- changed: `docs/articles/changelog-all-version.md` (documentation)
+- changed: `docs/articles/overview-of-wrapper-and-api.md` (documentation)
+- changed: `src/Directory.Packages.props` (package-manifest)
+- changed: `src/MaaFramework.Binding.Extensions/Notification/NotificationDetail.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaCustomController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/NativeBindingContext.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/Custom/IMaaCustomController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/Enums/Controllers/Win32InputMethod.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/Enums/Controllers/Win32ScreencapMethod.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/IMaaController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/MaaMsg.cs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [5.6.0](../5.6.0/index.md)
+- Next release: [5.10.0](../5.10.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

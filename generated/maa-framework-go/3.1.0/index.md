@@ -16,6 +16,21 @@ Revision: `44465802f963f1b4520384300ed6528e185525a6`
 - [controller/adb](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/adb@v3.1.0)
 - [controller/win32](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/win32@v3.1.0)
 
+## Changed since `3.0.0`
+
+- Added: `0`, removed: `0`, content changed: `4`
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+- changed: `pipeline.go` (binding-api)
+- changed: `tasker.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [3.0.0](../3.0.0/index.md)
+- Next release: [3.2.0](../3.2.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

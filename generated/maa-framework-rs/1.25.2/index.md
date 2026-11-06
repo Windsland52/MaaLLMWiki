@@ -15,6 +15,21 @@ Revision: `85b367bd16532f6c7631fe887f4c4da10a2ec58b`
 - [maa-framework](https://docs.rs/maa-framework/1.25.2)
 - [maa-framework-sys](https://docs.rs/maa-framework-sys/5.14.2)
 
+## Changed since `1.25.1`
+
+- Added: `0`, removed: `0`, content changed: `4`
+- changed: `Cargo.toml` (package-manifest)
+- changed: `maa-framework-sys/Cargo.toml` (package-manifest)
+- changed: `maa-framework/src/pipeline.rs` (binding-api)
+- changed: `maa-framework/src/toolkit.rs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.25.1](../1.25.1/index.md)
+- Next release: [1.26.0](../1.26.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

@@ -360,7 +360,7 @@ def _change_entries(
         lines.append(f"- ... and {remaining} more {label}")
 
 
-def _changed_since_lines(
+def render_changed_since_lines(
     inventory: SourceInventory,
     previous: SourceInventory | None,
 ) -> list[str]:
@@ -503,7 +503,7 @@ def render_version_indexes(
         "",
         "[Browse schemas](schemas.md)",
     ]
-    main_lines.extend(_changed_since_lines(inventory, previous))
+    main_lines.extend(render_changed_since_lines(inventory, previous))
     main_lines.extend(
         _version_navigation_lines(
             version=inventory.version,

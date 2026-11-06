@@ -15,6 +15,41 @@ Revision: `a459fe9bfd671634251fd796c473c0e23b26e026`
 - [maa-framework](https://docs.rs/maa-framework/1.3.0)
 - [maa-framework-sys](https://docs.rs/maa-framework-sys/5.5.0)
 
+## Changed since `1.2.0`
+
+- Added: `25`, removed: `0`, content changed: `3`
+- added: `maa-framework-sys/Cargo.toml` (package-manifest)
+- added: `maa-framework-sys/src/bindings/dynamic_bindings.rs` (binding-api)
+- added: `maa-framework-sys/src/bindings/shims.rs` (binding-api)
+- added: `maa-framework-sys/src/bindings/static_bindings.rs` (binding-api)
+- added: `maa-framework-sys/src/lib.rs` (binding-api)
+- added: `maa-framework/Cargo.toml` (package-manifest)
+- added: `maa-framework/src/agent_client.rs` (binding-api)
+- added: `maa-framework/src/agent_server.rs` (binding-api)
+- added: `maa-framework/src/buffer.rs` (binding-api)
+- added: `maa-framework/src/callback.rs` (binding-api)
+- added: `maa-framework/src/common.rs` (binding-api)
+- added: `maa-framework/src/context.rs` (binding-api)
+- added: `maa-framework/src/controller.rs` (binding-api)
+- added: `maa-framework/src/custom.rs` (binding-api)
+- added: `maa-framework/src/custom_controller.rs` (binding-api)
+- added: `maa-framework/src/error.rs` (binding-api)
+- added: `maa-framework/src/event_sink.rs` (binding-api)
+- added: `maa-framework/src/job.rs` (binding-api)
+- added: `maa-framework/src/lib.rs` (binding-api)
+- added: `maa-framework/src/notification.rs` (binding-api)
+- ... and 5 more added
+- changed: `Cargo.toml` (package-manifest)
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.2.0](../1.2.0/index.md)
+- Next release: [1.4.0](../1.4.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

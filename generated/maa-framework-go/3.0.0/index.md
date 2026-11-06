@@ -16,6 +16,46 @@ Revision: `aa5c08b4ec7a16c0d772cb106c716613b6be1891`
 - [controller/adb](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/adb@v3.0.0)
 - [controller/win32](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/win32@v3.0.0)
 
+## Changed since `2.3.0`
+
+- Added: `8`, removed: `4`, content changed: `17`
+- added: `controller/adb/adb.go` (binding-api)
+- added: `controller/win32/win32.go` (binding-api)
+- added: `dbg_controller.go` (binding-api)
+- added: `event.go` (binding-api)
+- added: `event_sinks_gen.go` (binding-api)
+- added: `maa.go` (binding-api)
+- added: `pipeline.go` (binding-api)
+- added: `target.go` (binding-api)
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+- changed: `agent_client.go` (binding-api)
+- changed: `agent_server.go` (binding-api)
+- changed: `context.go` (binding-api)
+- changed: `controller.go` (binding-api)
+- changed: `custom_action.go` (binding-api)
+- changed: `custom_controller.go` (binding-api)
+- changed: `custom_recognition.go` (binding-api)
+- changed: `go.mod` (package-manifest)
+- changed: `job.go` (binding-api)
+- changed: `rect.go` (binding-api)
+- changed: `resource.go` (binding-api)
+- changed: `status.go` (binding-api)
+- changed: `tasker.go` (binding-api)
+- changed: `toolkit.go` (binding-api)
+- changed: `version.go` (binding-api)
+- removed: `globals.go` (binding-api)
+- removed: `json.go` (binding-api)
+- removed: `notification.go` (binding-api)
+- removed: `option.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [2.3.0](../2.3.0/index.md)
+- Next release: [3.1.0](../3.1.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

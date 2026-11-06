@@ -17,6 +17,19 @@ Revision: `2a6d70566b51b1372e07d04c355114ac443b0065`
 - [controller/gamepad](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/gamepad@v3.5.1)
 - [controller/win32](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/win32@v3.5.1)
 
+## Changed since `3.5.0`
+
+- Added: `0`, removed: `0`, content changed: `2`
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [3.5.0](../3.5.0/index.md)
+- Next release: [4.0.0](../4.0.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

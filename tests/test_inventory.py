@@ -1316,3 +1316,41 @@ def test_version_index_navigation_links_neighbours() -> None:
         "index.md"
     ]
     assert "Next release" not in latest
+
+
+def test_binding_index_shows_navigation_and_changed_since() -> None:
+    previous = _inventory("3.5.1", [_artifact("rect.go", kind=ArtifactKind.BINDING_API)])
+    current = _inventory(
+        "4.0.0",
+        [
+            _artifact("new.go", kind=ArtifactKind.BINDING_API, blob="3" * 40),
+            _artifact("rect.go", kind=ArtifactKind.BINDING_API, blob="2" * 40),
+        ],
+    )
+    compatibility = BindingCompatibility(
+        source_id="maa-framework-go",
+        binding_version="4.0.0",
+        binding_revision="a" * 40,
+        framework_version="5.15.0",
+        status=CompatibilityStatus.DECLARED,
+        evidence_paths=["README.md"],
+        note="declared",
+    )
+
+    pages = render_binding_version(
+        BINDING_SPECS["maa-framework-go"],
+        current,
+        compatibility,
+        "https://github.com/MaaXYZ/maa-framework-go",
+        [],
+        previous=previous,
+        previous_version="3.5.1",
+        next_version=None,
+    )
+
+    page = pages["index.md"]
+    assert "## Changed since `3.5.1`" in page
+    assert "## Navigation" in page
+    assert "- Previous release: [3.5.1](../3.5.1/index.md)" in page
+    assert "Next release" not in page
+    assert "new.go" in page

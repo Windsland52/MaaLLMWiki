@@ -13,6 +13,37 @@ Revision: `4387543b637e01f99063bad28c6c765224630226`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.5.0)
 
+## Changed since `0.4.1`
+
+- Added: `1`, removed: `10`, content changed: `9`
+- added: `custom_controller.go` (binding-api)
+- changed: `README.md` (documentation)
+- changed: `callback_agent.go` (binding-api)
+- changed: `controller.go` (binding-api)
+- changed: `custom_action.go` (binding-api)
+- changed: `custom_recognizer.go` (binding-api)
+- changed: `custom_sync_context.go` (binding-api)
+- changed: `instance.go` (binding-api)
+- changed: `resource.go` (binding-api)
+- changed: `utility.go` (binding-api)
+- removed: `buffer_image.go` (binding-api)
+- removed: `buffer_image_list.go` (binding-api)
+- removed: `buffer_rect.go` (binding-api)
+- removed: `buffer_string.go` (binding-api)
+- removed: `buffer_string_list.go` (binding-api)
+- removed: `controller_adb.go` (binding-api)
+- removed: `controller_custom.go` (binding-api)
+- removed: `controller_dbg.go` (binding-api)
+- removed: `controller_thrift.go` (binding-api)
+- removed: `controller_win32.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.4.1](../0.4.1/index.md)
+- Next release: [0.5.1](../0.5.1/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

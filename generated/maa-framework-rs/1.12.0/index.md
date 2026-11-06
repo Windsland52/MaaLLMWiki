@@ -15,6 +15,24 @@ Revision: `667449fd068748a5824c18b95973d6636c12f401`
 - [maa-framework](https://docs.rs/maa-framework/1.12.0)
 - [maa-framework-sys](https://docs.rs/maa-framework-sys/5.9.2)
 
+## Changed since `1.11.0`
+
+- Added: `0`, removed: `0`, content changed: `7`
+- changed: `Cargo.toml` (package-manifest)
+- changed: `maa-framework-sys/Cargo.toml` (package-manifest)
+- changed: `maa-framework-sys/src/lib.rs` (binding-api)
+- changed: `maa-framework/src/agent_server.rs` (binding-api)
+- changed: `maa-framework/src/error.rs` (binding-api)
+- changed: `maa-framework/src/lib.rs` (binding-api)
+- changed: `maa-framework/src/toolkit.rs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.11.0](../1.11.0/index.md)
+- Next release: [1.13.0](../1.13.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

@@ -13,6 +13,19 @@ Revision: `ae0db8ff119d47bf0820df6248d8ea31f3da1383`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.2.2)
 
+## Changed since `0.2.1`
+
+- Added: `0`, removed: `0`, content changed: `2`
+- changed: `cgo.go` (binding-api)
+- changed: `controller_custom.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.2.1](../0.2.1/index.md)
+- Next release: [0.2.3](../0.2.3/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

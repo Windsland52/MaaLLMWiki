@@ -13,6 +13,26 @@ Revision: `01dae55e3d777429ee563cec3ea9eeabbdaa83d2`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.5.4)
 
+## Changed since `0.5.3`
+
+- Added: `3`, removed: `2`, content changed: `4`
+- added: `README_zh.md` (documentation)
+- added: `callback.go` (binding-api)
+- added: `sync_context.go` (binding-api)
+- changed: `README.md` (documentation)
+- changed: `controller.go` (binding-api)
+- changed: `instance.go` (binding-api)
+- changed: `resource.go` (binding-api)
+- removed: `callback_agent.go` (binding-api)
+- removed: `custom_sync_context.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.5.3](../0.5.3/index.md)
+- Next release: [0.6.0](../0.6.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

@@ -13,6 +13,25 @@ Revision: `086995fe00997f6f99e4ec596f3a5c7e6793465f`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.6.0)
 
+## Changed since `0.5.4`
+
+- Added: `1`, removed: `1`, content changed: `6`
+- added: `rect.go` (binding-api)
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+- changed: `custom_action.go` (binding-api)
+- changed: `custom_recognizer.go` (binding-api)
+- changed: `job.go` (binding-api)
+- changed: `sync_context.go` (binding-api)
+- removed: `task_job.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.5.4](../0.5.4/index.md)
+- Next release: [1.0.0](../1.0.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

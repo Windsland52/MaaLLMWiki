@@ -17,6 +17,24 @@ Revision: `12fa39e1bdd5cee550ffc9a8724c77b8f62f5fc1`
 - [controller/gamepad](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/gamepad@v3.5.0)
 - [controller/win32](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/win32@v3.5.0)
 
+## Changed since `3.4.0`
+
+- Added: `1`, removed: `0`, content changed: `6`
+- added: `controller/gamepad/gamepad.go` (binding-api)
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+- changed: `controller.go` (binding-api)
+- changed: `custom_controller.go` (binding-api)
+- changed: `dbg_controller.go` (binding-api)
+- changed: `maa.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [3.4.0](../3.4.0/index.md)
+- Next release: [3.5.1](../3.5.1/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

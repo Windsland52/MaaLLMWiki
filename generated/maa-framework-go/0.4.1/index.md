@@ -13,6 +13,24 @@ Revision: `a44bab12fc6fd95ad8201e26895b27d0aed3ab3f`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.4.1)
 
+## Changed since `0.4.0`
+
+- Added: `0`, removed: `0`, content changed: `7`
+- changed: `buffer_image.go` (binding-api)
+- changed: `controller.go` (binding-api)
+- changed: `controller_adb.go` (binding-api)
+- changed: `controller_custom.go` (binding-api)
+- changed: `controller_dbg.go` (binding-api)
+- changed: `controller_thrift.go` (binding-api)
+- changed: `controller_win32.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.4.0](../0.4.0/index.md)
+- Next release: [0.5.0](../0.5.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

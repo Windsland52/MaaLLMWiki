@@ -9,6 +9,18 @@ Revision: `31af071f6183c9b1bae71e815ed70c85b1e27fb8`
 - MaaFramework version: `not declared`
 - Basis: No exact MaaFramework version declaration was found in indexed package metadata.
 
+## Changed since `0.2.1`
+
+- Added: `0`, removed: `0`, content changed: `1`
+- changed: `Cargo.toml` (package-manifest)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.2.1](../0.2.1/index.md)
+- Next release: [1.0.0](../1.0.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

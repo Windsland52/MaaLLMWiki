@@ -9,6 +9,20 @@ Revision: `5f88d652118a89f058ee9212c911078e687fc145`
 - MaaFramework version: `not declared`
 - Basis: No exact MaaFramework version declaration was found in indexed package metadata.
 
+## Changed since `0.2.2`
+
+- Added: `1`, removed: `0`, content changed: `2`
+- added: `README_zh.md` (documentation)
+- changed: `Cargo.toml` (package-manifest)
+- changed: `README.md` (documentation)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.2.2](../0.2.2/index.md)
+- Next release: [1.0.1](../1.0.1/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

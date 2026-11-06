@@ -15,6 +15,19 @@ Revision: `793bb4a890b1979cfa52e2f25f74d864dec347f7`
 - [maa-framework](https://docs.rs/maa-framework/1.18.1)
 - [maa-framework-sys](https://docs.rs/maa-framework-sys/5.11.0)
 
+## Changed since `1.18.0`
+
+- Added: `0`, removed: `0`, content changed: `2`
+- changed: `Cargo.toml` (package-manifest)
+- changed: `maa-framework/src/controller.rs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.18.0](../1.18.0/index.md)
+- Next release: [1.19.0](../1.19.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

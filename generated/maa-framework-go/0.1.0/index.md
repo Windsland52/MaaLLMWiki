@@ -13,6 +13,12 @@ Revision: `c6a24d651a3b7d3f7189c9d58403ad3685a34f57`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.1.0)
 
+## Navigation
+
+- [All versions](../index.md)
+- Next release: [0.2.0](../0.2.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

@@ -16,6 +16,28 @@ Revision: `92137ed09f8fe506dd26a49e096c9e0adc0181bf`
 - [controller/adb](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/adb@v3.4.0)
 - [controller/win32](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/win32@v3.4.0)
 
+## Changed since `3.3.1`
+
+- Added: `1`, removed: `0`, content changed: `10`
+- added: `node.go` (binding-api)
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+- changed: `agent_server.go` (binding-api)
+- changed: `controller.go` (binding-api)
+- changed: `custom_action.go` (binding-api)
+- changed: `custom_controller.go` (binding-api)
+- changed: `custom_recognition.go` (binding-api)
+- changed: `event.go` (binding-api)
+- changed: `pipeline.go` (binding-api)
+- changed: `resource.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [3.3.1](../3.3.1/index.md)
+- Next release: [3.5.0](../3.5.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

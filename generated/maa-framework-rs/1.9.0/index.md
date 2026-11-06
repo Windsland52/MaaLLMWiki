@@ -15,6 +15,37 @@ Revision: `fec62e60cf5555cfdb2bc3180668de1955ac3cdc`
 - [maa-framework](https://docs.rs/maa-framework/1.9.0)
 - [maa-framework-sys](https://docs.rs/maa-framework-sys/5.8.0-beta.2)
 
+## Changed since `1.8.0`
+
+- Added: `0`, removed: `0`, content changed: `20`
+- changed: `Cargo.toml` (package-manifest)
+- changed: `maa-framework-sys/Cargo.toml` (package-manifest)
+- changed: `maa-framework-sys/src/bindings/dynamic_bindings.rs` (binding-api)
+- changed: `maa-framework-sys/src/bindings/shims.rs` (binding-api)
+- changed: `maa-framework-sys/src/bindings/static_bindings.rs` (binding-api)
+- changed: `maa-framework-sys/src/lib.rs` (binding-api)
+- changed: `maa-framework/src/agent_client.rs` (binding-api)
+- changed: `maa-framework/src/agent_server.rs` (binding-api)
+- changed: `maa-framework/src/buffer.rs` (binding-api)
+- changed: `maa-framework/src/context.rs` (binding-api)
+- changed: `maa-framework/src/controller.rs` (binding-api)
+- changed: `maa-framework/src/custom.rs` (binding-api)
+- changed: `maa-framework/src/custom_controller.rs` (binding-api)
+- changed: `maa-framework/src/job.rs` (binding-api)
+- changed: `maa-framework/src/notification.rs` (binding-api)
+- changed: `maa-framework/src/pipeline.rs` (binding-api)
+- changed: `maa-framework/src/resource.rs` (binding-api)
+- changed: `maa-framework/src/tasker.rs` (binding-api)
+- changed: `maa-framework/src/toolkit.rs` (binding-api)
+- changed: `maa-framework/src/util.rs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.8.0](../1.8.0/index.md)
+- Next release: [1.10.0](../1.10.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

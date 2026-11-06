@@ -17,6 +17,7 @@ from .inventory import (
     ls_tree_blobs,
     markdown_metadata,
     registered_release_versions,
+    render_changed_since_lines,
     render_prereleases_page,
     resolve_included_in,
     write_yaml,
@@ -431,6 +432,10 @@ def render_binding_version(
     compatibility: BindingCompatibility,
     repository_url: str,
     package_documentation: list[PackageDocumentation],
+    *,
+    previous: SourceInventory | None = None,
+    previous_version: str | None = None,
+    next_version: str | None = None,
 ) -> dict[str, str]:
     framework = compatibility.framework_version or "not declared"
     index_lines = [
@@ -455,6 +460,23 @@ def render_binding_version(
     if package_documentation:
         index_lines.extend(["", spec.package_heading, ""])
         index_lines.extend(f"- [{item.label}]({item.url})" for item in package_documentation)
+    if previous is not None:
+        index_lines.extend(render_changed_since_lines(inventory, previous))
+    index_lines.extend(
+        [
+            "",
+            "## Navigation",
+            "",
+            "- [All versions](../index.md)",
+        ]
+    )
+    if previous_version is not None:
+        index_lines.append(
+            f"- Previous release: [{previous_version}](../{previous_version}/index.md)"
+        )
+    if next_version is not None:
+        index_lines.append(f"- Next release: [{next_version}](../{next_version}/index.md)")
+    index_lines.append("- [Prereleases](../prereleases.md)")
     index_lines.extend(
         [
             "",
@@ -494,6 +516,10 @@ def _write_binding_indexes(
     releases: list[ReleaseRecord],
     prereleases: list[PrereleaseRecord],
     package_documentation: list[PackageDocumentation],
+    *,
+    previous: SourceInventory | None = None,
+    previous_version: str | None = None,
+    next_version: str | None = None,
 ) -> None:
     output_root = root / "generated" / spec.source_id
     version_root = output_root / inventory.version
@@ -501,7 +527,14 @@ def _write_binding_indexes(
     for path in version_root.glob("*.md"):
         path.unlink()
     for relative_path, content in render_binding_version(
-        spec, inventory, compatibility, repository_url, package_documentation
+        spec,
+        inventory,
+        compatibility,
+        repository_url,
+        package_documentation,
+        previous=previous,
+        previous_version=previous_version,
+        next_version=next_version,
     ).items():
         (version_root / relative_path).write_text(content, encoding="utf-8", newline="\n")
 
@@ -596,7 +629,8 @@ def sync_binding_history(
     catalog = _load_compatibility(root)
     catalog.bindings = [item for item in catalog.bindings if item.source_id != source_id]
     compatibilities: list[BindingCompatibility] = []
-    for release in releases:
+    previous_inventory: SourceInventory | None = None
+    for release_index, release in enumerate(releases):
         inventory = SourceInventory(
             source_id=source_id,
             version=release.version,
@@ -620,7 +654,13 @@ def sync_binding_history(
             releases,
             prereleases,
             package_documentation,
+            previous=previous_inventory,
+            previous_version=releases[release_index - 1].version if release_index > 0 else None,
+            next_version=(
+                releases[release_index + 1].version if release_index + 1 < len(releases) else None
+            ),
         )
+        previous_inventory = inventory
 
     catalog.bindings.extend(compatibilities)
     catalog.bindings.sort(key=lambda item: (item.source_id, item.binding_version))

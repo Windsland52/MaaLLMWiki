@@ -18,6 +18,12 @@ Revision: `ca34dd25bf6ce4dd20a24c19dae0b7190f4d7bcb`
 - [Maa.Framework.Binding.Native](https://www.nuget.org/packages/Maa.Framework.Binding.Native/5.1.0)
 - [Maa.Framework.Native](https://www.nuget.org/packages/Maa.Framework.Native/5.1.0)
 
+## Navigation
+
+- [All versions](../index.md)
+- Next release: [5.3.0](../5.3.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

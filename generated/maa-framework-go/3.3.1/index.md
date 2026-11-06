@@ -16,6 +16,22 @@ Revision: `c954be148f8d9e6f0539dc6ef23e610babc60aa4`
 - [controller/adb](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/adb@v3.3.1)
 - [controller/win32](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v3/controller/win32@v3.3.1)
 
+## Changed since `3.3.0`
+
+- Added: `0`, removed: `1`, content changed: `4`
+- changed: `controller.go` (binding-api)
+- changed: `event.go` (binding-api)
+- changed: `resource.go` (binding-api)
+- changed: `tasker.go` (binding-api)
+- removed: `event_sinks.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [3.3.0](../3.3.0/index.md)
+- Next release: [3.4.0](../3.4.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

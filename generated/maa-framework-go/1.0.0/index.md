@@ -14,6 +14,32 @@ Revision: `b94931436039509e2ca5bc70871de93d9124205d`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v1.0.0)
 
+## Changed since `0.6.0`
+
+- Added: `3`, removed: `3`, content changed: `9`
+- added: `context.go` (binding-api)
+- added: `json.go` (binding-api)
+- added: `tasker.go` (binding-api)
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+- changed: `controller.go` (binding-api)
+- changed: `custom_action.go` (binding-api)
+- changed: `custom_controller.go` (binding-api)
+- changed: `custom_recognizer.go` (binding-api)
+- changed: `job.go` (binding-api)
+- changed: `rect.go` (binding-api)
+- changed: `resource.go` (binding-api)
+- removed: `callback.go` (binding-api)
+- removed: `instance.go` (binding-api)
+- removed: `sync_context.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.6.0](../0.6.0/index.md)
+- Next release: [1.0.1](../1.0.1/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

@@ -15,6 +15,28 @@ Revision: `4cfaa24ff0027e3ec4263ea1e5e89e36ec33cdcc`
 - [maa-framework](https://docs.rs/maa-framework/1.6.0)
 - [maa-framework-sys](https://docs.rs/maa-framework-sys/5.7.0)
 
+## Changed since `1.5.0`
+
+- Added: `0`, removed: `0`, content changed: `11`
+- changed: `Cargo.toml` (package-manifest)
+- changed: `maa-framework-sys/Cargo.toml` (package-manifest)
+- changed: `maa-framework-sys/src/bindings/dynamic_bindings.rs` (binding-api)
+- changed: `maa-framework-sys/src/lib.rs` (binding-api)
+- changed: `maa-framework/Cargo.toml` (package-manifest)
+- changed: `maa-framework/src/buffer.rs` (binding-api)
+- changed: `maa-framework/src/callback.rs` (binding-api)
+- changed: `maa-framework/src/controller.rs` (binding-api)
+- changed: `maa-framework/src/custom.rs` (binding-api)
+- changed: `maa-framework/src/custom_controller.rs` (binding-api)
+- changed: `maa-framework/src/lib.rs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.5.0](../1.5.0/index.md)
+- Next release: [1.7.0](../1.7.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

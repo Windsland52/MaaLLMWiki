@@ -14,6 +14,21 @@ Revision: `80db80c2ef4c253cd098b7a4ce06ed722d8f11a2`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v1.3.0)
 
+## Changed since `1.2.0`
+
+- Added: `0`, removed: `0`, content changed: `4`
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+- changed: `context.go` (binding-api)
+- changed: `resource.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.2.0](../1.2.0/index.md)
+- Next release: [1.4.0](../1.4.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

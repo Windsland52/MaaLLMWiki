@@ -14,6 +14,19 @@ Revision: `acc89d3bf5d5a9f953e3b6aa2c7ffb63416fcd4a`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v1.5.1)
 
+## Changed since `1.5.0`
+
+- Added: `0`, removed: `0`, content changed: `2`
+- changed: `context.go` (binding-api)
+- changed: `custom_recognition.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.5.0](../1.5.0/index.md)
+- Next release: [1.6.0](../1.6.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

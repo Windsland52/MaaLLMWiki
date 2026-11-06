@@ -13,6 +13,25 @@ Revision: `70d67c9d3b32503ee7a6a2c1560d066d0c2bd0b5`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.4.0)
 
+## Changed since `0.3.0`
+
+- Added: `2`, removed: `0`, content changed: `6`
+- added: `job.go` (binding-api)
+- added: `task_job.go` (binding-api)
+- changed: `README.md` (documentation)
+- changed: `controller.go` (binding-api)
+- changed: `controller_custom.go` (binding-api)
+- changed: `instance.go` (binding-api)
+- changed: `resource.go` (binding-api)
+- changed: `status.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.3.0](../0.3.0/index.md)
+- Next release: [0.4.1](../0.4.1/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

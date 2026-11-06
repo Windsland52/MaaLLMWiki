@@ -18,6 +18,47 @@ Revision: `27c69a5b8ff41b6002ead71f403a16f442a7168e`
 - [Maa.Framework.Binding.Native](https://www.nuget.org/packages/Maa.Framework.Binding.Native/5.10.0)
 - [Maa.Framework.Native](https://www.nuget.org/packages/Maa.Framework.Native/5.10.0)
 
+## Changed since `5.8.0`
+
+- Added: `9`, removed: `1`, content changed: `47`
+- added: `src/MaaFramework.Binding.Native/Interop/Toolkit/MacOS/MaaToolkitMacOS.cs` (binding-api)
+- added: `src/MaaFramework.Binding.Native/MaaController/MaaAndroidNativeController.cs` (binding-api)
+- added: `src/MaaFramework.Binding.Native/MaaController/MaaMacOSController.cs` (binding-api)
+- added: `src/MaaFramework.Binding.Native/MaaController/MaaRecordController.cs` (binding-api)
+- added: `src/MaaFramework.Binding.Native/MaaController/MaaReplayController.cs` (binding-api)
+- added: `src/MaaFramework.Binding/Enums/Controllers/MacOSInputMethod.cs` (binding-api)
+- added: `src/MaaFramework.Binding/Enums/Controllers/MacOSPermission.cs` (binding-api)
+- added: `src/MaaFramework.Binding/Enums/Controllers/MacOSScreencapMethod.cs` (binding-api)
+- added: `src/MaaFramework.Binding/Enums/Controllers/Win32ScreencapMethods.cs` (binding-api)
+- changed: `CHANGELOG.md` (documentation)
+- changed: `README.md` (documentation)
+- changed: `README.zh_cn.md` (documentation)
+- changed: `docs/articles/changelog-all-version.md` (documentation)
+- changed: `docs/articles/overview-of-wrapper-and-api.md` (documentation)
+- changed: `src/Directory.Packages.props` (package-manifest)
+- changed: `src/MaaFramework.Binding.Extensions/Notification/NotificationDetail.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Extensions/Notification/NotificationDetailContext.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Extensions/Notification/NotificationHandler.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Extensions/Notification/NotificationHandlerRegistry.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Extensions/README.md` (documentation)
+- changed: `src/MaaFramework.Binding.Extensions/README.zh_cn.md` (documentation)
+- changed: `src/MaaFramework.Binding.Native/Extensions/DesktopWindowInfoExtensions.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaCustomController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/Instance/MaaTasker.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/Framework/MaaDef.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/MaaMarshaller.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/MaaMarshallingExtensions.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/NativeLibrary.cs` (binding-api)
+- ... and 27 more changed
+- removed: `src/MaaFramework.Binding/Enums/Controllers/Win32ScreencapMethod.cs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [5.8.0](../5.8.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

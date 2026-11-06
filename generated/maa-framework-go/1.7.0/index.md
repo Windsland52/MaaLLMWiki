@@ -14,6 +14,21 @@ Revision: `e413b08e148bd3e1fb1193f3df03ff304ac8150f`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v1.7.0)
 
+## Changed since `1.6.1`
+
+- Added: `0`, removed: `0`, content changed: `4`
+- changed: `README.md` (documentation)
+- changed: `README_zh.md` (documentation)
+- changed: `resource.go` (binding-api)
+- changed: `tasker.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.6.1](../1.6.1/index.md)
+- Next release: [2.0.0](../2.0.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

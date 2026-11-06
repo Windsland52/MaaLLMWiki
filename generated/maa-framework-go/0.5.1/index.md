@@ -13,6 +13,17 @@ Revision: `a4eeaafaa352231372be9a2488f3cc0bba67aa5d`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.5.1)
 
+## Changed since `0.5.0`
+
+- No indexed material changed since `0.5.0`.
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.5.0](../0.5.0/index.md)
+- Next release: [0.5.2](../0.5.2/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

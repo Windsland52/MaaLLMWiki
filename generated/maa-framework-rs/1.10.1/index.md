@@ -15,6 +15,21 @@ Revision: `a7af19aaaf404a7e58ead208f87e7a430b82ef2b`
 - [maa-framework](https://docs.rs/maa-framework/1.10.1)
 - [maa-framework-sys](https://docs.rs/maa-framework-sys/5.9.0-alpha.1)
 
+## Changed since `1.10.0`
+
+- Added: `0`, removed: `0`, content changed: `4`
+- changed: `Cargo.toml` (package-manifest)
+- changed: `maa-framework/src/controller.rs` (binding-api)
+- changed: `maa-framework/src/resource.rs` (binding-api)
+- changed: `maa-framework/src/tasker.rs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [1.10.0](../1.10.0/index.md)
+- Next release: [1.11.0](../1.11.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

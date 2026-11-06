@@ -14,6 +14,20 @@ Revision: `055aae8ac39bc591f623a7fc2817b82921bf94c2`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go/v2@v2.2.0)
 
+## Changed since `2.1.0`
+
+- Added: `2`, removed: `0`, content changed: `1`
+- added: `agent_client.go` (binding-api)
+- added: `agent_server.go` (binding-api)
+- changed: `tasker.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [2.1.0](../2.1.0/index.md)
+- Next release: [2.3.0](../2.3.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

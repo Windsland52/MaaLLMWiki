@@ -13,6 +13,18 @@ Revision: `0067b6f36211538745d953dc948fbbebf52ad45b`
 
 - [root package](https://pkg.go.dev/github.com/MaaXYZ/maa-framework-go@v0.2.3)
 
+## Changed since `0.2.2`
+
+- Added: `0`, removed: `0`, content changed: `1`
+- changed: `callback_agent.go` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [0.2.2](../0.2.2/index.md)
+- Next release: [0.2.4](../0.2.4/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)

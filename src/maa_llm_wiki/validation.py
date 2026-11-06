@@ -305,14 +305,24 @@ def _check_binding_generated(
     if not generated_root.is_dir():
         return [f"{source_id} generated directory is missing"]
 
-    for inventory in inventories:
+    ordered = sorted(inventories, key=lambda item: _version_key(item.version))
+    for position, inventory in enumerate(ordered):
         version_root = generated_root / inventory.version
         if not version_root.is_dir():
             continue
         entry = compatibility.get((source_id, inventory.version))
         if entry is None:
             continue
-        rendered_index = render_binding_version(spec, inventory, entry, source.url, [])
+        rendered_index = render_binding_version(
+            spec,
+            inventory,
+            entry,
+            source.url,
+            [],
+            previous=ordered[position - 1] if position > 0 else None,
+            previous_version=ordered[position - 1].version if position > 0 else None,
+            next_version=(ordered[position + 1].version if position + 1 < len(ordered) else None),
+        )
         deterministic = {
             "api.md": render_artifact_page(
                 spec, inventory, source.url, ArtifactKind.BINDING_API, "Public binding API"

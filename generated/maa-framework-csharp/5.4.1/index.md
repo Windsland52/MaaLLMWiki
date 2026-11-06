@@ -18,6 +18,37 @@ Revision: `61a2036dc57eead29f5cc4f2ea64b21eb82e5b1b`
 - [Maa.Framework.Binding.Native](https://www.nuget.org/packages/Maa.Framework.Binding.Native/5.4.1)
 - [Maa.Framework.Native](https://www.nuget.org/packages/Maa.Framework.Native/5.4.1)
 
+## Changed since `5.4.0`
+
+- Added: `0`, removed: `2`, content changed: `18`
+- changed: `CHANGELOG.md` (documentation)
+- changed: `docs/articles/changelog-all-version.md` (documentation)
+- changed: `docs/articles/overview-of-wrapper-and-api.md` (documentation)
+- changed: `src/MaaFramework.Binding.Extensions/Notification/NotificationHandler.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Abstractions/MaaCommon.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/Interop/MaaCustomExtensions.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaAgentServer.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaContext.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaResource.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/MaaTasker.cs` (binding-api)
+- changed: `src/MaaFramework.Binding.Native/NativeBindingContext.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/Custom/IMaaCustomAction.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/Custom/IMaaCustomController.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/Custom/IMaaCustomRecognition.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/Enums/Binding/MaaHandleType.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/IMaaAgentServer.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/IMaaResource.cs` (binding-api)
+- changed: `src/MaaFramework.Binding/MaaDef.cs` (binding-api)
+- removed: `src/MaaFramework.Binding.Native/Extensions/MaaCallbackEventArgsExtensions.cs` (binding-api)
+- removed: `src/MaaFramework.Binding/Custom/IMaaCustomResource.cs` (binding-api)
+
+## Navigation
+
+- [All versions](../index.md)
+- Previous release: [5.4.0](../5.4.0/index.md)
+- Next release: [5.6.0](../5.6.0/index.md)
+- [Prereleases](../prereleases.md)
+
 ## Sources
 
 - [Public binding API](api.md)
