@@ -39,7 +39,11 @@ tests/                          确定性仓库检查
 LICENSE                         代码许可（MIT）
 LICENSE-DATA                    目录数据许可（CC BY 4.0）
 NOTICE                          上游文档摘录的许可与归属
+SECURITY.md                     安全策略与私密报告渠道
+CONTRIBUTING.md                 贡献流程、内容分类与必需检查
 ```
+
+安全报告渠道见 [SECURITY.md](SECURITY.md)，贡献流程与内容分类见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 生成的索引逐条包含标题、首段摘要与 pinned commit 指向的原始出处；它不复制上游全文，查询时无需人工分块、embedding 或向量数据库。MaaFramework 源码保留在它自己的 Git 仓库中，按选定的不可变修订检索。
 
@@ -120,6 +124,30 @@ uv run maa-wiki-verify-bundle --bundle maa-llm-wiki-catalog-latest.zip
 ```
 
 `maa-wiki-verify-bundle` 只读取 zip，离线运行；传入 `--expect-version` / `--expect-revision` 可以把下载内容绑定到预期的 tag 与 commit。发现方式、校验规则与保证/非保证范围以 `CATALOG-CONTRACT.md` 为准。
+
+完整性要求更高时，使用带版本的资产；由当前 workflow 发布的新快照还提供 `SHA256SUMS`。同时下载该 release 的 `SHA256SUMS` 与两个 zip 资产，然后在资产所在目录、用可运行 `sha256sum` 的 shell 校验：
+
+```bash
+sha256sum -c SHA256SUMS
+```
+
+`SHA256SUMS` 覆盖版本化 zip 与 `latest` 别名（两者内容相同）；它本身也是 release 资产，可对照 Releases API 返回的资产摘要核对它。更早的 release 没有 `SHA256SUMS` 资产。`maa-wiki-verify-bundle` 也会打印整包 `sha256=…`，可直接与该文件或 release 资产摘要对照。
+
+版本化 zip 还带有 Sigstore build provenance，可用 GitHub CLI 校验（需要联网与已发布的证明记录）：
+
+```bash
+gh attestation verify maa-llm-wiki-catalog-vX.Y.Z.zip --repo Windsland52/MaaLLMWiki
+```
+
+该证明只能说明资产由本仓库 publish workflow 在对应 commit 构建，不代表目录内容正确；`latest` 别名与 `SHA256SUMS` 不是被证明的资产，引入 provenance 之前的历史 release 也没有该证明。
+
+无需检出本仓库时，可以用 `uvx` 直接运行校验工具（包名 `maa-llm-wiki`，从 git 构建；需要 uv，uvx 会按 `requires-python` 使用 Python 3.13，首次运行会构建并缓存）：
+
+```bash
+uvx --from "maa-llm-wiki @ git+https://github.com/Windsland52/MaaLLMWiki" maa-wiki-verify-bundle --bundle maa-llm-wiki-catalog-vX.Y.Z.zip
+```
+
+怀疑完整性或供应链问题时，请按 `SECURITY.md` 私下报告，不要开公开 issue；贡献流程见 `CONTRIBUTING.md`。
 
 ## Agent skill
 

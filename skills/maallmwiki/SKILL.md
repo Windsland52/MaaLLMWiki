@@ -32,6 +32,7 @@ MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官�
     - GitHub 不通畅时：jsDelivr CDN 镜像同一相对路径——`https://cdn.jsdelivr.net/gh/Windsland52/MaaLLMWiki@main/<相对路径>`（`@main` 是分支引用，CDN 可能缓存一段时间，索引场景可接受；`@tag`/`@commit` 引用为不可变缓存，与版本锁定原则一致）；
     - 其他 GitHub 加速代理同理可用；
     - 正式产物：GitHub Releases 的 catalog zip（经 Releases API 发现最新版本，一次下载本地解压；manifest 记录每个文件的 SHA-256）。最新快照另有稳定便利别名 `https://github.com/Windsland52/MaaLLMWiki/releases/latest/download/maa-llm-wiki-catalog-latest.zip`（由当前 publish workflow 发布时上传，历史 release 可能没有；会被覆盖，不可复现）；需要复现时用带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip`，下载后可运行 `uv run maa-wiki-verify-bundle --bundle <zip> [--expect-version vX.Y.Z --expect-revision <40 位 SHA>]` 离线校验。字段语义与保证范围见 `CATALOG-CONTRACT.md`。
+    - 完整性敏感时：优先带版本的 `maa-llm-wiki-catalog-vX.Y.Z.zip`，并按 README / `CATALOG-CONTRACT.md` 用该 release 的 `SHA256SUMS`（`sha256sum -c SHA256SUMS`）与 build provenance（`gh attestation verify maa-llm-wiki-catalog-vX.Y.Z.zip --repo Windsland52/MaaLLMWiki`）校验；`latest` 别名不是被证明的资产。
 
     不引入 chunking / embedding / vector / MCP——目录就是分层 markdown，直接读。
 

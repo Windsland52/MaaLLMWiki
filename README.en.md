@@ -48,7 +48,12 @@ tests/                          Deterministic repository checks
 LICENSE                         Code licence (MIT)
 LICENSE-DATA                    Catalog data licence (CC BY 4.0)
 NOTICE                          Licence and attribution for upstream documentation excerpts
+SECURITY.md                     Security policy and private reporting channel
+CONTRIBUTING.md                 Contribution workflow, content classes, and required checks
 ```
+
+Security reporting is described in [SECURITY.md](SECURITY.md); the contribution workflow and content
+classes are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Each generated entry carries a title, a first-paragraph excerpt, and a link to the original source
 at a pinned commit; the index does not copy upstream full text, and querying it needs no manual
@@ -186,6 +191,44 @@ uv run maa-wiki-verify-bundle --bundle maa-llm-wiki-catalog-latest.zip
 `maa-wiki-verify-bundle` reads only the zip and works offline; `--expect-version` /
 `--expect-revision` tie the downloaded bytes to the intended tag and commit. Discovery, verification
 rules, and the guarantees/non-guarantees are defined by `CATALOG-CONTRACT.md`.
+
+For stronger integrity, use the versioned asset; snapshots published by the current workflow also
+provide a `SHA256SUMS` asset. Download that release's `SHA256SUMS` together with both zip assets,
+then check them in the directory that contains the assets, in a shell where `sha256sum` is
+available:
+
+```bash
+sha256sum -c SHA256SUMS
+```
+
+`SHA256SUMS` covers both the versioned zip and the `latest` alias (identical content); it is itself
+a release asset — compare its digest against the asset digest returned by the Releases API when you
+need to authenticate the checksum file. Releases published before this asset existed have no
+`SHA256SUMS`. `maa-wiki-verify-bundle` also prints the whole-bundle `sha256=…`, which you can compare
+with that file or the release asset digest.
+
+The versioned zip also carries Sigstore build provenance, verifiable with the GitHub CLI (network
+access and a published attestation record required):
+
+```bash
+gh attestation verify maa-llm-wiki-catalog-vX.Y.Z.zip --repo Windsland52/MaaLLMWiki
+```
+
+The attestation only shows that the asset was produced by this repository's publish workflow at the
+attested commit; it does not make the catalog content correct. The `latest` alias and `SHA256SUMS`
+are not attested subjects, and releases published before provenance was introduced have no
+attestation.
+
+When you do not have a checkout of this repository, run the verifier directly with `uvx` (package
+name `maa-llm-wiki`, built from git; requires uv, and uvx selects Python 3.13 from `requires-python`;
+the first run builds and caches the package):
+
+```bash
+uvx --from "maa-llm-wiki @ git+https://github.com/Windsland52/MaaLLMWiki" maa-wiki-verify-bundle --bundle maa-llm-wiki-catalog-vX.Y.Z.zip
+```
+
+For suspected integrity or supply-chain problems, report privately through `SECURITY.md` — do not
+open a public issue. Contribution workflow: `CONTRIBUTING.md`.
 
 ## Agent skill
 
