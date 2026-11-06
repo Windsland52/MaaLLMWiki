@@ -12,7 +12,11 @@ from urllib.parse import quote
 
 import yaml
 
-from .extract import build_machine_changes, render_machine_changes_page
+from .extract import (
+    build_machine_changes,
+    render_machine_changes_page,
+    render_machine_symbols_page,
+)
 from .models import (
     ArtifactKind,
     MachineChangeCatalog,
@@ -560,6 +564,10 @@ def render_release_index(
             "## Machine changes",
             "",
             "[Browse structured machine changes](./machine-changes.md)",
+            "",
+            "## Machine symbols",
+            "",
+            "[Browse machine changes by symbol](./machine-symbols.md)",
         ]
     )
     return "\n".join(lines) + "\n"
@@ -646,6 +654,11 @@ def _write_release_pages(
     if machine_changes is not None:
         (output_root / "machine-changes.md").write_text(
             render_machine_changes_page(machine_changes, repository_url),
+            encoding="utf-8",
+            newline="\n",
+        )
+        (output_root / "machine-symbols.md").write_text(
+            render_machine_symbols_page(machine_changes, repository_url),
             encoding="utf-8",
             newline="\n",
         )

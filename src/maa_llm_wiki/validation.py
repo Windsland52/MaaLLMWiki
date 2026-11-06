@@ -494,13 +494,20 @@ def _check_machine_changes(
                     f"machine change references an unindexed path: {change.version}/{path}"
                 )
 
-    from .extract import render_machine_changes_page
+    from .extract import render_machine_changes_page, render_machine_symbols_page
 
     _check_page(
         root / "generated" / "maa-framework" / "machine-changes.md",
         render_machine_changes_page(catalog, source.url),
         label="MaaFramework",
         description="machine change catalog",
+        errors=errors,
+    )
+    _check_page(
+        root / "generated" / "maa-framework" / "machine-symbols.md",
+        render_machine_symbols_page(catalog, source.url),
+        label="MaaFramework",
+        description="machine symbol index",
         errors=errors,
     )
 
@@ -786,6 +793,7 @@ def validate_repository(root: Path) -> list[str]:
                 "topics.md",
                 "behaviour-changes.md",
                 "machine-changes.md",
+                "machine-symbols.md",
             },
             **{source_id: {"index.md", "prereleases.md"} for source_id in BINDING_SPECS},
         },

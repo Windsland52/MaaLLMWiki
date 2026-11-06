@@ -76,3 +76,7 @@ Select a version before using framework facts or APIs.
 ## Machine changes
 
 [Browse structured machine changes](./machine-changes.md)
+
+## Machine symbols
+
+[Browse machine changes by symbol](./machine-symbols.md)

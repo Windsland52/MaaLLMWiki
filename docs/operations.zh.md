@@ -15,6 +15,7 @@ generated/maa-framework/index.md
   -> topics.md                     # curated topic routes (rendered from source-map.yaml)
   -> behaviour-changes.md          # curated behaviour changes (rendered from semantic-changes.yaml)
   -> machine-changes.md            # machine-extracted change facts (generated from upstream diffs)
+-> machine-symbols.md            # 同样的记录按符号索引
   -> <version>/index.md            # ends with a "Changed since <previous indexed release>" section
        -> documentation/index.md -> {en-us,zh-cn,tools}.md
        -> documentation/diagrams.md        # since 5.10.3
@@ -43,6 +44,7 @@ MaaFramework 5.x tag，且每个 release 在 pinned commit 的 `src/Directory.Pa
 | `topics.md` | 由 `sources/maa-framework/source-map.yaml` 渲染的策展主题路由：每个主题的每个变体给出适用版本（`applies_to`）、revision、pinned 文件链接、符号与字面搜索词。 |
 | `behaviour-changes.md` | 由 `sources/maa-framework/semantic-changes.yaml` 渲染的策展行为历史，按首次承载该变更的 release 分组并带 pinned 链接。可选的解读层。 |
 | `machine-changes.md` | 从上游 diff 机器抽取的事实：枚举值、公开函数、回调消息、JSON-schema properties/enums/defaults/required、interface 协议版本与绑定 API 名称。每条结构化记录带上游证据（文本改动为逐字 added/removed 行，schema 改动为规范化 JSON 片段）与已索引路径。某对 release 的已索引材料发生变化但未产生结构化记录时，会显式记录一条 `unclassified` 条目。 |
+| `machine-symbols.md` | 同样的记录按符号重新索引：该符号首次出现的 release 与之后每次触及它的 release，并链接到对应版本页。回答“哪个版本引入 X”最快的一页。 |
 | `<version>/index.md` | 单个 release 的分域索引。末尾的 `Changed since <previous indexed release>` 列出相对上一版的已索引材料新增、内容变化（按 git blob id）与删除，并给出计数、每类列出上限与 `... and K more <label>` 溢出提示。首个索引版本写 `Changed since the previous release` 并说明没有上一份清单。这是已索引**材料**移动，不是行为变更。 |
 
 每版本索引是随包提供的廉价摘要；`maa-wiki-diff`（见下）打印完整、无截断的列表。行为变更在
@@ -126,7 +128,7 @@ notes → attest provenance → push tag → 发布 release。release 正文在 
 | `SHA256SUMS` | 覆盖两个 zip 下载名的校验和。 |
 | `verify_bundle.py` | `src/maa_llm_wiki/verify_bundle.py` 的逐字节副本；零依赖校验器。 |
 
-版本化 zip 包含 `sources/`、`generated/`、`schemas/` 与 `catalog-manifest.json`。manifest 的
+版本化 zip 包含目录数据（`sources/`、`generated/`、`schemas/`）、manifest（`catalog-manifest.json`）以及说明与授权它的随包文档（README、契约、贡献/安全说明、运维指南、`LICENSE`、`LICENSE-DATA`、`NOTICE`）。manifest 的
 `api_version` 为 `maa-llm-wiki-catalog/v1`；`wiki_revision` 记录构建提交；`working_tree_clean` 记录
 构建是否来自干净树；`catalog_version` 记录 bundle 的 tag（旧 bundle 可能没有该字段）；`sources` 固定
 MaaFramework、Go、Rust 与 C# 的版本与 40 位 commit；`files` 为除 manifest 自身外每个文件的 `path`、

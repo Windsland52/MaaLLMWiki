@@ -16,6 +16,7 @@ generated/maa-framework/index.md
   -> topics.md                     # curated topic routes (rendered from source-map.yaml)
   -> behaviour-changes.md          # curated behaviour changes (rendered from semantic-changes.yaml)
   -> machine-changes.md            # machine-extracted change facts (generated from upstream diffs)
+-> machine-symbols.md            # the same facts indexed by symbol
   -> <version>/index.md            # ends with a "Changed since <previous indexed release>" section
        -> documentation/index.md -> {en-us,zh-cn,tools}.md
        -> documentation/diagrams.md        # since 5.10.3
@@ -50,6 +51,7 @@ LGPL-3.0 (see `NOTICE`).
 | `topics.md` | Curated topic routes rendered from `sources/maa-framework/source-map.yaml`: per topic, every variant's applicable release (`applies_to`), revision, pinned file links, symbols, and literal search terms. |
 | `behaviour-changes.md` | Curated behaviour history rendered from `sources/maa-framework/semantic-changes.yaml`, grouped by the release that first carried the change, with pinned links. Optional interpretation layer. |
 | `machine-changes.md` | Machine-extracted facts from upstream diffs: enum values, public functions, callback messages, JSON-schema properties/enums/defaults/required, interface protocol versions, and binding API names. Each structured record carries upstream evidence (verbatim added/removed lines for text changes, canonical JSON fragments for schema changes) and indexed paths. Records an explicit `unclassified` entry when a release pair changed indexed material without producing a structured record. |
+| `machine-symbols.md` | The same records grouped by symbol: first release where the symbol appears and every later release that touched it, with links into the per-release pages. The quickest answer to "which release introduced X". |
 | `<version>/index.md` | Domain index for one release. It ends with `Changed since <previous indexed release>`: indexed material added, content-changed (by git blob id) and removed relative to the previous release, with counts, a per-class listing cap, and an `... and K more <label>` overflow line. The first indexed release says `Changed since the previous release` and notes there is no previous inventory. This is indexed **material** movement, not a behaviour change. |
 
 The per-version index is the cheap, bundle-local summary; `maa-wiki-diff` (see below) prints the
@@ -147,7 +149,9 @@ tag without its intended body.
 | `SHA256SUMS` | Checksums covering both zip download names. |
 | `verify_bundle.py` | Byte-for-byte copy of `src/maa_llm_wiki/verify_bundle.py`; the dependency-free verifier. |
 
-The versioned zip contains `sources/`, `generated/`, `schemas/`, and `catalog-manifest.json`. The
+The versioned zip contains `sources/`, `generated/`, `schemas/`, `catalog-manifest.json`, and the
+consumer documents (READMEs, `CATALOG-CONTRACT.md`, `CONTRIBUTING.md`, `SECURITY.md`,
+`docs/operations.md` and its Chinese mirror, `LICENSE`, `LICENSE-DATA`, `NOTICE`). The
 manifest's `api_version` is `maa-llm-wiki-catalog/v1`; `wiki_revision` records the build commit;
 `working_tree_clean` records whether the build came from a clean tree; `catalog_version` records the
 bundle's tag (older bundles may omit it); `sources` pins the MaaFramework, Go, Rust and C# versions

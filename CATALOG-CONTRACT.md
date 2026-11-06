@@ -46,8 +46,11 @@ released assets with their digests, sizes and file counts, and documentation lin
 compare URL for the change range. The publish workflow is scheduled twice a day (03:17 and 15:17
 UTC) and can also be dispatched manually.
 
-The bundle contains only catalog data: `sources/`, `generated/`, `schemas/`, and
-`catalog-manifest.json`. It contains no Python code, no workflows, and no upstream source code.
+The bundle contains the catalog data (`sources/`, `generated/`, `schemas/`), the manifest
+(`catalog-manifest.json`), and the consumer documents that describe and license it (the READMEs,
+this contract, `CONTRIBUTING.md`, `SECURITY.md`, `docs/operations.md` with its Chinese mirror,
+`LICENSE`, `LICENSE-DATA`, `NOTICE`). It contains no Python code, no workflows, and no upstream
+source code.
 `generated/` includes the rendered navigation pages described in §7.1 (see also §3).
 
 The catalog pins three external binding sources beside MaaFramework: Go, Rust and C#. Each is
@@ -275,10 +278,13 @@ The bundle ships three rendered navigation pages under `generated/maa-framework/
 | `topics.md` | The curated routing topics: for every topic, each variant with its `applies_to` release, pinned revision, file links, symbols and literal search terms. |
 | `behaviour-changes.md` | The curated semantic changes, grouped by the release in which behaviour first changed, with links pinned to that release's commit. Optional interpretation layer. |
 | `machine-changes.md` | The machine-extracted change facts: enum values, public functions, callback messages, JSON-schema properties/enums/defaults/required, interface protocol versions and binding API names — one record per mechanically detected change, with the verbatim upstream line and its indexed paths. |
+| `machine-symbols.md` | The same facts indexed by symbol instead of by release: for every recorded symbol, the release that first introduced it and the later releases that touched it. Use it to answer "which release introduced X". |
 
 Use `topics.md` for topic-level or cross-version routing questions ("where is feature X documented
-in this release"), `machine-changes.md` for "which release introduced symbol X" questions answered
-from extracted facts, and `behaviour-changes.md` for curated "when did behaviour X change" narrative.
+in this release"), `machine-symbols.md` for "which release introduced symbol X" questions (one row
+per symbol, with the first appearance and later movement), `machine-changes.md` for the per-release
+record with upstream evidence, and `behaviour-changes.md` for curated "when did behaviour X change"
+narrative.
 Together they are the readable view of the catalogs, so a consumer does not need to know the YAML
 layout:
 

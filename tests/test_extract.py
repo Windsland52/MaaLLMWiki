@@ -7,7 +7,11 @@ from pathlib import Path
 
 import yaml
 
-from maa_llm_wiki.extract import build_machine_changes, render_machine_changes_page
+from maa_llm_wiki.extract import (
+    build_machine_changes,
+    render_machine_changes_page,
+    render_machine_symbols_page,
+)
 from maa_llm_wiki.inventory import discover_maafw_artifacts
 from maa_llm_wiki.models import (
     MachineChange,
@@ -358,3 +362,35 @@ def test_machine_page_lists_per_release_counts() -> None:
     assert "| Release | Records | Unclassified |" in page
     assert "| 5.15.0 | 1 |  |" in page
     assert "| 5.14.0 | 1 | yes |" in page
+
+
+def test_machine_symbols_page_indexes_by_symbol() -> None:
+    changes = [
+        MachineChange(
+            version="5.15.0",
+            commit="a" * 40,
+            change="added",
+            kind=MachineChangeKind.ENUM_VALUE,
+            symbol="MaaFoo",
+            quote="#define MaaFoo 1",
+            paths=["include/MaaFramework/MaaDef.h"],
+        ),
+        MachineChange(
+            version="5.16.0",
+            commit="b" * 40,
+            change="removed",
+            kind=MachineChangeKind.ENUM_VALUE,
+            symbol="MaaFoo",
+            quote="#define MaaFoo 1",
+            paths=["include/MaaFramework/MaaDef.h"],
+        ),
+    ]
+    catalog = MachineChangeCatalog(source_id="maafw", changes=changes)
+
+    page = render_machine_symbols_page(catalog, "https://github.com/example/catalog")
+
+    assert (
+        "| `MaaFoo` | enum-value | [5.15.0](./5.15.0/index.md) | [5.16.0](./5.16.0/index.md) |"
+        in page
+    )
+    assert "1 symbol/kind pairs over 1 symbols." in page

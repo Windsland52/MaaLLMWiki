@@ -14,6 +14,19 @@ from .schemas import SCHEMA_MODELS
 from .validation import load_repository_catalog, load_source_inventory, validate_repository
 
 _BUNDLE_DIRECTORIES = ("generated", "schemas", "sources")
+# The release artifact ships the consumer-facing documents with it, so a download is
+# self-contained: what it is, the guarantees, the licences that cover the data.
+_BUNDLE_ROOT_FILES = (
+    "README.md",
+    "README.en.md",
+    "CATALOG-CONTRACT.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "LICENSE",
+    "LICENSE-DATA",
+    "NOTICE",
+)
+_BUNDLE_DOC_FILES = ("docs/operations.md", "docs/operations.zh.md")
 _ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 _MANIFEST_NAME = "catalog-manifest.json"
 _CATALOG_VERSION_PATTERN = re.compile(r"^v\d+\.\d+\.\d+$")
@@ -80,7 +93,14 @@ def _is_published_path(relative: str, source_directories: set[str]) -> bool:
 def _bundle_paths(root: Path) -> list[Path]:
     """Files the catalog publishes, or ValueError naming the first file outside the allowlist."""
     source_directories = _source_directories(root)
-    paths: list[Path] = []
+    paths: list[Path] = [
+        candidate
+        for candidate in (
+            *(root / name for name in _BUNDLE_ROOT_FILES),
+            *(root / name for name in _BUNDLE_DOC_FILES),
+        )
+        if candidate.is_file()
+    ]
     for directory in _BUNDLE_DIRECTORIES:
         directory_root = root / directory
         if not directory_root.is_dir():

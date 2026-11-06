@@ -1,4 +1,5 @@
 import hashlib
+import re
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -146,7 +147,36 @@ def test_catalog_bundle_is_self_describing_and_integrity_checked(tmp_path: Path)
         bundled = CatalogBundleManifest.model_validate_json(archive.read("catalog-manifest.json"))
         assert bundled == manifest
         assert {source.source_id for source in bundled.sources} == {"maafw", *BINDING_SPECS}
+        bundled_paths = {record.path for record in bundled.files}
+        for name in (
+            "README.md",
+            "CATALOG-CONTRACT.md",
+            "LICENSE",
+            "LICENSE-DATA",
+            "NOTICE",
+            "docs/operations.md",
+            "docs/operations.zh.md",
+        ):
+            assert name in bundled_paths, f"bundle should carry {name}"
         for record in bundled.files:
             content = archive.read(record.path)
             assert len(content) == record.size_bytes
             assert hashlib.sha256(content).hexdigest() == record.sha256
+
+
+def test_bundle_readme_links_resolve_inside_the_bundle(tmp_path: Path) -> None:
+    output = tmp_path / "catalog.zip"
+    manifest = build_catalog_bundle(root=ROOT, output=output, allow_dirty=True)
+    bundled_paths = {record.path for record in manifest.files}
+
+    missing: list[str] = []
+    for name in ("README.md", "README.en.md"):
+        text = (ROOT / name).read_text(encoding="utf-8")
+        for target in re.findall(r"\]\(([^)\s]+)\)", text):
+            if target.startswith(("http://", "https://", "#", "mailto:")):
+                continue
+            if target.startswith("<") and target.endswith(">"):
+                target = target[1:-1]
+            if target not in bundled_paths:
+                missing.append(f"{name} -> {target}")
+    assert missing == []
