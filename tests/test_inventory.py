@@ -21,11 +21,13 @@ from maa_llm_wiki.inventory import (
     git_text,
     markdown_metadata,
     render_release_index,
+    render_version_indexes,
     resolve_included_in,
     sync_maafw_history,
     sync_maafw_inventory,
 )
 from maa_llm_wiki.models import (
+    ArtifactKind,
     CompatibilityStatus,
     PrereleaseRecord,
     ReleaseCatalog,
@@ -35,6 +37,7 @@ from maa_llm_wiki.models import (
     RepositorySource,
     RepositoryStatus,
     SemanticChangeCatalog,
+    SourceArtifact,
     SourceInventory,
     SourceMap,
 )
@@ -707,6 +710,8 @@ def test_sync_maafw_inventory_writes_top_level_pages(tmp_path: Path) -> None:
     assert "# MaaFramework prerelease registry" in pages["prereleases.md"]
     assert "# Topic routes" in pages["topics.md"]
     assert "# Behaviour changes" in pages["behaviour-changes.md"]
+    version_index = (generated / "1.0.0" / "index.md").read_text(encoding="utf-8")
+    assert "## Changed since the previous release" in version_index
 
 
 def test_sync_maafw_history_renders_top_level_pages_once(
@@ -728,10 +733,13 @@ def test_sync_maafw_history_renders_top_level_pages_once(
     real_release_pages = inventory._write_release_pages
 
     def counting_version_indexes(
-        root_path: Path, source_inventory: SourceInventory, repository_url: str
+        root_path: Path,
+        source_inventory: SourceInventory,
+        repository_url: str,
+        previous: SourceInventory | None = None,
     ) -> None:
         calls["version"] += 1
-        real_version_indexes(root_path, source_inventory, repository_url)
+        real_version_indexes(root_path, source_inventory, repository_url, previous)
 
     def counting_release_pages(
         root_path: Path,
@@ -766,3 +774,183 @@ def test_sync_maafw_history_renders_top_level_pages_once(
     assert "- [1.1.0](./1.1.0/index.md)" in pages["index.md"]
     assert "# Topic routes" in pages["topics.md"]
     assert "# Behaviour changes" in pages["behaviour-changes.md"]
+    generated = root / "generated" / "maa-framework"
+    first_index = (generated / "1.0.0" / "index.md").read_text(encoding="utf-8")
+    second_index = (generated / "1.1.0" / "index.md").read_text(encoding="utf-8")
+    assert "## Changed since the previous release" in first_index
+    assert "## Changed since `1.0.0`" in second_index
+    assert "- Added: `0`, removed: `0`, content changed: `1`" in second_index
+
+
+def _inventory(version: str, artifacts: list[SourceArtifact]) -> SourceInventory:
+    return SourceInventory(
+        source_id="maafw",
+        version=version,
+        revision="a" * 40,
+        artifacts=artifacts,
+    )
+
+
+def _artifact(
+    path: str,
+    *,
+    kind: ArtifactKind = ArtifactKind.DOCUMENTATION,
+    blob: str | None = "f" * 40,
+    title: str = "Title",
+    summary: str = "Summary",
+) -> SourceArtifact:
+    return SourceArtifact(path=path, kind=kind, blob=blob, title=title, summary=summary)
+
+
+def test_render_version_indexes_reports_added_changed_and_removed() -> None:
+    previous = _inventory(
+        "1.0.0",
+        [
+            _artifact("docs/a.md", blob="1" * 40),
+            _artifact("docs/b.md", blob="2" * 40),
+            _artifact("docs/gone.md", blob="3" * 40),
+            _artifact("include/Old.h", kind=ArtifactKind.PUBLIC_API, blob="4" * 40),
+        ],
+    )
+    current = _inventory(
+        "1.1.0",
+        [
+            _artifact("docs/a.md", blob="9" * 40),
+            _artifact("docs/b.md", blob="2" * 40),
+            _artifact("docs/new.md", blob="5" * 40),
+            _artifact("include/New.h", kind=ArtifactKind.PUBLIC_API, blob="6" * 40),
+        ],
+    )
+
+    page = render_version_indexes(current, "https://example.invalid", previous=previous)["index.md"]
+
+    assert "## Changed since `1.0.0`" in page
+    assert "- Added: `2`, removed: `2`, content changed: `1`" in page
+    assert "- added: `docs/new.md` (documentation)" in page
+    assert "- added: `include/New.h` (public-api)" in page
+    assert "- changed: `docs/a.md` (documentation)" in page
+    assert "- removed: `docs/gone.md` (documentation)" in page
+    assert "- removed: `include/Old.h` (public-api)" in page
+    section = page.split("## Changed since `1.0.0`", 1)[1]
+    assert "docs/b.md" not in section
+    assert (
+        section.index("- added: `docs/new.md`")
+        < section.index("- added: `include/New.h`")
+        < section.index("- changed: `docs/a.md`")
+        < section.index("- removed: `docs/gone.md`")
+    )
+
+
+def test_render_version_indexes_falls_back_to_metadata_without_blobs() -> None:
+    previous = _inventory(
+        "1.0.0",
+        [
+            _artifact("docs/blobless.md", blob=None, title="Old", summary="Same"),
+            _artifact("docs/mixed.md", blob=None, title="Same", summary="Same"),
+            _artifact("docs/plain.md", blob=None, title="Same", summary="Same"),
+        ],
+    )
+    current = _inventory(
+        "1.1.0",
+        [
+            _artifact("docs/blobless.md", blob=None, title="New", summary="Same"),
+            _artifact("docs/mixed.md", blob="7" * 40, title="Same", summary="Same"),
+            _artifact("docs/plain.md", blob=None, title="Same", summary="Same"),
+        ],
+    )
+
+    page = render_version_indexes(current, "https://example.invalid", previous=previous)["index.md"]
+
+    assert "- Added: `0`, removed: `0`, content changed: `1`" in page
+    assert "- changed: `docs/blobless.md` (documentation)" in page
+    section = page.split("## Changed since `1.0.0`", 1)[1]
+    assert "docs/mixed.md" not in section
+    assert "docs/plain.md" not in section
+
+
+def test_render_version_indexes_sorts_and_caps_change_lists() -> None:
+    previous = _inventory("1.0.0", [_artifact("docs/keep.md", blob="0" * 40)])
+    added = [_artifact(f"docs/new-{index:02d}.md", blob=f"{index:040d}") for index in range(25)]
+    current = _inventory("1.1.0", [_artifact("docs/keep.md", blob="0" * 40), *added])
+
+    page = render_version_indexes(current, "https://example.invalid", previous=previous)["index.md"]
+
+    assert "- Added: `25`, removed: `0`, content changed: `0`" in page
+    section = page.split("## Changed since `1.0.0`", 1)[1]
+    entry_lines = [line for line in section.splitlines() if line.startswith("- added: ")]
+    assert entry_lines == sorted(entry_lines)
+    assert len(entry_lines) == 20
+    assert entry_lines[0] == "- added: `docs/new-00.md` (documentation)"
+    assert entry_lines[-1] == "- added: `docs/new-19.md` (documentation)"
+    assert "- ... and 5 more added" in section
+
+
+def test_render_version_indexes_reports_no_change() -> None:
+    previous = _inventory("1.0.0", [_artifact("docs/a.md", blob="1" * 40), _artifact("docs/b.md")])
+    current = _inventory("1.1.0", [_artifact("docs/a.md", blob="1" * 40), _artifact("docs/b.md")])
+
+    page = render_version_indexes(current, "https://example.invalid", previous=previous)["index.md"]
+
+    assert "## Changed since `1.0.0`" in page
+    assert "- No indexed material changed since `1.0.0`." in page
+    assert "- Added:" not in page
+
+
+def test_render_version_indexes_marks_the_first_registered_release() -> None:
+    current = _inventory("1.0.0", [_artifact("docs/a.md")])
+
+    page = render_version_indexes(current, "https://example.invalid")["index.md"]
+
+    assert "## Changed since the previous release" in page
+    assert "- First indexed release; no previous inventory to compare." in page
+    assert render_version_indexes(current, "https://example.invalid") == render_version_indexes(
+        current, "https://example.invalid", previous=None
+    )
+
+
+def test_render_version_indexes_only_changes_the_index_page() -> None:
+    previous = _inventory("1.0.0", [_artifact("docs/a.md", blob="1" * 40)])
+    current = _inventory(
+        "1.1.0",
+        [_artifact("docs/a.md", blob="1" * 40), _artifact("tools/pipeline.schema.json")],
+    )
+
+    without_previous = render_version_indexes(current, "https://example.invalid")
+    with_previous = render_version_indexes(current, "https://example.invalid", previous=previous)
+
+    assert set(without_previous) == set(with_previous)
+    for name in without_previous:
+        if name != "index.md":
+            assert without_previous[name] == with_previous[name]
+    assert without_previous["index.md"] != with_previous["index.md"]
+
+
+def test_sync_maafw_inventory_uses_the_previous_registered_inventory(tmp_path: Path) -> None:
+    repository = _init_repository(tmp_path / "upstream")
+    first = _commit_files(repository, {"docs/test.md": "# Test\n\nFirst.\n"})
+    _git(repository, "tag", "v1.0.0")
+    second = _commit_files(repository, {"docs/test.md": "# Test\n\nSecond.\n"})
+    _git(repository, "tag", "v1.1.0")
+    registered = [
+        ReleaseRecord(version="1.0.0", tag="v1.0.0", commit=first, released_at=FIXED_DATE),
+        ReleaseRecord(version="1.1.0", tag="v1.1.0", commit=second, released_at=FIXED_DATE),
+    ]
+    root = _write_maafw_root(tmp_path, registered, revision=second)
+    previous = SourceInventory(
+        source_id="maafw",
+        version="1.0.0",
+        revision=first,
+        artifacts=discover_maafw_artifacts(repository, first),
+    )
+    _write_yaml(
+        root / "sources" / "maa-framework" / "inventories" / "1.0.0.yaml",
+        previous.model_dump(mode="json"),
+    )
+
+    sync_maafw_inventory(root=root, repository=repository, version="1.1.0")
+
+    index = (root / "generated" / "maa-framework" / "1.1.0" / "index.md").read_text(
+        encoding="utf-8"
+    )
+    assert "## Changed since `1.0.0`" in index
+    assert "- Added: `0`, removed: `0`, content changed: `1`" in index

@@ -20,3 +20,28 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.1.4`
+
+- Added: `0`, removed: `0`, content changed: `23`
+- changed: `docs/en_us/1.1-QuickStarted.md` (documentation)
+- changed: `docs/en_us/2.1-Integration.md` (documentation)
+- changed: `docs/en_us/2.2-IntegratedInterfaceOverview.md` (documentation)
+- changed: `docs/en_us/2.4-ControlMethods.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/en_us/3.2-ProjectInterface.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/en_us/4.1-BuildGuide.md` (documentation)
+- changed: `docs/zh_cn/1.1-快速开始.md` (documentation)
+- changed: `docs/zh_cn/1.2-术语解释.md` (documentation)
+- changed: `docs/zh_cn/2.1-集成文档.md` (documentation)
+- changed: `docs/zh_cn/2.2-集成接口一览.md` (documentation)
+- changed: `docs/zh_cn/2.4-控制方式说明.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `docs/zh_cn/3.2-ProjectInterface协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `docs/zh_cn/4.1-构建指南.md` (documentation)
+- changed: `include/MaaFramework/Instance/MaaTasker.h` (public-api)
+- changed: `source/binding/NodeJS/src/apis/constant.d.ts` (binding-api)
+- changed: `source/binding/Python/maa/buffer.py` (binding-api)
+- ... and 3 more changed

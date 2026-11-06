@@ -20,3 +20,14 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.4.2`
+
+- Added: `0`, removed: `0`, content changed: `7`
+- changed: `docs/en_us/2.1-Integration.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/zh_cn/2.1-集成文档.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `source/binding/NodeJS/src/apis/tasker.d.ts` (binding-api)

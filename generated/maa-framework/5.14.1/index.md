@@ -20,3 +20,18 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.14.0`
+
+- Added: `2`, removed: `1`, content changed: `8`
+- added: `docs/static/architecture-en.svg` (documentation-asset)
+- added: `docs/static/architecture.svg` (documentation-asset)
+- changed: `docs/en_us/1.2-ExplanationOfTerms.md` (documentation)
+- changed: `docs/en_us/2.2-IntegratedInterfaceOverview.md` (documentation)
+- changed: `docs/en_us/2.4-ControlMethods.md` (documentation)
+- changed: `docs/zh_cn/1.2-术语解释.md` (documentation)
+- changed: `docs/zh_cn/2.2-集成接口一览.md` (documentation)
+- changed: `docs/zh_cn/2.4-控制方式说明.md` (documentation)
+- changed: `source/binding/Python/maa/controller.py` (binding-api)
+- changed: `tools/interface_import.schema.json` (schema)
+- removed: `docs/static/architecture.png` (documentation-asset)

@@ -20,3 +20,10 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.12.2`
+
+- Added: `0`, removed: `0`, content changed: `3`
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `tools/interface.schema.json` (schema)

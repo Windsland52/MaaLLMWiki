@@ -20,3 +20,26 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.10.2`
+
+- Added: `1`, removed: `0`, content changed: `18`
+- added: `docs/static/architecture.png` (documentation-asset)
+- changed: `docs/en_us/1.1-QuickStarted.md` (documentation)
+- changed: `docs/en_us/1.2-ExplanationOfTerms.md` (documentation)
+- changed: `docs/en_us/2.2-IntegratedInterfaceOverview.md` (documentation)
+- changed: `docs/en_us/2.4-ControlMethods.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/zh_cn/1.1-快速开始.md` (documentation)
+- changed: `docs/zh_cn/1.2-术语解释.md` (documentation)
+- changed: `docs/zh_cn/2.2-集成接口一览.md` (documentation)
+- changed: `docs/zh_cn/2.4-控制方式说明.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `include/MaaControlUnit/ControlUnitAPI.h` (public-api)
+- changed: `include/MaaFramework/MaaDef.h` (public-api)
+- changed: `source/binding/NodeJS/src/apis/controller.d.ts` (binding-api)
+- changed: `source/binding/Python/maa/controller.py` (binding-api)
+- changed: `source/binding/Python/maa/define.py` (binding-api)
+- changed: `tools/interface.schema.json` (schema)

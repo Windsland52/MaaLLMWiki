@@ -20,3 +20,24 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.6.0`
+
+- Added: `0`, removed: `0`, content changed: `17`
+- changed: `docs/en_us/2.4-ControlMethods.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/en_us/4.1-BuildGuide.md` (documentation)
+- changed: `docs/zh_cn/2.4-控制方式说明.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `docs/zh_cn/4.1-构建指南.md` (documentation)
+- changed: `include/MaaFramework/MaaDef.h` (public-api)
+- changed: `source/binding/NodeJS/src/apis/constant.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/pipeline.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/tasker.d.ts` (binding-api)
+- changed: `source/binding/Python/maa/define.py` (binding-api)
+- changed: `source/binding/Python/maa/pipeline.py` (binding-api)
+- changed: `source/binding/Python/maa/tasker.py` (binding-api)
+- changed: `tools/interface.schema.json` (schema)
+- changed: `tools/pipeline.schema.json` (schema)

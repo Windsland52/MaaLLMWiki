@@ -20,3 +20,32 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.12.3`
+
+- Added: `4`, removed: `0`, content changed: `28`
+- added: `include/MaaControlUnit/LinuxControlUnitAPI.h` (public-api)
+- added: `include/MaaToolkit/Gamescope/MaaToolkitGamescope.h` (public-api)
+- added: `include/MaaToolkit/Portal/MaaToolkitPortal.h` (public-api)
+- added: `source/binding/NodeJS/src/apis/portal.d.ts` (binding-api)
+- changed: `docs/en_us/2.2-IntegratedInterfaceOverview.md` (documentation)
+- changed: `docs/en_us/2.4-ControlMethods.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/zh_cn/2.2-集成接口一览.md` (documentation)
+- changed: `docs/zh_cn/2.4-控制方式说明.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `include/MaaControlUnit/ControlUnitAPI.h` (public-api)
+- changed: `include/MaaControlUnit/KWinControlUnitAPI.h` (public-api)
+- changed: `include/MaaFramework/Instance/MaaController.h` (public-api)
+- changed: `include/MaaFramework/MaaDef.h` (public-api)
+- changed: `include/MaaToolkit/MaaToolkitAPI.h` (public-api)
+- changed: `include/MaaToolkit/MaaToolkitDef.h` (public-api)
+- changed: `source/binding/NodeJS/src/apis/constant.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/controller.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/index-client.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/pipeline.d.ts` (binding-api)
+- changed: `source/binding/Python/maa/agent/agent_server.py` (binding-api)
+- changed: `source/binding/Python/maa/controller.py` (binding-api)
+- ... and 8 more changed

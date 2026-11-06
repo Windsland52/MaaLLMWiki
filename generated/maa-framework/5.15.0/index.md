@@ -20,3 +20,28 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.14.3`
+
+- Added: `0`, removed: `0`, content changed: `23`
+- changed: `docs/en_us/1.1-QuickStarted.md` (documentation)
+- changed: `docs/en_us/2.2-IntegratedInterfaceOverview.md` (documentation)
+- changed: `docs/en_us/2.3-CallbackProtocol.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/en_us/4.1-BuildGuide.md` (documentation)
+- changed: `docs/zh_cn/1.1-快速开始.md` (documentation)
+- changed: `docs/zh_cn/2.2-集成接口一览.md` (documentation)
+- changed: `docs/zh_cn/2.3-回调协议.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `docs/zh_cn/4.1-构建指南.md` (documentation)
+- changed: `include/MaaFramework/MaaDef.h` (public-api)
+- changed: `source/binding/NodeJS/src/apis/pipeline.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/resource.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/types.d.ts` (binding-api)
+- changed: `source/binding/Python/maa/custom_recognition.py` (binding-api)
+- changed: `source/binding/Python/maa/define.py` (binding-api)
+- changed: `source/binding/Python/maa/pipeline.py` (binding-api)
+- changed: `source/binding/Python/maa/resource.py` (binding-api)
+- ... and 3 more changed

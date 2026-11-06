@@ -20,3 +20,20 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.14.2`
+
+- Added: `0`, removed: `0`, content changed: `13`
+- changed: `docs/en_us/2.2-IntegratedInterfaceOverview.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/zh_cn/2.2-集成接口一览.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `include/MaaFramework/MaaDef.h` (public-api)
+- changed: `source/binding/NodeJS/src/apis/resource.d.ts` (binding-api)
+- changed: `source/binding/Python/maa/buffer.py` (binding-api)
+- changed: `source/binding/Python/maa/controller.py` (binding-api)
+- changed: `source/binding/Python/maa/define.py` (binding-api)
+- changed: `source/binding/Python/maa/resource.py` (binding-api)
+- changed: `tools/interface_import.schema.json` (schema)

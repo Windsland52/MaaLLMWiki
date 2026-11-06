@@ -20,3 +20,8 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.11.0`
+
+- Added: `0`, removed: `0`, content changed: `1`
+- changed: `include/MaaFramework/Instance/MaaController.h` (public-api)

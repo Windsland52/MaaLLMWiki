@@ -20,3 +20,7 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.12.1`
+
+- No indexed material changed since `5.12.1`.

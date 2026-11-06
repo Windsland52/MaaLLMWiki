@@ -20,3 +20,18 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.1.3`
+
+- Added: `2`, removed: `1`, content changed: `8`
+- added: `docs/en_us/2.4-ControlMethods.md` (documentation)
+- added: `docs/zh_cn/2.4-控制方式说明.md` (documentation)
+- changed: `docs/en_us/2.2-IntegratedInterfaceOverview.md` (documentation)
+- changed: `docs/en_us/3.2-ProjectInterface.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/zh_cn/2.2-集成接口一览.md` (documentation)
+- changed: `docs/zh_cn/3.2-ProjectInterface协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `source/binding/NodeJS/src/apis/context.d.ts` (binding-api)
+- changed: `tools/interface.schema.json` (schema)
+- removed: `tools/interface_v2.schema.json` (schema)

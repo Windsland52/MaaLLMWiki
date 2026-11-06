@@ -204,11 +204,13 @@ def _check_maafw_generated(
     if not generated_root.is_dir():
         return [f"MaaFramework generated directory is missing: generated/{_MAAFW_DIRECTORY}"]
 
-    for inventory in inventories:
+    ordered = sorted(inventories, key=lambda item: _version_key(item.version))
+    for index, inventory in enumerate(ordered):
         version_root = generated_root / inventory.version
         if not version_root.is_dir():
             continue
-        rendered = render_version_indexes(inventory, source.url)
+        previous = ordered[index - 1] if index > 0 else None
+        rendered = render_version_indexes(inventory, source.url, previous=previous)
         _check_page_set(version_root, set(rendered), label="MaaFramework", errors=errors)
         for relative, expected in sorted(rendered.items()):
             _check_page(version_root / relative, expected, label="MaaFramework", errors=errors)

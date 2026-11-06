@@ -340,7 +340,69 @@ def _artifact_link(artifact: SourceArtifact, repository_url: str, revision: str)
     return f"- **{artifact.title}**: {artifact.summary} [`{artifact.path}`]({url})"
 
 
-def render_version_indexes(inventory: SourceInventory, repository_url: str) -> dict[str, str]:
+_CHANGE_LIST_LIMIT = 20
+
+
+def _change_entries(
+    lines: list[str],
+    label: str,
+    paths: list[str],
+    artifacts: dict[str, SourceArtifact],
+) -> None:
+    for path in paths[:_CHANGE_LIST_LIMIT]:
+        lines.append(f"- {label}: `{path}` ({artifacts[path].kind.value})")
+    remaining = len(paths) - _CHANGE_LIST_LIMIT
+    if remaining > 0:
+        lines.append(f"- ... and {remaining} more {label}")
+
+
+def _changed_since_lines(
+    inventory: SourceInventory,
+    previous: SourceInventory | None,
+) -> list[str]:
+    """Describe the indexed-material delta against the previously registered release."""
+    if previous is None:
+        return [
+            "",
+            "## Changed since the previous release",
+            "",
+            "- First indexed release; no previous inventory to compare.",
+        ]
+
+    current = {artifact.path: artifact for artifact in inventory.artifacts}
+    earlier = {artifact.path: artifact for artifact in previous.artifacts}
+    added = sorted(current.keys() - earlier.keys())
+    removed = sorted(earlier.keys() - current.keys())
+    changed: list[str] = []
+    for path in sorted(current.keys() & earlier.keys()):
+        now = current[path]
+        before = earlier[path]
+        if now.blob is not None and before.blob is not None:
+            differs = now.blob != before.blob
+        else:
+            differs = (now.title, now.summary) != (before.title, before.summary)
+        if differs:
+            changed.append(path)
+
+    lines = ["", f"## Changed since `{previous.version}`", ""]
+    if not added and not removed and not changed:
+        lines.append(f"- No indexed material changed since `{previous.version}`.")
+        return lines
+    lines.append(
+        f"- Added: `{len(added)}`, removed: `{len(removed)}`, content changed: `{len(changed)}`"
+    )
+    _change_entries(lines, "added", added, current)
+    _change_entries(lines, "changed", changed, current)
+    _change_entries(lines, "removed", removed, earlier)
+    return lines
+
+
+def render_version_indexes(
+    inventory: SourceInventory,
+    repository_url: str,
+    *,
+    previous: SourceInventory | None = None,
+) -> dict[str, str]:
     grouped: defaultdict[str, list[SourceArtifact]] = defaultdict(list)
     titles: dict[str, str] = {}
     for artifact in inventory.artifacts:
@@ -414,6 +476,7 @@ def render_version_indexes(inventory: SourceInventory, repository_url: str) -> d
         "",
         "[Browse schemas](schemas.md)",
     ]
+    main_lines.extend(_changed_since_lines(inventory, previous))
     pages["index.md"] = "\n".join(main_lines) + "\n"
     return pages
 
@@ -502,6 +565,7 @@ def _write_version_indexes(
     root: Path,
     inventory: SourceInventory,
     repository_url: str,
+    previous: SourceInventory | None = None,
 ) -> None:
     output_root = root / "generated" / "maa-framework"
     version_root = output_root / inventory.version
@@ -511,7 +575,9 @@ def _write_version_indexes(
         legacy_index.unlink()
     for path in version_root.rglob("*.md"):
         path.unlink()
-    for relative_path, content in render_version_indexes(inventory, repository_url).items():
+    for relative_path, content in render_version_indexes(
+        inventory, repository_url, previous=previous
+    ).items():
         path = version_root / relative_path
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8", newline="\n")
@@ -574,13 +640,29 @@ def _write_release_pages(
     )
 
 
+def _load_historical_inventory(root: Path, version: str) -> SourceInventory | None:
+    path = root / "sources" / "maa-framework" / "inventories" / f"{version}.yaml"
+    if not path.is_file():
+        return None
+    return SourceInventory.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
+
+
 def sync_maafw_inventory(*, root: Path, repository: Path, version: str) -> None:
     releases = load_release_catalog(root)
     source_map = load_source_map(root)
     semantic_changes = load_semantic_changes(root)
-    release = next((item for item in releases.releases if item.version == version), None)
-    if release is None:
+    release_index = next(
+        (index for index, item in enumerate(releases.releases) if item.version == version),
+        None,
+    )
+    if release_index is None:
         raise ValueError(f"Unknown MaaFramework release: {version}")
+    release = releases.releases[release_index]
+    previous_inventory = (
+        _load_historical_inventory(root, releases.releases[release_index - 1].version)
+        if release_index > 0
+        else None
+    )
 
     repositories = load_repository_catalog(root)
     source = next(
@@ -606,7 +688,7 @@ def sync_maafw_inventory(*, root: Path, repository: Path, version: str) -> None:
         newline="\n",
     )
 
-    _write_version_indexes(root, inventory, source.url)
+    _write_version_indexes(root, inventory, source.url, previous_inventory)
     _write_release_pages(
         root,
         releases.releases,
@@ -884,6 +966,7 @@ def sync_maafw_history(
     source.default_revision = releases[-1].commit
     write_yaml(root / "sources" / "repositories.yaml", repositories.model_dump(mode="json"))
 
+    previous_inventory: SourceInventory | None = None
     for release in releases:
         inventory = SourceInventory(
             source_id=source.id,
@@ -901,7 +984,8 @@ def sync_maafw_history(
                 root / "sources" / "maa-framework" / "inventory.yaml",
                 inventory.model_dump(mode="json"),
             )
-        _write_version_indexes(root, inventory, source.url)
+        _write_version_indexes(root, inventory, source.url, previous_inventory)
+        previous_inventory = inventory
     _write_release_pages(
         root,
         releases,

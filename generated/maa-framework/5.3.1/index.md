@@ -20,3 +20,30 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.3.0`
+
+- Added: `2`, removed: `0`, content changed: `34`
+- added: `docs/en_us/5.1-Troubleshooting.md` (documentation)
+- added: `docs/zh_cn/5.1-问题反馈.md` (documentation)
+- changed: `docs/en_us/1.1-QuickStarted.md` (documentation)
+- changed: `docs/en_us/1.2-ExplanationOfTerms.md` (documentation)
+- changed: `docs/en_us/2.1-Integration.md` (documentation)
+- changed: `docs/en_us/2.2-IntegratedInterfaceOverview.md` (documentation)
+- changed: `docs/en_us/2.3-CallbackProtocol.md` (documentation)
+- changed: `docs/en_us/2.4-ControlMethods.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/en_us/3.2-ProjectInterface.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/en_us/4.1-BuildGuide.md` (documentation)
+- changed: `docs/en_us/4.2-StandardizedInterfaceDesign.md` (documentation)
+- changed: `docs/en_us/NodeJS/J1.1-QuickStarted.md` (documentation)
+- changed: `docs/en_us/NodeJS/J1.2-Custom Recognition and Action.md` (documentation)
+- changed: `docs/en_us/NodeJS/J1.3-Packaging.md` (documentation)
+- changed: `docs/zh_cn/1.1-快速开始.md` (documentation)
+- changed: `docs/zh_cn/1.2-术语解释.md` (documentation)
+- changed: `docs/zh_cn/2.1-集成文档.md` (documentation)
+- changed: `docs/zh_cn/2.2-集成接口一览.md` (documentation)
+- changed: `docs/zh_cn/2.3-回调协议.md` (documentation)
+- changed: `docs/zh_cn/2.4-控制方式说明.md` (documentation)
+- ... and 14 more changed

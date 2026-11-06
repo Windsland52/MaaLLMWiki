@@ -20,3 +20,22 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.0.3`
+
+- Added: `0`, removed: `0`, content changed: `15`
+- changed: `docs/en_us/2.3-CallbackProtocol.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/zh_cn/2.3-回调协议.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `include/MaaFramework/MaaMsg.h` (public-api)
+- changed: `source/binding/NodeJS/src/apis/client.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/controller.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/pipeline.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/resource.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/tasker.d.ts` (binding-api)
+- changed: `source/binding/NodeJS/src/apis/types.d.ts` (binding-api)
+- changed: `source/binding/Python/maa/context.py` (binding-api)
+- changed: `source/binding/Python/maa/custom_recognition.py` (binding-api)
+- changed: `source/binding/Python/maa/define.py` (binding-api)
+- changed: `source/binding/Python/maa/tasker.py` (binding-api)

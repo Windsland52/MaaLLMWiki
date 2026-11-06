@@ -20,3 +20,28 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.0.5`
+
+- Added: `0`, removed: `0`, content changed: `35`
+- changed: `docs/en_us/2.1-Integration.md` (documentation)
+- changed: `docs/en_us/2.2-IntegratedInterfaceOverview.md` (documentation)
+- changed: `docs/en_us/2.3-CallbackProtocol.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/en_us/3.2-ProjectInterface.md` (documentation)
+- changed: `docs/en_us/NodeJS/J1.1-QuickStarted.md` (documentation)
+- changed: `docs/zh_cn/2.1-集成文档.md` (documentation)
+- changed: `docs/zh_cn/2.2-集成接口一览.md` (documentation)
+- changed: `docs/zh_cn/2.3-回调协议.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `docs/zh_cn/3.2-ProjectInterface协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `docs/zh_cn/NodeJS/J1.1-快速开始.md` (documentation)
+- changed: `include/MaaAgentClient/MaaAgentClientAPI.h` (public-api)
+- changed: `include/MaaFramework/Instance/MaaContext.h` (public-api)
+- changed: `include/MaaFramework/Instance/MaaController.h` (public-api)
+- changed: `include/MaaFramework/Instance/MaaCustomController.h` (public-api)
+- changed: `include/MaaFramework/Instance/MaaResource.h` (public-api)
+- changed: `include/MaaFramework/MaaDef.h` (public-api)
+- changed: `include/MaaFramework/MaaMsg.h` (public-api)
+- ... and 15 more changed

@@ -20,3 +20,31 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.10.5`
+
+- Added: `3`, removed: `0`, content changed: `28`
+- added: `docs/en_us/1.3-Custom&Agent.md` (documentation)
+- added: `docs/zh_cn/1.3-Custom&Agent.md` (documentation)
+- added: `include/MaaControlUnit/KWinControlUnitAPI.h` (public-api)
+- changed: `docs/en_us/1.1-QuickStarted.md` (documentation)
+- changed: `docs/en_us/1.2-ExplanationOfTerms.md` (documentation)
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/zh_cn/1.1-快速开始.md` (documentation)
+- changed: `docs/zh_cn/1.2-术语解释.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `include/MaaControlUnit/ControlUnitAPI.h` (public-api)
+- changed: `include/MaaControlUnit/MaaControlUnitAPI.h` (public-api)
+- changed: `include/MaaFramework/Instance/MaaController.h` (public-api)
+- changed: `source/binding/Python/maa/__init__.py` (binding-api)
+- changed: `source/binding/Python/maa/agent/__init__.py` (binding-api)
+- changed: `source/binding/Python/maa/agent/agent_server.py` (binding-api)
+- changed: `source/binding/Python/maa/agent_client.py` (binding-api)
+- changed: `source/binding/Python/maa/buffer.py` (binding-api)
+- changed: `source/binding/Python/maa/context.py` (binding-api)
+- changed: `source/binding/Python/maa/controller.py` (binding-api)
+- changed: `source/binding/Python/maa/custom_action.py` (binding-api)
+- changed: `source/binding/Python/maa/custom_recognition.py` (binding-api)
+- ... and 8 more changed

@@ -20,3 +20,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.3.1`
+
+- Added: `0`, removed: `0`, content changed: `4`
+- changed: `source/binding/NodeJS/src/apis/tasker.d.ts` (binding-api)
+- changed: `source/binding/Python/maa/define.py` (binding-api)
+- changed: `source/binding/Python/maa/library.py` (binding-api)
+- changed: `source/binding/Python/maa/tasker.py` (binding-api)

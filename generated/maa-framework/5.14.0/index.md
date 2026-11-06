@@ -20,3 +20,13 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.13.1`
+
+- Added: `0`, removed: `0`, content changed: `6`
+- changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
+- changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
+- changed: `source/binding/NodeJS/src/apis/pipeline.d.ts` (binding-api)
+- changed: `source/binding/Python/maa/pipeline.py` (binding-api)
+- changed: `tools/interface.schema.json` (schema)
+- changed: `tools/pipeline.schema.json` (schema)

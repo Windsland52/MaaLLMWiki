@@ -20,3 +20,15 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Schemas
 
 [Browse schemas](schemas.md)
+
+## Changed since `5.1.2`
+
+- Added: `0`, removed: `0`, content changed: `8`
+- changed: `docs/en_us/3.2-ProjectInterface.md` (documentation)
+- changed: `docs/en_us/3.3-ProjectInterfaceV2.md` (documentation)
+- changed: `docs/zh_cn/3.2-ProjectInterface协议.md` (documentation)
+- changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
+- changed: `include/MaaFramework/MaaDef.h` (public-api)
+- changed: `source/binding/NodeJS/src/apis/constant.d.ts` (binding-api)
+- changed: `source/binding/Python/maa/define.py` (binding-api)
+- changed: `tools/interface_v2.schema.json` (schema)
