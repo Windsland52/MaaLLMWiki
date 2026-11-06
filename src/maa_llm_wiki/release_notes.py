@@ -253,6 +253,13 @@ def _machine_section(
                 f"`generated/maa-framework/machine-changes.md` lists {total} records "
                 f"({unclassified} unclassified)."
             )
+        elif new_releases:
+            lines.append(
+                "The new releases are bindings, not MaaFramework framework releases, so the "
+                "machine-extracted catalog has no new records; "
+                f"`generated/maa-framework/machine-changes.md` lists {total} records "
+                f"({unclassified} unclassified)."
+            )
         else:
             lines.append(
                 "No new upstream releases, so no new machine-extracted records; "
@@ -432,6 +439,13 @@ def _moved_section(current: Snapshot, previous: Snapshot) -> list[str]:
         "| --- | --- | --- | --- |",
         *rows,
     ]
+    for source in current.sources:
+        if source.source_id not in previous_inventories:
+            lines.append("")
+            lines.append(
+                f"`{source.name}` is new in this snapshot, so there is no previous inventory to "
+                "compare against."
+            )
     return lines
 
 

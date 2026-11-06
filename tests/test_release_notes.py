@@ -574,3 +574,51 @@ def test_initial_snapshot_counts_published_catalog_files(catalog_git_repo: Path)
 
     assert "Initial snapshot:" in notes
     assert "catalog files published for the first time." in notes
+
+
+def test_render_binding_only_release_and_a_new_source() -> None:
+    previous = Snapshot(
+        sources=(
+            _source(
+                version="5.15.0",
+                revision=COMMIT_A,
+                releases=[_release("5.15.0", COMMIT_A)],
+                inventory=_inventory("5.15.0", COMMIT_A, {"docs/en_us/a.md": "b" * 40}),
+            ),
+        ),
+        machine_changes=(),
+        machine_source_id="maafw",
+        semantic_changes=(),
+    )
+    current = Snapshot(
+        sources=(
+            _source(
+                version="5.15.0",
+                revision=COMMIT_A,
+                releases=[_release("5.15.0", COMMIT_A)],
+                inventory=_inventory("5.15.0", COMMIT_A, {"docs/en_us/a.md": "b" * 40}),
+            ),
+            _source(
+                source_id="maa-framework-csharp",
+                name="MaaFramework C# binding",
+                version="5.10.0",
+                revision=COMMIT_B,
+                releases=[_release("5.10.0", COMMIT_B)],
+            ),
+        ),
+        machine_changes=(),
+        machine_source_id="maafw",
+        semantic_changes=(),
+    )
+
+    notes = render_release_notes(
+        version="v0.1.25",
+        previous_tag="v0.1.24",
+        current=current,
+        previous=previous,
+        wiki_revision=COMMIT_A,
+    )
+
+    assert "MaaFramework C# binding 5.10.0" in notes
+    assert "bindings, not MaaFramework framework releases" in notes
+    assert "`MaaFramework C# binding` is new in this snapshot" in notes
