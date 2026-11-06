@@ -39,7 +39,7 @@ sources/repositories.yaml       Registered upstream repositories
 sources/maa-framework/          Release, inventory, semantic-change, and source-route metadata
 sources/maa-framework-{go,rs}/  Independent binding releases and source inventories
 sources/compatibility/          Evidence-backed binding compatibility metadata
-generated/maa-framework/        Generated release, domain, topic, and behaviour-change navigation indexes
+generated/maa-framework/        Generated release, domain, topic, behaviour-change, and machine-change navigation indexes
 generated/maa-framework-{go,rs}/ Generated binding release navigation indexes
 schemas/                        Generated metadata JSON schemas
 skills/maallmwiki/              Installable agent skill for the routing procedure
@@ -65,7 +65,8 @@ Generated navigation is layered as follows:
 ```text
 generated/maa-framework/index.md
   -> topics.md                     # curated topic routes (rendered from source-map.yaml)
-  -> behaviour-changes.md          # recorded behaviour changes (rendered from semantic-changes.yaml)
+  -> behaviour-changes.md          # curated behaviour changes (rendered from semantic-changes.yaml; optional interpretation layer)
+  -> machine-changes.md            # machine-extracted change facts (generated from upstream diffs)
   -> <version>/index.md            # ends with a "Changed since <previous indexed release>" section
        -> documentation/index.md -> {en-us,zh-cn,nodejs,tools}.md
        -> documentation/diagrams.md        # since 5.10.3
@@ -88,13 +89,25 @@ says `Changed since the previous release` and notes there is no previous invento
 answers "which indexed files moved in this release" — **it is not a behaviour change**; behaviour
 changes live in `behaviour-changes.md` / `semantic-changes.yaml`.
 
-`topics.md` and `behaviour-changes.md` are rendered navigation for hand-authored metadata: the
-former lists, per topic, every variant's applicable release (`applies_to`), revision, pinned file
-links, symbols, and literal search terms; the latter groups recorded cross-version behaviour changes
-by the release that first carried them and links each entry to its pinned source. Both are rendered
-from `sources/maa-framework/source-map.yaml` and `sources/maa-framework/semantic-changes.yaml` — the
-YAML files remain the hand-authored source of truth, and the pages simply let a model walk the
-navigation without knowing those two paths in advance; `index.md` links both.
+`topics.md` and `behaviour-changes.md` are rendered navigation for curated metadata: the former
+lists, per topic, every variant's applicable release (`applies_to`), revision, pinned file links,
+symbols, and literal search terms; the latter groups recorded cross-version behaviour changes by the
+release that first carried them and links each entry to its pinned source. Both are rendered from
+`sources/maa-framework/source-map.yaml` and `sources/maa-framework/semantic-changes.yaml` — the YAML
+files remain the curated source of truth, and the pages simply let a model walk the navigation
+without knowing those two paths in advance; `index.md` links them.
+
+`machine-changes.md` is the machine-extracted layer: sync mechanically extracts enum values, public
+functions, callback messages, JSON-schema properties/enums/defaults/required, interface protocol
+versions, and binding API names from the upstream diff between consecutive releases. Each structured
+record carries upstream evidence (verbatim added/removed lines for text changes, canonical JSON
+fragments for schema changes) and the indexed paths it came from, answering "which release introduced
+this enum value / field / function". It is extraction evidence, not interpretation, and it cannot
+state runtime semantics or whether a change matters. When a release pair changed indexed paths but
+produced no structured record, that is listed explicitly as `unclassified` (one line plus the
+changed files), so extractor gaps stay visible. `behaviour-changes.md` is the optional curated
+interpretation layer: it adds significance and routing guidance but no detection. The machine layer
+is rebuilt by sync on every run — no agent or manual step is required.
 
 `sources/maa-framework/inventory.yaml` remains the flat canonical artifact manifest used for
 coverage checks. It is not the navigation interface. Every indexed artifact records the git blob id
@@ -272,30 +285,40 @@ npx skills add https://github.com/Windsland52/MaaLLMWiki --skill maallmwiki --gl
 `.github/workflows/publish-catalog.yml` owns the whole cycle and runs daily. It re-indexes every
 stable `vMAJOR.MINOR.PATCH` tag of MaaFramework 5.x (workflow environment variable `CATALOG_MAJOR`,
 currently `5`) plus the Go and Rust bindings, records their immutable commits, and regenerates the
-catalogs and schemas; if upstream publishes a higher major, the sync fails loudly (no more silent
-freeze on 5.x), and `CATALOG_MAJOR` should only be raised after human review. When a snapshot must be
-published (`publish=true`), it first runs every check (`uv run maa-wiki-validate`, `pytest`,
-`ruff check`, `ruff format --check`, `pyright`, `git diff --check`), then commits the catalog,
-computes the snapshot version, builds and verifies the bundle, and then tags and publishes the
-release in the same job (also updating `maa-llm-wiki-catalog-latest.zip`). Runs with no changes only
+catalogs and schemas; it also runs
+`uv run maa-wiki-extract-changes --repository tmp/MaaFramework --check` so the machine-extracted
+layer matches the committed YAML. If upstream publishes a higher major, the sync fails loudly (no
+more silent freeze on 5.x), and `CATALOG_MAJOR` should only be raised after human review. When a
+snapshot must be published (`publish=true`), it first runs every check (`uv run maa-wiki-validate`,
+`pytest`, `ruff check`, `ruff format --check`, `pyright`, `git diff --check`), then commits the
+catalog, computes the snapshot version, builds and verifies the bundle, and then tags and publishes
+the release in the same job (also updating `maa-llm-wiki-catalog-latest.zip`). Runs with no changes only
 sync and classify: they run no checks, commit nothing, and publish nothing. Detection, commit, tag,
 and release stay in one workflow because events produced with the default `GITHUB_TOKEN` do not start
 another workflow; tagging in a separate workflow would leave a tag without its release. The workflow
 can also be started by hand through `workflow_dispatch`.
 
-Two rules keep human-authored content out of the automation:
+Automation and curatorial boundary:
 
 - The run refuses to publish when synchronization touched
-  `sources/maa-framework/source-map.yaml` or `sources/maa-framework/semantic-changes.yaml`; those
-  files change only through review.
-- The workflow never infers semantic changes. At the end of every run (`if: always()`) it runs
+  `sources/maa-framework/source-map.yaml` or `sources/maa-framework/semantic-changes.yaml`:
+  synchronization never rewrites those files; maintainers or agents commit them explicitly, and
+  `uv run maa-wiki-validate` checks their structure.
+- Every run rebuilds the machine-extracted layer
+  (`sources/maa-framework/machine-changes.yaml` and
+  `generated/maa-framework/machine-changes.md`): API/schema/protocol-level changes between releases
+  are extracted by sync from the upstream diff and published with the snapshot, so a version update
+  needs no agent or manual step. A curated `semantic-changes.yaml` entry is optional: it adds
+  interpretation ("why it matters for routing"), not detection, and is no longer a mandatory
+  pre-release review queue.
+- At the end of every run (`if: always()`) it still runs
   `uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework`, which compares titles and
   first-paragraph excerpts as well as the `blob` recorded in each inventory (an offline
   content-level comparison; `--repository` additionally cross-checks indexed paths with `git diff`)
   for indexed releases newer than the newest `semantic-changes.yaml` entry, and closes the tracking
-  issue when the queue is empty. The report names the releases and artifacts to inspect; each item is
-  a suspected trigger, not a verified change. Paths the inventory does not index remain invisible —
-  see §8 of `CATALOG-CONTRACT.md` for coverage and blind spots.
+  issue when the queue is empty. The report names suspected triggers, but the machine facts are
+  already published automatically; each item is still not a verified change. Paths the inventory
+  does not index remain invisible — see §8 of `CATALOG-CONTRACT.md` for coverage and blind spots.
 
 The job authenticates with the repository `GITHUB_TOKEN`. If the default branch requires pull
 requests, add a `CATALOG_PUSH_TOKEN` secret — a fine-grained token with contents and issues write

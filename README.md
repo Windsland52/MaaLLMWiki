@@ -30,7 +30,7 @@ sources/repositories.yaml       已注册的上游仓库
 sources/maa-framework/          发布、清单、语义变更与源路由元数据
 sources/maa-framework-{go,rs}/  独立绑定发布与源清单
 sources/compatibility/          有证据支撑的绑定兼容性元数据
-generated/maa-framework/        生成的发布、分域、主题与行为变更导航索引
+generated/maa-framework/        生成的发布、分域、主题、行为变更与机器变更导航索引
 generated/maa-framework-{go,rs}/ 生成的绑定发布导航索引
 schemas/                        生成的元数据 JSON schema
 skills/maallmwiki/              可安装的路由 agent skill
@@ -52,7 +52,8 @@ CONTRIBUTING.md                 贡献流程、内容分类与必需检查
 ```text
 generated/maa-framework/index.md
   -> topics.md                     # 人工主题路由（由 source-map.yaml 渲染）
-  -> behaviour-changes.md          # 人工行为变更（由 semantic-changes.yaml 渲染）
+  -> behaviour-changes.md          # 策展行为变更（由 semantic-changes.yaml 渲染，可选解读层）
+  -> machine-changes.md            # 机器抽取的变更事实（从上游 diff 生成）
   -> <version>/index.md            # 末尾含 "Changed since <上一已索引版本>" 段落
        -> documentation/index.md -> {en-us,zh-cn,nodejs,tools}.md
        -> documentation/diagrams.md        # 自 5.10.3 起
@@ -66,7 +67,9 @@ generated/maa-framework/index.md
 
 每个 `<version>/index.md` 末尾都有 `Changed since` 段落：标题由 `Changed since` 与用反引号包裹的上一已索引版本组成，按清单中的 `blob` id 汇总相对上一版**新增、内容变化与删除的已索引材料**。有变化时页首先给出计数，随后按类列出条目，每类有列出上限，超出部分以 `... and K more <label>` 形式提示，完整列表用 `maa-wiki-diff`；无变化时只有一行说明。首个索引版本写的是 `Changed since the previous release`，并说明没有可比较的上一版。它回答“这一版有哪些被索引文件动了”，**不是行为变更**——行为变更看 `behaviour-changes.md` / `semantic-changes.yaml`。
 
-`topics.md` 与 `behaviour-changes.md` 是人工维护元数据的渲染导航：前者按主题列出每个变体的适用版本（`applies_to`）、revision、pinned 文件链接、符号与字面搜索词；后者按首次发布版本分组记录跨版本行为变更并链到 pinned 出处。两者分别由 `sources/maa-framework/source-map.yaml` 与 `sources/maa-framework/semantic-changes.yaml` 渲染——YAML 仍是人工维护的权威源，页面只是让模型无需预先知道这两个路径；`index.md` 直接链接两者。
+`topics.md` 与 `behaviour-changes.md` 是策展元数据的渲染导航：前者按主题列出每个变体的适用版本（`applies_to`）、revision、pinned 文件链接、符号与字面搜索词；后者按首次发布版本分组记录跨版本行为变更并链到 pinned 出处。两者分别由 `sources/maa-framework/source-map.yaml` 与 `sources/maa-framework/semantic-changes.yaml` 渲染——YAML 仍是策展的权威源，页面只是让模型无需预先知道这两个路径；`index.md` 直接链接它们。
+
+`machine-changes.md` 是机器抽取层：sync 从连续 release 的上游 diff 中机械提取枚举值、公开函数、回调消息、JSON schema 的 properties/enums/defaults/required、interface 协议版本与绑定 API 名称等事实；每条结构化记录带上游证据引用（文本类改动为逐字 added/removed 行，schema 类改动为规范化 JSON 片段）与已索引路径，回答“哪个版本出现了这个枚举值/字段/函数”。它是抽取证据，不是解释，也不能说明运行时语义或变化是否重要；某对 release 的已索引路径有变化但抽取器没有结构化记录时，会显式列为 `unclassified`（用一句说明并列出变化文件），让覆盖盲区可见。`behaviour-changes.md` 是可选的策展解读层，只补充重要性/含义，不承担检测；机器层随每次 sync 自动更新，不需要 agent 或人工步骤。
 
 `sources/maa-framework/inventory.yaml` 仍是用于覆盖率检查的扁平权威产物清单，它不是导航接口。每个被索引 artifact 记录其内容的 git blob id（`blob`，40 位 SHA）：同一文件在不同 release 中的副本可按内容哈希区分，`maa-wiki-report-semantic-gaps` 也能只凭已提交的清单做内容级比较，无需克隆上游。
 
@@ -169,12 +172,13 @@ npx skills add https://github.com/Windsland52/MaaLLMWiki --skill maallmwiki --gl
 
 ## 自动更新
 
-`.github/workflows/publish-catalog.yml` 掌管整个周期并每日运行。它重新索引 MaaFramework 5.x（workflow 环境变量 `CATALOG_MAJOR`，当前为 `5`）与 Go、Rust 绑定的全部稳定 `vMAJOR.MINOR.PATCH` tag，记录其不可变 commit，并重新生成目录与 schema；如果上游发布更高的主版本，同步会以明确错误失败（不再静默冻结在 5.x），只有在人工 review 后才应提升 `CATALOG_MAJOR`。在需要发布快照时（`publish=true`），它先运行全部检查（`uv run maa-wiki-validate`、`pytest`、`ruff check`、`ruff format --check`、`pyright`、`git diff --check`），再提交目录、计算快照版本、构建并校验 bundle，然后在同一 job 中打 tag 并发布 release（同时更新 `maa-llm-wiki-catalog-latest.zip`）。无变更的运行只同步与分类，不运行检查、不提交、不发布。检测、提交、打 tag 与发布保持在单个 workflow 内，因为默认 `GITHUB_TOKEN` 产生的事件不会触发另一个 workflow；拆开打 tag 会留下没有 release 的 tag。该 workflow 也支持 `workflow_dispatch` 手动触发。
+`.github/workflows/publish-catalog.yml` 掌管整个周期并每日运行。它重新索引 MaaFramework 5.x（workflow 环境变量 `CATALOG_MAJOR`，当前为 `5`）与 Go、Rust 绑定的全部稳定 `vMAJOR.MINOR.PATCH` tag，记录其不可变 commit，并重新生成目录与 schema；它还会运行 `uv run maa-wiki-extract-changes --repository tmp/MaaFramework --check`，确认机器抽取层与提交的 YAML 一致。如果上游发布更高的主版本，同步会以明确错误失败（不再静默冻结在 5.x），只有在人工 review 后才应提升 `CATALOG_MAJOR`。在需要发布快照时（`publish=true`），它先运行全部检查（`uv run maa-wiki-validate`、`pytest`、`ruff check`、`ruff format --check`、`pyright`、`git diff --check`），再提交目录、计算快照版本、构建并校验 bundle，然后在同一 job 中打 tag 并发布 release（同时更新 `maa-llm-wiki-catalog-latest.zip`）。无变更的运行只同步与分类，不运行检查、不提交、不发布。检测、提交、打 tag 与发布保持在单个 workflow 内，因为默认 `GITHUB_TOKEN` 产生的事件不会触发另一个 workflow；拆开打 tag 会留下没有 release 的 tag。该 workflow 也支持 `workflow_dispatch` 手动触发。
 
-两条规则把人工内容挡在自动化之外：
+自动发布与策展边界：
 
-- 当同步触碰了 `sources/maa-framework/source-map.yaml` 或 `sources/maa-framework/semantic-changes.yaml` 时，运行拒绝发布；这两个文件只能经人工 review 变更。
-- workflow 绝不推断语义变更。每次运行结束前（`if: always()`）会运行 `uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework`，对晚于最新 `semantic-changes.yaml` 条目的已索引发布比较标题/首段摘要以及清单中记录的 `blob`（离线内容级比较；提供 `--repository` 时再以 git diff 交叉核验已索引路径），并在队列为空时关闭跟踪 issue。报告会列出待检查的发布与产物；每条都是疑似触发，不是已验证的变更。目录未索引的路径仍不可见——覆盖范围与盲区见 `CATALOG-CONTRACT.md` §8。
+- 当同步触碰了 `sources/maa-framework/source-map.yaml` 或 `sources/maa-framework/semantic-changes.yaml` 时，运行拒绝发布：同步进程绝不改写这两个文件；它们由维护者或 agent 显式提交，结构由 `uv run maa-wiki-validate` 校验。
+- 每次运行都会自动重建机器抽取层（`sources/maa-framework/machine-changes.yaml` 与 `generated/maa-framework/machine-changes.md`）：版本之间的 API/schema/协议级变化由 sync 从上游 diff 抽取并随快照发布，所以版本更新不需要 agent 或人工步骤。策展的 `semantic-changes.yaml` 条目是可选的解读层，用于补充“为什么重要/如何路由”，不是发布前的必经 review 队列。
+- 每次运行结束前（`if: always()`）仍会运行 `uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework`，对晚于最新 `semantic-changes.yaml` 条目的已索引发布比较标题/首段摘要以及清单中记录的 `blob`（离线内容级比较；提供 `--repository` 时再以 git diff 交叉核验已索引路径），并在队列为空时关闭跟踪 issue。报告点名疑似触发，但机器事实已自动发布；每条仍不是已验证的变更。目录未索引的路径仍不可见——覆盖范围与盲区见 `CATALOG-CONTRACT.md` §8。
 
 该 job 使用仓库 `GITHUB_TOKEN` 认证。若默认分支强制 pull request，请添加 `CATALOG_PUSH_TOKEN` secret——一个具 contents 与 issues 写权限、来自允许绕过该规则身份的 fine-grained token——workflow 会自动优先使用它。
 

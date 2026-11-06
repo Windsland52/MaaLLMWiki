@@ -12,7 +12,7 @@ MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官�
 ## 路由步骤
 
 1. **定版本**：以被开发项目实际使用的 MaaFramework（下称 MaaFW）版本为准（运行时/依赖声明/用户陈述）。版本未知 → 用最新稳定版并**明确声明该假设**；已知版本不在目录中 → 取相邻已有版本并标注差距。可用版本清单见 `generated/maa-framework/index.md`（预发布见 `prereleases.md`；目录没有 `latest`，必须先选版本）。
-2. **进目录**：`generated/maa-framework/<版本>/`（顶层 `index.md` 还链接 `topics.md` 与 `behaviour-changes.md`）。跨版本问题可以先看该版本 `index.md` 末尾的 `Changed since <上一版本>`：它按 `blob` 列出这一版相对上一版**已索引材料**的新增、内容变化与删除（摘要有上限；完整列表用 `maa-wiki-diff`），但它是材料移动，不是行为变更——行为变更看 `behaviour-changes.md` / `semantic-changes.yaml`。
+2. **进目录**：`generated/maa-framework/<版本>/`（顶层 `index.md` 还链接 `topics.md`、`behaviour-changes.md` 与 `machine-changes.md`）。跨版本问题可以先看该版本 `index.md` 末尾的 `Changed since <上一版本>`：它按 `blob` 列出这一版相对上一版**已索引材料**的新增、内容变化与删除（摘要有上限；完整列表用 `maa-wiki-diff`），但它是材料移动，不是行为变更——行为变更看 `behaviour-changes.md` / `semantic-changes.yaml`。
 3. **按域选索引**：
     | 要查什么 | 索引位置 |
     | --- | --- |
@@ -25,7 +25,7 @@ MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官�
 
     注册了哪些信息源见 `sources/repositories.yaml`。
 4. **回源作答**：打开条目给出的 pinned commit 链接读**原文**再回答；引用时注明上游文档 + MaaFW 版本 + commit。禁止把目录索引本身当作字段语义的出处，禁止把链接换成移动分支（main / master）。
-5. **主题级定位与跨版本比较**：优先查渲染页 `generated/maa-framework/topics.md`——主题 → 按版本适用的变体 → pinned 原始路径 + 符号 + 字面搜索词，可直接跳到源码级出处；跨版本**行为变更**查 `generated/maa-framework/behaviour-changes.md`（按首次发布分组，每条链到 pinned 出处）。两页分别由 `sources/maa-framework/source-map.yaml` 与 `sources/maa-framework/semantic-changes.yaml` 渲染，YAML 是人工维护的权威源（改数据改 YAML，不改页面）。想知道两个已索引版本之间哪些被索引产物变了，用 `uv run maa-wiki-diff --from <旧版本> --to <新版本>`（`--source` 选源，默认 `maafw`；`--format json` 供程序消费）。
+5. **主题级定位与跨版本比较**：优先查渲染页 `generated/maa-framework/topics.md`——主题 → 按版本适用的变体 → pinned 原始路径 + 符号 + 字面搜索词，可直接跳到源码级出处；跨版本**行为变更**查 `generated/maa-framework/behaviour-changes.md`（按首次发布分组，每条链到 pinned 出处）。想知道某符号/枚举值/字段/函数是哪个版本出现的，先查 `generated/maa-framework/machine-changes.md`：它由 sync 从上游 diff 机器抽取，每条带上游证据（文本行为逐字引用，schema 值为规范化 JSON）；证据只证明该事实在版本中出现，不证明运行时语义或“变化是否重要”。`topics.md` 与 `behaviour-changes.md` 分别由 `sources/maa-framework/source-map.yaml` 与 `sources/maa-framework/semantic-changes.yaml` 渲染：YAML 是策展的权威源（改数据改 YAML，不改页面）；`machine-changes.md` 由 sync 从上游 diff 生成（源文件 `sources/maa-framework/machine-changes.yaml`），随每次 sync 自动更新；`behaviour-changes.md` 只是可选的解读层。想知道两个已索引版本之间哪些被索引产物变了，用 `uv run maa-wiki-diff --from <旧版本> --to <新版本>`（`--source` 选源，默认 `maafw`；`--format json` 供程序消费）。
 6. **消费通道**（按连通性择优）：
     - 本地 Git 检出：一次克隆长期可用，弱网环境最稳；
     - raw 直链：`https://raw.githubusercontent.com/Windsland52/MaaLLMWiki/main/<相对路径>`，如 `generated/maa-framework/5.15.0/documentation/zh-cn.md`；
@@ -41,5 +41,5 @@ MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官�
 - **两个版本维度**：MaaFW 目标版本 ≠ Wiki 自身 Git revision，引用时说清对象。
 - **不可达即未验证**：目录或上游拿不到 → 回答显式标注"未验证"，不用记忆补；宁可少答。
 - **内容边界**：本仓库只做路由，不收项目实践/教程/日志/诊断——开发实践在 MaaTutorial，项目事实在各项目仓库。
-- **派生页不是权威源**：`topics.md` / `behaviour-changes.md` 只是人工 YAML 的渲染导航；引用仍要回源到 pinned commit。
+- **派生页不是权威源**：`topics.md` / `behaviour-changes.md` / `machine-changes.md` 都是渲染或抽取导航；引用仍要回源到 pinned commit，数据改动分别走策展 YAML 或 sync。
 - **引用与许可**：上游文档摘录保留 LGPL-3.0（见 `NOTICE`），目录数据为 CC BY 4.0（见 `LICENSE-DATA`）；引用时保留上游仓库、版本与 commit，再分发时保留归属声明。
