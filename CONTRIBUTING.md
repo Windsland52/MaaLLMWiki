@@ -57,6 +57,9 @@ publish workflow also fails if its own commit stages anything outside those path
   `main`, plus a schema no-diff gate and `git diff --check` on the change set.
 - If you change a Pydantic model, run `uv run maa-wiki-generate-schemas` and commit the updated
   `schemas/*.schema.json`; never edit those manually.
+- The verifier also ships to consumers as the release asset `verify_bundle.py`: the publish workflow
+  copies `src/maa_llm_wiki/verify_bundle.py` into the release, so source and shipped copy must stay
+  in sync, and the script must stay standard-library-only (no new dependencies).
 - Add or update tests for behaviour changes and fill in the pull-request checklist.
 
 ## Adding a semantic-change entry or source-map topic

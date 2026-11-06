@@ -215,13 +215,28 @@ gh attestation verify maa-llm-wiki-catalog-vX.Y.Z.zip --repo Windsland52/MaaLLMW
 ```
 
 The attestation only shows that the asset was produced by this repository's publish workflow at the
-attested commit; it does not make the catalog content correct. The `latest` alias and `SHA256SUMS`
-are not attested subjects, and releases published before provenance was introduced have no
-attestation.
+attested commit; it does not make the catalog content correct. Only the versioned zip carries an
+attestation; the `latest` alias and `SHA256SUMS` are not attested subjects, and releases published
+before provenance was introduced have no attestation.
 
-When you do not have a checkout of this repository, run the verifier directly with `uvx` (package
-name `maa-llm-wiki`, built from git; requires uv, and uvx selects Python 3.13 from `requires-python`;
-the first run builds and caches the package):
+If the machine has only Python 3 (no uv, no pip, no repository checkout): snapshots published by the
+current workflow also ship `verify_bundle.py`. That asset is a byte-for-byte copy of
+`src/maa_llm_wiki/verify_bundle.py` as of the release (single source of truth: change the in-repo
+script), depends only on the Python 3 standard library (3.10+), and runs offline. Download the
+versioned zip, `SHA256SUMS`, and the script into one directory, then run:
+
+```bash
+python verify_bundle.py --bundle maa-llm-wiki-catalog-vX.Y.Z.zip --expect-version vX.Y.Z --checksums SHA256SUMS
+```
+
+`--checksums` compares the whole-bundle digest against `SHA256SUMS`; `--expect-version` (and the
+optional `--expect-revision`) binds the tag and commit. The script and `SHA256SUMS` are convenience
+artifacts, not attested subjects; `SHA256SUMS` covers the two zip download names only, not the
+script. Releases published before this asset existed have no `verify_bundle.py`.
+
+If uv is available but you do not want a checkout, run the verifier directly with `uvx` (package
+name `maa-llm-wiki`, built from git; uvx selects Python 3.13 from `requires-python`, and the first
+run builds and caches the package):
 
 ```bash
 uvx --from "maa-llm-wiki @ git+https://github.com/Windsland52/MaaLLMWiki" maa-wiki-verify-bundle --bundle maa-llm-wiki-catalog-vX.Y.Z.zip

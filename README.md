@@ -139,9 +139,17 @@ sha256sum -c SHA256SUMS
 gh attestation verify maa-llm-wiki-catalog-vX.Y.Z.zip --repo Windsland52/MaaLLMWiki
 ```
 
-该证明只能说明资产由本仓库 publish workflow 在对应 commit 构建，不代表目录内容正确；`latest` 别名与 `SHA256SUMS` 不是被证明的资产，引入 provenance 之前的历史 release 也没有该证明。
+该证明只能说明资产由本仓库 publish workflow 在对应 commit 构建，不代表目录内容正确。只有版本化 zip 带该证明；`latest` 别名与 `SHA256SUMS` 不是被证明的资产，引入 provenance 之前的历史 release 也没有该证明。
 
-无需检出本仓库时，可以用 `uvx` 直接运行校验工具（包名 `maa-llm-wiki`，从 git 构建；需要 uv，uvx 会按 `requires-python` 使用 Python 3.13，首次运行会构建并缓存）：
+如果本机只有 Python 3（不需要 uv、pip 或仓库检出）：由当前 workflow 发布的新快照还附带 `verify_bundle.py`。该资产是发布时从 `src/maa_llm_wiki/verify_bundle.py` 复制的逐字节副本（单一源：修改请改仓库中的脚本），只依赖 Python 3 标准库（3.10+），可离线运行。把版本化 zip、`SHA256SUMS` 与该脚本下载到同一目录后运行：
+
+```bash
+python verify_bundle.py --bundle maa-llm-wiki-catalog-vX.Y.Z.zip --expect-version vX.Y.Z --checksums SHA256SUMS
+```
+
+`--checksums` 用 `SHA256SUMS` 对照整包摘要，`--expect-version`（以及可选的 `--expect-revision`）绑定 tag 与 commit。脚本与 `SHA256SUMS` 都是便利资产，不在 attestation 覆盖范围内；`SHA256SUMS` 只覆盖两个 zip 下载名，不覆盖脚本。更早的 release 没有 `verify_bundle.py` 资产。
+
+如果本机已有 uv 但不想检出仓库，可以用 `uvx` 直接运行校验工具（包名 `maa-llm-wiki`，从 git 构建；uvx 会按 `requires-python` 使用 Python 3.13，首次运行会构建并缓存）：
 
 ```bash
 uvx --from "maa-llm-wiki @ git+https://github.com/Windsland52/MaaLLMWiki" maa-wiki-verify-bundle --bundle maa-llm-wiki-catalog-vX.Y.Z.zip
