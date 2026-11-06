@@ -1157,17 +1157,6 @@ def _csproj(package_id: str) -> str:
     )
 
 
-def _csproj(package_id: str) -> str:
-    return (
-        "<Project>\n"
-        "  <PropertyGroup>\n"
-        f"    <PackageId>{package_id}</PackageId>\n"
-        "    <TargetFrameworks>net7.0;net9.0</TargetFrameworks>\n"
-        "  </PropertyGroup>\n"
-        "</Project>\n"
-    )
-
-
 def test_csharp_package_documentation_links_each_nuget_package(tmp_path: Path) -> None:
     repository, commit = _binding_repository(
         tmp_path,
