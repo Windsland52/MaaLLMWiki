@@ -7,9 +7,10 @@
 向后兼容的新增字段，消费者必须忽略未知字段；删除/重命名字段或改变语义需要升到 v2。消费方应下载
 **带版本**的产物（不可变），运行 `uv run maa-wiki-verify-bundle` 校验，并用发布页的 `SHA256SUMS`
 （`sha256sum -c`）与 build provenance 证明（`gh attestation verify`）确认下载完整性和构建来源；
-发布页另附零依赖校验脚本 `verify_bundle.py`（仅需 Python 3，可离线运行，非 attestation 主体）。
-`-latest.zip` 只是便利别名，内容会随新版本变化，不应用于复现。浏览与版本差异工具见 §7，覆盖边界与
-已知局限见 §8。
+发布页另附零依赖校验脚本 `verify_bundle.py`（仅需 Python 3.10+，可离线运行，非 attestation 主体）。
+每个版本的 `index.md` 还列出相对上一注册版本的被索引产物变更（新增 / 内容变更 / 删除，按 git blob
+判定；属导航而非行为变更，列表有截断）。`-latest.zip` 只是便利别名，内容会随新版本变化，不应用于复现。
+浏览与版本差异工具见 §7，覆盖边界与已知局限见 §8。
 
 This document is the consumer-facing contract for catalog snapshots. It is the authoritative
 description of what the publish workflow produces and what consumers may rely on. The
@@ -263,6 +264,14 @@ layout:
   data;
 - they are ordinary bundle files inside `generated/`, covered by the manifest `size_bytes`/`sha256`
   entries, and are additive within `api_version: ".../v1"`.
+
+Each version's `index.md` also ends with a **"Changed since …"** section whose heading names the
+previous registered release (the first indexed release says there is no previous inventory to compare
+against). It lists the indexed artifacts that were added, content-changed (by git blob id, falling
+back to title/summary for pre-blob inventories) or removed between the two releases, with counts. It
+is navigation rendered from the inventories — capped at 20 entries per list with an "… and K more"
+line — and records movement of indexed **material**, not behaviour changes: `maa-wiki-diff` (§7.2)
+prints the complete, uncapped list.
 
 ### 7.2 Diffing two releases: `maa-wiki-diff`
 

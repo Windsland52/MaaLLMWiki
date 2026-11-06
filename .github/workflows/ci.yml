@@ -76,3 +76,55 @@ jobs:
             BASE="$(git rev-list --max-parents=0 HEAD | tail -1)"
           fi
           git diff --check "${BASE}...HEAD"
+
+  # Portability check for the dependency-free release verifier: README promises Python 3.10+, which
+  # was only exercised on Windows CPython 3.13/3.14. Each matrix cell builds one bundle with the
+  # project toolchain (which pins 3.13) and then runs the shipped script with the matrix interpreter
+  # alone, so a syntax/stdlib incompatibility fails the cell instead of going unnoticed.
+  verifier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - name: Check out
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+        with:
+          version: "0.13.7"
+          enable-cache: true
+
+      - name: Install Python ${{ matrix.python }}
+        run: uv python install "${{ matrix.python }}"
+
+      # The bundle build needs the project environment, which pins Python 3.13 via .python-version.
+      # Build once with that interpreter; the matrix interpreter below runs the standalone script
+      # directly and never through `uv run`, whose project requirement would reject <3.13.
+      - name: Build a catalog bundle with the project toolchain
+        run: |
+          uv run --python 3.13 --locked maa-wiki-build-bundle \
+            --output "${RUNNER_TEMP}/catalog.zip" \
+            --allow-dirty \
+            --version v0.0.0
+
+      - name: Verify the bundle with Python ${{ matrix.python }}
+        run: |
+          set -euo pipefail
+          PY="$(uv python find "${{ matrix.python }}")"
+          "${PY}" --version
+          expected_sha="$(sha256sum "${RUNNER_TEMP}/catalog.zip" | cut -d' ' -f1)"
+          output="$("${PY}" src/maa_llm_wiki/verify_bundle.py \
+            --bundle "${RUNNER_TEMP}/catalog.zip" \
+            --expect-version v0.0.0)"
+          printf '%s\n' "${output}"
+          grep -Fq 'Verified catalog bundle: v0.0.0 ' <<< "${output}"
+          grep -Fq "sha256=${expected_sha}" <<< "${output}"
