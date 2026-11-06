@@ -2,7 +2,7 @@
 
 **中文摘要：** 每个 `vX.Y.Z` 快照 tag（带注释 tag，位于默认分支的某个提交上）对应一个
 `maa-llm-wiki-catalog-vX.Y.Z.zip` 发布产物；产物内的 `catalog-manifest.json` 锁定 Wiki 提交
-（`wiki_revision`）、目录版本（`catalog_version`）、三个上游来源的 40 位提交 SHA，以及每个打包
+（`wiki_revision`）、目录版本（`catalog_version`）、四个上游来源（MaaFramework 与 Go/Rust/C# 三个绑定）的 40 位提交 SHA，以及每个打包
 文件的体积与 SHA-256。manifest 的格式版本是 `api_version: "maa-llm-wiki-catalog/v1"`：v1 内只允许
 向后兼容的新增字段，消费者必须忽略未知字段；删除/重命名字段或改变语义需要升到 v2。消费方应下载
 **带版本**的产物（不可变），运行 `uv run maa-wiki-verify-bundle` 校验，并用发布页的 `SHA256SUMS`
@@ -50,6 +50,12 @@ The bundle contains only catalog data: `sources/`, `generated/`, `schemas/`, and
 `catalog-manifest.json`. It contains no Python code, no workflows, and no upstream source code.
 `generated/` includes the rendered navigation pages described in §7.1 (see also §3).
 
+The catalog pins three external binding sources beside MaaFramework: Go, Rust and C#. Each is
+independently pinned with its own inventory and compatibility metadata, and none inherits the
+MaaFramework repository revision. The C# binding is distributed via NuGet (`Maa.Framework`); its
+releases align with MaaFramework 5.x tags from `v5.1.0` on, and each release declares its framework
+version in `src/Directory.Packages.props` at the pinned commit.
+
 Tags are created and published only by `.github/workflows/publish-catalog.yml`. The workflow refuses
 to commit outside `sources/`, `generated/`, `schemas/`, refuses to publish after touching the two
 hand-authored catalogs, and refuses to reuse an existing tag that names a different commit.
@@ -90,7 +96,7 @@ verification, checksum and attestation step.
 | `catalog_version` | string \| absent | `vX.Y.Z` equal to the release tag. Absent in bundles produced before the field was introduced. |
 | `wiki_revision` | 40-char hex string | The tagged Wiki commit; `git rev-parse vX.Y.Z^{commit}` equals this value for bundles published by the current workflow. |
 | `working_tree_clean` | boolean | `true` for every workflow-published bundle; the builder refuses to build from a dirty tree without `--allow-dirty`. |
-| `sources` | array | One entry per indexed upstream source: `source_id` (`maafw`, `maa-framework-go`, `maa-framework-rs`), `version`, and the full 40-character `revision` it was indexed at. |
+| `sources` | array | One entry per indexed upstream source: `source_id` (`maafw`, `maa-framework-go`, `maa-framework-rs`, `maa-framework-csharp`), `version`, and the full 40-character `revision` it was indexed at. |
 | `files` | array | Every bundled file except the manifest: `path` (POSIX, repo-relative), `size_bytes`, `sha256` (lowercase hex). Sorted by `path`. Includes the rendered navigation pages of §7.1. |
 
 The manifest is written with an explicit `wiki_revision`, so a bundle is self-describing: given only
@@ -240,8 +246,8 @@ Guaranteed for bundles published by the current workflow:
 
 Not guaranteed (measured coverage in §8):
 
-- Completeness or correctness of upstream coverage. The catalog tracks MaaFramework 5.x and the Go
-  and Rust bindings; it does not infer or verify upstream behavior changes.
+- Completeness or correctness of upstream coverage. The catalog tracks MaaFramework 5.x plus the
+  independently pinned Go, Rust and C# bindings; it does not infer or verify upstream behavior changes.
 - That every upstream behavior change is reflected in `semantic-changes.yaml`. The semantic review
   queue is a best-effort review aid: it detects content-level changes offline by comparing the
   artifact `blob` ids recorded in consecutive inventories (`maa-wiki-report-semantic-gaps`), with
@@ -387,18 +393,22 @@ data files. If a number disagrees with the files, the files win.
 
 ### 8.3 Binding compatibility is declared, not verified
 
-- `sources/compatibility/bindings.yaml` ties Go/Rust binding releases to MaaFramework versions using
-  textual evidence: a release link or badge in the binding's README or workspace manifest at its
-  pinned commit. `status: declared` means "the binding's own documentation claims this", not "this
-  combination was built, loaded and run".
+- `sources/compatibility/bindings.yaml` ties Go, Rust and C# binding releases to MaaFramework
+  versions using textual evidence: a release link or badge in the binding's README or workspace
+  manifest at its pinned commit. For the C# binding the declared framework version is read from
+  `src/Directory.Packages.props`. `status: declared` means "the binding's own documentation claims
+  this", not "this combination was built, loaded and run".
 - The file mixes `declared` entries with `unknown` entries where the textual evidence could not be
   tied to a MaaFramework version; §8.6 re-derives the split. `unknown` means "not established",
   never "incompatible".
 - No runtime compatibility matrix has been executed. Treat compatibility as a testing starting
   point, never as a support guarantee.
-- Only the Go and Rust bindings are registered as external sources. C# and Java are not indexed
-  (Java is obsolete upstream; C# has no registered source with a pinned revision). In-tree
-  Python/NodeJS binding APIs follow the MaaFramework revision.
+- Three external binding sources are registered: Go, Rust and C#. Each is independently pinned with
+  its own inventory and compatibility metadata; none inherits the MaaFramework repository revision.
+  The C# binding is distributed via NuGet (`Maa.Framework`), its releases align with MaaFramework 5.x
+  tags from `v5.1.0` on, and each release declares its framework version in
+  `src/Directory.Packages.props` at the pinned commit. Java is obsolete upstream and is not indexed;
+  in-tree Python/NodeJS binding APIs follow the MaaFramework revision.
 
 ### 8.4 Version scope and upstream change detection
 

@@ -7,7 +7,7 @@
 - **Generated (do not hand-edit):** `generated/**`, `schemas/*.schema.json`,
   `sources/maa-framework/releases.yaml`, `sources/maa-framework/inventory.yaml`,
   `sources/maa-framework/inventories/*.yaml`, `sources/maa-framework/machine-changes.yaml`, the
-  `releases.yaml`/inventory files under `sources/maa-framework-{go,rs}/`, and
+  `releases.yaml`/inventory files under `sources/maa-framework-{go,rs,csharp}/`, and
   `sources/compatibility/bindings.yaml` (all written by sync).
 - **Curated (maintainer/agent-authored; never written by sync):**
   `sources/maa-framework/source-map.yaml` and `sources/maa-framework/semantic-changes.yaml`. Never

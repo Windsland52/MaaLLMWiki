@@ -10,7 +10,7 @@ consumer contract is `CATALOG-CONTRACT.md`.
 ## Scope
 
 Included: complete version-pinned MaaFramework documentation/schema/native-API/in-tree-binding indexes;
-independently versioned Go and Rust binding indexes with compatibility evidence; topic routing and
+independently versioned Go, Rust and C# binding indexes with compatibility evidence; topic routing and
 semantic version changes.
 
 Excluded: project-specific documentation and Pipeline configuration; raw artifacts, logs, and
@@ -18,9 +18,11 @@ benchmark answers; full copies of MaaFramework documentation or source trees (th
 auto-extracted first-paragraph excerpts, and pinned links only); tutorials, best practices, and
 diagnostic methodology; unverified model-generated conclusions.
 
-Only the Go and Rust bindings are registered as independent external sources (Java is marked obsolete
-upstream; C# has no registered pinned source). The native public API is the C/C++ headers; in-tree
-Python/NodeJS binding APIs follow the MaaFramework version.
+The Go, Rust and C# bindings are registered as independent external sources, each with its own pinned
+inventory and compatibility evidence; the C# binding is distributed via NuGet (`Maa.Framework`) and
+its releases align with MaaFramework 5.x tags from `v5.1.0` on. Java is marked obsolete upstream and
+is not a default API source. The native public API is the C/C++ headers; in-tree Python/NodeJS
+binding APIs follow the MaaFramework version.
 
 ## Using the catalog
 
@@ -58,9 +60,9 @@ generated/maa-framework/index.md
 
 Each version directory provides domain navigation; `topics.md` is the curated topic routes,
 `behaviour-changes.md` is the optional behaviour interpretation layer, and `machine-changes.md` holds
-facts extracted mechanically from upstream diffs. `generated/maa-framework-{go,rs}/` provides the
-equivalent Go/Rust binding indexes. Page meanings, manifest semantics and the full layout are in
-`docs/operations.md`.
+facts extracted mechanically from upstream diffs. `generated/maa-framework-{go,rs,csharp}/` provides
+the equivalent Go/Rust/C# binding indexes. Page meanings, manifest semantics and the full layout are
+in `docs/operations.md`.
 
 `Changed since` in a version index lists indexed-material movement only, not behaviour changes;
 behaviour interpretation lives in `behaviour-changes.md`.

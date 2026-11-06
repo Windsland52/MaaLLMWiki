@@ -9,7 +9,7 @@ MaaLLMWiki 为 Maa 生态知识提供机器可读、版本化的源目录：它�
 收录：
 
 - 完整的版本锁定 MaaFramework 文档、schema、原生 API 与树内绑定 API 索引；
-- 独立版本化的 Go 与 Rust 绑定 API 索引，附明确的兼容性证据；
+- 独立版本化的 Go、Rust 与 C# 绑定 API 索引，附明确的兼容性证据；
 - 主题到源的导航与语义版本变更。
 
 不收录：
@@ -20,7 +20,7 @@ MaaLLMWiki 为 Maa 生态知识提供机器可读、版本化的源目录：它�
 - 人工撰写的教程、最佳实践与诊断方法论；
 - 未经核实的模型生成结论。
 
-只有 Go 与 Rust 绑定作为独立外部源登记（Java 被上游文档标注为过时，C# 没有注册的 pin 源）；原生公开 API 为 C/C++ 头文件，树内 Python/NodeJS 绑定 API 随 MaaFramework 版本索引。
+Go、Rust 与 C# 绑定作为独立外部源登记，各自有锁定清单与兼容性证据；C# 通过 NuGet `Maa.Framework` 分发，release 自 `v5.1.0` 起对齐 MaaFramework 5.x tag。Java 被上游文档标注为过时，不是默认 API 源；原生公开 API 为 C/C++ 头文件，树内 Python/NodeJS 绑定 API 随 MaaFramework 版本索引。
 
 ## 使用
 
@@ -46,7 +46,7 @@ generated/maa-framework/index.md
        -> documentation/ · bindings/ · native-api/ · schemas.md
 ```
 
-每个版本目录提供分域导航；`topics.md` 是策展主题路由，`behaviour-changes.md` 是可选的行为解读层，`machine-changes.md` 是从上游 diff 机器抽取的事实。`generated/maa-framework-{go,rs}/` 提供 Go/Rust 绑定的同级索引。页面含义、清单语义与完整目录结构见 `docs/operations.md`。
+每个版本目录提供分域导航；`topics.md` 是策展主题路由，`behaviour-changes.md` 是可选的行为解读层，`machine-changes.md` 是从上游 diff 机器抽取的事实。`generated/maa-framework-{go,rs,csharp}/` 提供 Go/Rust/C# 绑定的同级索引。页面含义、清单语义与完整目录结构见 `docs/operations.zh.md`。
 
 版本索引末尾的 `Changed since` 只列已索引材料移动，不是行为变更；行为解读在 `behaviour-changes.md`。
 
@@ -56,7 +56,7 @@ generated/maa-framework/index.md
 | --- | --- |
 | 保证、校验规则、已知局限（§8） | [`CATALOG-CONTRACT.md`](CATALOG-CONTRACT.md) |
 | 如何修改目录/代码、内容边界与必需检查 | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
-| 流水线、快照生命周期、失败处理、开发命令（英文） | [`docs/operations.md`](docs/operations.md) |
+| 流水线、快照生命周期、失败处理、开发命令 | [`docs/operations.zh.md`](docs/operations.zh.md)（中文；[English](docs/operations.md)） |
 | 安全与私密报告 | [`SECURITY.md`](SECURITY.md) |
 | 许可与归属 | [`LICENSE`](LICENSE)、[`LICENSE-DATA`](LICENSE-DATA)、[`NOTICE`](NOTICE) |
 

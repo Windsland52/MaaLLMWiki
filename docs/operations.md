@@ -26,13 +26,20 @@ generated/maa-framework/index.md
 ```
 
 `documentation/diagrams.md` and `native-api/control-units.md` exist only in releases that first
-contained them; other version directories do not have those files. `generated/maa-framework-{go,rs}/`
-holds the equivalent version/domain indexes for the Go and Rust bindings.
+contained them; other version directories do not have those files. `generated/maa-framework-{go,rs,csharp}/`
+holds the equivalent version/domain indexes for the Go, Rust and C# bindings.
 
 Each generated entry carries a title, a first-paragraph excerpt, and a link to the original source at
 a pinned commit; the catalog does not copy upstream full text and needs no manual chunking,
 embedding, or vector database. MaaFramework source remains in its own Git repository and is searched
 at the selected immutable revision.
+
+Three external binding sources are registered beside MaaFramework: Go, Rust and C#. Each is
+independently pinned with its own inventory and compatibility evidence; none inherits the
+MaaFramework revision. The C# binding is distributed via NuGet as `Maa.Framework`, its indexed
+releases align with MaaFramework 5.x tags from `v5.1.0` on, and each release declares its framework
+version in `src/Directory.Packages.props` at the pinned commit. All three upstream bindings are
+LGPL-3.0 (see `NOTICE`).
 
 ### Page meanings
 
@@ -58,7 +65,7 @@ complete, untruncated list. Behaviour changes live in `behaviour-changes.md` /
 | --- | --- |
 | `sources/repositories.yaml` | Registered upstream repositories and their active pinned revisions. |
 | `sources/maa-framework/` | Release catalog, inventories (`inventory.yaml` plus historical `inventories/*.yaml`), curated `source-map.yaml` and `semantic-changes.yaml`, and generated `machine-changes.yaml`. |
-| `sources/maa-framework-{go,rs}/` | Independent Go/Rust binding release catalogs and inventories. |
+| `sources/maa-framework-{go,rs,csharp}/` | Independent Go/Rust/C# binding release catalogs and inventories, each pinned separately. |
 | `sources/compatibility/` | Evidence-backed binding compatibility metadata. |
 | `generated/` | Generated navigation indexes for all sources; do not hand-edit. |
 | `schemas/` | Generated metadata JSON schemas, including the bundle manifest schema. |
@@ -86,8 +93,8 @@ checks; it is not the navigation interface. Every indexed artifact records its g
 
 ### Classification branches
 
-After checking out the catalog branch and the three upstream clones, each run re-indexes every stable
-MaaFramework 5.x tag (`CATALOG_MAJOR`, currently `5`) plus every stable Go and Rust binding tag,
+After checking out the catalog branch and the four upstream clones, each run re-indexes every stable
+MaaFramework 5.x tag (`CATALOG_MAJOR`, currently `5`) plus every stable Go, Rust and C# binding tag,
 regenerates schemas, runs the machine-catalog gate, and then classifies the catalog state:
 
 1. **Working tree changed** (`git status --porcelain` non-empty): `changed=true`, `publish=true`.
@@ -142,9 +149,9 @@ tag without its intended body.
 The versioned zip contains `sources/`, `generated/`, `schemas/`, and `catalog-manifest.json`. The
 manifest's `api_version` is `maa-llm-wiki-catalog/v1`; `wiki_revision` records the build commit;
 `working_tree_clean` records whether the build came from a clean tree; `catalog_version` records the
-bundle's tag (older bundles may omit it); `sources` pins the MaaFramework, Go, and Rust versions and
-40-character commits; `files` lists `path`, `size_bytes`, and `sha256` for every bundled file other
-than the manifest. Field semantics, the v1 stability rules, and the integrity invariants are in
+bundle's tag (older bundles may omit it); `sources` pins the MaaFramework, Go, Rust and C# versions
+and 40-character commits; `files` lists `path`, `size_bytes`, and `sha256` for every bundled file
+other than the manifest. Field semantics, the v1 stability rules, and the integrity invariants are in
 `CATALOG-CONTRACT.md`; the machine-readable schema ships in the bundle as
 `schemas/catalog-bundle-manifest.schema.json`.
 
@@ -279,7 +286,8 @@ rule — and the workflow prefers it automatically.
 ### Clone assumptions
 
 Put the upstream clones under `tmp/` exactly as the publish workflow does:
-`tmp/MaaFramework`, `tmp/maa-framework-go`, and `tmp/maa-framework-rs`. Use the repository URLs from
+`tmp/MaaFramework`, `tmp/maa-framework-go`, `tmp/maa-framework-rs`, and
+`tmp/MaaFramework.Binding.CSharp`. Use the repository URLs from
 `.github/workflows/publish-catalog.yml`. Python is pinned to 3.13 via `requires-python`.
 
 ### Commands
@@ -288,7 +296,10 @@ Put the upstream clones under `tmp/` exactly as the publish workflow does:
 uv sync --locked
 uv run maa-wiki-sync-latest-maafw --repository tmp/MaaFramework
 uv run maa-wiki-sync-maafw-history --repository tmp/MaaFramework --major 5
-uv run maa-wiki-sync-bindings-history --go-repository tmp/maa-framework-go --rust-repository tmp/maa-framework-rs
+uv run maa-wiki-sync-bindings-history `
+  --repository maa-framework-go=tmp/maa-framework-go `
+  --repository maa-framework-rs=tmp/maa-framework-rs `
+  --repository maa-framework-csharp=tmp/MaaFramework.Binding.CSharp
 uv run maa-wiki-extract-changes --repository tmp/MaaFramework --check
 uv run maa-wiki-build-bundle --output dist/maa-llm-wiki-catalog-vX.Y.Z.zip --version vX.Y.Z
 uv run maa-wiki-verify-bundle --bundle dist/maa-llm-wiki-catalog-vX.Y.Z.zip --expect-version vX.Y.Z --expect-revision <40-char SHA>
@@ -330,5 +341,5 @@ git diff --check
 ### Repository state
 
 The active revisions are recorded in `sources/repositories.yaml`; immutable release histories live
-below each source directory. The current automation indexes all stable MaaFramework v5, Go binding,
-and Rust binding releases, and `machine-changes.yaml` is rebuilt by sync on every run.
+below each source directory. The current automation indexes all stable MaaFramework v5, Go, Rust and
+C# binding releases, and `machine-changes.yaml` is rebuilt by sync on every run.
