@@ -66,7 +66,7 @@ Generated navigation is layered as follows:
 generated/maa-framework/index.md
   -> topics.md                     # curated topic routes (rendered from source-map.yaml)
   -> behaviour-changes.md          # recorded behaviour changes (rendered from semantic-changes.yaml)
-  -> <version>/index.md
+  -> <version>/index.md            # ends with a "Changed since <previous indexed release>" section
        -> documentation/index.md -> {en-us,zh-cn,nodejs,tools}.md
        -> documentation/diagrams.md        # since 5.10.3
        -> bindings/index.md -> {python,nodejs}.md
@@ -77,6 +77,16 @@ generated/maa-framework/index.md
 
 `diagrams.md` and `control-units.md` exist only in some versions; other version directories do not
 contain them.
+
+Each `<version>/index.md` ends with a `Changed since` section: the heading is `Changed since`
+followed by the previous indexed release in backticks, and it summarises the **indexed material**
+added, content-changed, and removed relative to the previous release using the `blob` ids recorded
+in the inventories. When something changed it starts with counts and then lists entries per class,
+with a per-class listing cap; overflow is shown as `... and K more <label>`, and `maa-wiki-diff`
+has the full list. When nothing changed there is a single line saying so. The first indexed release
+says `Changed since the previous release` and notes there is no previous inventory to compare. It
+answers "which indexed files moved in this release" — **it is not a behaviour change**; behaviour
+changes live in `behaviour-changes.md` / `semantic-changes.yaml`.
 
 `topics.md` and `behaviour-changes.md` are rendered navigation for hand-authored metadata: the
 former lists, per topic, every variant's applicable release (`applies_to`), revision, pinned file
@@ -119,8 +129,9 @@ checked out under `tmp/` first, using the repository URLs from the publish workf
 `maa-wiki-diff` compares the inventories of two indexed releases and lists added, removed, and
 content-changed artifacts. It uses the `blob` recorded in each inventory to decide whether content
 changed and needs no upstream clone; `--source` selects the source (default `maafw`), and
-`--format json` is available for machine consumption. Example:
-`uv run maa-wiki-diff --from 5.14.3 --to 5.15.0`.
+`--format json` is available for machine consumption. The per-version `Changed since` section is the
+cheap, bundle-local summary (with per-class caps); use `maa-wiki-diff` when you need the full,
+untruncated list. Example: `uv run maa-wiki-diff --from 5.14.3 --to 5.15.0`.
 
 The single-version command only regenerates the default inventory:
 `uv run maa-wiki-sync-maafw --version <version> --repository tmp/MaaFramework` only rebuilds
@@ -284,7 +295,7 @@ Two rules keep human-authored content out of the automation:
   for indexed releases newer than the newest `semantic-changes.yaml` entry, and closes the tracking
   issue when the queue is empty. The report names the releases and artifacts to inspect; each item is
   a suspected trigger, not a verified change. Paths the inventory does not index remain invisible —
-  see §7 of `CATALOG-CONTRACT.md` for coverage and blind spots.
+  see §8 of `CATALOG-CONTRACT.md` for coverage and blind spots.
 
 The job authenticates with the repository `GITHUB_TOKEN`. If the default branch requires pull
 requests, add a `CATALOG_PUSH_TOKEN` secret — a fine-grained token with contents and issues write
@@ -292,12 +303,12 @@ from an identity allowed to bypass that rule — and the workflow prefers it aut
 
 ## Known gaps
 
-§7 of `CATALOG-CONTRACT.md` is the public, honest statement of coverage gaps and guarantee
-boundaries: semantic-change coverage is incomplete (the section lists the number of covered versions
-from its last review), the source map covers only curated topics, binding `declared` compatibility
-is textual evidence rather than runtime verification, `unknown` entries are not guessed, GitHub
-Releases is the only distribution channel, and there is no SLA. The section also gives the commands
-that re-derive its numbers; if a number disagrees with the data files, the data files win.
+§8 of `CATALOG-CONTRACT.md` is the public, honest statement of coverage gaps and guarantee
+boundaries: semantic-change coverage is incomplete and still being expanded (the current numbers are
+whatever §8.6's re-derivation commands report), the source map covers only curated topics, binding
+`declared` compatibility is textual evidence rather than runtime verification, `unknown` entries are
+not guessed, GitHub Releases is the only distribution channel, and there is no SLA. §8.6 gives the
+commands that re-derive its numbers; if a number disagrees with the data files, the data files win.
 
 ## Licence
 

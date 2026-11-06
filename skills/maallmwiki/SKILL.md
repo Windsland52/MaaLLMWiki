@@ -12,7 +12,7 @@ MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官�
 ## 路由步骤
 
 1. **定版本**：以被开发项目实际使用的 MaaFramework（下称 MaaFW）版本为准（运行时/依赖声明/用户陈述）。版本未知 → 用最新稳定版并**明确声明该假设**；已知版本不在目录中 → 取相邻已有版本并标注差距。可用版本清单见 `generated/maa-framework/index.md`（预发布见 `prereleases.md`；目录没有 `latest`，必须先选版本）。
-2. **进目录**：`generated/maa-framework/<版本>/`（顶层 `index.md` 还链接 `topics.md` 与 `behaviour-changes.md`）。
+2. **进目录**：`generated/maa-framework/<版本>/`（顶层 `index.md` 还链接 `topics.md` 与 `behaviour-changes.md`）。跨版本问题可以先看该版本 `index.md` 末尾的 `Changed since <上一版本>`：它按 `blob` 列出这一版相对上一版**已索引材料**的新增、内容变化与删除（摘要有上限；完整列表用 `maa-wiki-diff`），但它是材料移动，不是行为变更——行为变更看 `behaviour-changes.md` / `semantic-changes.yaml`。
 3. **按域选索引**：
     | 要查什么 | 索引位置 |
     | --- | --- |
