@@ -12,9 +12,12 @@ from maa_llm_wiki import inventory
 from maa_llm_wiki.bindings import (
     BINDING_SPECS,
     BindingSourceSpec,
+    PackageDocumentation,
     _binding_compatibility,
     _classify_binding_path,
     _describe_binding_artifact,
+    _package_documentation,
+    render_binding_version,
     sync_binding_history,
 )
 from maa_llm_wiki.inventory import (
@@ -31,6 +34,7 @@ from maa_llm_wiki.inventory import (
 )
 from maa_llm_wiki.models import (
     ArtifactKind,
+    BindingCompatibility,
     CompatibilityStatus,
     MachineChangeCatalog,
     PrereleaseRecord,
@@ -1140,3 +1144,90 @@ def test_csharp_sync_filters_legacy_major_tags_and_resolves_prereleases(
     assert kinds["src/Directory.Packages.props"] is ArtifactKind.PACKAGE_MANIFEST
     assert kinds["README.md"] is ArtifactKind.DOCUMENTATION
     assert (root / "generated" / "maa-framework-csharp" / "5.1.0" / "index.md").is_file()
+
+
+def _csproj(package_id: str) -> str:
+    return (
+        "<Project>\n"
+        "  <PropertyGroup>\n"
+        f"    <PackageId>{package_id}</PackageId>\n"
+        "    <TargetFrameworks>net7.0;net9.0</TargetFrameworks>\n"
+        "  </PropertyGroup>\n"
+        "</Project>\n"
+    )
+
+
+def _csproj(package_id: str) -> str:
+    return (
+        "<Project>\n"
+        "  <PropertyGroup>\n"
+        f"    <PackageId>{package_id}</PackageId>\n"
+        "    <TargetFrameworks>net7.0;net9.0</TargetFrameworks>\n"
+        "  </PropertyGroup>\n"
+        "</Project>\n"
+    )
+
+
+def test_csharp_package_documentation_links_each_nuget_package(tmp_path: Path) -> None:
+    repository, commit = _binding_repository(
+        tmp_path,
+        {
+            "src/MaaFramework/MaaFramework.csproj": _csproj("Maa.Framework"),
+            "src/MaaFramework.Binding/MaaFramework.Binding.csproj": _csproj(
+                "Maa.Framework.Binding"
+            ),
+            "src/Directory.Packages.props": "<Project />\n",
+            "src/NotAProject/notes.txt": "no PackageId here\n",
+        },
+    )
+    inventory = _inventory(
+        "5.10.0",
+        [
+            _artifact("src/Directory.Packages.props", kind=ArtifactKind.PACKAGE_MANIFEST),
+            _artifact(
+                "src/MaaFramework.Binding/MaaFramework.Binding.csproj",
+                kind=ArtifactKind.PACKAGE_MANIFEST,
+            ),
+            _artifact("src/MaaFramework/MaaFramework.csproj", kind=ArtifactKind.PACKAGE_MANIFEST),
+        ],
+    )
+
+    release = ReleaseRecord(version="5.10.0", tag="v5.10.0", commit=commit, released_at=FIXED_DATE)
+    links = _package_documentation(
+        repository, release, BINDING_SPECS["maa-framework-csharp"], inventory
+    )
+
+    assert [link.label for link in links] == ["Maa.Framework", "Maa.Framework.Binding"]
+    assert links[0].url == "https://www.nuget.org/packages/Maa.Framework/5.10.0"
+    assert links[1].url == "https://www.nuget.org/packages/Maa.Framework.Binding/5.10.0"
+
+
+def test_csharp_version_page_shows_the_nuget_section() -> None:
+    inventory = _inventory("5.10.0", [_artifact("src/Directory.Packages.props")])
+    compatibility = BindingCompatibility(
+        source_id="maa-framework-csharp",
+        binding_version="5.10.0",
+        binding_revision="a" * 40,
+        framework_version="5.10.5",
+        status=CompatibilityStatus.DECLARED,
+        evidence_paths=["src/Directory.Packages.props"],
+        note="The package manifest declares this Maa.Framework.Runtimes version.",
+    )
+    pages = render_binding_version(
+        BINDING_SPECS["maa-framework-csharp"],
+        inventory,
+        compatibility,
+        "https://github.com/MaaXYZ/MaaFramework.Binding.CSharp",
+        [
+            PackageDocumentation(
+                label="Maa.Framework", url="https://www.nuget.org/packages/Maa.Framework/5.10.0"
+            )
+        ],
+    )
+
+    assert "## NuGet packages" in pages["index.md"]
+    assert "https://www.nuget.org/packages/Maa.Framework/5.10.0" in pages["index.md"]
+    rust_pages = render_binding_version(
+        BINDING_SPECS["maa-framework-rs"], inventory, compatibility, "https://example.invalid", []
+    )
+    assert "NuGet" not in rust_pages["index.md"]

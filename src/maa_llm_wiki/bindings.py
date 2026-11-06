@@ -41,6 +41,8 @@ class BindingSourceSpec:
     display_name: str
     language: str
     tag_major: int | None = None
+    package_heading: str = "## Package documentation"
+    package_registry: str | None = None
 
 
 @dataclass(frozen=True)
@@ -54,6 +56,8 @@ BINDING_SPECS = {
         source_id="maa-framework-go",
         display_name="MaaFramework Go binding",
         language="Go",
+        package_heading="## Go API documentation",
+        package_registry="pkg.go.dev",
     ),
     "maa-framework-rs": BindingSourceSpec(
         source_id="maa-framework-rs",
@@ -65,6 +69,8 @@ BINDING_SPECS = {
         display_name="MaaFramework C# binding",
         language="C#",
         tag_major=5,
+        package_heading="## NuGet packages",
+        package_registry="nuget.org",
     ),
 }
 
@@ -187,6 +193,50 @@ def _go_package_documentation(
         label = "root package" if package_dir == "." else package_dir
         links.append(PackageDocumentation(label=label, url=f"https://pkg.go.dev/{encoded}"))
     return links
+
+
+CSHARP_PACKAGE_ID_PATTERN = re.compile(r"<PackageId>\s*(?P<id>[^<\s]+)\s*</PackageId>")
+
+
+def _csharp_package_documentation(
+    repository: Path,
+    revision: str,
+    version: str,
+    inventory: SourceInventory,
+) -> list[PackageDocumentation]:
+    """Link each shipped NuGet package at the version this release publishes."""
+    links: list[PackageDocumentation] = []
+    for artifact in inventory.artifacts:
+        if not artifact.path.endswith(".csproj"):
+            continue
+        content = _read_revision_file(repository, revision, artifact.path)
+        if content is None:
+            continue
+        match = CSHARP_PACKAGE_ID_PATTERN.search(content)
+        if match is None:
+            continue
+        package_id = match["id"]
+        encoded = quote(package_id, safe=".")
+        links.append(
+            PackageDocumentation(
+                label=package_id,
+                url=f"https://www.nuget.org/packages/{encoded}/{quote(version, safe='.-')}",
+            )
+        )
+    return sorted(links, key=lambda item: item.label)
+
+
+def _package_documentation(
+    repository: Path,
+    release: ReleaseRecord,
+    spec: BindingSourceSpec,
+    inventory: SourceInventory,
+) -> list[PackageDocumentation]:
+    if spec.source_id == "maa-framework-go":
+        return _go_package_documentation(repository, release.commit, release.tag, inventory)
+    if spec.source_id == "maa-framework-csharp":
+        return _csharp_package_documentation(repository, release.commit, release.version, inventory)
+    return []
 
 
 GO_RELEASE_LINK_PATTERN = re.compile(
@@ -371,18 +421,15 @@ def render_binding_version(
             url = f"{repository_url.rstrip('/')}/blob/{inventory.revision}/{encoded_path}"
             links.append(f"[`{path}`]({url})")
         index_lines.append(f"- Evidence: {', '.join(links)}")
-    index_lines.extend(
-        [
-            "",
-            "## Go API documentation" if package_documentation else "",
-        ]
-    )
     if package_documentation:
         package_link = package_documentation[0]
+        registry = spec.package_registry or "the package registry"
         index_lines.extend(
             [
                 "",
-                f"[Browse {package_link.label} on pkg.go.dev]({package_link.url})",
+                spec.package_heading,
+                "",
+                f"[Browse {package_link.label} on {registry}]({package_link.url})",
             ]
         )
     index_lines.extend(
@@ -534,11 +581,7 @@ def sync_binding_history(
             artifacts=discover_binding_artifacts(repository, release.commit, spec),
         )
         compatibility = _binding_compatibility(repository, release, spec)
-        package_documentation = (
-            _go_package_documentation(repository, release.commit, release.tag, inventory)
-            if source_id == "maa-framework-go"
-            else []
-        )
+        package_documentation = _package_documentation(repository, release, spec, inventory)
         compatibilities.append(compatibility)
         inventory_root = source_root / "inventories"
         inventory_root.mkdir(parents=True, exist_ok=True)

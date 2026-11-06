@@ -24,8 +24,16 @@ _MAAFW_DISPLAY_NAME = "MaaFramework"
 _MAAFW_GENERATOR = "maa-wiki-sync-maafw-history"
 _BINDINGS_GENERATOR = "maa-wiki-sync-bindings-history"
 _GO_SOURCE_ID = "maa-framework-go"
-_GO_SECTION_HEADINGS = frozenset({"## Package documentation", "## Source files"})
-_GO_INDEX_HEADINGS = frozenset({"## Go API documentation"})
+_CSHARP_SOURCE_ID = "maa-framework-csharp"
+_PACKAGE_SECTION_HEADINGS = frozenset(
+    {
+        "## Package documentation",
+        "## Source files",
+        "## Go API documentation",
+        "## NuGet packages",
+    }
+)
+_PACKAGE_REGISTRY_MARKERS = ("pkg.go.dev", "nuget.org")
 
 
 _YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
@@ -101,13 +109,13 @@ def _non_blank_lines(text: str) -> list[str]:
     return [line for line in text.splitlines() if line.strip()]
 
 
-def _strip_go_sections(text: str, headings: frozenset[str]) -> list[str]:
-    """Drop sections whose links need a live git checkout, keeping everything deterministic."""
+def _strip_package_sections(text: str) -> list[str]:
+    """Drop sections whose links need a live checkout, keeping everything deterministic."""
     lines: list[str] = []
     for line in _non_blank_lines(text):
-        if line in headings:
+        if line in _PACKAGE_SECTION_HEADINGS:
             continue
-        if "pkg.go.dev" in line:
+        if any(marker in line for marker in _PACKAGE_REGISTRY_MARKERS):
             continue
         lines.append(line)
     return lines
@@ -167,16 +175,14 @@ def _check_line_page(
     path: Path,
     expected: str,
     *,
-    strip_headings: frozenset[str],
     label: str,
     errors: list[str],
 ) -> None:
     if not path.is_file():
         return
-    actual_lines = _strip_go_sections(
-        path.read_text(encoding="utf-8"), strip_headings | _GO_SECTION_HEADINGS
-    )
-    if actual_lines != _strip_go_sections(expected, strip_headings | _GO_SECTION_HEADINGS):
+    if _strip_package_sections(path.read_text(encoding="utf-8")) != _strip_package_sections(
+        expected
+    ):
         errors.append(f"{label} generated page is stale: {_public_path(path)}")
 
 
@@ -310,20 +316,18 @@ def _check_binding_generated(
             ),
         }
         expected_names = set(deterministic) | {"index.md"}
-        if source_id == _GO_SOURCE_ID:
-            # The Go index and API page embed pkg.go.dev links derived from a live checkout.
+        if source_id in {_GO_SOURCE_ID, _CSHARP_SOURCE_ID}:
+            # These indexes and API pages embed registry links derived from a live checkout.
             _check_page_set(version_root, expected_names, label=source_id, errors=errors)
             _check_line_page(
                 version_root / "api.md",
                 deterministic["api.md"],
-                strip_headings=_GO_SECTION_HEADINGS,
                 label=source_id,
                 errors=errors,
             )
             _check_line_page(
                 version_root / "index.md",
                 rendered_index["index.md"],
-                strip_headings=_GO_INDEX_HEADINGS,
                 label=source_id,
                 errors=errors,
             )

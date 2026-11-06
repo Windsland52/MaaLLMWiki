@@ -9,8 +9,6 @@ Revision: `da20045109dc684a38296102c0d497097adc6e3c`
 - MaaFramework version: `not declared`
 - Basis: No exact MaaFramework version declaration was found in indexed package metadata.
 
-
-
 ## Sources
 
 - [Public binding API](api.md)

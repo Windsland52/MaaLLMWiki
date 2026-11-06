@@ -3,6 +3,16 @@
 
 MaaFramework C# binding `5.1.0` at `ca34dd25bf6ce4dd20a24c19dae0b7190f4d7bcb`.
 
+## Package documentation
+
+- [Maa.Framework](https://www.nuget.org/packages/Maa.Framework/5.1.0)
+- [Maa.Framework.Binding](https://www.nuget.org/packages/Maa.Framework.Binding/5.1.0)
+- [Maa.Framework.Binding.Extensions](https://www.nuget.org/packages/Maa.Framework.Binding.Extensions/5.1.0)
+- [Maa.Framework.Binding.Native](https://www.nuget.org/packages/Maa.Framework.Binding.Native/5.1.0)
+- [Maa.Framework.Native](https://www.nuget.org/packages/Maa.Framework.Native/5.1.0)
+
+## Source files
+
 - **NotificationDetail.cs**: Public C# binding declarations for the NotificationDetail module. [`src/MaaFramework.Binding.Extensions/Notification/NotificationDetail.cs`](https://github.com/MaaXYZ/MaaFramework.Binding.CSharp/blob/ca34dd25bf6ce4dd20a24c19dae0b7190f4d7bcb/src/MaaFramework.Binding.Extensions/Notification/NotificationDetail.cs)
 - **NotificationDetailContext.cs**: Public C# binding declarations for the NotificationDetailContext module. [`src/MaaFramework.Binding.Extensions/Notification/NotificationDetailContext.cs`](https://github.com/MaaXYZ/MaaFramework.Binding.CSharp/blob/ca34dd25bf6ce4dd20a24c19dae0b7190f4d7bcb/src/MaaFramework.Binding.Extensions/Notification/NotificationDetailContext.cs)
 - **NotificationHandler.cs**: Public C# binding declarations for the NotificationHandler module. [`src/MaaFramework.Binding.Extensions/Notification/NotificationHandler.cs`](https://github.com/MaaXYZ/MaaFramework.Binding.CSharp/blob/ca34dd25bf6ce4dd20a24c19dae0b7190f4d7bcb/src/MaaFramework.Binding.Extensions/Notification/NotificationHandler.cs)

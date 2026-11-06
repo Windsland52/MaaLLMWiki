@@ -10,7 +10,9 @@ Revision: `0120396d93e57ebdddf926c5d29b161d8f938355`
 - Basis: The package manifest declares Maa.Framework.Runtimes 5.4.3; runtime compatibility has not been independently verified.
 - Evidence: [`src/Directory.Packages.props`](https://github.com/MaaXYZ/MaaFramework.Binding.CSharp/blob/0120396d93e57ebdddf926c5d29b161d8f938355/src/Directory.Packages.props)
 
+## NuGet packages
 
+[Browse Maa.Framework on nuget.org](https://www.nuget.org/packages/Maa.Framework/5.4.0)
 
 ## Sources
 
