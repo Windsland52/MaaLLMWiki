@@ -30,3 +30,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `source/binding/Python/maa/pipeline.py` (binding-api)
 - changed: `tools/interface.schema.json` (schema)
 - changed: `tools/pipeline.schema.json` (schema)
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.13.1](../5.13.1/index.md)
+- Next release: [5.14.1](../5.14.1/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

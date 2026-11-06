@@ -47,3 +47,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `docs/zh_cn/2.3-回调协议.md` (documentation)
 - changed: `docs/zh_cn/2.4-控制方式说明.md` (documentation)
 - ... and 14 more changed
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.3.0](../5.3.0/index.md)
+- Next release: [5.3.2](../5.3.2/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

@@ -45,3 +45,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `source/binding/NodeJS/src/apis/global.d.ts` (binding-api)
 - changed: `source/binding/NodeJS/src/apis/pipeline.d.ts` (binding-api)
 - ... and 20 more changed
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.2.6](../5.2.6/index.md)
+- Next release: [5.3.1](../5.3.1/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

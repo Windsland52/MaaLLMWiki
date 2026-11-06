@@ -41,3 +41,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `source/binding/Python/maa/tasker.py` (binding-api)
 - changed: `tools/interface.schema.json` (schema)
 - changed: `tools/pipeline.schema.json` (schema)
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.6.0](../5.6.0/index.md)
+- Next release: [5.7.1](../5.7.1/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

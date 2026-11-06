@@ -24,3 +24,10 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 ## Changed since the previous release
 
 - First indexed release; no previous inventory to compare.
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Next release: [5.0.1](../5.0.1/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

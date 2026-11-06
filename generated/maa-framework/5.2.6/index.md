@@ -32,3 +32,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `source/binding/NodeJS/src/apis/controller.d.ts` (binding-api)
 - changed: `source/binding/Python/maa/controller.py` (binding-api)
 - changed: `tools/pipeline.schema.json` (schema)
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.2.5](../5.2.5/index.md)
+- Next release: [5.3.0](../5.3.0/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

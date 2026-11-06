@@ -45,3 +45,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `source/binding/Python/maa/controller.py` (binding-api)
 - changed: `source/binding/Python/maa/job.py` (binding-api)
 - ... and 5 more changed
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.4.3](../5.4.3/index.md)
+- Next release: [5.6.0](../5.6.0/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

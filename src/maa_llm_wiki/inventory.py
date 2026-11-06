@@ -401,11 +401,34 @@ def _changed_since_lines(
     return lines
 
 
+def _version_navigation_lines(
+    *,
+    version: str,
+    previous_version: str | None,
+    next_version: str | None,
+) -> list[str]:
+    """Point a version index at the neighbouring releases and the top-level pages."""
+    lines = ["", "## Navigation", "", "- [All indexed versions](../index.md)"]
+    if previous_version is not None:
+        lines.append(f"- Previous release: [{previous_version}](../{previous_version}/index.md)")
+    if next_version is not None:
+        lines.append(f"- Next release: [{next_version}](../{next_version}/index.md)")
+    lines.extend(
+        [
+            "- [Topics](../topics.md) · [Machine changes](../machine-changes.md)",
+            "- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)",
+        ]
+    )
+    return lines
+
+
 def render_version_indexes(
     inventory: SourceInventory,
     repository_url: str,
     *,
     previous: SourceInventory | None = None,
+    previous_version: str | None = None,
+    next_version: str | None = None,
 ) -> dict[str, str]:
     grouped: defaultdict[str, list[SourceArtifact]] = defaultdict(list)
     titles: dict[str, str] = {}
@@ -481,6 +504,13 @@ def render_version_indexes(
         "[Browse schemas](schemas.md)",
     ]
     main_lines.extend(_changed_since_lines(inventory, previous))
+    main_lines.extend(
+        _version_navigation_lines(
+            version=inventory.version,
+            previous_version=previous_version or (previous.version if previous else None),
+            next_version=next_version,
+        )
+    )
     pages["index.md"] = "\n".join(main_lines) + "\n"
     return pages
 
@@ -578,6 +608,9 @@ def _write_version_indexes(
     inventory: SourceInventory,
     repository_url: str,
     previous: SourceInventory | None = None,
+    *,
+    previous_version: str | None = None,
+    next_version: str | None = None,
 ) -> None:
     output_root = root / "generated" / "maa-framework"
     version_root = output_root / inventory.version
@@ -588,7 +621,11 @@ def _write_version_indexes(
     for path in version_root.rglob("*.md"):
         path.unlink()
     for relative_path, content in render_version_indexes(
-        inventory, repository_url, previous=previous
+        inventory,
+        repository_url,
+        previous=previous,
+        previous_version=previous_version,
+        next_version=next_version,
     ).items():
         path = version_root / relative_path
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -720,7 +757,20 @@ def sync_maafw_inventory(*, root: Path, repository: Path, version: str) -> None:
             machine_changes.model_dump(mode="json"),
         )
 
-    _write_version_indexes(root, inventory, source.url, previous_inventory)
+    _write_version_indexes(
+        root,
+        inventory,
+        source.url,
+        previous_inventory,
+        previous_version=(
+            releases.releases[release_index - 1].version if release_index > 0 else None
+        ),
+        next_version=(
+            releases.releases[release_index + 1].version
+            if release_index + 1 < len(releases.releases)
+            else None
+        ),
+    )
     _write_release_pages(
         root,
         releases.releases,
@@ -1000,7 +1050,7 @@ def sync_maafw_history(
     write_yaml(root / "sources" / "repositories.yaml", repositories.model_dump(mode="json"))
 
     previous_inventory: SourceInventory | None = None
-    for release in releases:
+    for release_index, release in enumerate(releases):
         inventory = SourceInventory(
             source_id=source.id,
             version=release.version,
@@ -1017,7 +1067,16 @@ def sync_maafw_history(
                 root / "sources" / "maa-framework" / "inventory.yaml",
                 inventory.model_dump(mode="json"),
             )
-        _write_version_indexes(root, inventory, source.url, previous_inventory)
+        _write_version_indexes(
+            root,
+            inventory,
+            source.url,
+            previous_inventory,
+            previous_version=releases[release_index - 1].version if release_index > 0 else None,
+            next_version=(
+                releases[release_index + 1].version if release_index + 1 < len(releases) else None
+            ),
+        )
         previous_inventory = inventory
     machine_changes = build_machine_changes(root, repository)
     write_yaml(

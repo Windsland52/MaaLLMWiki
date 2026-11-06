@@ -28,3 +28,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `docs/en_us/5.1-Troubleshooting.md` (documentation)
 - changed: `docs/zh_cn/1.1-快速开始.md` (documentation)
 - changed: `docs/zh_cn/5.1-问题反馈.md` (documentation)
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.10.0](../5.10.0/index.md)
+- Next release: [5.10.2](../5.10.2/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

@@ -45,3 +45,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `include/MaaFramework/MaaDef.h` (public-api)
 - changed: `include/MaaFramework/MaaMsg.h` (public-api)
 - ... and 15 more changed
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.0.5](../5.0.5/index.md)
+- Next release: [5.1.1](../5.1.1/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

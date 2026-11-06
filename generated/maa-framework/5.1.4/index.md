@@ -35,3 +35,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `source/binding/NodeJS/src/apis/context.d.ts` (binding-api)
 - changed: `tools/interface.schema.json` (schema)
 - removed: `tools/interface_v2.schema.json` (schema)
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.1.3](../5.1.3/index.md)
+- Next release: [5.2.0](../5.2.0/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

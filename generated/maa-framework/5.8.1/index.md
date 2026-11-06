@@ -27,3 +27,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `docs/en_us/3.1-PipelineProtocol.md` (documentation)
 - changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
 - changed: `source/binding/Python/maa/context.py` (binding-api)
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.8.0](../5.8.0/index.md)
+- Next release: [5.9.0](../5.9.0/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

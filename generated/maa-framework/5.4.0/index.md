@@ -45,3 +45,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `source/binding/Python/maa/resource.py` (binding-api)
 - changed: `source/binding/Python/maa/tasker.py` (binding-api)
 - ... and 2 more changed
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.3.3](../5.3.3/index.md)
+- Next release: [5.4.1](../5.4.1/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

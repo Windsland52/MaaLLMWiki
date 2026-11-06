@@ -45,3 +45,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `source/binding/NodeJS/src/apis/constant.d.ts` (binding-api)
 - changed: `source/binding/Python/maa/buffer.py` (binding-api)
 - ... and 3 more changed
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.1.4](../5.1.4/index.md)
+- Next release: [5.2.1](../5.2.1/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

@@ -749,9 +749,19 @@ def test_sync_maafw_history_renders_top_level_pages_once(
         source_inventory: SourceInventory,
         repository_url: str,
         previous: SourceInventory | None = None,
+        *,
+        previous_version: str | None = None,
+        next_version: str | None = None,
     ) -> None:
         calls["version"] += 1
-        real_version_indexes(root_path, source_inventory, repository_url, previous)
+        real_version_indexes(
+            root_path,
+            source_inventory,
+            repository_url,
+            previous,
+            previous_version=previous_version,
+            next_version=next_version,
+        )
 
     def counting_release_pages(
         root_path: Path,
@@ -1281,3 +1291,28 @@ def test_version_index_lists_every_package_of_the_registry() -> None:
     assert "## Go API documentation" in pages["index.md"]
     assert "- [root package](https://pkg.go.dev/x@v4.0.0)" in pages["index.md"]
     assert "- [controller](https://pkg.go.dev/x/controller@v4.0.0)" in pages["index.md"]
+
+
+def test_version_index_navigation_links_neighbours() -> None:
+    current = _inventory("1.2.0", [_artifact("README.md")])
+    page = render_version_indexes(
+        current,
+        "https://example.invalid",
+        previous_version="1.1.0",
+        next_version="1.3.0",
+    )["index.md"]
+
+    assert "## Navigation" in page
+    assert "- [All indexed versions](../index.md)" in page
+    assert "- Previous release: [1.1.0](../1.1.0/index.md)" in page
+    assert "- Next release: [1.3.0](../1.3.0/index.md)" in page
+    assert "[Machine symbols](../machine-symbols.md)" in page
+
+    first = render_version_indexes(current, "https://example.invalid", next_version="1.3.0")[
+        "index.md"
+    ]
+    assert "Previous release" not in first
+    latest = render_version_indexes(current, "https://example.invalid", previous_version="1.1.0")[
+        "index.md"
+    ]
+    assert "Next release" not in latest

@@ -45,3 +45,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `source/binding/Python/maa/toolkit.py` (binding-api)
 - changed: `tools/interface.schema.json` (schema)
 - ... and 2 more changed
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.8.1](../5.8.1/index.md)
+- Next release: [5.9.1](../5.9.1/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

@@ -226,7 +226,13 @@ def _check_maafw_generated(
         if not version_root.is_dir():
             continue
         previous = ordered[index - 1] if index > 0 else None
-        rendered = render_version_indexes(inventory, source.url, previous=previous)
+        rendered = render_version_indexes(
+            inventory,
+            source.url,
+            previous=previous,
+            previous_version=ordered[index - 1].version if index > 0 else None,
+            next_version=(ordered[index + 1].version if index + 1 < len(ordered) else None),
+        )
         _check_page_set(version_root, set(rendered), label="MaaFramework", errors=errors)
         for relative, expected in sorted(rendered.items()):
             _check_page(version_root / relative, expected, label="MaaFramework", errors=errors)

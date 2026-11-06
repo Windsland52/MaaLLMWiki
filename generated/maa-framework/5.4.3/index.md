@@ -31,3 +31,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
 - changed: `docs/zh_cn/3.3-ProjectInterfaceV2协议.md` (documentation)
 - changed: `source/binding/NodeJS/src/apis/tasker.d.ts` (binding-api)
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.4.2](../5.4.2/index.md)
+- Next release: [5.5.0](../5.5.0/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)

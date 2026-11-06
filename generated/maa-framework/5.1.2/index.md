@@ -28,3 +28,11 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - changed: `docs/zh_cn/3.1-任务流水线协议.md` (documentation)
 - changed: `tools/interface_v2.schema.json` (schema)
 - changed: `tools/pipeline.schema.json` (schema)
+
+## Navigation
+
+- [All indexed versions](../index.md)
+- Previous release: [5.1.1](../5.1.1/index.md)
+- Next release: [5.1.3](../5.1.3/index.md)
+- [Topics](../topics.md) · [Machine changes](../machine-changes.md)
+- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)
