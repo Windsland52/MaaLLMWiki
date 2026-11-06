@@ -182,6 +182,8 @@ npx skills add https://github.com/Windsland52/MaaLLMWiki --skill maallmwiki --gl
 - 每次运行都会自动重建机器抽取层（`sources/maa-framework/machine-changes.yaml` 与 `generated/maa-framework/machine-changes.md`）：版本之间的 API/schema/协议级变化由 sync 从上游 diff 抽取并随快照发布，所以版本更新不需要 agent 或人工步骤。策展的 `semantic-changes.yaml` 条目是可选的解读层，用于补充“为什么重要/如何路由”，不是发布前的必经 review 队列。
 - 每次运行结束前（`if: always()`）仍会运行 `uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework`，对晚于最新 `semantic-changes.yaml` 条目的已索引发布比较标题/首段摘要以及清单中记录的 `blob`（离线内容级比较；提供 `--repository` 时再以 git diff 交叉核验已索引路径），并在队列为空时关闭跟踪 issue。报告点名疑似触发，但机器事实已自动发布；每条仍不是已验证的变更。目录未索引的路径仍不可见——覆盖范围与盲区见 `CATALOG-CONTRACT.md` §8。
 
+失败告警走 issue：任何一步失败时（`if: failure()`）会打开或更新一个带 `pipeline-failure` label 的 issue，正文点名失败步骤、运行链接与 commit，并列出“护栏型失败”（上游更高主版本、tag 列表缩水、人工文件被同步改写、校验不通过）各自的处置方式；下一次成功运行会自动关闭它（`if: success()`）。issue 步骤本身 `continue-on-error`，不会掩盖原始失败。
+
 该 job 使用仓库 `GITHUB_TOKEN` 认证。若默认分支强制 pull request，请添加 `CATALOG_PUSH_TOKEN` secret——一个具 contents 与 issues 写权限、来自允许绕过该规则身份的 fine-grained token——workflow 会自动优先使用它。
 
 ## 已知局限

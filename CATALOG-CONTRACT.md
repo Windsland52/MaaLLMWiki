@@ -431,6 +431,9 @@ data files. If a number disagrees with the files, the files win.
   different platform can produce the same content with a different SHA-256. Where a `SHA256SUMS`
   asset exists (`v0.1.17` onward), it still matches the published bytes; only cross-platform rebuild
   equality is not guaranteed for those older bundles.
+- **Failure alerting is an issue, not a monitor.** Any failed publish run opens or updates an
+  issue labelled `pipeline-failure` naming the failed steps, and the next successful run closes it.
+  A run that never starts (disabled workflow, skipped schedule, hosting outage) produces nothing.
 - **No SLA**: no availability, response-time or refresh guarantee. The workflow runs twice a day and
   publishes only when catalog data changes.
 

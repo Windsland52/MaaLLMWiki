@@ -480,3 +480,70 @@ jobs:
             } >> "${GITHUB_STEP_SUMMARY}"
           fi
           exit 0
+
+      - name: Report pipeline failure
+        # Alert channel: a scheduled run that fails is easy to miss in the Actions list, so open (or
+        # update) a labelled issue instead. It closes automatically on the next successful run.
+        # The body names the failed steps and repeats the deliberate-guard guidance, because most
+        # failures here are guards asking for a decision, not broken code.
+        if: failure()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ env.CATALOG_TOKEN }}
+          ISSUE_LABEL: pipeline-failure
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -uo pipefail
+          gh label create "${ISSUE_LABEL}" --color B60205 \
+            --description "Publish catalog pipeline failed" >/dev/null 2>&1 || true
+          failed="$(gh run view "${GITHUB_RUN_ID}" --json jobs \
+            --jq '[.jobs[].steps[] | select(.conclusion == "failure") | .name] | join(", ")' \
+            2>/dev/null || true)"
+          [ -n "${failed}" ] || failed="unknown (see the run log)"
+          body="$(mktemp)"
+          {
+            echo "The publish workflow failed. This issue closes automatically on the next successful run."
+            echo
+            echo "- Run: ${RUN_URL}"
+            echo "- Revision: \`${GITHUB_SHA}\`"
+            echo "- Failed steps: ${failed}"
+            echo
+            echo "Deliberate guards fail the same way and need a decision, not a code fix:"
+            echo
+            echo "- \`Sync Maa source indexes\` fails when upstream publishes a higher major version (raise \`CATALOG_MAJOR\` in the workflow) or when the upstream tag list shrank (confirm the tags really went away; the registry is only rewritten with the explicit \`--prune\` flag)."
+            echo "- \`Check machine change catalog is current\` fails when the committed machine catalog no longer matches a fresh extraction of the upstream diffs."
+            echo "- \`Guard hand-authored catalogs\` fails when the synchronization wrote one of the curated catalogs; that is a defect, not a data update."
+            echo "- \`Validate generated source indexes\` fails when code or data is inconsistent; the step log names the failing check."
+            echo
+            echo "After fixing, re-run the workflow from the Actions page (or wait for the next schedule)."
+          } > "${body}"
+          number="$(gh issue list --state open --label "${ISSUE_LABEL}" --limit 1 \
+            --json number --jq '.[0].number // empty')"
+          new_sha="$(printf '%s' "$(cat "${body}")" | sha256sum | cut -d' ' -f1)"
+          if [ -n "${number}" ]; then
+            current="$(gh issue view "${number}" --json body --jq .body)"
+            current_sha="$(printf '%s' "${current}" | sha256sum | cut -d' ' -f1)"
+            if [ "${current_sha}" != "${new_sha}" ]; then
+              gh issue edit "${number}" --body-file "${body}"
+              gh issue comment "${number}" \
+                --body "The pipeline failed again and the details changed; the issue body lists the current failure."
+            fi
+          else
+            gh issue create --title "Publish catalog pipeline failed" \
+              --label "${ISSUE_LABEL}" --body-file "${body}"
+          fi
+
+      - name: Close pipeline failure issue
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ env.CATALOG_TOKEN }}
+          ISSUE_LABEL: pipeline-failure
+        run: |
+          set -uo pipefail
+          number="$(gh issue list --state open --label "${ISSUE_LABEL}" --limit 1 \
+            --json number --jq '.[0].number // empty')"
+          if [ -n "${number}" ]; then
+            gh issue close "${number}" \
+              --comment "The publish workflow succeeded again; closing automatically."
+          fi

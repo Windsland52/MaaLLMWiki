@@ -335,6 +335,12 @@ Automation and curatorial boundary:
   already published automatically; each item is still not a verified change. Paths the inventory
   does not index remain invisible — see §8 of `CATALOG-CONTRACT.md` for coverage and blind spots.
 
+Failures also open an issue: when any step fails (`if: failure()`), the workflow opens or updates
+an issue labelled `pipeline-failure` whose body names the failed steps, links the run and the
+commit, and lists what each guard failure means (a higher upstream major, a shrunken tag list, a
+curated catalog written by the sync, a failing check). The next successful run closes it
+(`if: success()`). The issue steps are `continue-on-error`, so they never mask the original failure.
+
 The job authenticates with the repository `GITHUB_TOKEN`. If the default branch requires pull
 requests, add a `CATALOG_PUSH_TOKEN` secret — a fine-grained token with contents and issues write
 from an identity allowed to bypass that rule — and the workflow prefers it automatically.
