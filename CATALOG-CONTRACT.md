@@ -80,8 +80,9 @@ verification, checksum and attestation step.
 
 The manifest is written with an explicit `wiki_revision`, so a bundle is self-describing: given only
 the zip, a consumer can identify the exact catalog data it contains. The bundle zip is deterministic
-(fixed entry timestamps, fixed file mode, sorted entries), so the same committed tree produces
-byte-identical bundle content across rebuilds.
+(fixed entry timestamps, fixed file mode, sorted entries, fixed zip host field), so the same
+committed tree produces a byte-identical bundle zip across rebuilds on any platform, as long as the
+same Python and zlib toolchain is used for compression.
 
 ## 4. Discovery
 

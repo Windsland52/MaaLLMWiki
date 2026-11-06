@@ -554,3 +554,17 @@ def test_bundle_sha256_matches_the_file_digest(tmp_path: Path) -> None:
     _write_bundle(bundle, catalog_version="v1.2.3")
 
     assert bundle_sha256(bundle) == hashlib.sha256(bundle.read_bytes()).hexdigest()
+
+
+def test_bundle_zip_entries_pin_the_host_field(tmp_path: Path) -> None:
+    """Windows and POSIX builds must produce the same central directory."""
+    output = tmp_path / "platform.zip"
+    build_catalog_bundle(root=ROOT, output=output, allow_dirty=True, version="v0.0.1")
+
+    with ZipFile(output) as archive:
+        entries = archive.infolist()
+
+    assert entries
+    assert {entry.create_system for entry in entries} == {3}
+    assert {entry.external_attr for entry in entries} == {0o100644 << 16}
+    assert {entry.date_time for entry in entries} == {(1980, 1, 1, 0, 0, 0)}

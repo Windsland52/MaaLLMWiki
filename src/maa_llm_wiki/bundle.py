@@ -138,6 +138,9 @@ def _zip_info(path: str) -> ZipInfo:
     info = ZipInfo(path, date_time=_ZIP_TIMESTAMP)
     info.compress_type = ZIP_DEFLATED
     info.external_attr = 0o100644 << 16
+    # `create_system` defaults to 0 (FAT) on Windows and 3 (Unix) elsewhere; pinning it to Unix
+    # keeps the central directory identical whichever platform builds the bundle.
+    info.create_system = 3
     return info
 
 
