@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
+import zipfile
 from pathlib import Path
 
 import pytest
 import yaml
 
-from maa_llm_wiki.cli import diff_main, extract_changes_main
+from maa_llm_wiki.bundle import build_catalog_bundle
+from maa_llm_wiki.cli import diff_main, extract_changes_main, release_notes_main
 from maa_llm_wiki.models import MachineChange, MachineChangeCatalog, MachineChangeKind
 
 COMMIT_A = "a" * 40
@@ -421,3 +424,158 @@ def test_extract_changes_writes_committed_catalog(
     assert f"Wrote sources/maa-framework/machine-changes.yaml with {len(catalog.changes)}" in out
     written = MachineChangeCatalog.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
     assert written == catalog
+
+
+def _run_release_notes(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    *arguments: str,
+) -> tuple[int, str, str]:
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["maa-wiki-release-notes", *arguments],
+    )
+    code = release_notes_main()
+    captured = capsys.readouterr()
+    return code, captured.out, captured.err
+
+
+def test_release_notes_cli_prints_to_stdout(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def fake_build(
+        *, root: Path, version: str, previous_tag: str | None, bundle: Path | None
+    ) -> str:
+        _ = root, version, previous_tag, bundle
+        return "# Catalog snapshot v0.2.0\n\nBody.\n"
+
+    monkeypatch.setattr("maa_llm_wiki.cli.build_release_notes", fake_build)
+
+    code, out, err = _run_release_notes(
+        monkeypatch, capsys, "--root", str(tmp_path), "--version", "v0.2.0", "--previous", "v0.1.0"
+    )
+
+    assert code == 0
+    assert err == ""
+    assert out == "# Catalog snapshot v0.2.0\n\nBody.\n"
+
+
+def test_release_notes_cli_writes_output_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def fake_build(
+        *, root: Path, version: str, previous_tag: str | None, bundle: Path | None
+    ) -> str:
+        _ = root, version, previous_tag, bundle
+        return "BODY\n"
+
+    monkeypatch.setattr("maa_llm_wiki.cli.build_release_notes", fake_build)
+    output = tmp_path / "notes" / "release.md"
+
+    code, out, err = _run_release_notes(
+        monkeypatch,
+        capsys,
+        "--root",
+        str(tmp_path),
+        "--version",
+        "v0.2.0",
+        "--previous",
+        "v0.1.0",
+        "--output",
+        str(output),
+    )
+
+    assert code == 0
+    assert out == ""
+    assert err == ""
+    assert output.read_text(encoding="utf-8") == "BODY\n"
+
+
+def test_release_notes_cli_missing_previous_passes_none(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    seen: list[str | None] = []
+
+    def fake_build(
+        *, root: Path, version: str, previous_tag: str | None, bundle: Path | None
+    ) -> str:
+        _ = root, version, bundle
+        seen.append(previous_tag)
+        return "INITIAL\n"
+
+    monkeypatch.setattr("maa_llm_wiki.cli.build_release_notes", fake_build)
+
+    code, out, err = _run_release_notes(
+        monkeypatch, capsys, "--root", str(tmp_path), "--version", "v0.1.0"
+    )
+
+    assert code == 0
+    assert err == ""
+    assert out == "INITIAL\n"
+    assert seen == [None]
+
+
+def test_release_notes_cli_unknown_tag_uses_error_boundary(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def fake_build(
+        *, root: Path, version: str, previous_tag: str | None, bundle: Path | None
+    ) -> str:
+        _ = root, version, previous_tag, bundle
+        raise ValueError("unknown previous tag: v9.9.9")
+
+    monkeypatch.setattr("maa_llm_wiki.cli.build_release_notes", fake_build)
+
+    code, out, err = _run_release_notes(
+        monkeypatch,
+        capsys,
+        "--root",
+        str(tmp_path),
+        "--version",
+        "v0.2.0",
+        "--previous",
+        "v9.9.9",
+    )
+
+    assert code == 1
+    assert out == ""
+    assert err.startswith("error: ")
+    assert "unknown previous tag: v9.9.9" in err
+    assert "Traceback" not in err
+
+
+def test_release_notes_cli_reports_real_bundle_details(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = Path(__file__).parents[1]
+    bundle = tmp_path / "maa-llm-wiki-catalog-v9.9.9.zip"
+    build_catalog_bundle(root=root, output=bundle, allow_dirty=True, version="v9.9.9")
+
+    code, out, err = _run_release_notes(
+        monkeypatch,
+        capsys,
+        "--root",
+        str(root),
+        "--version",
+        "v9.9.9",
+        "--previous",
+        "v0.1.20",
+        "--bundle",
+        str(bundle),
+        "--output",
+        str(tmp_path / "release.md"),
+    )
+
+    assert code == 0
+    assert out == ""
+    assert err == ""
+    with zipfile.ZipFile(bundle) as archive:
+        manifest = json.loads(archive.read("catalog-manifest.json"))
+    digest = hashlib.sha256(bundle.read_bytes()).hexdigest()
+    body = (tmp_path / "release.md").read_text(encoding="utf-8")
+    assert f"sha256 `{digest}`" in body
+    assert f"{bundle.stat().st_size} bytes" in body
+    assert f"{len(manifest['files'])} files" in body
+    assert "## Assets" in body
+    assert "`maa-llm-wiki-catalog-latest.zip` (byte-identical copy)" in body

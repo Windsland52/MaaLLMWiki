@@ -22,6 +22,7 @@ from .models import (
     SourceArtifact,
     SourceInventory,
 )
+from .release_notes import build_release_notes
 from .schemas import generate_schemas
 from .validation import (
     load_repository_catalog,
@@ -488,3 +489,25 @@ def extract_changes_main() -> int:
     _print_machine_changes_counts("new", added)
     _print_machine_changes_counts("missing", missing)
     return 1
+
+
+@_error_boundary
+def release_notes_main() -> int:
+    parser = _root_parser("Render a substantive release body from the catalog snapshot")
+    parser.add_argument("--version", required=True)
+    parser.add_argument("--previous")
+    parser.add_argument("--bundle", type=Path)
+    parser.add_argument("--output", type=Path)
+    args = parser.parse_args()
+    text = build_release_notes(
+        root=args.root.resolve(),
+        version=args.version,
+        previous_tag=args.previous,
+        bundle=args.bundle.resolve() if args.bundle is not None else None,
+    )
+    if args.output is None:
+        print(text, end="")
+        return 0
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(text, encoding="utf-8", newline="\n")
+    return 0
