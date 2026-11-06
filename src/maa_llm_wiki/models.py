@@ -66,12 +66,6 @@ class SourceInventory(StrictModel):
 
 class RepositoryRole(StrEnum):
     AUTHORITATIVE = "authoritative"
-    MAINTAINER_GUIDANCE = "maintainer-guidance"
-
-
-class RepositoryStatus(StrEnum):
-    ACTIVE = "active"
-    PLACEHOLDER = "placeholder"
 
 
 class RepositorySource(StrictModel):
@@ -79,18 +73,14 @@ class RepositorySource(StrictModel):
     name: str = Field(min_length=1)
     url: str = Field(min_length=1)
     role: RepositoryRole
-    status: RepositoryStatus
     enabled: bool
     default_revision: str | None = Field(default=None, pattern=COMMIT_PATTERN)
     note: str | None = None
 
     @model_validator(mode="after")
-    def validate_status(self) -> RepositorySource:
-        if self.status is RepositoryStatus.ACTIVE:
-            if not self.enabled or self.default_revision is None:
-                raise ValueError("Active repositories must be enabled and pinned")
-        elif self.enabled or self.default_revision is not None:
-            raise ValueError("Placeholder repositories must be disabled and unpinned")
+    def require_enabled_and_pinned(self) -> RepositorySource:
+        if not self.enabled or self.default_revision is None:
+            raise ValueError("Registered repositories must be enabled and pinned to a revision")
         return self
 
 

@@ -435,7 +435,6 @@ def _write_repository_catalog(root: Path, source_ids: list[str]) -> None:
                 f"  name: {source_id}",
                 f"  url: https://example.invalid/{source_id}",
                 "  role: authoritative",
-                "  status: active",
                 "  enabled: true",
                 f"  default_revision: {COMMIT}",
             ]
@@ -489,7 +488,6 @@ def _write_published_layout(root: Path) -> dict[str, str]:
             "  name: MaaFramework Go binding\n"
             "  url: https://example.invalid/maa-framework-go\n"
             "  role: authoritative\n"
-            "  status: active\n"
             "  enabled: true\n"
             f"  default_revision: {COMMIT}\n"
         ),

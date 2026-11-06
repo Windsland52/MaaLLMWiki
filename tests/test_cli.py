@@ -32,7 +32,6 @@ def _write_catalog(root: Path, releases: list[Release], *, source_id: str = "maa
         f"  name: {source_id}\n"
         f"  url: https://example.invalid/{source_id}\n"
         "  role: authoritative\n"
-        "  status: active\n"
         "  enabled: true\n"
         f"  default_revision: {releases[-1][1]}\n",
         encoding="utf-8",

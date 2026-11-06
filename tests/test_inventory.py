@@ -36,7 +36,6 @@ from maa_llm_wiki.models import (
     RepositoryCatalog,
     RepositoryRole,
     RepositorySource,
-    RepositoryStatus,
     SemanticChangeCatalog,
     SourceArtifact,
     SourceInventory,
@@ -104,7 +103,6 @@ def _repository_source(source_id: str, revision: str) -> RepositorySource:
         name=source_id,
         url=f"https://github.com/MaaXYZ/{source_id}",
         role=RepositoryRole.AUTHORITATIVE,
-        status=RepositoryStatus.ACTIVE,
         enabled=True,
         default_revision=revision,
     )

@@ -2,8 +2,7 @@
   "$defs": {
     "RepositoryRole": {
       "enum": [
-        "authoritative",
-        "maintainer-guidance"
+        "authoritative"
       ],
       "title": "RepositoryRole",
       "type": "string"
@@ -28,9 +27,6 @@
         },
         "role": {
           "$ref": "#/$defs/RepositoryRole"
-        },
-        "status": {
-          "$ref": "#/$defs/RepositoryStatus"
         },
         "enabled": {
           "title": "Enabled",
@@ -67,19 +63,10 @@
         "name",
         "url",
         "role",
-        "status",
         "enabled"
       ],
       "title": "RepositorySource",
       "type": "object"
-    },
-    "RepositoryStatus": {
-      "enum": [
-        "active",
-        "placeholder"
-      ],
-      "title": "RepositoryStatus",
-      "type": "string"
     }
   },
   "additionalProperties": false,

@@ -366,7 +366,6 @@ def _write_snapshot_state(
         "  name: MaaFramework\n"
         "  url: https://github.com/MaaXYZ/MaaFramework\n"
         "  role: authoritative\n"
-        "  status: active\n"
         "  enabled: true\n"
         f"  default_revision: {commit_hint}\n",
         encoding="utf-8",
