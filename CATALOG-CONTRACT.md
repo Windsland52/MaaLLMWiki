@@ -9,8 +9,9 @@
 （`sha256sum -c`）与 build provenance 证明（`gh attestation verify`）确认下载完整性和构建来源；
 发布页另附零依赖校验脚本 `verify_bundle.py`（仅需 Python 3.10+，可离线运行，非 attestation 主体）。
 每个版本的 `index.md` 还列出相对上一注册版本的被索引产物变更（新增 / 内容变更 / 删除，按 git blob
-判定；属导航而非行为变更，列表有截断）。机器抽取的变更事实（API/schema/协议级，附原文引用；非运行时
-语义；覆盖盲区见 §8.1）见 `machine-changes.md`（§7.1），人工撰写的 `behaviour-changes.md` 是可选的解释层。
+判定；属导航而非行为变更，列表有截断）。机器抽取的变更事实（头文件、绑定、schema 与协议版本表中
+声明的 API 元素的新增/删除/修改/弃用，附上游原文；非运行时语义；覆盖边界见 §8.1）见 `machine-changes.md`
+（§7.1），两版之间的上游提交见 `upstream-commits.md`。
 `-latest.zip` 只是便利别名，内容会随新版本变化，不应用于复现。浏览与版本差异工具见 §7，覆盖边界与
 已知局限见 §8。
 
@@ -38,8 +39,8 @@ immutable attestation store (§5).
 
 The release body is generated from the catalog, not written by hand. Its sections state the upstream
 versions the snapshot pins (Upstream snapshot), the upstream releases that appeared since the
-previous snapshot (New upstream releases), the machine-extracted facts and any curated behaviour
-entries for those releases (Machine-extracted changes, Curated behaviour changes), per-source counts
+previous snapshot (New upstream releases), the machine-extracted facts for those releases
+(Machine-extracted changes), per-source counts
 of indexed material that moved (Indexed material moved), how many catalog files the snapshot itself
 added, removed or changed (Catalog files changed), the exact verification commands, the
 released assets with their digests, sizes and file counts, and documentation links including a
@@ -236,12 +237,13 @@ Guaranteed for bundles published by the current workflow:
   entries.
 - The bundle was built from a clean, committed tree, and the tagged tree is exactly the catalog that
   passed the publish job's machine gates before tagging: `maa-wiki-extract-changes --check` (the
-  committed machine catalog equals a fresh extraction), `maa-wiki-validate`, the repository's
+  committed machine catalog and upstream commit index equal a fresh extraction),
+  `maa-wiki-validate`, the repository's
   test/lint/type checks, `maa-wiki-verify-bundle`, checksums, and the provenance attestation. A
   failure in any gate blocks the tag and release; there is no human sign-off step in the pipeline.
-- The two hand-authored catalogs (`sources/maa-framework/source-map.yaml` and
-  `sources/maa-framework/semantic-changes.yaml`) are changed only by explicit maintainer commits;
-  automation refuses to modify them.
+- The hand-authored source map (`sources/maa-framework/source-map.yaml`) is changed only by
+  explicit maintainer commits; automation refuses to modify it. Every other catalog file is
+  generated from the pinned upstream clones.
 - Every source reference is a full 40-character commit SHA, never a moving branch.
 - From the first release published with provenance attestation, the versioned zip carries a keyless
   Sigstore build-provenance attestation created by the publish workflow; `gh attestation verify` ties
@@ -252,11 +254,9 @@ Not guaranteed (measured coverage in §8):
 
 - Completeness or correctness of upstream coverage. The catalog tracks MaaFramework 5.x plus the
   independently pinned Go, Rust and C# bindings; it does not infer or verify upstream behavior changes.
-- That every upstream behavior change is reflected in `semantic-changes.yaml`. The semantic review
-  queue is a best-effort review aid: it detects content-level changes offline by comparing the
-  artifact `blob` ids recorded in consecutive inventories (`maa-wiki-report-semantic-gaps`), with
-  `--repository <MaaFramework clone>` available as an optional cross-check (§7.3). It only covers
-  indexed paths and is not a complete changelog.
+- That every upstream behaviour change is visible as a declared API element. The machine layer
+  compares declarations, so a change of runtime behaviour behind an unchanged declaration appears
+  only as an upstream commit (§7.1) and in the file's `Changed since` entry; see §8.1.
 - Runtime verification of binding compatibility (`status: declared` is textual evidence only).
 - Availability, refresh cadence, or response times; there is no SLA and the bundle is republished
   only when catalog data changes.
@@ -276,24 +276,23 @@ The bundle ships four rendered navigation pages under `generated/maa-framework/`
 | Page | Contents |
 |------|----------|
 | `topics.md` | The curated routing topics: for every topic, each variant with its `applies_to` release, pinned revision, file links, symbols and literal search terms. |
-| `behaviour-changes.md` | The curated semantic changes, grouped by the release in which behaviour first changed, with links pinned to that release's commit. Optional interpretation layer. |
-| `machine-changes.md` | The machine-extracted change facts: enum values, callback messages, JSON-schema properties/enums/defaults/required, interface protocol versions and binding API names — one record per mechanically detected change, with the verbatim upstream line and its indexed paths. C API function declarations are not extracted (§8.1). |
-| `machine-symbols.md` | The same facts indexed by symbol name instead of by release: for every recorded symbol, the earliest release with an `added` record and the later releases that touched it. A lead for "which release introduced X", not proof; confirm it against the pinned source (§8.1). |
+| `machine-changes.md` | Declared API elements that changed between consecutive registered releases, grouped by release and file: C/C++ functions, struct fields, enum values, `#define` constants, typedefs and callback messages from `include/`; Python `module:name` and NodeJS declarations from the in-tree bindings; JSON-schema definitions, `allOf`/`anyOf`/`oneOf` branches, properties, enum and const values, required names and defaults; and the rows of the protocol version tables in documents 3.1 and 3.3. Each record is `added`, `removed`, `modified` (with the previous text) or `deprecated`, with upstream text and the file path. |
+| `machine-symbols.md` | The same records indexed by element: the release that introduced it (or `≤` the first indexed release when it was already declared there) and its later changes. Answers "which release introduced X" for every element that changed at least once. |
+| `upstream-commits.md` | Every upstream non-merge commit between consecutive registered releases, filed under the first release that contains it, with its subject, pull-request link and changed paths. Use it for behaviour changes that no declaration shows. |
 
 Use `topics.md` for topic-level or cross-version routing questions ("where is feature X documented
-in this release"), `machine-symbols.md` as a first lead for "which release introduced symbol X"
-questions (one row per symbol name, with the earliest recorded addition and later movement; confirm
-it in the pinned source), `machine-changes.md` for the per-release
-record with upstream evidence, and `behaviour-changes.md` for curated "when did behaviour X change"
-narrative.
+in this release"), `machine-symbols.md` for "which release introduced symbol X",
+`machine-changes.md` for everything that changed in one release, and `upstream-commits.md` for the
+commits behind a release when the question is about behaviour rather than declarations.
 Together they are the readable view of the catalogs, so a consumer does not need to know the YAML
 layout:
 
-- `sources/maa-framework/source-map.yaml` and `sources/maa-framework/semantic-changes.yaml` remain
-  the **authoritative hand-authored sources**; automation refuses to modify them, and a change
-  reaches a snapshot only through an explicit maintainer commit;
-- `sources/maa-framework/machine-changes.yaml` is generated by the sync from upstream diffs and
-  checked by the publish gate; it is not hand-authored;
+- `sources/maa-framework/source-map.yaml` is the **authoritative hand-authored source** for topics;
+  automation refuses to modify it, and a change reaches a snapshot only through an explicit
+  maintainer commit;
+- `sources/maa-framework/machine-changes.yaml` and `sources/maa-framework/upstream-commits.yaml` are
+  generated by the sync from the pinned upstream clone and checked by the publish gate; they are not
+  hand-authored;
 - the four pages are **generated views**, rebuilt by the sync; do not treat edits to them as data;
 - they are ordinary bundle files inside `generated/`, covered by the manifest `size_bytes`/`sha256`
   entries, and are additive within `api_version: ".../v1"`.
@@ -306,14 +305,17 @@ is navigation rendered from the inventories — capped at 20 entries per list wi
 line — and records movement of indexed **material**, not behaviour changes: `maa-wiki-diff` (§7.2)
 prints the complete, uncapped list.
 
-`machine-changes.md` is the machine layer: it is extracted mechanically from `git diff` between
-consecutive registered releases, and every record carries the verbatim upstream line and the indexed
-paths it came from. It covers API/schema/protocol-level facts only and cannot state runtime
-semantics, intent, or whether a change matters. A release pair whose indexed paths changed but that
-produced no structured record at all is listed as an `unclassified` entry. A changed file inside a
-pair that did produce other records leaves no trace, so `unclassified` entries show only part of the
-extractor's coverage gap (§8.1). The curated `behaviour-changes.md` is the optional interpretation
-layer on top: it explains significance but adds no detection.
+`machine-changes.md` is the machine layer. Each registered release pins every indexed file to a git
+blob; the extractor parses the files that declare API elements at every release and compares the
+declarations of consecutive releases. C declarations, Python modules and NodeJS declarations are
+compared across all files of their language, so a declaration that only moves to another file is not
+reported; schema and documentation elements are compared within their file. Signatures leave out
+comments and formatting, so reformatting is not a change. A changed header, binding or schema file
+that no record accounts for, and any parsed file that cannot be parsed, gets one `unclassified`
+record, so a change the parsers cannot see stays visible. Documents 3.1 and 3.3 are parsed only for
+their version tables; their prose changes, like those of every other document, appear only in the
+version pages' `Changed since` lists. The layer states what changed in the declarations, never
+runtime semantics, intent, or whether a change matters.
 
 ### 7.2 Diffing two releases: `maa-wiki-diff`
 
@@ -341,17 +343,11 @@ version or source exits non-zero with the uniform `error: ...` line. The JSON fo
 ### 7.3 Offline content-hash change detection
 
 Every artifact in `sources/*/inventories/*.yaml` records its git blob id (`blob`), the immutable
-content hash of the upstream file at the pinned revision. `maa-wiki-report-semantic-gaps` uses those
-hashes to detect **content-level** changes offline, without an upstream clone: it compares blob ids
-across consecutive inventories and reports releases whose indexed artifacts changed content even when
-titles and summaries did not move. `--repository <MaaFramework clone>` remains available as an
-optional cross-check that additionally diffs file content between tags.
-
-An **empty report means the review queue is empty** — nothing changed relative to the newest
-recorded semantic-change entry — which is the expected state while the catalog is current. The
-detector still cannot see paths outside the indexed set (`docs/`, `tools/`, `include/`,
-`source/binding/`) and cannot detect upstream tag mutation; it is a review aid, not a changelog
-(§8.1).
+content hash of the upstream file at the pinned revision. `maa-wiki-diff` and the `Changed since`
+section of each version page compare those ids, so a content edit anywhere inside an indexed file is
+visible offline, without an upstream clone. Paths outside the indexed set (`docs/`, `tools/`,
+`include/`, `source/binding/`) remain invisible to both; `upstream-commits.md` lists every changed
+path of each commit, indexed or not.
 
 ### 7.4 Legacy snapshot tags
 
@@ -363,51 +359,36 @@ detector still cannot see paths outside the indexed set (`docs/`, `tools/`, `inc
 
 ## 8. Known gaps and limitations
 
-**Last verified: 2026-11-05** (catalog `v0.1.14`, MaaFramework 5.15.0); the machine-layer limits in
-§8.1 were re-measured on 2026-11-07 (catalog `v0.1.35`). This section states what the catalog does
-not cover or guarantee. It deliberately does not hardcode volatile coverage counts —
+**Last verified: 2026-11-07** (catalog `v0.1.35`, MaaFramework 5.15.0). This section states what the
+catalog does not cover or guarantee. It deliberately does not hardcode volatile coverage counts —
 "last verified" is the date of the descriptions below, and §8.6 re-derives every number from the
 data files. If a number disagrees with the files, the files win.
 
-### 8.1 Semantic-change coverage is incomplete
+### 8.1 Machine-layer coverage is declarations, not behaviour
 
-- `sources/maa-framework/semantic-changes.yaml` lists recorded behaviour changes for a curated
-  subset of the indexed stable releases; it is not a release-by-release changelog. §8.6 re-derives
-  the current entry count and the number of distinct covered versions.
+- The machine layer records changes to declared API elements of the indexed files only. Parsers
+  exist for C/C++ headers under `include/`, the in-tree Python and NodeJS bindings, the JSON schemas
+  under `tools/`, and the protocol version tables in documents 3.1 and 3.3. Prose documentation has
+  no parser: its changes appear in the version pages' `Changed since` lists and in
+  `upstream-commits.md`.
+- A change of runtime behaviour behind an unchanged declaration (a bug fix, a new default inside an
+  implementation, a protocol rule stated only in prose) produces no record. Find it through
+  `upstream-commits.md`, then read the commit's diff at the pinned SHA. A commit subject states the
+  author's intent, not verified behaviour.
+- The parsers are deterministic text parsers, not compilers. An unusual construct can be skipped;
+  a file that cannot be parsed at all gets an `unclassified` record instead of silently dropping out.
+  An `unclassified` record also marks a changed header, binding or schema file whose declarations
+  did not change: its comments or formatting changed, or it changed in a construct the parser does
+  not read.
+- *Introduced* in `machine-symbols.md` is the release whose previous registered release did not
+  declare the element. `≤ <first release>` means the element was already declared in the first
+  indexed release, so its true introduction predates the catalog. An element that never changed is
+  not listed at all.
+- Commits up to the first registered release are not listed in `upstream-commits.md`, and commits
+  whose subject ends with `[skip changelog]` (automated formatting and submodule updates) are left
+  out, as the upstream changelog leaves them out.
 - The synthetic `vX.Y.Z` snapshot versions of this repository are not upstream MaaFramework
   releases; only the 5.x numbers are.
-- Detection is content-aware but bounded: blob ids make content edits visible for indexed paths,
-  paths outside `docs/`, `tools/`, `include/` and `source/binding/` remain invisible, and upstream
-  tag mutation is not detected. An empty report means the review queue is empty, the expected state
-  while the catalog is current.
-- The report is a review aid, not a changelog: each item is a suspected trigger. A release without
-  an entry may still have changed behaviour, and an entry may describe no functional change.
-- The machine layer (`machine-changes.md` / `machine-changes.yaml`, §7.1) is **extraction, not
-  interpretation**: it records mechanically detected API/schema/protocol facts with verbatim quotes
-  and cannot state runtime semantics, intent, or whether a change matters. `behaviour-changes.md`
-  remains an optional curated interpretation layer and is not required for detection.
-- Machine-layer coverage is bounded by the extractor's fixed rules, and those rules miss whole
-  classes of change. No record is not evidence that nothing changed.
-  - C API function declarations. The function rule only reads lines containing `MAA_CALL`, which
-    upstream uses only in callback typedefs; functions are declared with `MAA_FRAMEWORK_API` and
-    similar macros. The catalog therefore holds no `public-function` facts: `MaaLinuxControllerCreate`
-    (5.13.0), for example, has no record.
-  - `#define` constants other than `MaaMsg_*` callback messages, such as
-    `MaaWin32InputMethod_Interception` (5.12.1).
-  - A `$defs`/`definitions` entry that first appears in a release, and the properties declared
-    inside a newly added object: `$defs.Shell` (5.2.1) has no record, and
-    `$defs.ActionEnum = "Shell"` is recorded at 5.3.1 because that is when the enum gained the
-    value. A new property that holds an object is recorded, but its inner fields are not.
-- An `unclassified` record is emitted only when a whole release pair yields no structured record. A
-  changed file inside a pair that produced other records leaves no trace, so the `unclassified`
-  count understates the gap; it is not a coverage measure.
-- "First added" in `machine-symbols.md` is the earliest release with an `added` record for that
-  symbol name, not proof of introduction. Symbols already present in the first indexed release
-  (5.0.0) have no `added` record. One row merges the same name across files, so the column can name
-  the release in which the name appeared in another file: `override_pipeline` shows 5.5.0, although
-  `source/binding/Python/maa/context.py` defines it at 5.0.0. A signature edit is recorded as a
-  removal plus an addition in the same release. Confirm an introduction in the pinned source: the
-  symbol exists at that release and is absent from the previous indexed release.
 
 ### 8.2 Source-map coverage is partial and version-pinned
 
@@ -446,7 +427,7 @@ its framework version in
   makes the sync fail loudly instead of silently freezing the catalog. The catalog stays on 5.x
   until a maintainer deliberately bumps `CATALOG_MAJOR`.
 - Upstream tag mutation is not detected: the sync re-reads tags and rewrites the release catalogs,
-  so a moved or deleted upstream tag changes the next snapshot silently unless a hand-authored entry
+  so a moved or deleted upstream tag changes the next snapshot silently unless a source-map variant
   still references it. Take release identity from the pinned 40-character commit SHA, never from the
   tag name.
 - Prerelease movement can produce snapshots of its own, so a catalog release does not imply a new
@@ -481,16 +462,14 @@ its framework version in
 ### 8.6 How to re-derive these numbers
 
 ```bash
-# entries, distinct versions, topics, indexed releases
-uv run python -c "from pathlib import Path; from maa_llm_wiki.validation import load_semantic_changes, load_source_map, load_release_catalog; r=Path('.'); c=load_semantic_changes(r); print('entries', len(c.changes), 'versions', len({x.first_version for x in c.changes}), 'topics', len(load_source_map(r).topics), 'releases', len(load_release_catalog(r).releases))"
+# topics and indexed releases
+uv run python -c "from pathlib import Path; from maa_llm_wiki.validation import load_source_map, load_release_catalog; r=Path('.'); print('topics', len(load_source_map(r).topics), 'releases', len(load_release_catalog(r).releases))"
 uv run maa-wiki-validate
-uv run maa-wiki-report-semantic-gaps --output /tmp/semantic-gaps.md
-# optional cross-check against a pinned MaaFramework clone:
-uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework --output /tmp/semantic-gaps.md
-# release pairs whose indexed paths changed with no structured fact at all (a lower bound, §8.1)
+# machine records by kind, and changed parsed files without a declaration change
+uv run python -c "from collections import Counter; from pathlib import Path; from maa_llm_wiki.validation import load_machine_changes; print(Counter(c.kind.value for c in load_machine_changes(Path('.')).changes))"
 grep -c 'kind: unclassified' sources/maa-framework/machine-changes.yaml
-# C API function facts (0 while the function rule only reads MAA_CALL lines, §8.1)
-grep -c 'kind: public-function' sources/maa-framework/machine-changes.yaml
+# upstream commits indexed between registered releases
+grep -c '^- version:' sources/maa-framework/upstream-commits.yaml
 grep -c 'status: declared' sources/compatibility/bindings.yaml
 grep -c 'status: unknown' sources/compatibility/bindings.yaml
 ```

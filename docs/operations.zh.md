@@ -12,16 +12,17 @@ catalog bundle 与本仓库在 `generated/` 下包含相同的生成导航：
 
 ```text
 generated/maa-framework/index.md
-  -> topics.md                     # curated topic routes (rendered from source-map.yaml)
-  -> behaviour-changes.md          # curated behaviour changes (rendered from semantic-changes.yaml)
-  -> machine-changes.md            # machine-extracted change facts (generated from upstream diffs)
--> machine-symbols.md            # 同样的记录按符号索引
-  -> <version>/index.md            # ends with a "Changed since <previous indexed release>" section
+  -> prereleases.md                # 预发布登记
+  -> topics.md                     # 策展主题路由（由 source-map.yaml 渲染）
+  -> machine-changes.md            # 按版本列出的声明 API 元素变更（machine-changes.yaml）
+  -> machine-symbols.md            # 同样的记录按元素索引
+  -> upstream-commits.md           # 按版本列出的上游提交（upstream-commits.yaml）
+  -> <version>/index.md            # 末尾是 "Changed since <上一版>" 与 Navigation
        -> documentation/index.md -> {en-us,zh-cn,tools}.md
-       -> documentation/diagrams.md        # since 5.10.3
+       -> documentation/diagrams.md        # 自 5.10.3 起
        -> bindings/index.md -> {python,nodejs,readmes}.md
        -> native-api/index.md -> {framework,toolkit,agents}.md
-       -> native-api/control-units.md      # since 5.10.0
+       -> native-api/control-units.md      # 自 5.10.0 起
        -> schemas.md
 ```
 
@@ -40,27 +41,60 @@ MaaFramework 5.x tag，且每个 release 在 pinned commit 的 `src/Directory.Pa
 
 | 页面 | 内容 |
 | --- | --- |
-| `generated/maa-framework/index.md` | 带 pinned revision 的 release 列表、预发布登记，以及指向下方三个顶层索引的链接。 |
+| `generated/maa-framework/index.md` | Current snapshot（最新已索引版本、release 与预发布数量）、带 pinned revision 的 release 列表，以及指向下方各顶层页的链接。 |
+| `prereleases.md` | 预发布登记：每个已登记预发布 tag 的日期、commit，以及首个包含它的稳定 release（没有则为 `not merged`）。预发布不生成清单。 |
 | `topics.md` | 由 `sources/maa-framework/source-map.yaml` 渲染的策展主题路由：每个主题的每个变体给出适用版本（`applies_to`）、revision、pinned 文件链接、符号与字面搜索词。 |
-| `behaviour-changes.md` | 由 `sources/maa-framework/semantic-changes.yaml` 渲染的策展行为历史，按首次承载该变更的 release 分组并带 pinned 链接。可选的解读层。 |
-| `machine-changes.md` | 从上游 diff 机器抽取的事实：枚举值、回调消息、JSON-schema properties/enums/defaults/required、interface 协议版本与绑定 API 名称。每条结构化记录带上游证据（文本改动为逐字 added/removed 行，schema 改动为规范化 JSON 片段）与已索引路径。只有当某对 release 的已索引材料发生变化、却一条结构化记录都没产生时，才会记录一条 `unclassified` 条目。C API 函数声明、`MaaMsg_*` 以外的 `#define` 常量、新出现的 `$defs`/`definitions` 条目和新增对象内部的字段不在抽取范围内（见 `CATALOG-CONTRACT.md` §8.1）。 |
-| `machine-symbols.md` | 同样的记录按符号名重新索引：该符号最早一条 `added` 记录所在的 release 与之后每次触及它的 release，并链接到对应版本页。查“哪个版本引入 X”时可以先看这页拿线索，但要回源核对：同名符号跨文件合并成一行，5.0.0 里已有的符号没有首次版本。 |
-绑定版本页同样有兼容性证据、注册表链接、由逐版本清单算出的 `Changed since <上一版>` 段，以及带上一版/下一版、全部版本与预发布登记的 Navigation 段。
-每个版本页末尾有 Navigation 段：上一版、下一版、全部版本，以及主题/机器变更/预发布等顶层页。
-| `<version>/index.md` | 单个 release 的分域索引。末尾的 `Changed since <previous indexed release>` 列出相对上一版的已索引材料新增、内容变化（按 git blob id）与删除，并给出计数、每类列出上限与 `... and K more <label>` 溢出提示。首个索引版本写 `Changed since the previous release` 并说明没有上一份清单。这是已索引**材料**移动，不是行为变更。 |
+| `machine-changes.md` | 相邻两个已登记 release 之间发生变化的声明 API 元素，由 `sources/maa-framework/machine-changes.yaml` 渲染，按 release 与文件分组。每条记录是 `added`、`removed`、`modified`（附 `previous_quote`，即变更前的上游原文）或 `deprecated`，并带上游原文与文件路径；页首的表格按 kind 与按 release 统计记录数。覆盖范围与 `unclassified` 记录见下文“机器层与提交索引”。 |
+| `machine-symbols.md` | 同样的记录按元素索引：列出至少变化过一次的每个元素，给出其 kind、文件、引入它的 release（首个已索引版本已经声明时写 `≤ <首个版本>`）及之后的变化。对列出的每个元素都能回答“哪个版本引入了 X”；从未变化的元素不列出，此时请读目标版本的 pinned 文件。 |
+| `upstream-commits.md` | 相邻两个已登记 release 之间的每个上游非合并提交，由 `sources/maa-framework/upstream-commits.yaml` 渲染，归在首个包含它的 release 下。每个 release 段带一个 compare 链接；每个提交列出标题与至多五个变更路径。没有任何声明能体现的行为变更从这里找，再到 pinned SHA 读该提交的 diff。 |
+| `<version>/index.md` | 单个 release 的分域索引。其中的 `Changed since <previous indexed release>` 段列出相对上一版的已索引材料新增、内容变化（按 git blob id）与删除，并给出计数、每类列出上限与 `... and K more <label>` 溢出提示。首个索引版本写 `Changed since the previous release` 并说明没有上一份清单。这是已索引**材料**移动，不是行为变更。 |
 
-每版本索引是随包提供的廉价摘要；`maa-wiki-diff`（见下）打印完整、无截断的列表。行为变更在
-`behaviour-changes.md` / `semantic-changes.yaml`；出现事实在 `machine-changes.md`。渲染页位于
-`generated/maa-framework/topics.md`、`generated/maa-framework/behaviour-changes.md` 与
-`generated/maa-framework/machine-changes.md`。它们都是渲染视图：`source-map.yaml` 与
-`semantic-changes.yaml` 是策展权威源，而 `machine-changes.yaml` 由 sync 生成，不得手改。
+每个版本的 `index.md` 末尾有 Navigation 段：全部版本、上一版与下一版，以及主题、机器变更、机器符号、上游提交与
+预发布等顶层页。绑定版本页结构相同：兼容性证据、注册表链接、由逐版本清单算出的 `Changed since <上一版>` 段，
+以及带全部版本、上一版/下一版与预发布登记的 Navigation 段。
+
+每版本索引是随包提供的廉价摘要；`maa-wiki-diff`（见下）打印完整、无截断的列表。所有顶层页都是渲染视图，
+不得手改：`source-map.yaml` 是唯一的手写目录，`machine-changes.yaml` 与 `upstream-commits.yaml` 由 sync 生成。
+
+### 机器层与提交索引
+
+`sources/maa-framework/machine-changes.yaml` 是机器层。每个已登记 release 都把每个已索引文件 pin 到一个 git
+blob；抽取器在每个 release 上解析声明 API 元素的文件，并比较相邻两个 release 的声明：
+
+- `include/` 下的 C/C++ 头文件：函数（含类方法）、结构体字段、枚举值、`#define Maa*` 常量、typedef 与回调消息
+  （`MaaMsg_*`）；
+- 树内 Python 与 NodeJS 绑定：Python 的 `module:qualname` 符号与 NodeJS 声明；
+- `tools/` 下的 JSON schema：definition、`allOf`/`anyOf`/`oneOf` 分支（包括只引用某个 definition 的分支）、
+  property、enum 与 const 值、required 名称与默认值；
+- 文档 3.1 与 3.3：其协议版本表的各行。
+
+记录的 kind 有 `enum-value`、`public-function`、`callback-message`、`constant`、`struct-field`、
+`type-definition`、`schema-definition`、`schema-branch`、`schema-property`、`schema-enum`、`schema-default`、
+`schema-required`、`documentation-version`、`binding-api` 与 `unclassified`。每条记录是 `added`、`removed`、
+`modified`（附 `previous_quote`）或 `deprecated`，并带上游原文与路径。
+
+C 声明、Python 模块与 NodeJS 声明在同一语言的全部文件之间比较，因此只是移到另一个文件的声明不会被报告；schema
+与文档元素在各自文件内比较。签名不含注释与格式，因此重新排版不算变化。`unclassified` 记录标记一个发生变化、但
+声明没变的头文件、绑定或 schema 文件（变的是注释或格式，或解析器不读的写法），以及任何无法解析的文件。文档正文
+没有解析器，3.1 与 3.3 的正文也一样：其变化出现在版本页的 `Changed since` 列表和提交索引中。机器层只说明声明变了
+什么，不涉及运行时语义、意图或变化是否重要。
+
+`sources/maa-framework/upstream-commits.yaml` 是提交索引：相邻两个已登记 release 之间的每个上游非合并提交，
+归在首个包含它的 release 下，记录提交标题、从标题末尾 `(#N)` 取出的 pull request 编号、`path_count` 以及
+至多 20 个变更路径。标题以 `[skip changelog]` 结尾的提交（自动格式化与子模块更新）不收录，首个已登记 release
+及其之前的提交也不列出。声明没变时的运行时行为变化不会产生机器记录：先在这里找到对应提交，再到 pinned SHA 读
+它的 diff。提交标题表达的是作者意图，不是已验证的行为。
+
+这两个文件由 `maa-wiki-sync-maafw-history` 生成（它同时渲染对应页面），也可由只写这两个文件的
+`maa-wiki-extract-changes` 生成。`maa-wiki-extract-changes --check` 把这两个文件与新的抽取结果比较；publish
+步骤 `Check machine change catalog is current` 运行的就是它。覆盖边界见 `CATALOG-CONTRACT.md` §8.1。
 
 ### 仓库布局
 
 | 路径 | 用途 |
 | --- | --- |
 | `sources/repositories.yaml` | 已注册的上游仓库及其当前 pinned revision。 |
-| `sources/maa-framework/` | Release 目录、清单（`inventory.yaml` 与历史 `inventories/*.yaml`）、策展的 `source-map.yaml` 与 `semantic-changes.yaml`，以及生成的 `machine-changes.yaml`。 |
+| `sources/maa-framework/` | Release 目录、清单（`inventory.yaml` 与历史 `inventories/*.yaml`）、手写的 `source-map.yaml`，以及生成的 `machine-changes.yaml` 与 `upstream-commits.yaml`。 |
 | `sources/maa-framework-{go,rs,csharp}/` | Go/Rust/C# 绑定的独立 release 目录与清单，各自独立 pin。 |
 | `sources/compatibility/` | 有证据支撑的绑定兼容性元数据。 |
 | `generated/` | 所有源的生成导航索引；不要手改。 |
@@ -71,8 +105,8 @@ MaaFramework 5.x tag，且每个 release 在 pinned commit 的 `src/Directory.Pa
 | 根文档 | `CATALOG-CONTRACT.md`（消费者契约）、`CONTRIBUTING.md`、`SECURITY.md`、`LICENSE`、`LICENSE-DATA`、`NOTICE`。 |
 
 `sources/maa-framework/inventory.yaml` 是用于覆盖率检查的扁平权威产物清单；它不是导航接口。每个被索引
-artifact 记录其 git blob id（`blob`，40 位 SHA），因此同一文件跨 release 可按内容哈希区分，
-`maa-wiki-report-semantic-gaps` 也能只凭已提交的清单离线比较内容。
+artifact 记录其 git blob id（`blob`，40 位 SHA），因此同一文件跨 release 可按内容哈希区分：`maa-wiki-diff`
+与 `Changed since` 段只凭已提交的清单离线比较这些 id，机器层抽取器则从上游克隆读取这些 pinned blob。
 
 ## 快照生命周期
 
@@ -184,13 +218,13 @@ attestation。
 - `Upstream snapshot` — 各源版本与 pinned revision。
 - `New upstream releases since <previous tag>` — 或说明没有新上游 release。
 - `Machine-extracted changes` — 新 release 的抽取事实，按 kind 计数。
-- `Curated behaviour changes` — 仅当存在新的策展条目时出现，可省略。
 - `Indexed material moved` — 各源 added/removed/content changed 计数。
 - `Catalog files changed` — `generated/`、`sources/` 与 `schemas/` 下 added/removed/changed 计数与示例，
   因此仅打包型快照也能被量化。
 - `Verification` — checksum、attestation 与独立校验器命令。
 - `Assets` — 传入 `--bundle` 时给出 zip 的 sha256、大小与文件数，以及其余资产。
-- `Documentation` — contract、§8 已知局限、机器/行为页面与完整 changelog 链接。
+- `Documentation` — 入口页（`index.md`、`machine-symbols.md`）、contract、随包文档、§8 已知局限、
+  `machine-changes.md`、`upstream-commits.md` 与完整 changelog 链接。
 
 完整 changelog 链接保留在正文末尾。
 
@@ -212,8 +246,8 @@ attestation。
 | 护栏 / 失败步骤 | 含义 | 处置 |
 | --- | --- | --- |
 | `Sync Maa source indexes` | 上游出现高于 `CATALOG_MAJOR` 的 MaaFramework 主版本，或上游 tag 列表缩水。 | review 后在 workflow 中提升 `CATALOG_MAJOR`；确认被删除的 tag 确实消失，然后才手动使用显式 `--prune`。workflow 绝不传 `--prune`。 |
-| `Check machine change catalog is current` | 已提交的 `machine-changes.yaml` 不再匹配对上游 diff 的新抽取。 | 重新运行同步/抽取并提交再生成的目录；不要手改。 |
-| `Guard hand-authored catalogs` | 同步写入了 `source-map.yaml` 或 `semantic-changes.yaml`。 | 视为同步/抽取缺陷；策展文件由维护者或 agent 显式提交。 |
+| `Check machine change catalog is current` | 已提交的 `machine-changes.yaml` 或 `upstream-commits.yaml` 与从上游克隆重新抽取的结果不一致。 | 重新运行 `maa-wiki-sync-maafw-history` 并提交重新生成的文件；不要手改。 |
+| `Guard hand-authored catalogs` | 同步写入了 `sources/maa-framework/source-map.yaml`，即唯一的手写目录。 | 视为同步/抽取缺陷；source map 由维护者或 agent 显式提交。 |
 | `Validate generated source indexes` | 某项必需检查失败。 | 步骤日志会点名失败的检查；修代码或数据后重跑。 |
 | `Classify catalog state` | 工作树已变化时请求了 `force=true`。 | 去掉 `force` 重跑，让目录更新正常提交与校验。 |
 | `Push snapshot tag` | 计算出的 tag 已存在于另一个 commit。 | 不会自动移动任何东西；人工解决 tag/release 不匹配。 |
@@ -224,15 +258,6 @@ attestation。
 正文点名失败步骤、链接运行与 commit，并重复上面的护栏处置说明。重复报告按正文 hash 去重：只有内容变化时
 才编辑 issue。issue 步骤是 `continue-on-error`，不会掩盖原始失败。下一次成功运行会关闭该 issue
 （`if: success()`）。
-
-### Semantic-review issue
-
-每次运行结束时（`if: always()`），除非 MaaFramework 克隆不可用，workflow 会运行
-`uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework`。它对晚于最新 `semantic-changes.yaml`
-条目的已索引 release，比较标题、首段摘要以及每份清单中记录的 `blob`。若队列非空，会打开或更新一个带
-`semantic-review` label 的 issue；只有 hash 变化时才更新正文，队列为空时关闭 issue。机器抽取事实已经自动
-发布，因此策展的 `semantic-changes.yaml` 条目是可选的解读，不是必经的 review 步骤。报告列出疑似触发，
-不是已验证的变更；已索引集合之外的路径仍然不可见（见 `CATALOG-CONTRACT.md` §8）。
 
 ### Tag/release 对账
 
@@ -260,7 +285,6 @@ Python 通过 `requires-python` 固定为 3.13。
 
 ```powershell
 uv sync --locked
-uv run maa-wiki-sync-latest-maafw --repository tmp/MaaFramework
 uv run maa-wiki-sync-maafw-history --repository tmp/MaaFramework --major 5
 uv run maa-wiki-sync-bindings-history `
   --repository maa-framework-go=tmp/maa-framework-go `
@@ -271,18 +295,20 @@ uv run maa-wiki-build-bundle --output dist/maa-llm-wiki-catalog-vX.Y.Z.zip --ver
 uv run maa-wiki-verify-bundle --bundle dist/maa-llm-wiki-catalog-vX.Y.Z.zip --expect-version vX.Y.Z --expect-revision <40-char SHA>
 uv run maa-wiki-diff --from 5.14.3 --to 5.15.0
 uv run maa-wiki-release-notes --root . --version <tag> [--previous <previous tag>] --bundle <zip> --output <path>
-uv run maa-wiki-report-semantic-gaps --repository tmp/MaaFramework
 ```
 
 `vX.Y.Z` 与 `<40-char SHA>` 是占位符。
 
+- `maa-wiki-sync-maafw-history` 是唯一的 MaaFramework 同步命令。它重新索引给定主版本的全部稳定 release，重写
+  release 与预发布登记（`releases.yaml`）及 `sources/repositories.yaml` 中的 pinned revision，写出每个 release
+  的清单、`inventory.yaml`（最新 release）、`machine-changes.yaml` 与 `upstream-commits.yaml`，并渲染
+  `generated/maa-framework/` 下的全部页面。它读取 `source-map.yaml` 来渲染 `topics.md`，从不写入它。
+- `maa-wiki-extract-changes` 从克隆中抽取 `machine-changes.yaml` 与 `upstream-commits.yaml` 并写出这两个文件；
+  它不渲染页面，页面由历史同步渲染。带 `--check` 时不写任何文件，而是把这两个文件与新的抽取结果比较，有任何差异
+  就以非零状态退出；publish 步骤 `Check machine change catalog is current` 运行的就是这种形式。
 - `maa-wiki-diff` 比较两个已索引 release 的清单，用记录的 `blob` id 列出新增、删除与内容变化的 artifact，
   不需要上游克隆。`--source` 选择源（默认 `maafw`）；`--format json` 供工具消费。
 - `maa-wiki-release-notes` 渲染上文描述的 release 正文。首个快照省略 `--previous`。
-- 单版本命令只重新生成默认清单：
-  `uv run maa-wiki-sync-maafw --version <version> --repository tmp/MaaFramework` 只重建
-  `sources/maa-framework/inventory.yaml`，只接受已在 `sources/maa-framework/releases.yaml` 注册的发布，
-  且必须指向当前已索引的最新发布，否则 `maa-wiki-validate` 会失败。
 - 历史同步默认拒绝删除已注册的发布或预发布。`--prune` 是危险的、仅限手动的逃生舱口，用于上游确实删除 tag
   的情况；其 help 文本写着 "do NOT pass from automation"，publish workflow 绝不传它。
 
@@ -303,4 +329,5 @@ git diff --check
 ### 仓库状态
 
 当前生效修订记录在 `sources/repositories.yaml`；不可变发布历史存放在各源目录之下。现有自动化已索引
-MaaFramework v5、Go、Rust 与 C# 绑定的全部稳定发布，且 `machine-changes.yaml` 随每次 sync 重建。
+MaaFramework v5、Go、Rust 与 C# 绑定的全部稳定发布，且 `machine-changes.yaml` 与 `upstream-commits.yaml`
+随每次 sync 重建。

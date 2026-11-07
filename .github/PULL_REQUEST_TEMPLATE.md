@@ -14,10 +14,12 @@
       `uv run maa-wiki-sync-maafw-history` / `uv run maa-wiki-sync-bindings-history`.
 - [ ] If I changed a Pydantic model, I regenerated `schemas/*.schema.json` with
       `uv run maa-wiki-generate-schemas` and committed the result.
-- [ ] I did **not** hand-edit `sources/maa-framework/source-map.yaml` or
-      `sources/maa-framework/semantic-changes.yaml` as part of a sync/automation change; if this PR
-      changes either file deliberately, the reason is explained above (the publish workflow refuses
-      automated changes to them).
+- [ ] I did **not** hand-edit `sources/maa-framework/source-map.yaml` as part of a
+      sync/automation change; if this PR changes it deliberately, the reason is explained above (the
+      publish workflow refuses automated changes to it).
+- [ ] I did **not** hand-edit `sources/maa-framework/machine-changes.yaml` or
+      `sources/maa-framework/upstream-commits.yaml`; they come from the sync and
+      `uv run maa-wiki-extract-changes`.
 - [ ] Every new or changed source reference is pinned to a full 40-character commit SHA, never a
       branch or tag.
 - [ ] Any quoted upstream text is a short excerpt with a link to the pinned source; no raw logs,

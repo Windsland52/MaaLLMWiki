@@ -10,9 +10,10 @@ It points at the upstream sources; it does not replace them.
 | --- | --- |
 | `catalog-manifest.json` | The snapshot itself: `catalog_version` (the release tag), `wiki_revision`, source versions and commits, and every file with its size and SHA-256. |
 | `generated/` | Rendered navigation pages. Start at `generated/maa-framework/index.md` for the version list, then `generated/maa-framework/<version>/index.md`. |
-| `generated/maa-framework/machine-symbols.md` | The earliest recorded addition of a symbol and where it moved afterwards; a lead, not proof (`CATALOG-CONTRACT.md` §8.1). |
-| `generated/maa-framework/machine-changes.md` | The per-release extracted facts with their upstream evidence. |
-| `sources/` | The committed catalog data the pages were rendered from (inventories, release registries, compatibility metadata, curated source map and semantic changes). |
+| `generated/maa-framework/machine-symbols.md` | Which release introduced a declared API element, and its later changes. |
+| `generated/maa-framework/machine-changes.md` | Declared API elements added, removed, modified or deprecated in each release, with upstream text. |
+| `generated/maa-framework/upstream-commits.md` | The upstream commits between consecutive releases, for behaviour changes that no declaration shows. |
+| `sources/` | The committed catalog data the pages were rendered from (inventories, release registries, compatibility metadata, the curated source map, machine changes and the upstream commit index). |
 | `schemas/` | JSON Schemas for the data files above. |
 | `README.md`, `CATALOG-CONTRACT.md`, `CONTRIBUTING.md`, `SECURITY.md`, `docs/operations*.md`, `LICENSE`, `LICENSE-DATA`, `NOTICE` | What this is, what it guarantees, how to work on it, and the licences. |
 
@@ -34,10 +35,9 @@ python verify_bundle.py --bundle maa-llm-wiki-catalog-vX.Y.Z.zip --expect-versio
   so choose the version first.
 - Resolve each fact to the pinned upstream commit that the page links to, and quote that source
   rather than the catalog index.
-- For "when did this change / which version introduced it", read `machine-symbols.md` and then the
-  per-release `machine-changes.md` records, then confirm the release in the pinned source: the
-  symbol exists there and is absent from the previous indexed release. The machine layer does not
-  record C API function declarations, so a missing row is not evidence that nothing changed.
+- For "which version introduced it", read `machine-symbols.md`; for "what changed in this
+  release", read `machine-changes.md`. Both compare declarations only: for a behaviour change, find
+  the commit in `upstream-commits.md` and read its diff at the pinned SHA.
 
 ## Licence
 

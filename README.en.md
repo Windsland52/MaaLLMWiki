@@ -10,8 +10,8 @@ consumer contract is `CATALOG-CONTRACT.md`.
 ## Scope
 
 Included: complete version-pinned MaaFramework documentation/schema/native-API/in-tree-binding indexes;
-independently versioned Go, Rust and C# binding indexes with compatibility evidence; topic routing and
-semantic version changes.
+independently versioned Go, Rust and C# binding indexes with compatibility evidence; topic routing;
+machine-extracted API declaration changes between releases and an index of the upstream commits.
 
 Excluded: project-specific documentation and Pipeline configuration; raw artifacts, logs, and
 benchmark answers; full copies of MaaFramework documentation or source trees (the index keeps titles,
@@ -31,8 +31,9 @@ binding APIs follow the MaaFramework version.
 2. **What is in that version** → that version's `index.md`: per-domain file counts and a Navigation
    block (previous/next release, top-level pages);
 3. **Which release introduced a field/API/enum** → `generated/maa-framework/machine-symbols.md`
-   (symbol to its earliest recorded addition). It is a lead only: C API functions are not extracted,
-   so confirm the release in the pinned source (`CATALOG-CONTRACT.md` §8.1);
+   (element to the release that introduced it and its later changes); what changed in one release is
+   in `machine-changes.md`, and behaviour changes behind unchanged declarations are found through
+   `upstream-commits.md`;
 4. **What moved between two releases** → the `Changed since` summary on the version page, or
    `uv run maa-wiki-diff --from <old> --to <new>`;
 5. **Need a citable source** → the page links are pinned to 40-character commits; quote the
@@ -68,19 +69,21 @@ new upstream releases, machine facts, and verification commands; see `docs/opera
 
 ```text
 generated/maa-framework/index.md
-  -> topics.md · behaviour-changes.md · machine-changes.md
+  -> topics.md · machine-changes.md · machine-symbols.md · upstream-commits.md
   -> <version>/index.md            # includes "Changed since <previous indexed release>"
        -> documentation/ · bindings/ · native-api/ · schemas.md
 ```
 
 Each version directory provides domain navigation; `topics.md` is the curated topic routes,
-`behaviour-changes.md` is the optional behaviour interpretation layer, and `machine-changes.md` holds
-facts extracted mechanically from upstream diffs. `generated/maa-framework-{go,rs,csharp}/` provides
+`machine-changes.md` and `machine-symbols.md` hold declaration changes extracted mechanically from the
+upstream files (by release and by element), and `upstream-commits.md` lists the upstream commits by
+release. `generated/maa-framework-{go,rs,csharp}/` provides
 the equivalent Go/Rust/C# binding indexes. Page meanings, manifest semantics and the full layout are
 in `docs/operations.md`.
 
-`Changed since` in a version index lists indexed-material movement only, not behaviour changes;
-behaviour interpretation lives in `behaviour-changes.md`.
+`Changed since` in a version index lists indexed-file movement only; declaration changes are in
+`machine-changes.md`, and behaviour changes are found through `upstream-commits.md` and the commit
+diffs.
 
 ## Read more
 

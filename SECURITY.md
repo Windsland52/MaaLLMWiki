@@ -18,8 +18,7 @@ asset. There is no long-term-support branch.
   attestation does not verify with
   `gh attestation verify maa-llm-wiki-catalog-vX.Y.Z.zip --repo Windsland52/MaaLLMWiki`.
 - A catalog entry that points at the wrong or a mutable revision, a misclassified artifact, or a
-  change to `sources/maa-framework/source-map.yaml` / `sources/maa-framework/semantic-changes.yaml`
-  that bypassed human review.
+  change to `sources/maa-framework/source-map.yaml` that bypassed human review.
 - Supply-chain problems in this repository: workflow or action pinning, credential and token
   handling, publish-job integrity, release or tag manipulation.
 

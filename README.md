@@ -10,7 +10,7 @@ MaaLLMWiki 为 Maa 生态知识提供机器可读、版本化的源目录：它�
 
 - 完整的版本锁定 MaaFramework 文档、schema、原生 API 与树内绑定 API 索引；
 - 独立版本化的 Go、Rust 与 C# 绑定 API 索引，附明确的兼容性证据；
-- 主题到源的导航与语义版本变更。
+- 主题到源的导航；从上游机器抽取的版本间 API 声明变更与上游提交索引。
 
 不收录：
 
@@ -26,7 +26,7 @@ Go、Rust 与 C# 绑定作为独立外部源登记，各自有锁定清单与兼
 
 1. **用哪个 MaaFramework 版本** → `generated/maa-framework/index.md` 顶部的 Current snapshot（最新版本与总数），或列表里挑一个；
 2. **这一版里有什么** → 该版本 `index.md`：各域文件数、页尾 Navigation（上一版/下一版/顶层页）；
-3. **某字段/API/枚举是哪个版本引入的** → `generated/maa-framework/machine-symbols.md`（符号 → 最早的新增记录）。它只是线索：不含 C API 函数，版本要回源核对，见 `CATALOG-CONTRACT.md` §8.1；
+3. **某字段/API/枚举是哪个版本引入的** → `generated/maa-framework/machine-symbols.md`（元素 → 引入版本与之后的改动）；某版具体变了什么看 `machine-changes.md`，声明没变的行为变更看 `upstream-commits.md`；
 4. **两版之间哪些被索引材料变了** → 版本页的 `Changed since` 摘要，或 `uv run maa-wiki-diff --from <旧> --to <新>`；
 5. **需要事实出处** → 页面链接钉到 40 位 commit，回源引用。
 
@@ -49,14 +49,14 @@ Go、Rust 与 C# 绑定作为独立外部源登记，各自有锁定清单与兼
 
 ```text
 generated/maa-framework/index.md
-  -> topics.md · behaviour-changes.md · machine-changes.md
+  -> topics.md · machine-changes.md · machine-symbols.md · upstream-commits.md
   -> <version>/index.md            # 含 "Changed since <上一已索引版本>"
        -> documentation/ · bindings/ · native-api/ · schemas.md
 ```
 
-每个版本目录提供分域导航；`topics.md` 是策展主题路由，`behaviour-changes.md` 是可选的行为解读层，`machine-changes.md` 是从上游 diff 机器抽取的事实。`generated/maa-framework-{go,rs,csharp}/` 提供 Go/Rust/C# 绑定的同级索引。页面含义、清单语义与完整目录结构见 `docs/operations.zh.md`。
+每个版本目录提供分域导航；`topics.md` 是策展主题路由，`machine-changes.md` / `machine-symbols.md` 是从上游文件机器抽取的声明变更（按版本 / 按元素），`upstream-commits.md` 按版本列出上游提交。`generated/maa-framework-{go,rs,csharp}/` 提供 Go/Rust/C# 绑定的同级索引。页面含义、清单语义与完整目录结构见 `docs/operations.zh.md`。
 
-版本索引末尾的 `Changed since` 只列已索引材料移动，不是行为变更；行为解读在 `behaviour-changes.md`。
+版本索引末尾的 `Changed since` 只列已索引文件的移动；声明变化看 `machine-changes.md`，行为变更从 `upstream-commits.md` 找到提交再读 diff。
 
 ## 更多
 
