@@ -8,11 +8,11 @@ description: 把 MaaFramework 事实问题路由到版本锁定的原始出处�
 MaaLLMWiki 是面向模型的**源目录与版本路由层**：索引上游官方文档、schema 与源码，并把每条引用锁定到不可变 commit（40 位 SHA）。它不复制全文、不替代原始内容——索引只保留标题、自动摘取的首段摘要与 pinned 出处链接；回答事实问题必须**回源**到它指向的原始出处。目录内容托管在 https://github.com/Windsland52/MaaLLMWiki ，本文所有相对路径均相对该仓库根。消费者契约、保证边界与已知局限见 `CATALOG-CONTRACT.md`；目录数据以 CC BY 4.0 发布，上游文档摘录保留 LGPL-3.0（归属见 `NOTICE`）。
 
 本 skill 是标准路由流程；MaaTutorial 的 maafw-* 开发 skill 中"路由 MaaLLMWiki"指的就是执行本流程。
-**skill 版本**：2026-11-07d。安装到本地的是本文件的快照；结构与流程升级后需要重装（见下方"版本纪律"）。
+**skill 版本**：2026-11-07e。安装到本地的是本文件的快照；结构与流程升级后需要重装（见下方"版本纪律"）。
 
 ## 版本纪律（每次使用先做，防止拿旧目录作答）
 
-1. **解析最新发布版本**：`curl -s https://api.github.com/repos/Windsland52/MaaLLMWiki/releases/latest`，取 `tag_name`（或 `gh release view --json tagName -q .tagName`）。GitHub 不通时跳过这一步，用第 3 步的本地版本并声明“未与最新发布核对”。
+1. **解析最新发布版本**：`gh` 已登录时用 `gh release view -R Windsland52/MaaLLMWiki --json tagName -q .tagName`（必须带 `-R`，否则查的是当前目录所在的仓库）。没有 `gh` 时用 `curl -sI https://github.com/Windsland52/MaaLLMWiki/releases/latest`，响应头 `location` 末尾就是最新 tag（网页跳转，不占 API 额度）。不要匿名调 `api.github.com`：每个 IP 每小时只有 60 次，返回 403 `API rate limit exceeded` 是额度用完，不是 GitHub 不通。都不通时跳过这一步，用第 3 步的本地版本并声明“未与最新发布核对”。
 2. **引用钉到不可变版本**：`https://raw.githubusercontent.com/Windsland52/MaaLLMWiki/<tag>/<相对路径>` 或 jsDelivr `@<tag>`；**不要用 `main`**（分支会移动，答案无法复现）。
 3. **本地检出先对版本**：`git fetch --tags` 后用 `git describe --tags --dirty` 看当前位置（不要加 `--abbrev=0`，它会把“标签之后的新提交”藏起来）。离线或只读使用时跳过 fetch，只和本地已有的 tag 比较，并声明“未与最新发布核对”：
     - 结果就是最新 tag → `catalog_version` 写这个 tag。
