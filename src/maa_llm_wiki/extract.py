@@ -1,21 +1,39 @@
-"""Deterministic extraction of structured machine-change facts from upstream git diffs.
+"""Machine-extracted change facts between consecutive MaaFramework releases.
 
-Nothing in this module rewrites upstream text: quotes are verbatim added/removed lines,
-trimmed to 300 characters. The extractor only looks at indexed paths (the union of the two
-inventories' artifacts) and emits one `unclassified` record when a release pair changed
-indexed material but matched none of the structured rules.
+Each registered release pins every indexed file to a git blob id. Files that declare API elements
+(headers, in-tree bindings, JSON schemas and the protocol version tables of documents 3.1 and 3.3)
+are parsed at every release with ``declarations.parser_for``. For each pair of consecutive releases
+the declared elements are compared: an element that appears is ``added``, one that disappears is
+``removed``, one whose signature differs is ``modified``, and one that gains a deprecation marker is
+``deprecated``. C declarations, in-tree Python modules and NodeJS declarations are compared across
+all files of their language, so a declaration that only moves to another file is not reported;
+schema and documentation elements are compared within their file.
+
+A changed header, binding or schema file that no element record accounts for, or any parsed file
+that cannot be parsed, gets one ``unclassified`` record, so a change the parsers cannot see stays
+visible. Documents 3.1 and 3.3 are parsed only for their version tables, and the rest of the
+documentation not at all: their prose changes are left to the "Changed since" lists of the version
+pages.
 """
 
 from __future__ import annotations
 
-import json
-import re
 import subprocess
+from collections import Counter, defaultdict
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
-from pathlib import Path, PurePosixPath
-from typing import Literal, cast
-from urllib.parse import quote
+from pathlib import Path
+from urllib.parse import quote as url_quote
 
+from .declarations import (
+    NODEJS_BINDING_ROOT,
+    PER_FILE_KINDS,
+    PYTHON_BINDING_ROOT,
+    Declaration,
+    DeclarationParseError,
+    parser_for,
+    squash,
+)
 from .models import (
     MachineChange,
     MachineChangeCatalog,
@@ -26,675 +44,487 @@ from .models import (
 from .validation import load_release_catalog, load_source_inventories
 
 QUOTE_LIMIT = 300
-UNCLASSIFIED_PATH_LIMIT = 20
-UNCLASSIFIED_SYMBOL = "unclassified"
+CHANGE_ORDER = {"added": 0, "removed": 1, "modified": 2, "deprecated": 3}
 
-ChangeType = Literal["added", "removed", "modified"]
+_LANGUAGE_SCOPES = (
+    ("include/", "c"),
+    (PYTHON_BINDING_ROOT, "python"),
+    (NODEJS_BINDING_ROOT, "nodejs"),
+)
 
-_ENUM_VALUE_PATTERN = re.compile(r"\b(?P<symbol>Maa[A-Za-z0-9_]+)\s*=\s*-?\d+")
-_PUBLIC_FUNCTION_PATTERN = re.compile(r"\b(?P<symbol>Maa[A-Za-z0-9_]+)\s*\(")
-_CALLBACK_MESSAGE_PATTERN = re.compile(r"#define\s+(?P<symbol>MaaMsg_\w+)")
-_DOCUMENTATION_VERSION_PATTERN = re.compile(
-    r"^\|\s*\d{4}-\d{1,2}-\d{1,2}\s*\|\s*(?P<symbol>v[\d.]+)\s*\|"
-)
-_PYTHON_DEFINITION_PATTERN = re.compile(r"^\s*(?:def|class)\s+(?P<symbol>[A-Za-z]\w*)")
-_NODEJS_DEFINITION_PATTERN = re.compile(
-    r"^export\s+(?:declare\s+)?(?:class|function|interface|type|const)\s+(?P<symbol>\w+)"
-)
-_NODEJS_MEMBER_PATTERN = re.compile(r"^\s+(?:readonly\s+)?(?P<symbol>[A-Za-z]\w*)\??\s*:")
+
+def version_key(version: str) -> tuple[int, ...]:
+    return tuple(int(part) for part in version.split("."))
+
+
+def element_scope(path: str, kind: MachineChangeKind) -> str:
+    """The set of files within which a symbol identifies one element.
+
+    Schema and documentation symbols are unique within their file; C symbols, Python
+    ``module:qualname`` symbols and NodeJS declarations are unique within their language.
+    """
+    if kind not in PER_FILE_KINDS:
+        for prefix, scope in _LANGUAGE_SCOPES:
+            if path.startswith(prefix):
+                return scope
+    return path
 
 
 @dataclass(frozen=True)
-class ExtractedRecord:
-    version: str
-    commit: str
-    change: ChangeType
-    kind: MachineChangeKind
-    symbol: str
+class _Parsed:
+    declarations: tuple[Declaration, ...] = ()
+    error: str | None = None
+
+
+@dataclass(frozen=True)
+class _Element:
+    signature: str
     quote: str
+    deprecated: bool
+    note: str
     paths: tuple[str, ...]
 
 
-def _git_text(repository: Path, *arguments: str) -> str:
-    result = subprocess.run(
-        ["git", "-c", "core.quotepath=false", *arguments],
-        cwd=repository,
-        check=True,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
+_ElementKey = tuple[str, MachineChangeKind, str]
+
+
+def _trim(text: str) -> str:
+    return squash(text)[:QUOTE_LIMIT]
+
+
+_CONTEXT_BEFORE_DIFFERENCE = 60
+_ELISION = "…"
+
+
+def _contrast(old: str, new: str) -> tuple[str, str]:
+    """The previous and current quotes of a modified element, cut so their difference shows.
+
+    Quotes are cut at the record limit, so two long quotes that differ only after the limit would
+    look identical; both then start shortly before their first difference, marked with an
+    ellipsis.
+    """
+    old, new = squash(old), squash(new)
+    if old[:QUOTE_LIMIT] != new[:QUOTE_LIMIT]:
+        return old, new
+    first = next(
+        (index for index, (a, b) in enumerate(zip(old, new, strict=False)) if a != b),
+        min(len(old), len(new)),
     )
-    return result.stdout
+    start = max(0, first - _CONTEXT_BEFORE_DIFFERENCE)
+    room = QUOTE_LIMIT - len(_ELISION)
+    return _ELISION + old[start:][:room], _ELISION + new[start:][:room]
 
 
-def _git_texts(
-    repository: Path, requests: list[tuple[str, str]]
-) -> dict[tuple[str, str], str | None]:
-    """Read many `revision:path` blobs through one `git cat-file --batch` process."""
-    if not requests:
+def _read_blobs(repository: Path, blobs: Iterable[str]) -> dict[str, bytes]:
+    """Read git blobs by id through one `git cat-file --batch` process."""
+    ordered = sorted(set(blobs))
+    if not ordered:
         return {}
-    payload = "".join(f"{revision}:{path}\n" for revision, path in requests).encode("utf-8")
     result = subprocess.run(
-        ["git", "-c", "core.quotepath=false", "cat-file", "--batch"],
+        ["git", "cat-file", "--batch"],
         cwd=repository,
         check=True,
         capture_output=True,
-        input=payload,
+        input="".join(f"{blob}\n" for blob in ordered).encode("ascii"),
     )
     data = result.stdout
-    contents: dict[tuple[str, str], str | None] = {}
+    contents: dict[str, bytes] = {}
     position = 0
-    for key in requests:
+    for blob in ordered:
         end = data.index(b"\n", position)
-        header = data[position:end].decode("utf-8", "replace")
+        fields = data[position:end].decode("ascii", "replace").split(" ")
         position = end + 1
-        fields = header.split(" ")
-        if len(fields) == 2 and fields[1] == "missing":
-            contents[key] = None
-            continue
+        if len(fields) != 3:
+            raise ValueError(f"the upstream clone has no blob {blob}; fetch the indexed releases")
         size = int(fields[2])
-        contents[key] = data[position : position + size].decode("utf-8", "replace")
+        contents[blob] = data[position : position + size]
         position += size + 1
     return contents
 
 
-def _strip_diff_path(value: str) -> str:
-    path = value.strip()
-    if path.startswith(("a/", "b/")):
-        path = path[2:]
-    return path
-
-
-def _parse_diff(diff_text: str) -> tuple[list[tuple[str, ChangeType, str]], set[str]]:
-    """Return (path, change, verbatim content) lines plus every changed path in the diff."""
-    lines: list[tuple[str, ChangeType, str]] = []
-    changed_paths: set[str] = set()
-    old_path: str | None = None
-    new_path: str | None = None
-    for raw in diff_text.splitlines():
-        if raw.startswith("diff --git "):
-            old_path = new_path = None
-            payload = raw[len("diff --git ") :]
-            if payload.startswith("a/") and " b/" in payload:
-                old_path = payload[2:].split(" b/", 1)[0]
-                new_path = payload.split(" b/", 1)[1]
-            elif payload.startswith("a/"):
-                old_path = payload[2:]
-            if new_path is not None:
-                changed_paths.add(new_path)
-            continue
-        if raw.startswith("--- "):
-            old_path = _strip_diff_path(raw[4:])
-            continue
-        if raw.startswith("+++ "):
-            new_path = _strip_diff_path(raw[4:])
-            candidate = new_path if new_path != "/dev/null" else old_path
-            if candidate is not None and candidate != "/dev/null":
-                changed_paths.add(candidate)
-            continue
-        if raw.startswith("+") and not raw.startswith("+++"):
-            path = new_path if new_path not in (None, "/dev/null") else old_path
-            if path is not None and path != "/dev/null":
-                lines.append((path, "added", raw[1:]))
-            continue
-        if raw.startswith("-") and not raw.startswith("---"):
-            path = old_path if old_path not in (None, "/dev/null") else new_path
-            if path is not None and path != "/dev/null":
-                lines.append((path, "removed", raw[1:]))
-            continue
-    return lines, changed_paths
-
-
-def _normalise_quote(text: str) -> str:
-    return text.strip()[:QUOTE_LIMIT]
-
-
-def _is_header_path(path: str) -> bool:
-    return path.startswith("include/") and path.endswith((".h", ".hpp"))
-
-
-def _is_schema_path(path: str) -> bool:
-    return path.startswith("tools/") and path.endswith(".schema.json")
-
-
-def _is_documentation_version_path(path: str) -> bool:
-    return (
-        path.startswith("docs/")
-        and path.endswith(".md")
-        and PurePosixPath(path).name.startswith("3.3-")
-    )
-
-
-_SQUASH_TRAILING = " \t,;|"
-
-
-def _squash(quote: str) -> str:
-    """Collapse formatting so a moved line or a changed trailing separator is ignored."""
-    return re.sub(r"\s+", " ", quote).strip().rstrip(_SQUASH_TRAILING)
-
-
-def _kind(value: str) -> MachineChangeKind:
-    return MachineChangeKind(value)
-
-
-def _text_line_hits(path: str, line: str) -> list[tuple[MachineChangeKind, str]]:
-    """Structured facts contributed by one added/removed line."""
-    hits: list[tuple[MachineChangeKind, str]] = []
-
-    def add(kind: str, symbol: str) -> None:
-        candidate = (_kind(kind), symbol)
-        if candidate not in hits:
-            hits.append(candidate)
-
-    if _is_header_path(path):
-        for match in _ENUM_VALUE_PATTERN.finditer(line):
-            add("enum-value", match["symbol"])
-        if "MAA_CALL" in line:
-            for match in _PUBLIC_FUNCTION_PATTERN.finditer(line):
-                add("public-function", match["symbol"])
-        callback = _CALLBACK_MESSAGE_PATTERN.search(line)
-        if callback is not None:
-            add("callback-message", callback["symbol"])
-    elif _is_documentation_version_path(path):
-        table_row = _DOCUMENTATION_VERSION_PATTERN.match(line)
-        if table_row is not None:
-            add("documentation-version", table_row["symbol"])
-    elif path.startswith("source/binding/Python/maa/") and path.endswith(".py"):
-        definition = _PYTHON_DEFINITION_PATTERN.match(line)
-        if definition is not None:
-            add("binding-api", definition["symbol"])
-    elif path.startswith("source/binding/NodeJS/src/apis/") and path.endswith(".d.ts"):
-        definition = _NODEJS_DEFINITION_PATTERN.match(line)
-        if definition is not None:
-            add("binding-api", definition["symbol"])
-        member = _NODEJS_MEMBER_PATTERN.match(line)
-        if member is not None:
-            add("binding-api", member["symbol"])
-    return hits
-
-
-def _canonical_json(value: object) -> str:
-    return json.dumps(value, ensure_ascii=False, sort_keys=True)
-
-
-def _dotted_path(parent: str, name: str) -> str:
-    return f"{parent}.{name}" if parent else name
-
-
-def _as_dict(value: object) -> dict[str, object] | None:
-    if not isinstance(value, dict):
-        return None
-    mapping = cast("dict[object, object]", value)
-    return {str(key): item for key, item in mapping.items()}
-
-
-def _as_list(value: object) -> list[object] | None:
-    if not isinstance(value, list):
-        return None
-    return cast("list[object]", value)
-
-
-def _required_name(canonical: str) -> str:
-    """Recover the plain property name from its canonical JSON representation."""
+def _parse(path: str, content: bytes) -> _Parsed:
+    parser = parser_for(path)
+    if parser is None:
+        return _Parsed()
     try:
-        value = json.loads(canonical)
-    except json.JSONDecodeError:
-        return canonical
-    return value if isinstance(value, str) else canonical
+        text = content.decode("utf-8-sig").replace("\r\n", "\n")
+    except UnicodeDecodeError as error:
+        return _Parsed(error=f"not UTF-8 text ({error.reason})")
+    try:
+        return _Parsed(declarations=tuple(parser(text)))
+    except DeclarationParseError as error:
+        return _Parsed(error=str(error) or type(error).__name__)
 
 
-def _canonical_set(values: list[object] | None) -> set[str]:
-    if values is None:
-        return set()
-    return {_canonical_json(item) for item in values}
-
-
-def _schema_nodes(schema: object) -> dict[str, dict[str, object]]:
-    """Map dotted property path -> schema node; "" maps the document root."""
-    nodes: dict[str, dict[str, object]] = {}
-
-    def walk(node: object, prefix: str) -> None:
-        mapping = _as_dict(node)
-        if mapping is not None:
-            if prefix not in nodes:
-                nodes[prefix] = mapping
-            properties = _as_dict(mapping.get("properties"))
-            if properties is not None:
-                for name, child in properties.items():
-                    walk(child, _dotted_path(prefix, name))
-            for key, child in mapping.items():
-                if key == "properties":
-                    continue
-                walk(child, _dotted_path(prefix, key))
-        else:
-            items = _as_list(node)
-            if items is not None:
-                for child in items:
-                    walk(child, prefix)
-
-    walk(schema, "")
-    return nodes
-
-
-def _structural_schema_records(
-    previous_schema: object | None,
-    current_schema: object | None,
-    *,
-    version: str,
-    commit: str,
-    path: str,
-) -> list[ExtractedRecord]:
-    if previous_schema is None or current_schema is None:
-        schema = current_schema if previous_schema is None else previous_schema
-        change: ChangeType = "added" if previous_schema is None else "removed"
-        properties = _as_dict(_schema_nodes(schema).get("", {}).get("properties"))
-        if properties is None:
-            return []
-        return [
-            ExtractedRecord(
-                version=version,
-                commit=commit,
-                change=change,
-                kind=_kind("schema-property"),
-                symbol=str(name),
-                quote=_normalise_quote(_canonical_json(properties[name])),
-                paths=(path,),
+def _parsed_files(inventory: SourceInventory) -> dict[str, str]:
+    """Indexed paths that have a declaration parser, mapped to their blob ids."""
+    files: dict[str, str] = {}
+    for artifact in inventory.artifacts:
+        if parser_for(artifact.path) is None:
+            continue
+        if artifact.blob is None:
+            raise ValueError(
+                f"MaaFramework inventory {inventory.version} has no blob for {artifact.path}"
             )
-            for name in sorted(properties)
-        ]
+        files[artifact.path] = artifact.blob
+    return files
 
-    previous_nodes = _schema_nodes(previous_schema)
-    current_nodes = _schema_nodes(current_schema)
-    records: list[ExtractedRecord] = []
 
-    def record(kind: str, symbol: str, change: ChangeType, quote_text: str) -> None:
-        records.append(
-            ExtractedRecord(
-                version=version,
-                commit=commit,
-                change=change,
-                kind=_kind(kind),
-                symbol=symbol,
-                quote=_normalise_quote(quote_text),
-                paths=(path,),
-            )
+def _elements(files: dict[str, tuple[Declaration, ...]]) -> dict[_ElementKey, _Element]:
+    """Fold the declarations of a set of files into one element per scoped symbol."""
+    grouped: defaultdict[_ElementKey, list[tuple[str, Declaration]]] = defaultdict(list)
+    for path in sorted(files):
+        for declaration in files[path]:
+            scope = element_scope(path, declaration.kind)
+            grouped[(scope, declaration.kind, declaration.symbol)].append((path, declaration))
+    elements: dict[_ElementKey, _Element] = {}
+    for key, items in grouped.items():
+        quotes = list(dict.fromkeys(item.quote.strip() for _, item in items if item.quote.strip()))
+        notes = [item.note for _, item in items if item.note]
+        elements[key] = _Element(
+            signature=" | ".join(sorted({item.signature for _, item in items})),
+            quote=" | ".join(quotes) or key[2],
+            deprecated=any(item.deprecated for _, item in items),
+            note=notes[0] if notes else "",
+            paths=tuple(sorted({path for path, _ in items})),
         )
-
-    for parent in sorted(set(previous_nodes) & set(current_nodes)):
-        previous_node = previous_nodes[parent]
-        current_node = current_nodes[parent]
-        previous_properties = _as_dict(previous_node.get("properties")) or {}
-        current_properties = _as_dict(current_node.get("properties")) or {}
-        for name in sorted(current_properties.keys() - previous_properties.keys()):
-            record(
-                "schema-property",
-                _dotted_path(parent, name),
-                "added",
-                _canonical_json(current_properties[name]),
-            )
-        for name in sorted(previous_properties.keys() - current_properties.keys()):
-            record(
-                "schema-property",
-                _dotted_path(parent, name),
-                "removed",
-                _canonical_json(previous_properties[name]),
-            )
-
-        previous_required = _as_list(previous_node.get("required"))
-        current_required = _as_list(current_node.get("required"))
-        previous_required_values = _canonical_set(previous_required)
-        current_required_values = _canonical_set(current_required)
-        for item in sorted(current_required_values - previous_required_values):
-            symbol = _dotted_path(parent, _required_name(item))
-            record("schema-required", symbol, "added", item)
-        for item in sorted(previous_required_values - current_required_values):
-            symbol = _dotted_path(parent, _required_name(item))
-            record("schema-required", symbol, "removed", item)
-
-        previous_enum = _as_list(previous_node.get("enum"))
-        current_enum = _as_list(current_node.get("enum"))
-        previous_enum_values = _canonical_set(previous_enum)
-        current_enum_values = _canonical_set(current_enum)
-        for item in sorted(current_enum_values - previous_enum_values):
-            symbol = f"{parent} = {item}" if parent else item
-            record("schema-enum", symbol, "added", item)
-        for item in sorted(previous_enum_values - current_enum_values):
-            symbol = f"{parent} = {item}" if parent else item
-            record("schema-enum", symbol, "removed", item)
-
-        if "default" in previous_node and "default" in current_node:
-            previous_default = _canonical_json(previous_node["default"])
-            current_default = _canonical_json(current_node["default"])
-            if previous_default != current_default:
-                record("schema-default", parent, "modified", current_default)
-    return records
+    return elements
 
 
-def _schema_records_for_pair(
-    previous_release: ReleaseRecord,
+def _record(
     release: ReleaseRecord,
-    previous_inventory: SourceInventory,
-    current_inventory: SourceInventory,
-    schema_texts: dict[tuple[str, str], str | None],
-) -> list[ExtractedRecord]:
-    schema_paths = sorted(
+    change: str,
+    kind: MachineChangeKind,
+    symbol: str,
+    quote: str,
+    paths: Iterable[str],
+    previous_quote: str | None = None,
+) -> MachineChange:
+    previous = _trim(previous_quote) if previous_quote is not None else ""
+    return MachineChange.model_validate(
         {
-            artifact.path
-            for artifact in (*previous_inventory.artifacts, *current_inventory.artifacts)
-            if _is_schema_path(artifact.path)
+            "version": release.version,
+            "commit": release.commit,
+            "change": change,
+            "kind": kind,
+            "symbol": symbol,
+            "quote": _trim(quote) or symbol[:QUOTE_LIMIT],
+            "previous_quote": previous or None,
+            "paths": list(paths),
         }
     )
-    records: list[ExtractedRecord] = []
-    for path in schema_paths:
-        previous_text = schema_texts.get((previous_release.commit, path))
-        current_text = schema_texts.get((release.commit, path))
-        if previous_text == current_text:
-            continue
-        previous_schema = json.loads(previous_text) if previous_text is not None else None
-        current_schema = json.loads(current_text) if current_text is not None else None
-        if previous_schema == current_schema:
-            continue
-        records.extend(
-            _structural_schema_records(
-                previous_schema,
-                current_schema,
-                version=release.version,
-                commit=release.commit,
-                path=path,
-            )
-        )
-    return records
 
 
-def _schema_requests(
-    releases: list[ReleaseRecord],
-    inventories: dict[str, SourceInventory],
-) -> list[tuple[str, str]]:
-    requests: list[tuple[str, str]] = []
-    for release in releases:
-        inventory = inventories.get(release.version)
-        if inventory is None:
-            continue
-        for artifact in inventory.artifacts:
-            if _is_schema_path(artifact.path):
-                requests.append((release.commit, artifact.path))
-    return sorted(set(requests))
+def _diff(
+    release: ReleaseRecord,
+    before: dict[_ElementKey, _Element],
+    after: dict[_ElementKey, _Element],
+) -> tuple[list[MachineChange], set[str]]:
+    """Records for every element that changed, and the files those elements live in."""
+    records: list[MachineChange] = []
+    touched: set[str] = set()
+    for key in sorted(before.keys() | after.keys()):
+        _, kind, symbol = key
+        old = before.get(key)
+        new = after.get(key)
+        count = len(records)
+        if old is None and new is not None:
+            records.append(_record(release, "added", kind, symbol, new.quote, new.paths))
+        elif new is None and old is not None:
+            records.append(_record(release, "removed", kind, symbol, old.quote, old.paths))
+        elif old is not None and new is not None:
+            if old.signature != new.signature:
+                previous_quote, quote = _contrast(old.quote, new.quote)
+                records.append(
+                    _record(release, "modified", kind, symbol, quote, new.paths, previous_quote)
+                )
+            if new.deprecated and not old.deprecated:
+                records.append(
+                    _record(release, "deprecated", kind, symbol, new.note or new.quote, new.paths)
+                )
+            elif old.deprecated and not new.deprecated and old.signature == new.signature:
+                records.append(
+                    _record(
+                        release,
+                        "modified",
+                        kind,
+                        symbol,
+                        new.quote,
+                        new.paths,
+                        old.note or old.quote,
+                    )
+                )
+        if len(records) > count:
+            touched.update(old.paths if old is not None else ())
+            touched.update(new.paths if new is not None else ())
+    return records, touched
 
 
-def _drop_reformatting_pairs(records: list[ExtractedRecord]) -> list[ExtractedRecord]:
-    """Remove added/removed records that only differ by whitespace or a trailing separator."""
-    added = {
-        (record.paths[0], record.kind.value, record.symbol): record
-        for record in records
-        if record.change == "added"
-    }
-    removed = {
-        (record.paths[0], record.kind.value, record.symbol): record
-        for record in records
-        if record.change == "removed"
-    }
-    dropped: set[int] = set()
-    for key, added_record in added.items():
-        removed_record = removed.get(key)
-        if removed_record is None:
-            continue
-        if _squash(added_record.quote) == _squash(removed_record.quote):
-            dropped.add(id(added_record))
-            dropped.add(id(removed_record))
-    return [record for record in records if id(record) not in dropped]
+def _unexplained_note(path: str, change: str, declares: bool) -> str:
+    """Why a changed file has no element record."""
+    if change == "added":
+        if declares:
+            return f"{path} was added; every element it declares is declared in another file"
+        return f"{path} was added without declared elements"
+    if change == "removed":
+        if declares:
+            return f"{path} was removed; every element it declared is declared in another file"
+        return f"{path} was removed without declared elements"
+    return f"{path} changed without changing any declared element"
 
 
 def _pair_records(
-    previous_release: ReleaseRecord,
     release: ReleaseRecord,
-    previous_inventory: SourceInventory,
-    current_inventory: SourceInventory,
-    diff_text: str,
-    schema_texts: dict[tuple[str, str], str | None],
-) -> list[ExtractedRecord]:
-    indexed_paths = {
-        artifact.path for artifact in (*previous_inventory.artifacts, *current_inventory.artifacts)
-    }
-    diff_lines, changed_paths = _parse_diff(diff_text)
-    changed_indexed = {path for path in changed_paths if path in indexed_paths}
+    previous_files: dict[str, str],
+    current_files: dict[str, str],
+    parse: Callable[[str, str], _Parsed],
+) -> list[MachineChange]:
+    paths = sorted(previous_files.keys() | current_files.keys())
+    changed = [path for path in paths if previous_files.get(path) != current_files.get(path)]
+    if not changed:
+        return []
 
-    deduplicated: dict[tuple[str, str, str, str, str], ExtractedRecord] = {}
-    for path, change, text in diff_lines:
-        if path not in indexed_paths:
-            continue
-        quote_text = _normalise_quote(text)
-        if not quote_text:
-            continue
-        for kind, symbol in _text_line_hits(path, text):
-            key = (kind.value, symbol, change, quote_text, path)
-            deduplicated[key] = ExtractedRecord(
-                version=release.version,
-                commit=release.commit,
-                change=change,
-                kind=kind,
-                symbol=symbol,
-                quote=quote_text,
-                paths=(path,),
+    before: dict[str, tuple[Declaration, ...]] = {}
+    after: dict[str, tuple[Declaration, ...]] = {}
+    failures: dict[str, str] = {}
+    for path in paths:
+        old = parse(path, previous_files[path]) if path in previous_files else None
+        new = parse(path, current_files[path]) if path in current_files else None
+        old_declarations = old.declarations if old is not None and old.error is None else None
+        new_declarations = new.declarations if new is not None and new.error is None else None
+        # A side that cannot be parsed borrows the other side's declarations, so the failure
+        # surfaces as one unclassified record instead of a burst of false additions or removals.
+        if old is not None:
+            before[path] = (
+                old_declarations if old_declarations is not None else new_declarations or ()
             )
-    records = _drop_reformatting_pairs(list(deduplicated.values()))
-    records.extend(
-        _schema_records_for_pair(
-            previous_release,
-            release,
-            previous_inventory,
-            current_inventory,
-            schema_texts,
+        if new is not None:
+            after[path] = (
+                new_declarations if new_declarations is not None else old_declarations or ()
+            )
+        error = (new.error if new is not None else None) or (old.error if old is not None else None)
+        if error is not None and path in changed:
+            failures[path] = error
+
+    records, accounted = _diff(release, _elements(before), _elements(after))
+    for path in changed:
+        change = (
+            "added"
+            if path not in previous_files
+            else "removed"
+            if path not in current_files
+            else "modified"
         )
-    )
-    if not records and changed_indexed:
-        changed = sorted(changed_indexed)
+        if path in failures:
+            note = f"{path} could not be parsed: {failures[path]}"
+        elif path in accounted or path.startswith("docs/"):
+            continue
+        else:
+            declares = bool(after.get(path) or before.get(path))
+            note = _unexplained_note(path, change, declares)
         records.append(
-            ExtractedRecord(
-                version=release.version,
-                commit=release.commit,
-                change="modified",
-                kind=_kind("unclassified"),
-                symbol=UNCLASSIFIED_SYMBOL,
-                quote=f"{len(changed)} indexed files changed without a structured change",
-                paths=tuple(changed[:UNCLASSIFIED_PATH_LIMIT]),
-            )
+            _record(release, change, MachineChangeKind.UNCLASSIFIED, path, note, (path,))
         )
     return records
 
 
-def _record_sort_key(record: ExtractedRecord) -> tuple[str, str, str, str, str, tuple[str, ...]]:
+def record_sort_key(record: MachineChange) -> tuple[object, ...]:
     return (
-        record.version,
+        version_key(record.version),
+        record.paths[0],
         record.kind.value,
         record.symbol,
-        record.change,
+        CHANGE_ORDER[record.change],
         record.quote,
-        record.paths,
-    )
-
-
-def _to_machine_change(record: ExtractedRecord) -> MachineChange:
-    return MachineChange(
-        version=record.version,
-        commit=record.commit,
-        change=record.change,
-        kind=record.kind,
-        symbol=record.symbol,
-        quote=record.quote,
-        paths=list(record.paths),
     )
 
 
 def build_machine_changes(root: Path, repository: Path) -> MachineChangeCatalog:
-    """Extract deterministic machine-change records for every consecutive release pair."""
+    """Extract the machine-change records for every pair of consecutive registered releases."""
     releases = load_release_catalog(root).releases
     inventories = {inventory.version: inventory for inventory in load_source_inventories(root)}
-    schema_texts = _git_texts(repository, _schema_requests(releases, inventories))
-
-    records: list[ExtractedRecord] = []
-    for previous_release, release in zip(releases, releases[1:], strict=False):
-        previous_inventory = inventories.get(previous_release.version)
-        current_inventory = inventories.get(release.version)
-        if previous_inventory is None or current_inventory is None:
-            continue
-        indexed_paths = {
-            artifact.path
-            for artifact in (*previous_inventory.artifacts, *current_inventory.artifacts)
-        }
-        diff_text = _git_text(
-            repository,
-            "diff",
-            "--no-color",
-            "--no-ext-diff",
-            "--unified=0",
-            previous_release.commit,
-            release.commit,
-            "--",
-            *sorted(indexed_paths),
-        )
-        records.extend(
-            _pair_records(
-                previous_release,
-                release,
-                previous_inventory,
-                current_inventory,
-                diff_text,
-                schema_texts,
-            )
-        )
-    records.sort(key=_record_sort_key)
-    return MachineChangeCatalog(
-        source_id="maafw",
-        changes=[_to_machine_change(record) for record in records],
+    files_by_version = {
+        version: _parsed_files(inventory) for version, inventory in inventories.items()
+    }
+    contents = _read_blobs(
+        repository, (blob for files in files_by_version.values() for blob in files.values())
     )
+    cache: dict[tuple[str, str], _Parsed] = {}
 
+    def parse(path: str, blob: str) -> _Parsed:
+        key = (path, blob)
+        if key not in cache:
+            cache[key] = _parse(path, contents[blob])
+        return cache[key]
 
-def _version_sort_key(version: str) -> tuple[int, ...]:
-    return tuple(int(part) for part in version.split("."))
-
-
-def render_machine_symbols_page(catalog: MachineChangeCatalog, repository_url: str) -> str:
-    """Index the recorded facts by symbol instead of by release.
-
-    Answers "which release introduced this symbol, and where else did it move" without scanning
-    the per-release catalogue.
-    """
-    groups: dict[tuple[str, str], list[MachineChange]] = {}
-    for change in catalog.changes:
-        if change.kind is MachineChangeKind.UNCLASSIFIED or not change.symbol:
+    records: list[MachineChange] = []
+    for previous, release in zip(releases, releases[1:], strict=False):
+        previous_files = files_by_version.get(previous.version)
+        current_files = files_by_version.get(release.version)
+        if previous_files is None or current_files is None:
             continue
-        groups.setdefault((change.symbol, change.kind.value), []).append(change)
-    lines = [
-        "<!-- Generated by maa-wiki-sync. Do not edit manually. -->",
-        "# Machine change symbols",
-        "",
-        "Every symbol the extractor recorded, with the release where it first appears and the "
-        "later releases that touched it. Formal `unclassified` records are omitted; the "
-        "per-release view is `machine-changes.md`. Source of truth: "
-        "`sources/maa-framework/machine-changes.yaml`.",
-        "",
-        "[← Version index](./index.md) · [Machine changes](./machine-changes.md)",
-        "",
-        f"{len(groups)} symbol/kind pairs over {len({key[0] for key in groups})} symbols.",
-        "",
-        "| Symbol | Kind | First added | Also changed in |",
-        "| --- | --- | --- | --- |",
-    ]
-    for (symbol, kind), changes in sorted(groups.items()):
-        added = sorted(
-            (change.version for change in changes if change.change == "added"),
-            key=_version_sort_key,
-        )
-        touched = sorted(
-            (change.version for change in changes if change.change != "added"),
-            key=_version_sort_key,
-        )
-        first = f"[{added[0]}](./{added[0]}/index.md)" if added else "—"
-        if touched:
-            shown = [f"[{version}](./{version}/index.md)" for version in touched[:5]]
-            extra = f" (+{len(touched) - 5})" if len(touched) > 5 else ""
-            also = ", ".join(shown) + extra
-        else:
-            also = ""
-        lines.append(f"| `{symbol}` | {kind} | {first} | {also} |")
-    return "\n".join(lines) + "\n"
+        records.extend(_pair_records(release, previous_files, current_files, parse))
+    records.sort(key=record_sort_key)
+    return MachineChangeCatalog(source_id="maafw", changes=records)
+
+
+# --------------------------------------------------------------------------------------
+# Rendered pages
+# --------------------------------------------------------------------------------------
+
+_GENERATOR = "maa-wiki-sync-maafw-history"
+_PAGE_QUOTE_LIMIT = 200
+_LATER_CHANGES_LIMIT = 6
+_CHANGES = tuple(CHANGE_ORDER)
+
+
+def code_span(text: str) -> str:
+    """Inline code that survives backticks inside the text."""
+    if "`" not in text:
+        return f"`{text}`"
+    return f"`` {text} ``"
+
+
+def _file_link(repository_url: str, commit: str, path: str) -> str:
+    url = f"{repository_url.rstrip('/')}/blob/{commit}/{url_quote(path, safe='/')}"
+    return f"[`{path}`]({url})"
+
+
+def _version_link(version: str) -> str:
+    return f"[{version}](./{version}/index.md)"
+
+
+def _page_quote(text: str) -> str:
+    shortened = text if len(text) <= _PAGE_QUOTE_LIMIT else text[: _PAGE_QUOTE_LIMIT - 1] + "…"
+    return code_span(shortened)
+
+
+def _record_line(change: MachineChange) -> str:
+    if change.kind is MachineChangeKind.UNCLASSIFIED:
+        return f"- {change.change} file: {change.quote}"
+    line = f"- {change.change} {change.kind.value} {code_span(change.symbol)}: "
+    line += _page_quote(change.quote)
+    if change.previous_quote is not None:
+        line += f" (was {_page_quote(change.previous_quote)})"
+    extra = change.paths[1:]
+    if extra:
+        line += " — also in " + ", ".join(f"`{path}`" for path in extra)
+    return line
 
 
 def render_machine_changes_page(catalog: MachineChangeCatalog, repository_url: str) -> str:
-    """Render the deterministic machine-change registry page."""
-    base_url = repository_url.rstrip("/")
-    versions = sorted(
-        {change.version for change in catalog.changes},
-        key=_version_sort_key,
-    )
-    by_version: dict[str, list[MachineChange]] = {version: [] for version in versions}
+    """Render the machine-change records, newest release first, grouped by file."""
+    by_version: defaultdict[str, list[MachineChange]] = defaultdict(list)
     for change in catalog.changes:
         by_version[change.version].append(change)
-
-    kind_counts: dict[str, int] = {}
-    for change in catalog.changes:
-        kind_counts[change.kind.value] = kind_counts.get(change.kind.value, 0) + 1
+    versions = sorted(by_version, key=version_key, reverse=True)
+    kind_counts = Counter(change.kind.value for change in catalog.changes)
 
     lines = [
-        "<!-- Generated by maa-wiki-sync-maafw. Do not edit manually. -->",
+        f"<!-- Generated by {_GENERATOR}. Do not edit manually. -->",
         "# Machine changes",
         "",
-        "Structured change facts extracted deterministically from upstream diffs between "
-        "consecutive registered releases. Quotes are verbatim added/removed lines trimmed to "
-        "300 characters; `unclassified` entries mark releases whose indexed material changed "
-        "without producing a structured record. To look a symbol up by name instead of by "
-        "release, use `machine-symbols.md`.",
+        "Declared API elements that changed between consecutive registered releases, extracted "
+        "mechanically from the pinned upstream files: C/C++ headers, the in-tree Python and "
+        "NodeJS bindings, the JSON schemas and the protocol version tables of documents 3.1 and "
+        "3.3. Each record compares a release with the previous registered release: `added` and "
+        "`removed` elements, `modified` signatures (with the previous text) and `deprecated` "
+        "markers. An `unclassified` record marks a changed header, binding or schema file whose "
+        "declared elements did not change (comments or formatting changed, or a construct the "
+        "parser does not read), or a file that could not be parsed. Prose documentation changes, "
+        "including the prose of documents 3.1 and 3.3, appear only in each version's "
+        "`Changed since` list.",
         "",
-        "[← Version index](./index.md) · [Topics](./topics.md) · "
-        "[Behaviour changes](./behaviour-changes.md) · [Symbols](./machine-symbols.md)",
+        "Quotes are upstream text with whitespace collapsed, cut at 300 characters; a modified "
+        "pair that would look identical after the cut starts with `…` just before the first "
+        "difference. Quotes show what changed, not what it means at run time; read the pinned file "
+        "before relying on a record.",
+        "",
+        "[← Version index](./index.md) · [Symbols](./machine-symbols.md) · "
+        "[Upstream commits](./upstream-commits.md) · [Topics](./topics.md)",
         "",
         "Source of truth: `sources/maa-framework/machine-changes.yaml` "
         f"({len(catalog.changes)} records over {len(versions)} releases).",
         "",
-        "| Kind | Records | Latest release |",
-        "| --- | --- | --- |",
+        "| Kind | Records |",
+        "| --- | --- |",
+        *(f"| `{kind}` | {kind_counts[kind]} |" for kind in sorted(kind_counts)),
+        "",
+        "| Release | " + " | ".join(_CHANGES) + " | unclassified |",
+        "| --- |" + " --- |" * (len(_CHANGES) + 1),
     ]
-    latest_by_kind: dict[str, str] = {}
-    for change in catalog.changes:
-        current = latest_by_kind.get(change.kind.value)
-        if current is None or _version_sort_key(change.version) > _version_sort_key(current):
-            latest_by_kind[change.kind.value] = change.version
-    for kind in sorted(kind_counts):
-        version = latest_by_kind.get(kind, "")
-        cell = f"[{version}](./{version}/index.md)" if version else ""
-        lines.append(f"| `{kind}` | {kind_counts[kind]} | {cell} |")
-    lines.append("")
-    lines.extend(
-        [
-            "| Release | Records | Unclassified |",
-            "| --- | --- | --- |",
-        ]
-    )
     for version in versions:
         group = by_version[version]
-        unclassified = sum(1 for change in group if change.kind is MachineChangeKind.UNCLASSIFIED)
-        label = f"[{version}](./{version}/index.md)"
-        lines.append(f"| {label} | {len(group)} | {'yes' if unclassified else ''} |")
+        counts = Counter(
+            "unclassified" if change.kind is MachineChangeKind.UNCLASSIFIED else change.change
+            for change in group
+        )
+        cells = " | ".join(str(counts[name]) for name in (*_CHANGES, "unclassified"))
+        lines.append(f"| {_version_link(version)} | {cells} |")
     lines.append("")
 
     for version in versions:
         group = by_version[version]
-        lines.extend(
-            [
-                f"## [{version}](./{version}/index.md)",
-                "",
-                f"Revision: `{group[0].commit}`",
-                "",
-            ]
-        )
+        commit = group[0].commit
+        lines.extend([f"## {_version_link(version)}", "", f"Revision: `{commit}`", ""])
+        by_path: defaultdict[str, list[MachineChange]] = defaultdict(list)
         for change in group:
-            links = ", ".join(
-                f"[`{path}`]({base_url}/blob/{change.commit}/{quote(path, safe='/')})"
-                for path in change.paths
-            )
-            label = f" `{change.symbol}`" if change.symbol else ""
-            lines.append(
-                f"- `{change.kind.value}`{label} ({change.change}): {change.quote} — {links}"
-            )
-        lines.append("")
+            by_path[change.paths[0]].append(change)
+        for path in sorted(by_path):
+            lines.extend([f"### {_file_link(repository_url, commit, path)}", ""])
+            lines.extend(_record_line(change) for change in by_path[path])
+            lines.append("")
     return "\n".join(lines).rstrip() + "\n"
+
+
+def render_machine_symbols_page(catalog: MachineChangeCatalog, *, first_release: str) -> str:
+    """Index the machine-change records by element: introduction and later changes."""
+    groups: defaultdict[_ElementKey, list[MachineChange]] = defaultdict(list)
+    for change in catalog.changes:
+        if change.kind is MachineChangeKind.UNCLASSIFIED:
+            continue
+        groups[(element_scope(change.paths[0], change.kind), change.kind, change.symbol)].append(
+            change
+        )
+
+    lines = [
+        f"<!-- Generated by {_GENERATOR}. Do not edit manually. -->",
+        "# Machine change symbols",
+        "",
+        "Every declared element that changed in at least one release pair, with the release that "
+        "introduced it and its later changes. *Introduced* is the release whose previous "
+        "registered release did not declare the element; *≤ "
+        f"{first_release}* means it was already declared in `{first_release}`, the first indexed "
+        "release. An element that never changed is not listed: read the pinned file of the release "
+        "you target. C declarations, Python `module:name` symbols and NodeJS declarations are "
+        "tracked across all files of their language; schema and documentation symbols within "
+        "their file.",
+        "",
+        "[← Version index](./index.md) · [Machine changes](./machine-changes.md) · "
+        "[Upstream commits](./upstream-commits.md)",
+        "",
+        f"{len(groups)} elements. Source of truth: `sources/maa-framework/machine-changes.yaml`.",
+        "",
+        "| Symbol | Kind | File | Introduced | Later changes |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    ordered = sorted(groups.items(), key=lambda item: (item[0][2], item[0][1].value, item[0][0]))
+    for (_, kind, symbol), changes in ordered:
+        changes.sort(key=lambda change: (version_key(change.version), CHANGE_ORDER[change.change]))
+        first = changes[0]
+        if first.change == "added":
+            introduced = _version_link(first.version)
+            later = changes[1:]
+        else:
+            introduced = f"≤ {first_release}"
+            later = changes
+        shown = [f"{_version_link(change.version)} {change.change}" for change in later]
+        if len(shown) > _LATER_CHANGES_LIMIT:
+            shown = [*shown[:_LATER_CHANGES_LIMIT], f"+{len(shown) - _LATER_CHANGES_LIMIT} more"]
+        latest = changes[-1]
+        files = ", ".join(f"`{path}`" for path in latest.paths)
+        symbol_cell = code_span(symbol).replace("|", "\\|")
+        lines.append(
+            f"| {symbol_cell} | {kind.value} | {files} | {introduced} | {', '.join(shown)} |"
+        )
+    return "\n".join(lines) + "\n"

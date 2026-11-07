@@ -216,3 +216,60 @@ def test_stale_machine_change_page_is_detected(catalog_copy: Path) -> None:
         page.write_text(backup, encoding="utf-8", newline="\n")
 
     assert any("machine change catalog is stale" in error for error in errors)
+
+
+@pytest.mark.parametrize(
+    ("name", "description"),
+    [
+        ("index.md", "release index"),
+        ("prereleases.md", "prerelease registry"),
+        ("topics.md", "topic routes"),
+        ("machine-changes.md", "machine change catalog"),
+        ("machine-symbols.md", "machine symbol index"),
+        ("upstream-commits.md", "upstream commit index"),
+    ],
+)
+def test_missing_top_level_page_is_reported(
+    catalog_copy: Path, name: str, description: str
+) -> None:
+    page = catalog_copy / "generated" / "maa-framework" / name
+    backup = page.read_text(encoding="utf-8")
+    try:
+        page.unlink()
+        errors = validate_repository(catalog_copy)
+    finally:
+        page.write_text(backup, encoding="utf-8", newline="\n")
+
+    assert f"MaaFramework {description} is missing: generated/maa-framework/{name}" in errors
+
+
+def test_upstream_commit_invariants_are_enforced(catalog_copy: Path) -> None:
+    import yaml
+
+    path = catalog_copy / "sources" / "maa-framework" / "upstream-commits.yaml"
+    original = path.read_text(encoding="utf-8")
+    payload = cast(dict[str, Any], yaml.safe_load(original))
+    commits = payload["commits"]
+    assert len(commits) >= 3, "the commit index should not be empty once the sync has run"
+    with_paths = next(commit for commit in commits[3:] if commit["paths"])
+    try:
+        payload["commits"] = [
+            {**commits[0], "version": "5.0.0"},
+            {**commits[1], "commit": commits[2]["commit"]},
+            commits[2],
+            {**with_paths, "path_count": 0},
+        ]
+        path.write_text(
+            yaml.safe_dump(payload, allow_unicode=True, sort_keys=False),
+            encoding="utf-8",
+            newline="\n",
+        )
+        errors = validate_repository(catalog_copy)
+    finally:
+        path.write_text(original, encoding="utf-8", newline="\n")
+
+    joined = "\n".join(errors)
+    assert "is filed under an unregistered or first release: 5.0.0" in joined
+    assert f"upstream commit is listed twice: {commits[2]['commit']}" in joined
+    assert "upstream commit lists more paths than it counts" in joined
+    assert "upstream commit index is stale" in joined

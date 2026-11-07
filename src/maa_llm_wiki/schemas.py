@@ -11,9 +11,9 @@ from .models import (
     MachineChangeCatalog,
     ReleaseCatalog,
     RepositoryCatalog,
-    SemanticChangeCatalog,
     SourceInventory,
     SourceMap,
+    UpstreamCommitCatalog,
 )
 
 SCHEMA_MODELS: dict[str, type[BaseModel]] = {
@@ -22,9 +22,9 @@ SCHEMA_MODELS: dict[str, type[BaseModel]] = {
     "machine-change-catalog.schema.json": MachineChangeCatalog,
     "release-catalog.schema.json": ReleaseCatalog,
     "repository-catalog.schema.json": RepositoryCatalog,
-    "semantic-change-catalog.schema.json": SemanticChangeCatalog,
     "source-inventory.schema.json": SourceInventory,
     "source-map.schema.json": SourceMap,
+    "upstream-commit-catalog.schema.json": UpstreamCommitCatalog,
 }
 
 

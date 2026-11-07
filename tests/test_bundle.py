@@ -19,7 +19,6 @@ from maa_llm_wiki.cli import (
     build_bundle_main,
     sync_bindings_history_main,
     sync_maafw_history_main,
-    sync_maafw_main,
     verify_bundle_main,
 )
 from maa_llm_wiki.models import (
@@ -284,17 +283,15 @@ def test_cli_error_boundary_hides_tracebacks(
         sys,
         "argv",
         [
-            "maa-wiki-sync-maafw",
+            "maa-wiki-sync-maafw-history",
             "--root",
             str(tmp_path),
             "--repository",
-            str(tmp_path),
-            "--version",
-            "9.9.9",
+            str(tmp_path / "missing-clone"),
         ],
     )
 
-    assert sync_maafw_main() == 1
+    assert sync_maafw_history_main() == 1
     captured = capsys.readouterr()
     assert captured.err.startswith("error: ")
     assert "Traceback" not in captured.err + captured.out
@@ -497,8 +494,8 @@ def _write_published_layout(root: Path) -> dict[str, str]:
         "sources/maa-framework-go/inventory.yaml": inventory,
         "sources/maa-framework-go/inventories/1.0.0.yaml": inventory,
         "sources/maa-framework/source-map.yaml": "topics: []\n",
-        "sources/maa-framework/semantic-changes.yaml": "source_id: maa-framework-go\nchanges: []\n",
         "sources/maa-framework/machine-changes.yaml": "source_id: maafw\nchanges: []\n",
+        "sources/maa-framework/upstream-commits.yaml": "source_id: maafw\ncommits: []\n",
     }
     for relative, content in files.items():
         path = root / relative
@@ -607,6 +604,7 @@ def test_bundle_paths_accept_machine_change_catalog_and_reject_near_misses(tmp_p
     _write_published_layout(tmp_path)
     relative = [path.relative_to(tmp_path).as_posix() for path in bundle_paths(tmp_path)]
     assert "sources/maa-framework/machine-changes.yaml" in relative
+    assert "sources/maa-framework/upstream-commits.yaml" in relative
 
     (tmp_path / "sources" / "maa-framework" / "machine-changes.yml").write_text(
         "source_id: maafw\nchanges: []\n", encoding="utf-8"

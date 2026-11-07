@@ -1,17 +1,19 @@
 from .models import (
+    MachineChangeCatalog,
     ReleaseCatalog,
     RepositoryCatalog,
-    SemanticChangeCatalog,
     SourceInventory,
     SourceMap,
+    UpstreamCommitCatalog,
 )
 from .validation import validate_repository
 
 __all__ = [
+    "MachineChangeCatalog",
     "ReleaseCatalog",
     "RepositoryCatalog",
-    "SemanticChangeCatalog",
     "SourceInventory",
     "SourceMap",
+    "UpstreamCommitCatalog",
     "validate_repository",
 ]

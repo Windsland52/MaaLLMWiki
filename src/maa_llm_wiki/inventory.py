@@ -12,6 +12,7 @@ from urllib.parse import quote
 
 import yaml
 
+from .commits import build_upstream_commits, render_upstream_commits_page
 from .extract import (
     build_machine_changes,
     render_machine_changes_page,
@@ -21,18 +22,16 @@ from .models import (
     ArtifactKind,
     MachineChangeCatalog,
     PrereleaseRecord,
-    ReleaseCatalog,
     ReleaseRecord,
-    SemanticChangeCatalog,
     SourceArtifact,
     SourceInventory,
     SourceMap,
+    UpstreamCommitCatalog,
 )
-from .topics import render_semantic_changes_page, render_topics_page
+from .topics import render_topics_page
 from .validation import (
     load_release_catalog,
     load_repository_catalog,
-    load_semantic_changes,
     load_source_map,
 )
 
@@ -347,6 +346,16 @@ def _artifact_link(artifact: SourceArtifact, repository_url: str, revision: str)
 _CHANGE_LIST_LIMIT = 20
 
 
+def artifact_changed(before: SourceArtifact, after: SourceArtifact) -> bool:
+    """Whether indexed material changed, by content hash when both inventories record one.
+
+    Inventories without blob ids fall back to comparing the recorded title and summary.
+    """
+    if before.blob is not None and after.blob is not None:
+        return before.blob != after.blob
+    return before.title != after.title or before.summary != after.summary
+
+
 def _change_entries(
     lines: list[str],
     label: str,
@@ -377,16 +386,11 @@ def render_changed_since_lines(
     earlier = {artifact.path: artifact for artifact in previous.artifacts}
     added = sorted(current.keys() - earlier.keys())
     removed = sorted(earlier.keys() - current.keys())
-    changed: list[str] = []
-    for path in sorted(current.keys() & earlier.keys()):
-        now = current[path]
-        before = earlier[path]
-        if now.blob is not None and before.blob is not None:
-            differs = now.blob != before.blob
-        else:
-            differs = (now.title, now.summary) != (before.title, before.summary)
-        if differs:
-            changed.append(path)
+    changed = [
+        path
+        for path in sorted(current.keys() & earlier.keys())
+        if artifact_changed(earlier[path], current[path])
+    ]
 
     lines = ["", f"## Changed since `{previous.version}`", ""]
     if not added and not removed and not changed:
@@ -416,7 +420,8 @@ def _version_navigation_lines(
     lines.extend(
         [
             "- [Topics](../topics.md) · [Machine changes](../machine-changes.md)",
-            "- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)",
+            "- [Machine symbols](../machine-symbols.md) · "
+            "[Upstream commits](../upstream-commits.md) · [Prereleases](../prereleases.md)",
         ]
     )
     return lines
@@ -609,17 +614,17 @@ def render_release_index(
             "",
             "[Browse curated topic routes](./topics.md)",
             "",
-            "## Behaviour changes",
-            "",
-            "[Browse recorded behaviour changes](./behaviour-changes.md)",
-            "",
             "## Machine changes",
             "",
-            "[Browse structured machine changes](./machine-changes.md)",
+            "[Browse declared API changes by release](./machine-changes.md)",
             "",
             "## Machine symbols",
             "",
-            "[Browse machine changes by symbol](./machine-symbols.md)",
+            "[Browse declared API changes by symbol](./machine-symbols.md)",
+            "",
+            "## Upstream commits",
+            "",
+            "[Browse upstream commits by release](./upstream-commits.md)",
         ]
     )
     return "\n".join(lines) + "\n"
@@ -654,28 +659,27 @@ def _write_version_indexes(
         path.write_text(content, encoding="utf-8", newline="\n")
 
 
+def _write_page(path: Path, content: str) -> None:
+    path.write_text(content, encoding="utf-8", newline="\n")
+
+
 def _write_release_pages(
     root: Path,
     releases: list[ReleaseRecord],
     prereleases: list[PrereleaseRecord],
     repository_url: str,
     source_map: SourceMap,
-    semantic_changes: SemanticChangeCatalog,
-    *,
-    source_id: str,
-    machine_changes: MachineChangeCatalog | None = None,
+    machine_changes: MachineChangeCatalog,
+    upstream_commits: UpstreamCommitCatalog,
 ) -> None:
     output_root = root / "generated" / "maa-framework"
     output_root.mkdir(parents=True, exist_ok=True)
     indexed_releases = [
         release for release in releases if (output_root / release.version / "index.md").is_file()
     ]
-    (output_root / "index.md").write_text(
-        render_release_index(indexed_releases, prereleases),
-        encoding="utf-8",
-        newline="\n",
-    )
-    (output_root / "prereleases.md").write_text(
+    _write_page(output_root / "index.md", render_release_index(indexed_releases, prereleases))
+    _write_page(
+        output_root / "prereleases.md",
         render_prereleases_page(
             display_name="MaaFramework",
             generator="maa-wiki-sync-maafw-history",
@@ -683,125 +687,26 @@ def _write_release_pages(
             releases=releases,
             prereleases=prereleases,
         ),
-        encoding="utf-8",
-        newline="\n",
     )
-    (output_root / "topics.md").write_text(
+    _write_page(
+        output_root / "topics.md",
         render_topics_page(
             source_map=source_map,
             repository_url=repository_url,
             latest_release=releases[-1].version,
         ),
-        encoding="utf-8",
-        newline="\n",
     )
-    (output_root / "behaviour-changes.md").write_text(
-        render_semantic_changes_page(
-            source_id=source_id,
-            semantic_changes=semantic_changes,
-            source_map=source_map,
-            releases=ReleaseCatalog(
-                source_id=source_id,
-                releases=releases,
-                prereleases=prereleases,
-            ),
-            repository_url=repository_url,
-        ),
-        encoding="utf-8",
-        newline="\n",
+    _write_page(
+        output_root / "machine-changes.md",
+        render_machine_changes_page(machine_changes, repository_url),
     )
-    if machine_changes is not None:
-        (output_root / "machine-changes.md").write_text(
-            render_machine_changes_page(machine_changes, repository_url),
-            encoding="utf-8",
-            newline="\n",
-        )
-        (output_root / "machine-symbols.md").write_text(
-            render_machine_symbols_page(machine_changes, repository_url),
-            encoding="utf-8",
-            newline="\n",
-        )
-
-
-def _load_historical_inventory(root: Path, version: str) -> SourceInventory | None:
-    path = root / "sources" / "maa-framework" / "inventories" / f"{version}.yaml"
-    if not path.is_file():
-        return None
-    return SourceInventory.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
-
-
-def sync_maafw_inventory(*, root: Path, repository: Path, version: str) -> None:
-    releases = load_release_catalog(root)
-    source_map = load_source_map(root)
-    semantic_changes = load_semantic_changes(root)
-    release_index = next(
-        (index for index, item in enumerate(releases.releases) if item.version == version),
-        None,
+    _write_page(
+        output_root / "machine-symbols.md",
+        render_machine_symbols_page(machine_changes, first_release=releases[0].version),
     )
-    if release_index is None:
-        raise ValueError(f"Unknown MaaFramework release: {version}")
-    release = releases.releases[release_index]
-    previous_inventory = (
-        _load_historical_inventory(root, releases.releases[release_index - 1].version)
-        if release_index > 0
-        else None
-    )
-
-    repositories = load_repository_catalog(root)
-    source = next(
-        (item for item in repositories.repositories if item.id == releases.source_id), None
-    )
-    if source is None:
-        raise ValueError(f"Unknown repository source: {releases.source_id}")
-
-    inventory = SourceInventory(
-        source_id=source.id,
-        version=release.version,
-        revision=release.commit,
-        artifacts=discover_maafw_artifacts(repository, release.commit),
-    )
-    inventory_path = root / "sources" / "maa-framework" / "inventory.yaml"
-    inventory_path.write_text(
-        yaml.safe_dump(
-            inventory.model_dump(mode="json"),
-            allow_unicode=True,
-            sort_keys=False,
-        ),
-        encoding="utf-8",
-        newline="\n",
-    )
-
-    machine_changes: MachineChangeCatalog | None = None
-    if previous_inventory is not None:
-        machine_changes = build_machine_changes(root, repository)
-        write_yaml(
-            root / "sources" / "maa-framework" / "machine-changes.yaml",
-            machine_changes.model_dump(mode="json"),
-        )
-
-    _write_version_indexes(
-        root,
-        inventory,
-        source.url,
-        previous_inventory,
-        previous_version=(
-            releases.releases[release_index - 1].version if release_index > 0 else None
-        ),
-        next_version=(
-            releases.releases[release_index + 1].version
-            if release_index + 1 < len(releases.releases)
-            else None
-        ),
-    )
-    _write_release_pages(
-        root,
-        releases.releases,
-        releases.prereleases,
-        source.url,
-        source_map,
-        semantic_changes,
-        source_id=releases.source_id,
-        machine_changes=machine_changes,
+    _write_page(
+        output_root / "upstream-commits.md",
+        render_upstream_commits_page(upstream_commits, releases, repository_url),
     )
 
 
@@ -881,10 +786,6 @@ def discover_stable_releases(repository: Path, *, major: int | None = None) -> l
             )
         )
     return releases
-
-
-def find_latest_stable_release(repository: Path) -> ReleaseRecord:
-    return discover_stable_releases(repository)[-1]
 
 
 def discover_prereleases(repository: Path, *, major: int | None = None) -> list[PrereleaseRecord]:
@@ -973,47 +874,6 @@ def registered_release_versions(root: Path, source_id: str) -> tuple[set[str], s
     )
 
 
-def sync_latest_maafw(*, root: Path, repository: Path) -> ReleaseRecord:
-    latest = find_latest_stable_release(repository)
-    releases = load_release_catalog(root)
-    existing = next(
-        (release for release in releases.releases if release.version == latest.version),
-        None,
-    )
-    if existing is not None:
-        if existing.tag != latest.tag or existing.commit != latest.commit:
-            raise ValueError(f"Registered release metadata differs from tag {latest.tag}")
-        latest = existing
-    else:
-        releases.releases.append(latest)
-        releases.releases.sort(key=lambda release: parse_stable_tag(release.tag) or (0, 0, 0))
-        write_yaml(
-            root / "sources" / "maa-framework" / "releases.yaml",
-            releases.model_dump(mode="json"),
-        )
-
-    repositories = load_repository_catalog(root)
-    source = next(
-        (
-            repository_source
-            for repository_source in repositories.repositories
-            if repository_source.id == releases.source_id
-        ),
-        None,
-    )
-    if source is None:
-        raise ValueError(f"Unknown repository source: {releases.source_id}")
-    if source.default_revision != latest.commit:
-        source.default_revision = latest.commit
-        write_yaml(
-            root / "sources" / "repositories.yaml",
-            repositories.model_dump(mode="json"),
-        )
-
-    sync_maafw_inventory(root=root, repository=repository, version=latest.version)
-    return latest
-
-
 def sync_maafw_history(
     *, root: Path, repository: Path, major: int, prune: bool = False
 ) -> tuple[list[ReleaseRecord], list[PrereleaseRecord]]:
@@ -1039,7 +899,6 @@ def sync_maafw_history(
 
     release_catalog = load_release_catalog(root)
     source_map = load_source_map(root)
-    semantic_changes = load_semantic_changes(root)
     guard_registry_shrink(
         {release.version for release in release_catalog.releases},
         {release.version for release in releases},
@@ -1103,7 +962,12 @@ def sync_maafw_history(
     machine_changes = build_machine_changes(root, repository)
     write_yaml(
         root / "sources" / "maa-framework" / "machine-changes.yaml",
-        machine_changes.model_dump(mode="json"),
+        machine_changes.model_dump(mode="json", exclude_none=True),
+    )
+    upstream_commits = build_upstream_commits(root, repository)
+    write_yaml(
+        root / "sources" / "maa-framework" / "upstream-commits.yaml",
+        upstream_commits.model_dump(mode="json", exclude_none=True),
     )
     _write_release_pages(
         root,
@@ -1111,8 +975,7 @@ def sync_maafw_history(
         prereleases,
         source.url,
         source_map,
-        semantic_changes,
-        source_id=release_catalog.source_id,
-        machine_changes=machine_changes,
+        machine_changes,
+        upstream_commits,
     )
     return releases, prereleases

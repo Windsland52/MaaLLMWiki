@@ -17,7 +17,8 @@
           "enum": [
             "added",
             "removed",
-            "modified"
+            "modified",
+            "deprecated"
           ],
           "title": "Change",
           "type": "string"
@@ -35,6 +36,20 @@
           "minLength": 1,
           "title": "Quote",
           "type": "string"
+        },
+        "previous_quote": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Quote"
         },
         "paths": {
           "items": {
@@ -62,6 +77,11 @@
         "enum-value",
         "public-function",
         "callback-message",
+        "constant",
+        "struct-field",
+        "type-definition",
+        "schema-definition",
+        "schema-branch",
         "schema-property",
         "schema-enum",
         "schema-default",

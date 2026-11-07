@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import re
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import cast
 
 import yaml
@@ -15,9 +15,9 @@ from .models import (
     ReleaseCatalog,
     RepositoryCatalog,
     RepositorySource,
-    SemanticChangeCatalog,
     SourceInventory,
     SourceMap,
+    UpstreamCommitCatalog,
 )
 from .schemas import SCHEMA_MODELS
 
@@ -79,9 +79,9 @@ def load_machine_changes(root: Path) -> MachineChangeCatalog:
     )
 
 
-def load_semantic_changes(root: Path) -> SemanticChangeCatalog:
-    return SemanticChangeCatalog.model_validate(
-        _load_yaml(root / "sources" / "maa-framework" / "semantic-changes.yaml")
+def load_upstream_commits(root: Path) -> UpstreamCommitCatalog:
+    return UpstreamCommitCatalog.model_validate(
+        _load_yaml(root / "sources" / "maa-framework" / "upstream-commits.yaml")
     )
 
 
@@ -167,8 +167,11 @@ def _check_page(
     label: str,
     errors: list[str],
     description: str = "generated page",
+    required: bool = False,
 ) -> None:
     if not path.is_file():
+        if required:
+            errors.append(f"{label} {description} is missing: {_public_path(path)}")
         return
     if path.read_text(encoding="utf-8") != expected:
         errors.append(f"{label} {description} is stale: {_public_path(path)}")
@@ -211,7 +214,6 @@ def _check_maafw_generated(
     releases: ReleaseCatalog,
     source: RepositorySource,
     source_map: SourceMap,
-    semantic_changes: SemanticChangeCatalog,
 ) -> list[str]:
     from .inventory import render_prereleases_page, render_release_index, render_version_indexes
 
@@ -243,6 +245,7 @@ def _check_maafw_generated(
         label="MaaFramework",
         description="release index",
         errors=errors,
+        required=True,
     )
     _check_page(
         generated_root / "prereleases.md",
@@ -256,8 +259,9 @@ def _check_maafw_generated(
         label="MaaFramework",
         description="prerelease registry",
         errors=errors,
+        required=True,
     )
-    from .topics import render_semantic_changes_page, render_topics_page
+    from .topics import render_topics_page
 
     latest_release = releases.releases[-1].version
     _check_page(
@@ -270,19 +274,7 @@ def _check_maafw_generated(
         label="MaaFramework",
         description="topic routes",
         errors=errors,
-    )
-    _check_page(
-        generated_root / "behaviour-changes.md",
-        render_semantic_changes_page(
-            source_id=releases.source_id,
-            semantic_changes=semantic_changes,
-            source_map=source_map,
-            releases=releases,
-            repository_url=source.url,
-        ),
-        label="MaaFramework",
-        description="behaviour-change registry",
-        errors=errors,
+        required=True,
     )
     return errors
 
@@ -432,8 +424,8 @@ def _check_sources_layout(
                 allowed.add(f"{prefix}/inventories/{release.version}.yaml")
         if directory == _MAAFW_DIRECTORY:
             allowed.add(f"{prefix}/source-map.yaml")
-            allowed.add(f"{prefix}/semantic-changes.yaml")
             allowed.add(f"{prefix}/machine-changes.yaml")
+            allowed.add(f"{prefix}/upstream-commits.yaml")
     for path in sorted(p for p in sources_root.rglob("*") if p.is_file()):
         relative = f"sources/{path.relative_to(sources_root).as_posix()}"
         if relative not in allowed:
@@ -518,13 +510,49 @@ def _check_machine_changes(
         label="MaaFramework",
         description="machine change catalog",
         errors=errors,
+        required=True,
     )
     _check_page(
         root / "generated" / "maa-framework" / "machine-symbols.md",
-        render_machine_symbols_page(catalog, source.url),
+        render_machine_symbols_page(catalog, first_release=releases.releases[0].version),
         label="MaaFramework",
         description="machine symbol index",
         errors=errors,
+        required=True,
+    )
+
+
+def _check_upstream_commits(
+    root: Path,
+    catalog: UpstreamCommitCatalog,
+    releases: ReleaseCatalog,
+    source: RepositorySource,
+    errors: list[str],
+) -> None:
+    """The commit index is generated: every commit files under a later registered release."""
+    filed = {release.version for release in releases.releases[1:]}
+    seen: set[str] = set()
+    for commit in catalog.commits:
+        if commit.version not in filed:
+            errors.append(
+                f"upstream commit {commit.commit} is filed under an unregistered or first "
+                f"release: {commit.version}"
+            )
+        if commit.commit in seen:
+            errors.append(f"upstream commit is listed twice: {commit.commit}")
+        seen.add(commit.commit)
+        if commit.path_count < len(commit.paths):
+            errors.append(f"upstream commit lists more paths than it counts: {commit.commit}")
+
+    from .commits import render_upstream_commits_page
+
+    _check_page(
+        root / "generated" / "maa-framework" / "upstream-commits.md",
+        render_upstream_commits_page(catalog, releases.releases, source.url),
+        label="MaaFramework",
+        description="upstream commit index",
+        errors=errors,
+        required=True,
     )
 
 
@@ -643,44 +671,12 @@ def _check_source_map(
     return errors
 
 
-def _check_semantic_changes(
-    semantic_changes: SemanticChangeCatalog,
-    source_map: SourceMap,
-    release_commits: dict[str, str],
-    inventory_paths: set[str],
-    repository_ids: set[str],
-) -> list[str]:
-    errors: list[str] = []
-    if semantic_changes.source_id not in repository_ids:
-        errors.append(
-            f"semantic-change catalog references unknown source: {semantic_changes.source_id}"
-        )
-    topic_ids = {topic.id for topic in source_map.topics}
-    for change in semantic_changes.changes:
-        if change.topic_id not in topic_ids:
-            errors.append(f"semantic change references unknown topic: {change.topic_id}")
-        expected_commit = release_commits.get(change.first_version)
-        if expected_commit is None:
-            errors.append(f"semantic change references unknown release: {change.first_version}")
-        elif change.revision != expected_commit:
-            errors.append(
-                f"semantic change revision does not match release {change.first_version}: "
-                f"{change.topic_id}"
-            )
-        for path in change.paths:
-            suffix = PurePosixPath(path).suffix.lower()
-            if suffix in {".md", ".json", ".h", ".hpp"} and path not in inventory_paths:
-                errors.append(f"semantic change references uncatalogued artifact: {path}")
-    return errors
-
-
 def validate_repository(root: Path) -> list[str]:
     errors: list[str] = []
     try:
         repositories = load_repository_catalog(root)
         releases = load_release_catalog(root)
         source_map = load_source_map(root)
-        semantic_changes = load_semantic_changes(root)
         inventory = load_source_inventory(root)
         historical_inventories = load_source_inventories(root)
         binding_compatibility = load_binding_compatibility(root)
@@ -722,7 +718,6 @@ def validate_repository(root: Path) -> list[str]:
             releases,
             maafw_source,
             source_map,
-            semantic_changes,
         )
     )
     _check_skill_paths(root, errors)
@@ -807,9 +802,9 @@ def validate_repository(root: Path) -> list[str]:
                 "index.md",
                 "prereleases.md",
                 "topics.md",
-                "behaviour-changes.md",
                 "machine-changes.md",
                 "machine-symbols.md",
+                "upstream-commits.md",
             },
             **{source_id: {"index.md", "prereleases.md"} for source_id in BINDING_SPECS},
         },
@@ -829,19 +824,12 @@ def validate_repository(root: Path) -> list[str]:
             maafw_source,
             errors,
         )
+    try:
+        upstream_commits = load_upstream_commits(root)
+    except (OSError, ValueError, ValidationError, yaml.YAMLError) as error:
+        errors.append(f"upstream commit index: {error}")
+    else:
+        _check_upstream_commits(root, upstream_commits, releases, maafw_source, errors)
     errors.extend(_check_source_map(source_map, release_commits, repository_ids))
-    errors.extend(
-        _check_semantic_changes(
-            semantic_changes,
-            source_map,
-            release_commits,
-            {
-                path
-                for historical in historical_inventories
-                for path in (artifact.path for artifact in historical.artifacts)
-            },
-            repository_ids,
-        )
-    )
     errors.extend(_check_schemas(root))
     return errors

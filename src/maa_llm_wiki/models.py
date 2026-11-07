@@ -242,24 +242,6 @@ class CatalogBundleManifest(StrictModel):
         return self
 
 
-class SemanticChange(StrictModel):
-    topic_id: str = Field(pattern=ID_PATTERN)
-    first_version: str = Field(min_length=1)
-    revision: str = Field(pattern=COMMIT_PATTERN)
-    description: str = Field(min_length=1)
-    paths: list[str] = Field(min_length=1)
-
-    @field_validator("paths")
-    @classmethod
-    def validate_paths(cls, value: list[str]) -> list[str]:
-        return [_normalize_relative_path(path) for path in value]
-
-
-class SemanticChangeCatalog(StrictModel):
-    source_id: str = Field(pattern=ID_PATTERN)
-    changes: list[SemanticChange] = Field(default_factory=list[SemanticChange])
-
-
 class SourceMapVariant(StrictModel):
     applies_to: str = Field(min_length=1)
     revision: str = Field(pattern=COMMIT_PATTERN)
@@ -294,6 +276,11 @@ class MachineChangeKind(StrEnum):
     ENUM_VALUE = "enum-value"
     PUBLIC_FUNCTION = "public-function"
     CALLBACK_MESSAGE = "callback-message"
+    CONSTANT = "constant"
+    STRUCT_FIELD = "struct-field"
+    TYPE_DEFINITION = "type-definition"
+    SCHEMA_DEFINITION = "schema-definition"
+    SCHEMA_BRANCH = "schema-branch"
     SCHEMA_PROPERTY = "schema-property"
     SCHEMA_ENUM = "schema-enum"
     SCHEMA_DEFAULT = "schema-default"
@@ -306,10 +293,11 @@ class MachineChangeKind(StrEnum):
 class MachineChange(StrictModel):
     version: str = Field(min_length=1)
     commit: str = Field(pattern=COMMIT_PATTERN)
-    change: Literal["added", "removed", "modified"]
+    change: Literal["added", "removed", "modified", "deprecated"]
     kind: MachineChangeKind
     symbol: str = Field(min_length=1)
     quote: str = Field(min_length=1, max_length=300)
+    previous_quote: str | None = Field(default=None, min_length=1, max_length=300)
     paths: list[str] = Field(min_length=1)
 
     @field_validator("paths")
@@ -321,3 +309,24 @@ class MachineChange(StrictModel):
 class MachineChangeCatalog(StrictModel):
     source_id: str = Field(pattern=ID_PATTERN)
     changes: list[MachineChange] = Field(default_factory=list[MachineChange])
+
+
+class UpstreamCommit(StrictModel):
+    """One upstream commit, filed under the first registered release that contains it."""
+
+    version: str = Field(min_length=1)
+    commit: str = Field(pattern=COMMIT_PATTERN)
+    subject: str = Field(min_length=1, max_length=300)
+    pull_request: int | None = Field(default=None, ge=1)
+    path_count: int = Field(ge=0)
+    paths: list[str] = Field(default_factory=list[str])
+
+    @field_validator("paths")
+    @classmethod
+    def validate_paths(cls, value: list[str]) -> list[str]:
+        return [_normalize_relative_path(path) for path in value]
+
+
+class UpstreamCommitCatalog(StrictModel):
+    source_id: str = Field(pattern=ID_PATTERN)
+    commits: list[UpstreamCommit] = Field(default_factory=list[UpstreamCommit])

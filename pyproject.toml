@@ -18,8 +18,6 @@ Issues = "https://github.com/Windsland52/MaaLLMWiki/issues"
 [project.scripts]
 maa-wiki-validate = "maa_llm_wiki.cli:main"
 maa-wiki-generate-schemas = "maa_llm_wiki.cli:generate_schemas_main"
-maa-wiki-sync-maafw = "maa_llm_wiki.cli:sync_maafw_main"
-maa-wiki-sync-latest-maafw = "maa_llm_wiki.cli:sync_latest_maafw_main"
 maa-wiki-sync-maafw-history = "maa_llm_wiki.cli:sync_maafw_history_main"
 maa-wiki-sync-bindings-history = "maa_llm_wiki.cli:sync_bindings_history_main"
 maa-wiki-build-bundle = "maa_llm_wiki.cli:build_bundle_main"
@@ -27,7 +25,6 @@ maa-wiki-verify-bundle = "maa_llm_wiki.cli:verify_bundle_main"
 maa-wiki-diff = "maa_llm_wiki.cli:diff_main"
 maa-wiki-extract-changes = "maa_llm_wiki.cli:extract_changes_main"
 maa-wiki-release-notes = "maa_llm_wiki.cli:release_notes_main"
-maa-wiki-report-semantic-gaps = "maa_llm_wiki.cli:report_semantic_gaps_main"
 
 [dependency-groups]
 dev = [

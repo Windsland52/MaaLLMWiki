@@ -30,7 +30,6 @@ from maa_llm_wiki.inventory import (
     render_version_indexes,
     resolve_included_in,
     sync_maafw_history,
-    sync_maafw_inventory,
 )
 from maa_llm_wiki.models import (
     ArtifactKind,
@@ -43,10 +42,10 @@ from maa_llm_wiki.models import (
     RepositoryCatalog,
     RepositoryRole,
     RepositorySource,
-    SemanticChangeCatalog,
     SourceArtifact,
     SourceInventory,
     SourceMap,
+    UpstreamCommitCatalog,
 )
 
 GO_SPEC = BindingSourceSpec(
@@ -156,10 +155,6 @@ def _write_maafw_root(
                 }
             ]
         },
-    )
-    _write_yaml(
-        root / "sources" / "maa-framework" / "semantic-changes.yaml",
-        {"source_id": "maafw", "changes": []},
     )
     _write_yaml(
         root / "sources" / "repositories.yaml",
@@ -343,10 +338,11 @@ def test_sync_maafw_history_prune_allows_dropping_registered_versions(tmp_path: 
     index = (generated / "index.md").read_text(encoding="utf-8")
     assert "- [1.0.0](./1.0.0/index.md)" in index
     assert "[Browse curated topic routes](./topics.md)" in index
-    assert "[Browse recorded behaviour changes](./behaviour-changes.md)" in index
+    assert "[Browse upstream commits by release](./upstream-commits.md)" in index
     assert "# MaaFramework prerelease registry" in (generated / "prereleases.md").read_text("utf-8")
     assert "# Topic routes" in (generated / "topics.md").read_text(encoding="utf-8")
-    assert "# Behaviour changes" in (generated / "behaviour-changes.md").read_text(encoding="utf-8")
+    assert "# Upstream commits" in (generated / "upstream-commits.md").read_text("utf-8")
+    assert not (generated / "behaviour-changes.md").exists()
 
 
 def test_sync_maafw_history_rejects_newer_upstream_major(tmp_path: Path) -> None:
@@ -680,50 +676,32 @@ def test_markdown_metadata_keeps_generic_fallback_for_link_only_docs() -> None:
     assert summary == "Official documentation for MaaFW NodeJS."
 
 
-def test_render_release_index_links_topics_and_behaviour_pages() -> None:
+def test_render_release_index_links_topics_and_change_pages() -> None:
     releases = [
         ReleaseRecord(version="1.0.0", tag="v1.0.0", commit="a" * 40, released_at=FIXED_DATE)
     ]
     page = render_release_index(releases, [])
 
     assert "[Browse curated topic routes](./topics.md)" in page
-    assert "[Browse recorded behaviour changes](./behaviour-changes.md)" in page
-    assert "## Topics" in page
-    assert "## Behaviour changes" in page
+    assert "[Browse declared API changes by release](./machine-changes.md)" in page
+    assert "[Browse declared API changes by symbol](./machine-symbols.md)" in page
+    assert "[Browse upstream commits by release](./upstream-commits.md)" in page
+    assert "behaviour" not in page.lower()
+
+
+_TOP_LEVEL_PAGES = (
+    "index.md",
+    "prereleases.md",
+    "topics.md",
+    "machine-changes.md",
+    "machine-symbols.md",
+    "upstream-commits.md",
+)
 
 
 def _generated_maafw_pages(root: Path) -> dict[str, str]:
     generated = root / "generated" / "maa-framework"
-    return {
-        name: (generated / name).read_text(encoding="utf-8")
-        for name in ("index.md", "prereleases.md", "topics.md", "behaviour-changes.md")
-    }
-
-
-def test_sync_maafw_inventory_writes_top_level_pages(tmp_path: Path) -> None:
-    repository = _init_repository(tmp_path / "upstream")
-    first = _commit_files(repository, {"docs/test.md": "# Test\n\nSome documentation.\n"})
-    _git(repository, "tag", "v1.0.0")
-    root = _write_maafw_root(
-        tmp_path,
-        [ReleaseRecord(version="1.0.0", tag="v1.0.0", commit=first, released_at=FIXED_DATE)],
-        revision=first,
-    )
-
-    sync_maafw_inventory(root=root, repository=repository, version="1.0.0")
-
-    assert (root / "sources" / "maa-framework" / "inventory.yaml").is_file()
-    generated = root / "generated" / "maa-framework"
-    assert (generated / "1.0.0" / "index.md").is_file()
-    pages = _generated_maafw_pages(root)
-    assert "- [1.0.0](./1.0.0/index.md)" in pages["index.md"]
-    assert "[Browse curated topic routes](./topics.md)" in pages["index.md"]
-    assert "[Browse recorded behaviour changes](./behaviour-changes.md)" in pages["index.md"]
-    assert "# MaaFramework prerelease registry" in pages["prereleases.md"]
-    assert "# Topic routes" in pages["topics.md"]
-    assert "# Behaviour changes" in pages["behaviour-changes.md"]
-    version_index = (generated / "1.0.0" / "index.md").read_text(encoding="utf-8")
-    assert "## Changed since the previous release" in version_index
+    return {name: (generated / name).read_text(encoding="utf-8") for name in _TOP_LEVEL_PAGES}
 
 
 def test_sync_maafw_history_renders_top_level_pages_once(
@@ -769,10 +747,8 @@ def test_sync_maafw_history_renders_top_level_pages_once(
         prereleases: list[PrereleaseRecord],
         repository_url: str,
         source_map: SourceMap,
-        semantic_changes: SemanticChangeCatalog,
-        *,
-        source_id: str,
-        machine_changes: MachineChangeCatalog | None = None,
+        machine_changes: MachineChangeCatalog,
+        upstream_commits: UpstreamCommitCatalog,
     ) -> None:
         calls["release"] += 1
         real_release_pages(
@@ -781,9 +757,8 @@ def test_sync_maafw_history_renders_top_level_pages_once(
             prereleases,
             repository_url,
             source_map,
-            semantic_changes,
-            source_id=source_id,
-            machine_changes=machine_changes,
+            machine_changes,
+            upstream_commits,
         )
 
     monkeypatch.setattr(inventory, "_write_version_indexes", counting_version_indexes)
@@ -797,9 +772,11 @@ def test_sync_maafw_history_renders_top_level_pages_once(
     assert "- [1.0.0](./1.0.0/index.md)" in pages["index.md"]
     assert "- [1.1.0](./1.1.0/index.md)" in pages["index.md"]
     assert "# Topic routes" in pages["topics.md"]
-    assert "# Behaviour changes" in pages["behaviour-changes.md"]
+    assert "# Machine changes" in pages["machine-changes.md"]
+    assert "# Machine change symbols" in pages["machine-symbols.md"]
+    assert "# Upstream commits" in pages["upstream-commits.md"]
+    assert "content" in pages["upstream-commits.md"]
     generated = root / "generated" / "maa-framework"
-    assert "# Machine changes" in (generated / "machine-changes.md").read_text(encoding="utf-8")
     first_index = (generated / "1.0.0" / "index.md").read_text(encoding="utf-8")
     second_index = (generated / "1.1.0" / "index.md").read_text(encoding="utf-8")
     assert "## Changed since the previous release" in first_index
@@ -948,37 +925,6 @@ def test_render_version_indexes_only_changes_the_index_page() -> None:
         if name != "index.md":
             assert without_previous[name] == with_previous[name]
     assert without_previous["index.md"] != with_previous["index.md"]
-
-
-def test_sync_maafw_inventory_uses_the_previous_registered_inventory(tmp_path: Path) -> None:
-    repository = _init_repository(tmp_path / "upstream")
-    first = _commit_files(repository, {"docs/test.md": "# Test\n\nFirst.\n"})
-    _git(repository, "tag", "v1.0.0")
-    second = _commit_files(repository, {"docs/test.md": "# Test\n\nSecond.\n"})
-    _git(repository, "tag", "v1.1.0")
-    registered = [
-        ReleaseRecord(version="1.0.0", tag="v1.0.0", commit=first, released_at=FIXED_DATE),
-        ReleaseRecord(version="1.1.0", tag="v1.1.0", commit=second, released_at=FIXED_DATE),
-    ]
-    root = _write_maafw_root(tmp_path, registered, revision=second)
-    previous = SourceInventory(
-        source_id="maafw",
-        version="1.0.0",
-        revision=first,
-        artifacts=discover_maafw_artifacts(repository, first),
-    )
-    _write_yaml(
-        root / "sources" / "maa-framework" / "inventories" / "1.0.0.yaml",
-        previous.model_dump(mode="json"),
-    )
-
-    sync_maafw_inventory(root=root, repository=repository, version="1.1.0")
-
-    index = (root / "generated" / "maa-framework" / "1.1.0" / "index.md").read_text(
-        encoding="utf-8"
-    )
-    assert "## Changed since `1.0.0`" in index
-    assert "- Added: `0`, removed: `0`, content changed: `1`" in index
 
 
 CSHARP_PACKAGES_PROPS = (

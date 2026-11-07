@@ -1,29 +1,21 @@
 from __future__ import annotations
 
-from datetime import date
 from pathlib import Path
 
 from maa_llm_wiki.models import (
-    PrereleaseRecord,
-    ReleaseCatalog,
-    ReleaseRecord,
-    SemanticChange,
-    SemanticChangeCatalog,
     SourceMap,
     SourceMapVariant,
     TopicSourceMap,
 )
-from maa_llm_wiki.topics import render_semantic_changes_page, render_topics_page
+from maa_llm_wiki.topics import render_topics_page
 from maa_llm_wiki.validation import (
     load_release_catalog,
     load_repository_catalog,
-    load_semantic_changes,
     load_source_map,
 )
 
 ROOT = Path(__file__).parents[1]
 COMMIT_A = "a" * 40
-COMMIT_B = "b" * 40
 URL = "https://github.com/MaaXYZ/MaaFramework"
 
 
@@ -47,41 +39,6 @@ def _source_map() -> SourceMap:
     )
 
 
-def _releases() -> ReleaseCatalog:
-    return ReleaseCatalog(
-        source_id="maafw",
-        releases=[
-            ReleaseRecord(
-                version="5.11.2", tag="v5.11.2", commit=COMMIT_A, released_at=date(2026, 1, 1)
-            )
-        ],
-        prereleases=[
-            PrereleaseRecord(
-                version="5.11.2-beta.1",
-                tag="v5.11.2-beta.1",
-                commit=COMMIT_B,
-                released_at=date(2025, 12, 1),
-                included_in="5.11.2",
-            )
-        ],
-    )
-
-
-def _changes() -> SemanticChangeCatalog:
-    return SemanticChangeCatalog(
-        source_id="maafw",
-        changes=[
-            SemanticChange(
-                topic_id="framework.pipeline-control-flow",
-                first_version="5.11.2",
-                revision=COMMIT_A,
-                description="Pipeline timeout accepts -1 as an infinite wait.",
-                paths=["tools/pipeline.schema.json"],
-            )
-        ],
-    )
-
-
 def test_topics_page_lists_every_route_with_pinned_links() -> None:
     page = render_topics_page(source_map=_source_map(), repository_url=URL, latest_release="5.11.2")
 
@@ -93,24 +50,9 @@ def test_topics_page_lists_every_route_with_pinned_links() -> None:
     assert page.count(f"{URL}/blob/{COMMIT_A}/") == 2
     # Non-ASCII paths are percent-encoded in the link but kept readable as the label.
     assert "docs/zh_cn/3.1-任务流水线协议.md`" in page
+    assert "[Upstream commits](./upstream-commits.md)" in page
+    assert "behaviour" not in page.lower()
     assert page.endswith("\n") and not page.endswith("\n\n")
-
-
-def test_semantic_changes_page_groups_by_first_version() -> None:
-    page = render_semantic_changes_page(
-        source_id="maafw",
-        semantic_changes=_changes(),
-        source_map=_source_map(),
-        releases=_releases(),
-        repository_url=URL,
-    )
-
-    assert "# Behaviour changes" in page
-    assert "1 entries over 1 releases" in page
-    assert "## 5.11.2" in page
-    assert "Revision: `" + COMMIT_A + "`" in page
-    assert "Pipeline timeout accepts -1 as an infinite wait." in page
-    assert f"{URL}/blob/{COMMIT_A}/tools/pipeline.schema.json" in page
 
 
 def test_rendered_pages_are_deterministic() -> None:
@@ -125,7 +67,6 @@ def test_rendered_pages_are_deterministic() -> None:
 
 def test_real_catalog_renders_every_authored_entry() -> None:
     source_map = load_source_map(ROOT)
-    changes = load_semantic_changes(ROOT)
     releases = load_release_catalog(ROOT)
     url = next(
         source.url
@@ -137,18 +78,8 @@ def test_real_catalog_renders_every_authored_entry() -> None:
         repository_url=url,
         latest_release=releases.releases[-1].version,
     )
-    changes_page = render_semantic_changes_page(
-        source_id=releases.source_id,
-        semantic_changes=changes,
-        source_map=source_map,
-        releases=releases,
-        repository_url=url,
-    )
 
     for topic in source_map.topics:
         assert f"## {topic.id}" in topics_page
         for variant in topic.variants:
             assert f"{url}/blob/{variant.revision}/" in topics_page
-    for change in changes.changes:
-        assert change.description in changes_page
-    assert f"{len(changes.changes)} entries over " in changes_page

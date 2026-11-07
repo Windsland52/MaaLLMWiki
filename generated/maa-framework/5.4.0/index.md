@@ -52,4 +52,4 @@ This is a navigation index for immutable MaaFramework material. Authored guidanc
 - Previous release: [5.3.3](../5.3.3/index.md)
 - Next release: [5.4.1](../5.4.1/index.md)
 - [Topics](../topics.md) · [Machine changes](../machine-changes.md)
-- [Machine symbols](../machine-symbols.md) · [Prereleases](../prereleases.md)
+- [Machine symbols](../machine-symbols.md) · [Upstream commits](../upstream-commits.md) · [Prereleases](../prereleases.md)

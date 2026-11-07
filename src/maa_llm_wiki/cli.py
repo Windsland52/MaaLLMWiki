@@ -13,14 +13,15 @@ import yaml
 
 from .bindings import BINDING_SPECS, sync_binding_history
 from .bundle import build_catalog_bundle, bundle_sha256, verify_catalog_bundle
-from .gaps import artifact_changed, render_review_queue
-from .inventory import sync_latest_maafw, sync_maafw_history, sync_maafw_inventory, write_yaml
+from .inventory import artifact_changed, sync_maafw_history, write_yaml
 from .models import (
     ArtifactKind,
     MachineChange,
     MachineChangeCatalog,
     SourceArtifact,
     SourceInventory,
+    UpstreamCommit,
+    UpstreamCommitCatalog,
 )
 from .release_notes import build_release_notes
 from .schemas import generate_schemas
@@ -66,33 +67,6 @@ def main() -> int:
 def generate_schemas_main() -> int:
     args = _root_parser("Generate MaaLLMWiki metadata schemas").parse_args()
     generate_schemas(args.root.resolve())
-    return 0
-
-
-@_error_boundary
-def sync_maafw_main() -> int:
-    parser = _root_parser("Generate the pinned MaaFramework source inventory")
-    parser.add_argument("--repository", type=Path, required=True)
-    parser.add_argument("--version", required=True)
-    args = parser.parse_args()
-    sync_maafw_inventory(
-        root=args.root.resolve(),
-        repository=args.repository.resolve(),
-        version=args.version,
-    )
-    return 0
-
-
-@_error_boundary
-def sync_latest_maafw_main() -> int:
-    parser = _root_parser("Discover and index the latest stable MaaFramework release")
-    parser.add_argument("--repository", type=Path, required=True)
-    args = parser.parse_args()
-    release = sync_latest_maafw(
-        root=args.root.resolve(),
-        repository=args.repository.resolve(),
-    )
-    print(f"Indexed MaaFramework {release.tag} at {release.commit}")
     return 0
 
 
@@ -254,22 +228,6 @@ def verify_bundle_main() -> int:
         f"Verified catalog bundle: {version} {manifest.wiki_revision} "
         f"({len(manifest.files)} files) sha256={bundle_sha256(bundle)}"
     )
-    return 0
-
-
-@_error_boundary
-def report_semantic_gaps_main() -> int:
-    parser = _root_parser("Report MaaFramework releases awaiting semantic-change review")
-    parser.add_argument("--output", type=Path)
-    parser.add_argument("--repository", type=Path)
-    args = parser.parse_args()
-    repository = args.repository.resolve() if args.repository is not None else None
-    report = render_review_queue(args.root.resolve(), repository)
-    if args.output is None:
-        print(report, end="")
-        return 0
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(report, encoding="utf-8")
     return 0
 
 
@@ -452,54 +410,75 @@ def diff_main() -> int:
 
 
 _MACHINE_CHANGES_PATH = "sources/maa-framework/machine-changes.yaml"
-_MachineChangeKey = tuple[str, str, str, str, str, str, tuple[str, ...]]
+_UPSTREAM_COMMITS_PATH = "sources/maa-framework/upstream-commits.yaml"
+# Comparison key and the (version, label) pair used to summarise a difference.
+_RecordKey = tuple[object, ...]
 
 
-def _machine_version_key(version: str) -> tuple[int, ...]:
+def _version_sort_key(version: str) -> tuple[int, ...]:
     return tuple(int(part) if part.isdigit() else -1 for part in version.split("."))
 
 
-def _machine_change_key(change: MachineChange) -> _MachineChangeKey:
+def _machine_change_key(change: MachineChange) -> _RecordKey:
     return (
         change.version,
+        change.kind.value,
         change.commit,
         change.change,
-        change.kind.value,
         change.symbol,
         change.quote,
+        change.previous_quote,
         tuple(change.paths),
     )
 
 
-def _load_committed_machine_changes(path: Path) -> MachineChangeCatalog:
+def _upstream_commit_key(commit: UpstreamCommit) -> _RecordKey:
+    return (
+        commit.version,
+        "commit",
+        commit.commit,
+        commit.subject,
+        commit.pull_request,
+        commit.path_count,
+        tuple(commit.paths),
+    )
+
+
+def _load_committed(path: Path, label: str) -> object:
     if not path.is_file():
-        raise ValueError(f"committed machine change catalog is missing: {path}")
+        raise ValueError(f"committed {label} is missing: {path}")
     try:
-        payload: object = yaml.safe_load(path.read_text(encoding="utf-8"))
+        return yaml.safe_load(path.read_text(encoding="utf-8"))
     except yaml.YAMLError as error:
-        raise ValueError(f"committed machine change catalog is not valid YAML: {error}") from error
-    return MachineChangeCatalog.model_validate(payload)
+        raise ValueError(f"committed {label} is not valid YAML: {error}") from error
 
 
-def _machine_changes_diff(
-    fresh: MachineChangeCatalog, committed: MachineChangeCatalog
-) -> tuple[Counter[_MachineChangeKey], Counter[_MachineChangeKey]]:
-    fresh_counter = Counter(_machine_change_key(change) for change in fresh.changes)
-    committed_counter = Counter(_machine_change_key(change) for change in committed.changes)
-    return fresh_counter - committed_counter, committed_counter - fresh_counter
-
-
-def _print_machine_changes_counts(label: str, keys: Counter[_MachineChangeKey]) -> None:
-    if not keys:
-        return
-    counts: Counter[tuple[str, str]] = Counter()
-    for key in keys.elements():
-        counts[(key[0], key[3])] += 1
-    print(f"  {label}:")
-    for (version, kind), count in sorted(
-        counts.items(), key=lambda item: (_machine_version_key(item[0][0]), item[0][1])
-    ):
-        print(f"    {version} {kind}: {count}")
+def _report_difference(
+    label: str, relative: str, fresh: Counter[_RecordKey], committed: Counter[_RecordKey]
+) -> bool:
+    """Print whether the fresh records match the committed ones; True when they match."""
+    added = fresh - committed
+    missing = committed - fresh
+    total = sum(fresh.values())
+    if not added and not missing:
+        print(f"{label} matches {relative} ({total} record(s))")
+        return True
+    print(
+        f"{label} differs from {relative}: {sum(added.values())} new, "
+        f"{sum(missing.values())} missing, {total} extracted total"
+    )
+    for heading, keys in (("new", added), ("missing", missing)):
+        if not keys:
+            continue
+        counts: Counter[tuple[str, str]] = Counter()
+        for key in keys.elements():
+            counts[(str(key[0]), str(key[1]))] += 1
+        print(f"  {heading}:")
+        for (version, kind), count in sorted(
+            counts.items(), key=lambda item: (_version_sort_key(item[0][0]), item[0][1])
+        ):
+            print(f"    {version} {kind}: {count}")
+    return False
 
 
 def _build_machine_changes(*, root: Path, repository: Path) -> MachineChangeCatalog:
@@ -509,9 +488,18 @@ def _build_machine_changes(*, root: Path, repository: Path) -> MachineChangeCata
     return build_machine_changes(root=root, repository=repository)
 
 
+def _build_upstream_commits(*, root: Path, repository: Path) -> UpstreamCommitCatalog:
+    """Commit-index hook kept separate so tests can stub the sync-side implementation."""
+    from .commits import build_upstream_commits
+
+    return build_upstream_commits(root=root, repository=repository)
+
+
 @_error_boundary
 def extract_changes_main() -> int:
-    parser = _root_parser("Extract the machine-change catalog from a pinned MaaFramework clone")
+    parser = _root_parser(
+        "Extract the machine-change catalog and the upstream commit index from a MaaFramework clone"
+    )
     parser.add_argument("--repository", type=Path, required=True)
     parser.add_argument(
         "--check",
@@ -520,30 +508,37 @@ def extract_changes_main() -> int:
     )
     args = parser.parse_args()
     root = args.root.resolve()
-    catalog = _build_machine_changes(root=root, repository=args.repository.resolve())
-    path = root / _MACHINE_CHANGES_PATH
+    repository = args.repository.resolve()
+    changes = _build_machine_changes(root=root, repository=repository)
+    commits = _build_upstream_commits(root=root, repository=repository)
+    changes_path = root / _MACHINE_CHANGES_PATH
+    commits_path = root / _UPSTREAM_COMMITS_PATH
     if not args.check:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        write_yaml(path, catalog.model_dump(mode="json"))
-        print(f"Wrote {_MACHINE_CHANGES_PATH} with {len(catalog.changes)} machine change(s)")
+        changes_path.parent.mkdir(parents=True, exist_ok=True)
+        write_yaml(changes_path, changes.model_dump(mode="json", exclude_none=True))
+        write_yaml(commits_path, commits.model_dump(mode="json", exclude_none=True))
+        print(f"Wrote {_MACHINE_CHANGES_PATH} with {len(changes.changes)} machine change(s)")
+        print(f"Wrote {_UPSTREAM_COMMITS_PATH} with {len(commits.commits)} upstream commit(s)")
         return 0
-    committed = _load_committed_machine_changes(path)
-    added, missing = _machine_changes_diff(catalog, committed)
-    added_count = sum(added.values())
-    missing_count = sum(missing.values())
-    if not added_count and not missing_count:
-        print(
-            f"Machine change catalog matches {_MACHINE_CHANGES_PATH} "
-            f"({len(catalog.changes)} change(s))"
-        )
-        return 0
-    print(
-        f"Machine change catalog differs from {_MACHINE_CHANGES_PATH}: "
-        f"{added_count} new, {missing_count} missing, {len(catalog.changes)} extracted total"
+    committed_changes = MachineChangeCatalog.model_validate(
+        _load_committed(changes_path, "machine change catalog")
     )
-    _print_machine_changes_counts("new", added)
-    _print_machine_changes_counts("missing", missing)
-    return 1
+    committed_commits = UpstreamCommitCatalog.model_validate(
+        _load_committed(commits_path, "upstream commit index")
+    )
+    changes_match = _report_difference(
+        "Machine change catalog",
+        _MACHINE_CHANGES_PATH,
+        Counter(_machine_change_key(change) for change in changes.changes),
+        Counter(_machine_change_key(change) for change in committed_changes.changes),
+    )
+    commits_match = _report_difference(
+        "Upstream commit index",
+        _UPSTREAM_COMMITS_PATH,
+        Counter(_upstream_commit_key(commit) for commit in commits.commits),
+        Counter(_upstream_commit_key(commit) for commit in committed_commits.commits),
+    )
+    return 0 if changes_match and commits_match else 1
 
 
 @_error_boundary

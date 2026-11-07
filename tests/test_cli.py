@@ -23,6 +23,8 @@ from maa_llm_wiki.models import (
     MachineChangeKind,
     PrereleaseRecord,
     ReleaseRecord,
+    UpstreamCommit,
+    UpstreamCommitCatalog,
 )
 
 COMMIT_A = "a" * 40
@@ -306,28 +308,59 @@ def _machine_catalog() -> MachineChangeCatalog:
     )
 
 
-def _write_machine_changes(root: Path, catalog: MachineChangeCatalog) -> Path:
-    path = root / "sources" / "maa-framework" / "machine-changes.yaml"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        yaml.safe_dump(catalog.model_dump(mode="json"), allow_unicode=True, sort_keys=False),
-        encoding="utf-8",
+def _commit_catalog(subject: str = "feat: add a thing (#12)") -> UpstreamCommitCatalog:
+    return UpstreamCommitCatalog(
+        source_id="maafw",
+        commits=[
+            UpstreamCommit(
+                version="5.16.0",
+                commit=COMMIT_B,
+                subject=subject,
+                pull_request=12,
+                path_count=1,
+                paths=["include/MaaFramework/MaaDef.h"],
+            )
+        ],
     )
-    return path
+
+
+def _write_committed(
+    root: Path, changes: MachineChangeCatalog, commits: UpstreamCommitCatalog
+) -> None:
+    directory = root / "sources" / "maa-framework"
+    directory.mkdir(parents=True, exist_ok=True)
+    for name, catalog in (
+        ("machine-changes.yaml", changes),
+        ("upstream-commits.yaml", commits),
+    ):
+        (directory / name).write_text(
+            yaml.safe_dump(
+                catalog.model_dump(mode="json", exclude_none=True),
+                allow_unicode=True,
+                sort_keys=False,
+            ),
+            encoding="utf-8",
+        )
 
 
 def _run_extract(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
     root: Path,
-    catalog: MachineChangeCatalog,
+    changes: MachineChangeCatalog,
     *extra: str,
+    commits: UpstreamCommitCatalog | None = None,
 ) -> tuple[int, str, str]:
-    def fake_build(*, root: Path, repository: Path) -> MachineChangeCatalog:
+    def fake_changes(*, root: Path, repository: Path) -> MachineChangeCatalog:
         _ = root, repository
-        return catalog
+        return changes
 
-    monkeypatch.setattr("maa_llm_wiki.cli._build_machine_changes", fake_build)
+    def fake_commits(*, root: Path, repository: Path) -> UpstreamCommitCatalog:
+        _ = root, repository
+        return commits if commits is not None else _commit_catalog()
+
+    monkeypatch.setattr("maa_llm_wiki.cli._build_machine_changes", fake_changes)
+    monkeypatch.setattr("maa_llm_wiki.cli._build_upstream_commits", fake_commits)
     monkeypatch.setattr(
         sys,
         "argv",
@@ -338,17 +371,18 @@ def _run_extract(
     return code, captured.out, captured.err
 
 
-def test_extract_changes_check_matches_committed_catalog(
+def test_extract_changes_check_matches_committed_catalogs(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     catalog = _machine_catalog()
-    _write_machine_changes(tmp_path, catalog)
+    _write_committed(tmp_path, catalog, _commit_catalog())
 
     code, out, err = _run_extract(monkeypatch, capsys, tmp_path, catalog, "--check")
 
     assert code == 0
     assert err == ""
-    assert "matches sources/maa-framework/machine-changes.yaml (3 change(s))" in out
+    assert "matches sources/maa-framework/machine-changes.yaml (3 record(s))" in out
+    assert "matches sources/maa-framework/upstream-commits.yaml (1 record(s))" in out
 
 
 def test_extract_changes_check_is_order_insensitive(
@@ -356,13 +390,13 @@ def test_extract_changes_check_is_order_insensitive(
 ) -> None:
     catalog = _machine_catalog()
     reordered = MachineChangeCatalog(source_id="maafw", changes=list(reversed(catalog.changes)))
-    _write_machine_changes(tmp_path, reordered)
+    _write_committed(tmp_path, reordered, _commit_catalog())
 
     code, out, err = _run_extract(monkeypatch, capsys, tmp_path, catalog, "--check")
 
     assert code == 0
     assert err == ""
-    assert "matches" in out
+    assert "Machine change catalog matches" in out
 
 
 def test_extract_changes_check_reports_per_version_and_kind_counts(
@@ -375,7 +409,7 @@ def test_extract_changes_check_reports_per_version_and_kind_counts(
             _machine_change("5.16.0", MachineChangeKind.PUBLIC_FUNCTION, "MaaDoThing"),
         ],
     )
-    _write_machine_changes(tmp_path, committed)
+    _write_committed(tmp_path, committed, _commit_catalog())
     fresh = MachineChangeCatalog(
         source_id="maafw",
         changes=[
@@ -392,6 +426,22 @@ def test_extract_changes_check_reports_per_version_and_kind_counts(
     assert "  5.17.0 schema-property: 1" in out
     assert "  5.16.0 public-function: 1" in out
     assert "5.15.0 enum-value: 1" in out
+    assert "Upstream commit index matches" in out
+
+
+def test_extract_changes_check_reports_a_stale_commit_index(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    catalog = _machine_catalog()
+    _write_committed(tmp_path, catalog, _commit_catalog("fix: old subject (#12)"))
+
+    code, out, err = _run_extract(monkeypatch, capsys, tmp_path, catalog, "--check")
+
+    assert code == 1
+    assert err == ""
+    assert "Machine change catalog matches" in out
+    assert "differs from sources/maa-framework/upstream-commits.yaml: 1 new, 1 missing" in out
+    assert "5.16.0 commit: 1" in out
 
 
 def test_extract_changes_check_requires_committed_catalog(
@@ -421,20 +471,26 @@ def test_extract_changes_check_rejects_broken_yaml(
     assert "not valid YAML" in err
 
 
-def test_extract_changes_writes_committed_catalog(
+def test_extract_changes_writes_committed_catalogs(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     catalog = _machine_catalog()
 
     code, out, err = _run_extract(monkeypatch, capsys, tmp_path, catalog)
 
-    path = tmp_path / "sources" / "maa-framework" / "machine-changes.yaml"
+    directory = tmp_path / "sources" / "maa-framework"
     assert code == 0
     assert err == ""
-    assert path.is_file()
     assert f"Wrote sources/maa-framework/machine-changes.yaml with {len(catalog.changes)}" in out
-    written = MachineChangeCatalog.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
+    assert "Wrote sources/maa-framework/upstream-commits.yaml with 1" in out
+    written = MachineChangeCatalog.model_validate(
+        yaml.safe_load((directory / "machine-changes.yaml").read_text(encoding="utf-8"))
+    )
     assert written == catalog
+    commits = UpstreamCommitCatalog.model_validate(
+        yaml.safe_load((directory / "upstream-commits.yaml").read_text(encoding="utf-8"))
+    )
+    assert commits == _commit_catalog()
 
 
 def _run_release_notes(

@@ -20,6 +20,11 @@ KIND_VALUES = [
     "enum-value",
     "public-function",
     "callback-message",
+    "constant",
+    "struct-field",
+    "type-definition",
+    "schema-definition",
+    "schema-branch",
     "schema-property",
     "schema-enum",
     "schema-default",
@@ -59,7 +64,8 @@ def test_machine_change_catalog_round_trips() -> None:
         ],
     )
 
-    dumped = catalog.model_dump(mode="json")
+    # The sync writes the catalog without empty optional fields.
+    dumped = catalog.model_dump(mode="json", exclude_none=True)
 
     assert MachineChangeCatalog.model_validate(dumped) == catalog
     assert dumped["changes"][0] == {
@@ -71,6 +77,17 @@ def test_machine_change_catalog_round_trips() -> None:
         "quote": "#define MaaThing_X 1",
         "paths": ["include/MaaFramework/MaaDef.h"],
     }
+
+
+def test_modified_records_keep_the_previous_text() -> None:
+    change = _change(change="modified", quote="MaaBool f(int)", previous_quote="MaaBool f()")
+
+    assert change.previous_quote == "MaaBool f()"
+    assert _change().previous_quote is None
+    with pytest.raises(ValidationError):
+        _change(previous_quote="")
+    with pytest.raises(ValidationError):
+        _change(previous_quote="x" * 301)
 
 
 def test_machine_change_catalog_allows_an_empty_change_list() -> None:
@@ -101,7 +118,7 @@ def test_machine_change_quote_and_symbol_lengths_are_enforced() -> None:
 
 
 def test_machine_change_change_is_a_fixed_literal() -> None:
-    for value in ("added", "removed", "modified"):
+    for value in ("added", "removed", "modified", "deprecated"):
         assert _change(change=value).change == value
     with pytest.raises(ValidationError):
         _change(change="renamed")

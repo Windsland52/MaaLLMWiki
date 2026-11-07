@@ -9,8 +9,8 @@ from maa_llm_wiki.inventory import parse_stable_tag
 from maa_llm_wiki.models import CatalogBundleManifest
 from maa_llm_wiki.validation import (
     load_binding_compatibility,
+    load_machine_changes,
     load_release_catalog,
-    load_semantic_changes,
     load_source_inventories,
     load_source_inventory,
     validate_repository,
@@ -23,30 +23,27 @@ def test_repository_content_is_valid() -> None:
     assert validate_repository(ROOT) == []
 
 
-def test_framework_semantic_changes_are_explicit() -> None:
-    changes = load_semantic_changes(ROOT)
-    registered = {release.version for release in load_release_catalog(ROOT).releases}
-    recorded = {change.first_version for change in changes.changes}
+def _recorded(kind: str, symbol: str) -> dict[str, str]:
+    """Release -> change for one element of the committed machine catalog."""
+    return {
+        change.version: change.change
+        for change in load_machine_changes(ROOT).changes
+        if change.kind.value == kind and change.symbol == symbol
+    }
 
-    # Every recorded change must name a registered release, and the versions that carry the
-    # documented behaviour history must not silently disappear from the catalog.
-    assert recorded <= registered
-    assert {
-        "5.5.0",
-        "5.8.0",
-        "5.9.0",
-        "5.10.0",
-        "5.10.2",
-        "5.10.3",
-        "5.11.0",
-        "5.11.1",
-        "5.11.2",
-        "5.12.1",
-        "5.12.3",
-        "5.13.0",
-        "5.14.0",
-    } <= recorded
-    assert len(changes.changes) >= 25
+
+def test_machine_catalog_records_known_upstream_changes() -> None:
+    # Facts checked by hand against the MaaFramework tags; each one was missing or misdated in an
+    # earlier extractor.
+    assert _recorded("public-function", "MaaLinuxControllerCreate") == {"5.13.0": "added"}
+    assert _recorded("public-function", "MaaKWinControllerCreate").get("5.13.0") == "deprecated"
+    assert _recorded("constant", "MaaWin32InputMethod_Interception") == {"5.12.1": "added"}
+    assert _recorded("schema-definition", "$defs.Shell").get("5.2.1") == "added"
+    assert _recorded("binding-api", "maa.controller:Controller.post_shell").get("5.2.1") == "added"
+    assert "5.5.0" not in _recorded("binding-api", "maa.context:Context.override_pipeline")
+    kwin_python = _recorded("binding-api", "maa.controller:KWinController.__init__")
+    assert kwin_python.get("5.13.0") == "deprecated"
+    assert _recorded("schema-branch", "$defs.ActionV1.anyOf[#/$defs/ShellV1]") == {"5.2.1": "added"}
 
 
 def test_framework_inventory_covers_official_material() -> None:

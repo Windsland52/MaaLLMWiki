@@ -75,14 +75,14 @@ Select a version before using framework facts or APIs.
 
 [Browse curated topic routes](./topics.md)
 
-## Behaviour changes
-
-[Browse recorded behaviour changes](./behaviour-changes.md)
-
 ## Machine changes
 
-[Browse structured machine changes](./machine-changes.md)
+[Browse declared API changes by release](./machine-changes.md)
 
 ## Machine symbols
 
-[Browse machine changes by symbol](./machine-symbols.md)
+[Browse declared API changes by symbol](./machine-symbols.md)
+
+## Upstream commits
+
+[Browse upstream commits by release](./upstream-commits.md)

@@ -1,7 +1,7 @@
 """Render a substantive release body from the committed catalog and git snapshot tags.
 
 The release body answers four questions: what this snapshot contains, which upstream releases moved,
-which machine-extracted/curated facts are new, and how to verify the bundle. The previous snapshot
+which machine-extracted facts are new, and how to verify the bundle. The previous snapshot
 is read from git objects (``git show <tag>:<path>``) because only the current tree is on disk.
 Everything is deterministic: no timestamps, no ordering leaks from filesystem enumeration.
 """
@@ -20,15 +20,13 @@ from typing import cast
 import yaml
 
 from .bundle import bundle_sha256
-from .gaps import artifact_changed
+from .inventory import artifact_changed
 from .models import (
     MachineChange,
     MachineChangeCatalog,
     MachineChangeKind,
     ReleaseCatalog,
     ReleaseRecord,
-    SemanticChange,
-    SemanticChangeCatalog,
     SourceInventory,
 )
 from .validation import load_repository_catalog
@@ -36,7 +34,6 @@ from .validation import load_repository_catalog
 _REPOSITORY_URL = "https://github.com/Windsland52/MaaLLMWiki"
 _VERSION_PATTERN = re.compile(r"^v\d+\.\d+\.\d+$")
 _MACHINE_RECORD_EXAMPLES = 15
-_CURATED_ENTRIES = 10
 
 
 @dataclass(frozen=True)
@@ -54,7 +51,6 @@ class Snapshot:
     sources: tuple[SnapshotSource, ...]
     machine_changes: tuple[MachineChange, ...]
     machine_source_id: str | None
-    semantic_changes: tuple[SemanticChange, ...]
 
 
 @dataclass(frozen=True)
@@ -63,10 +59,6 @@ class BundleDetails:
     sha256: str
     size_bytes: int
     file_count: int
-
-
-def _version_key(version: str) -> tuple[int, ...]:
-    return tuple(int(part) for part in version.split("."))
 
 
 def _require_version(version: str) -> str:
@@ -118,17 +110,10 @@ def _build_snapshot(root: Path, read: Callable[[str], str | None]) -> Snapshot:
         if machine_text is not None
         else None
     )
-    semantic_text = read("sources/maa-framework/semantic-changes.yaml")
-    semantic = (
-        SemanticChangeCatalog.model_validate(_load_yaml(semantic_text))
-        if semantic_text is not None
-        else None
-    )
     return Snapshot(
         sources=tuple(sources),
         machine_changes=tuple(machine.changes) if machine is not None else (),
         machine_source_id=machine.source_id if machine is not None else None,
-        semantic_changes=tuple(semantic.changes) if semantic is not None else (),
     )
 
 
@@ -298,28 +283,6 @@ def _machine_section(
     lines.extend(examples)
     if len(examples) >= _MACHINE_RECORD_EXAMPLES:
         lines.append(f"Example records capped at {_MACHINE_RECORD_EXAMPLES}.")
-    return lines
-
-
-def _curated_section(
-    current: Snapshot, new_releases: list[tuple[SnapshotSource, ReleaseRecord]]
-) -> list[str]:
-    new_versions = {
-        release.version
-        for source, release in new_releases
-        if source.source_id == current.machine_source_id
-    }
-    entries = [
-        change for change in current.semantic_changes if change.first_version in new_versions
-    ]
-    if not entries:
-        return []
-    entries.sort(key=lambda change: (_version_key(change.first_version), change.topic_id))
-    lines = ["## Curated behaviour changes", ""]
-    for change in entries[:_CURATED_ENTRIES]:
-        lines.append(f"- `{change.topic_id}`: {change.description}")
-    if len(entries) > _CURATED_ENTRIES:
-        lines.append(f"- ({len(entries) - _CURATED_ENTRIES} more entries omitted)")
     return lines
 
 
@@ -524,7 +487,7 @@ def _documentation_section(version: str, previous_tag: str | None) -> list[str]:
         "guide and the licence files are inside it",
         "- Known gaps: §8 of the contract",
         "- Extracted change facts: `generated/maa-framework/machine-changes.md`",
-        "- Curated behaviour history: `generated/maa-framework/behaviour-changes.md`",
+        "- Upstream commits by release: `generated/maa-framework/upstream-commits.md`",
     ]
     if previous_tag is None:
         lines.append(f"- Full changelog: {_REPOSITORY_URL}/commits/{version}")
@@ -575,10 +538,6 @@ def render_release_notes(
     lines.append("")
     lines.extend(_machine_section(current, previous, new_releases))
     lines.append("")
-    curated = _curated_section(current, new_releases)
-    if curated:
-        lines.extend(curated)
-        lines.append("")
     moved = _moved_section(current, previous)
     if moved:
         lines.extend(moved)

@@ -12,7 +12,6 @@ from maa_llm_wiki.models import (
     MachineChange,
     MachineChangeKind,
     ReleaseRecord,
-    SemanticChange,
     SourceArtifact,
     SourceInventory,
 )
@@ -98,16 +97,6 @@ def _change(
     )
 
 
-def _semantic(version: str, revision: str, topic: str, description: str) -> SemanticChange:
-    return SemanticChange(
-        topic_id=topic,
-        first_version=version,
-        revision=revision,
-        description=description,
-        paths=["docs/en_us/1.1-QuickStarted.md"],
-    )
-
-
 def _previous_snapshot(*, machine_present: bool = True) -> Snapshot:
     return Snapshot(
         sources=(
@@ -122,7 +111,6 @@ def _previous_snapshot(*, machine_present: bool = True) -> Snapshot:
         if machine_present
         else (),
         machine_source_id="maafw" if machine_present else None,
-        semantic_changes=(_semantic("5.15.0", COMMIT_A, "framework.old", "Old behaviour."),),
     )
 
 
@@ -146,10 +134,6 @@ def _current_snapshot() -> Snapshot:
             _change("5.15.0", COMMIT_A, MachineChangeKind.ENUM_VALUE, "MaaOld"),
         ),
         machine_source_id="maafw",
-        semantic_changes=(
-            _semantic("5.15.0", COMMIT_A, "framework.old", "Old behaviour."),
-            _semantic("5.16.0", COMMIT_B, "framework.new", "New behaviour."),
-        ),
     )
 
 
@@ -169,7 +153,7 @@ def _render(
     )
 
 
-def test_render_with_new_releases_machine_and_curated_sections() -> None:
+def test_render_with_new_releases_and_machine_section() -> None:
     body = _render(
         bundle=BundleDetails(
             name="maa-llm-wiki-catalog-v0.2.0.zip",
@@ -190,9 +174,8 @@ def test_render_with_new_releases_machine_and_curated_sections() -> None:
     assert "  - enum-value added `MaaNew` — `include/MaaFramework/MaaDef.h`" in body
     assert "  - schema-property added `task.mode` — `include/MaaFramework/MaaDef.h`" in body
     assert "MaaOld" not in body  # only records for the new release are listed
-    assert "## Curated behaviour changes" in body
-    assert "- `framework.new`: New behaviour." in body
-    assert "framework.old" not in body
+    assert "Curated" not in body
+    assert "`generated/maa-framework/upstream-commits.md`" in body
     assert "## Indexed material moved" in body
     assert "| MaaFramework | 2 | 0 | 0 |" in body  # b.md + include/x.h added, a.md unchanged
     assert "## Verification" in body
@@ -219,7 +202,6 @@ def test_render_packaging_snapshot_without_new_releases() -> None:
         ),
         machine_changes=(),
         machine_source_id=None,
-        semantic_changes=(),
     )
     body = render_release_notes(
         version="v0.2.0",
@@ -232,7 +214,6 @@ def test_render_packaging_snapshot_without_new_releases() -> None:
     assert "No new upstream releases; this snapshot records packaging or metadata changes." in body
     assert "The machine-extracted change catalog first appears in this snapshot;" in body
     assert "lists 3 records (0 unclassified)" in body
-    assert "## Curated behaviour changes" not in body
 
 
 def test_render_no_new_machine_records_points_at_unclassified() -> None:
@@ -244,7 +225,6 @@ def test_render_no_new_machine_records_points_at_unclassified() -> None:
             _change("5.15.0", COMMIT_A, MachineChangeKind.UNCLASSIFIED, "unclassified"),
         ),
         machine_source_id="maafw",
-        semantic_changes=(),
     )
     body = render_release_notes(
         version="v0.2.0",
@@ -256,7 +236,6 @@ def test_render_no_new_machine_records_points_at_unclassified() -> None:
 
     assert "No machine-extracted records for the new releases;" in body
     assert "lists 1 records (1 unclassified)" in body
-    assert "## Curated behaviour changes" not in body
 
 
 def test_render_initial_snapshot() -> None:
@@ -271,7 +250,6 @@ def test_render_initial_snapshot() -> None:
     assert "Initial catalog snapshot." in body
     assert "## New upstream releases since" not in body
     assert "## Machine-extracted changes" not in body
-    assert "## Curated behaviour changes" not in body
     assert "## Indexed material moved" not in body
     assert "## Upstream snapshot" in body
     assert "## Verification" in body
@@ -279,7 +257,7 @@ def test_render_initial_snapshot() -> None:
     assert "https://github.com/Windsland52/MaaLLMWiki/commits/v0.1.0" in body
 
 
-def test_render_caps_machine_examples_and_curated_entries() -> None:
+def test_render_caps_machine_examples() -> None:
     kinds = list(MachineChangeKind)
     releases = [
         _release("5.15.0", COMMIT_A),
@@ -301,15 +279,10 @@ def test_render_caps_machine_examples_and_curated_entries() -> None:
         )
         for index in range(2 * len(kinds))
     )
-    semantic = tuple(
-        _semantic("5.16.0", COMMIT_B, f"framework.topic{index:02d}", f"Change {index}.")
-        for index in range(12)
-    )
     current = Snapshot(
         sources=(source,),
         machine_changes=records,
         machine_source_id="maafw",
-        semantic_changes=semantic,
     )
 
     body = render_release_notes(
@@ -320,13 +293,10 @@ def test_render_caps_machine_examples_and_curated_entries() -> None:
         wiki_revision=WIKI_REVISION,
     )
 
-    assert body.count("— 10 records:") == 2
+    assert body.count(f"— {len(kinds)} records:") == 2
     example_lines = [line for line in body.splitlines() if line.startswith("  - ")]
     assert len(example_lines) == 15
     assert "Example records capped at 15." in body
-    curated = [line for line in body.splitlines() if line.startswith("- `framework.topic")]
-    assert len(curated) == 10
-    assert "(2 more entries omitted)" in body
 
 
 def test_render_is_deterministic() -> None:
@@ -412,23 +382,6 @@ def _write_snapshot_state(
     if not extra_release:
         machine_lines = ["source_id: maafw", "changes: []"]
     (sources / "machine-changes.yaml").write_text("\n".join(machine_lines) + "\n", encoding="utf-8")
-    semantic_lines = ["source_id: maafw", "changes:"]
-    if extra_release:
-        semantic_lines.extend(
-            [
-                "  - topic_id: framework.new",
-                f"    first_version: {version}",
-                f"    revision: {commit_hint}",
-                "    description: New behaviour.",
-                "    paths:",
-                "    - docs/a.md",
-            ]
-        )
-    if not extra_release:
-        semantic_lines = ["source_id: maafw", "changes: []"]
-    (sources / "semantic-changes.yaml").write_text(
-        "\n".join(semantic_lines) + "\n", encoding="utf-8"
-    )
 
 
 @pytest.fixture()
@@ -495,7 +448,6 @@ def test_build_release_notes_against_the_temp_git_repo(catalog_git_repo: Path) -
     assert "## New upstream releases since v0.1.0" in body
     assert f"- MaaFramework 5.16.0 `{COMMIT_B[:12]}` (2026-01-02)" in body
     assert "- `MaaFramework 5.16.0` — 1 records: enum-value 1" in body
-    assert "- `framework.new`: New behaviour." in body
     assert "| MaaFramework | 0 | 0 | 0 |" in body
 
 
@@ -588,7 +540,6 @@ def test_render_binding_only_release_and_a_new_source() -> None:
         ),
         machine_changes=(),
         machine_source_id="maafw",
-        semantic_changes=(),
     )
     current = Snapshot(
         sources=(
@@ -608,7 +559,6 @@ def test_render_binding_only_release_and_a_new_source() -> None:
         ),
         machine_changes=(),
         machine_source_id="maafw",
-        semantic_changes=(),
     )
 
     notes = render_release_notes(

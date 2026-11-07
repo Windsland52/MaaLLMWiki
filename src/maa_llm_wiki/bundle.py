@@ -38,10 +38,14 @@ _HAND_AUTHORED_SOURCES = frozenset(
         "sources/repositories.yaml",
         "sources/compatibility/bindings.yaml",
         "sources/maa-framework/source-map.yaml",
-        "sources/maa-framework/semantic-changes.yaml",
     }
 )
-_SYNCED_SOURCE_FILES = frozenset({"sources/maa-framework/machine-changes.yaml"})
+_SYNCED_SOURCE_FILES = frozenset(
+    {
+        "sources/maa-framework/machine-changes.yaml",
+        "sources/maa-framework/upstream-commits.yaml",
+    }
+)
 
 
 def _git(root: Path, *arguments: str) -> str:
@@ -69,7 +73,7 @@ def _is_published_path(relative: str, source_directories: set[str]) -> bool:
 
     ``generated/`` holds only rendered Markdown, ``schemas/`` only the committed schema files, and
     ``sources/`` only the registered per-source catalogs plus the hand-authored files and the
-    sync-generated machine-change catalog.
+    sync-generated machine-change and upstream-commit catalogs.
     """
     parts = PurePosixPath(relative).parts
     if not parts:

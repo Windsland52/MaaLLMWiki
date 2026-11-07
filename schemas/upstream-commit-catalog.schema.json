@@ -1,0 +1,79 @@
+{
+  "$defs": {
+    "UpstreamCommit": {
+      "additionalProperties": false,
+      "description": "One upstream commit, filed under the first registered release that contains it.",
+      "properties": {
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Commit",
+          "type": "string"
+        },
+        "subject": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Subject",
+          "type": "string"
+        },
+        "pull_request": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pull Request"
+        },
+        "path_count": {
+          "minimum": 0,
+          "title": "Path Count",
+          "type": "integer"
+        },
+        "paths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Paths",
+          "type": "array"
+        }
+      },
+      "required": [
+        "version",
+        "commit",
+        "subject",
+        "path_count"
+      ],
+      "title": "UpstreamCommit",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_id": {
+      "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "commits": {
+      "items": {
+        "$ref": "#/$defs/UpstreamCommit"
+      },
+      "title": "Commits",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source_id"
+  ],
+  "title": "UpstreamCommitCatalog",
+  "type": "object"
+}
