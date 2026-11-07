@@ -288,6 +288,22 @@ def _machine_section(
 
 _CATALOG_ROOTS = ("generated", "sources", "schemas")
 _CATALOG_FILE_CAP = 20
+# The release directory in `generated/<source>/<version>/...`; one rendering change touches the same
+# page in every release, so the list names the page once with the number of releases.
+_RELEASE_DIRECTORY = re.compile(r"^(generated/[^/]+/)\d+\.\d+\.\d+[^/]*(/.+)$")
+
+
+def _grouped(paths: list[str]) -> list[str]:
+    """List entries for ``paths``: per-release copies of one page collapse into one entry."""
+    groups: dict[str, int] = {}
+    for path in paths:
+        match = _RELEASE_DIRECTORY.match(path)
+        key = f"{match[1]}<version>{match[2]}" if match else path
+        groups[key] = groups.get(key, 0) + 1
+    return [
+        f"`{key}` ({count} releases)" if count > 1 else f"`{key}`"
+        for key, count in sorted(groups.items())
+    ]
 
 
 def _git_text(root: Path, *arguments: str) -> str:
@@ -320,8 +336,16 @@ def _catalog_files_section(root: Path, previous_tag: str | None) -> list[str]:
             f"Initial snapshot: {len(tracked)} catalog files published for the first time.",
         ]
 
+    # A renamed file is a removed path plus an added path for consumers that read paths, so
+    # rename detection is off: with it, a rename would be listed as "changed" under its new path.
     output = _git_text(
-        root, "diff", "--name-status", f"{previous_tag}..HEAD", "--", *_CATALOG_ROOTS
+        root,
+        "diff",
+        "--name-status",
+        "--no-renames",
+        f"{previous_tag}..HEAD",
+        "--",
+        *_CATALOG_ROOTS,
     )
     added: list[str] = []
     removed: list[str] = []
@@ -339,7 +363,8 @@ def _catalog_files_section(root: Path, previous_tag: str | None) -> list[str]:
     if not (added or removed or changed):
         return [heading, "", "No catalog files changed since the previous snapshot."]
 
-    counts = {"added": added, "removed": removed, "changed": changed}
+    # Removals first: a removed path is what breaks a consumer that hard-coded it.
+    counts = {"removed": removed, "added": added, "changed": changed}
     summary = (
         f"{len(added)} added, {len(removed)} removed, {len(changed)} changed "
         f"since `{previous_tag}`."
@@ -360,18 +385,12 @@ def _catalog_files_section(root: Path, previous_tag: str | None) -> list[str]:
             f"{sum(1 for x in changed if x.startswith(prefix))} |"
         )
     lines.append("")
-    listed = 0
-    for label, paths in counts.items():
-        for path in sorted(paths):
-            if listed >= _CATALOG_FILE_CAP:
-                break
-            lines.append(f"- {label}: `{path}`")
-            listed += 1
-        if listed >= _CATALOG_FILE_CAP:
-            break
-    remaining = len(added) + len(removed) + len(changed) - listed
-    if remaining > 0:
-        lines.append(f"- ... and {remaining} more files")
+    entries = [
+        f"- {label}: {entry}" for label, paths in counts.items() for entry in _grouped(paths)
+    ]
+    lines.extend(entries[:_CATALOG_FILE_CAP])
+    if len(entries) > _CATALOG_FILE_CAP:
+        lines.append(f"- ... and {len(entries) - _CATALOG_FILE_CAP} more entries")
     return lines
 
 

@@ -498,6 +498,48 @@ def test_catalog_files_section_quantifies_the_catalog_itself(catalog_git_repo: P
     assert notes.index("## Indexed material moved") < notes.index("## Catalog files changed")
 
 
+def test_catalog_files_section_reports_renames_and_groups_release_pages(
+    catalog_git_repo: Path,
+) -> None:
+    generated = catalog_git_repo / "generated" / "maa-framework"
+    for version in ("5.0.0", "5.1.0"):
+        (generated / version / "native-api").mkdir(parents=True, exist_ok=True)
+        (generated / version / "native-api" / "agents.md").write_text(
+            f"# Agent API {version}\n\nUnchanged body.\n", encoding="utf-8"
+        )
+    _git(catalog_git_repo, "add", "-A")
+    _git(catalog_git_repo, "commit", "-q", "-m", "per-release pages")
+    _git(catalog_git_repo, "tag", "v0.2.1")
+    for version in ("5.0.0", "5.1.0"):
+        _git(
+            catalog_git_repo,
+            "mv",
+            f"generated/maa-framework/{version}/native-api/agents.md",
+            f"generated/maa-framework/{version}/native-api/agent-client-server.md",
+        )
+    _git(catalog_git_repo, "commit", "-q", "-m", "rename the page")
+
+    notes = render_release_notes(
+        version="v0.3.0",
+        previous_tag="v0.2.1",
+        current=load_current_snapshot(catalog_git_repo),
+        previous=load_previous_snapshot(catalog_git_repo, "v0.2.1"),
+        wiki_revision=COMMIT_B,
+        root=catalog_git_repo,
+    )
+
+    # A rename is a removed path and an added path, never a "changed" file under its new name.
+    assert "2 added, 2 removed, 0 changed since `v0.2.1`." in notes
+    removed = "- removed: `generated/maa-framework/<version>/native-api/agents.md` (2 releases)"
+    added = (
+        "- added: `generated/maa-framework/<version>/native-api/agent-client-server.md` "
+        "(2 releases)"
+    )
+    assert removed in notes
+    assert added in notes
+    assert notes.index(removed) < notes.index(added)
+
+
 def test_catalog_files_section_reports_no_change(catalog_git_repo: Path) -> None:
     current = load_current_snapshot(catalog_git_repo)
     previous = load_previous_snapshot(catalog_git_repo, "v0.2.0")
