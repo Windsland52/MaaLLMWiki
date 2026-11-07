@@ -204,7 +204,17 @@ class BindingCompatibilityCatalog(StrictModel):
         return self
 
 
-class CatalogBundleFile(StrictModel):
+class ConsumerModel(BaseModel):
+    """A record that consumers read from a published bundle.
+
+    The v1 contract lets the manifest gain optional fields, and consumers must ignore fields they
+    do not know, so these models (and the JSON schema generated from them) accept unknown fields.
+    """
+
+    model_config = ConfigDict(extra="ignore")
+
+
+class CatalogBundleFile(ConsumerModel):
     path: str
     size_bytes: int = Field(ge=0)
     sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -215,13 +225,13 @@ class CatalogBundleFile(StrictModel):
         return _normalize_relative_path(value)
 
 
-class CatalogBundleSource(StrictModel):
+class CatalogBundleSource(ConsumerModel):
     source_id: str = Field(pattern=ID_PATTERN)
     version: str = Field(min_length=1)
     revision: str = Field(pattern=COMMIT_PATTERN)
 
 
-class CatalogBundleManifest(StrictModel):
+class CatalogBundleManifest(ConsumerModel):
     api_version: Literal["maa-llm-wiki-catalog/v1"] = "maa-llm-wiki-catalog/v1"
     catalog_version: str | None = Field(default=None, pattern=r"^v\d+\.\d+\.\d+$")
     wiki_revision: str = Field(pattern=COMMIT_PATTERN)

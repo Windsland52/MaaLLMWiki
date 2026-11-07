@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import sys
 from pathlib import Path
+from typing import Any, cast
 from zipfile import ZipFile
 
 import pytest
@@ -13,7 +15,6 @@ from maa_llm_wiki.bundle import (
     bundle_paths,
     bundle_sha256,
     bundle_sources,
-    verify_catalog_bundle,
 )
 from maa_llm_wiki.cli import (
     build_bundle_main,
@@ -28,6 +29,7 @@ from maa_llm_wiki.models import (
     PrereleaseRecord,
     ReleaseRecord,
 )
+from maa_llm_wiki.verify_bundle import verify_bundle
 
 ROOT = Path(__file__).parents[1]
 COMMIT = "a" * 40
@@ -90,18 +92,31 @@ def _rewrite(
             rewritten.writestr(name, content)
 
 
+def _problems(
+    bundle: Path, *, expect_revision: str | None = None, expect_version: str | None = None
+) -> list[str]:
+    problems, _ = verify_bundle(
+        bundle=bundle, expect_revision=expect_revision, expect_version=expect_version
+    )
+    return problems
+
+
+def _mentions(problems: list[str], text: str) -> bool:
+    return any(text in problem for problem in problems)
+
+
 def test_verify_bundle_accepts_intact_bundle(tmp_path: Path) -> None:
     manifest = _write_bundle(tmp_path / "catalog.zip", catalog_version="v1.2.3")
 
-    verified = verify_catalog_bundle(
+    problems, summary = verify_bundle(
         bundle=tmp_path / "catalog.zip",
         expect_revision=REVISION,
         expect_version="v1.2.3",
     )
 
-    assert verified == manifest
-    assert verified.catalog_version == "v1.2.3"
-    assert len(verified.files) == len(_FILES)
+    assert problems == []
+    assert summary.startswith(f"Verified catalog bundle: v1.2.3 {REVISION} ")
+    assert f"({len(manifest.files)} files)" in summary
 
 
 def test_verify_bundle_rejects_missing_file(tmp_path: Path) -> None:
@@ -112,15 +127,13 @@ def test_verify_bundle_rejects_missing_file(tmp_path: Path) -> None:
         drop=("sources/maa-framework/inventory.yaml",),
     )
 
-    with pytest.raises(ValueError, match="missing from the bundle"):
-        verify_catalog_bundle(bundle=tmp_path / "broken.zip")
+    assert _mentions(_problems(tmp_path / "broken.zip"), "missing from the bundle")
 
 
 def test_verify_bundle_rejects_size_mismatch(tmp_path: Path) -> None:
     _write_bundle(tmp_path / "catalog.zip", sizes={"sources/maa-framework/inventory.yaml": 3})
 
-    with pytest.raises(ValueError, match="size mismatch"):
-        verify_catalog_bundle(bundle=tmp_path / "catalog.zip")
+    assert _mentions(_problems(tmp_path / "catalog.zip"), "size mismatch")
 
 
 def test_verify_bundle_rejects_sha_mismatch(tmp_path: Path) -> None:
@@ -132,8 +145,7 @@ def test_verify_bundle_rejects_sha_mismatch(tmp_path: Path) -> None:
         replace={"sources/maa-framework/inventory.yaml": b"x" * len(original)},
     )
 
-    with pytest.raises(ValueError, match="sha256 mismatch"):
-        verify_catalog_bundle(bundle=tmp_path / "broken.zip")
+    assert _mentions(_problems(tmp_path / "broken.zip"), "sha256 mismatch")
 
 
 def test_verify_bundle_rejects_extra_zip_entry(tmp_path: Path) -> None:
@@ -144,24 +156,66 @@ def test_verify_bundle_rejects_extra_zip_entry(tmp_path: Path) -> None:
         extra={"sources/evil.yaml": b"evil: true\n"},
     )
 
-    with pytest.raises(ValueError, match="not listed in the manifest"):
-        verify_catalog_bundle(bundle=tmp_path / "broken.zip")
+    assert _mentions(_problems(tmp_path / "broken.zip"), "not listed in the manifest")
 
 
 def test_verify_bundle_rejects_wrong_expectations(tmp_path: Path) -> None:
     _write_bundle(tmp_path / "catalog.zip", catalog_version="v1.2.3")
+    bundle = tmp_path / "catalog.zip"
 
-    with pytest.raises(ValueError, match="wiki revision mismatch"):
-        verify_catalog_bundle(bundle=tmp_path / "catalog.zip", expect_revision="0" * 40)
-    with pytest.raises(ValueError, match="catalog version mismatch"):
-        verify_catalog_bundle(bundle=tmp_path / "catalog.zip", expect_version="v9.9.9")
+    assert _mentions(_problems(bundle, expect_revision="0" * 40), "wiki revision mismatch")
+    assert _mentions(_problems(bundle, expect_version="v9.9.9"), "catalog version mismatch")
 
 
-def test_verify_bundle_rejects_missing_catalog_version(tmp_path: Path) -> None:
+def test_verify_bundle_rejects_missing_catalog_version_when_expected(tmp_path: Path) -> None:
     _write_bundle(tmp_path / "catalog.zip")
 
-    with pytest.raises(ValueError, match="no catalog_version"):
-        verify_catalog_bundle(bundle=tmp_path / "catalog.zip", expect_version="v1.2.3")
+    assert _mentions(
+        _problems(tmp_path / "catalog.zip", expect_version="v1.2.3"), "no catalog_version"
+    )
+
+
+def _rewrite_manifest(source: Path, target: Path, payload: dict[str, Any]) -> Path:
+    _rewrite(source, target, replace={"catalog-manifest.json": json.dumps(payload).encode()})
+    return target
+
+
+def _manifest_payload(bundle: Path) -> dict[str, Any]:
+    with ZipFile(bundle) as archive:
+        return cast(dict[str, Any], json.loads(archive.read("catalog-manifest.json")))
+
+
+def test_verify_bundle_accepts_early_and_extended_manifests(tmp_path: Path) -> None:
+    # Early bundles (v0.1.0, v0.1.1) have no catalog_version; later v1 bundles may add fields.
+    _write_bundle(tmp_path / "catalog.zip")
+    payload = _manifest_payload(tmp_path / "catalog.zip")
+    payload.pop("catalog_version", None)
+    payload["future_field"] = {"nested": True}
+    for record in cast(list[dict[str, Any]], payload["sources"]):
+        record["future_source_field"] = 1
+    for record in cast(list[dict[str, Any]], payload["files"]):
+        record["future_file_field"] = "x"
+    bundle = _rewrite_manifest(tmp_path / "catalog.zip", tmp_path / "extended.zip", payload)
+
+    problems, summary = verify_bundle(bundle=bundle, expect_revision=REVISION)
+
+    assert problems == []
+    assert summary.startswith(f"Verified catalog bundle: unversioned {REVISION} ")
+
+
+def test_verify_bundle_rejects_a_missing_required_field(tmp_path: Path) -> None:
+    _write_bundle(tmp_path / "catalog.zip", catalog_version="v1.2.3")
+    for field, message in (
+        ("working_tree_clean", "working_tree_clean is not a boolean"),
+        ("wiki_revision", "wiki_revision is not 40 lowercase hex characters"),
+        ("api_version", "api_version is not"),
+        ("sources", "sources is not a non-empty array"),
+    ):
+        payload = _manifest_payload(tmp_path / "catalog.zip")
+        del payload[field]
+        bundle = _rewrite_manifest(tmp_path / "catalog.zip", tmp_path / f"no-{field}.zip", payload)
+
+        assert _mentions(_problems(bundle), message), field
 
 
 def test_verify_bundle_aggregates_all_problems(tmp_path: Path) -> None:
@@ -173,19 +227,13 @@ def test_verify_bundle_aggregates_all_problems(tmp_path: Path) -> None:
         extra={"sources/evil.yaml": b"evil: true\n"},
     )
 
-    with pytest.raises(ValueError) as raised:
-        verify_catalog_bundle(
-            bundle=tmp_path / "broken.zip",
-            expect_revision="0" * 40,
-            expect_version="v9.9.9",
-        )
+    problems = _problems(tmp_path / "broken.zip", expect_revision="0" * 40, expect_version="v9.9.9")
 
-    problems = str(raised.value).split("; ")
     assert len(problems) == 4
-    assert any("not listed in the manifest" in problem for problem in problems)
-    assert any("missing from the bundle" in problem for problem in problems)
-    assert any("wiki revision mismatch" in problem for problem in problems)
-    assert any("catalog version mismatch" in problem for problem in problems)
+    assert _mentions(problems, "not listed in the manifest")
+    assert _mentions(problems, "missing from the bundle")
+    assert _mentions(problems, "wiki revision mismatch")
+    assert _mentions(problems, "catalog version mismatch")
 
 
 def test_verify_bundle_rejects_invalid_manifest(tmp_path: Path) -> None:
@@ -193,8 +241,7 @@ def test_verify_bundle_rejects_invalid_manifest(tmp_path: Path) -> None:
     with ZipFile(path, "w") as archive:
         archive.writestr("catalog-manifest.json", "{not json")
 
-    with pytest.raises(ValueError, match="catalog-manifest.json is invalid"):
-        verify_catalog_bundle(bundle=path)
+    assert _mentions(_problems(path), "catalog-manifest.json is invalid")
 
 
 def test_verify_bundle_rejects_bundle_without_manifest(tmp_path: Path) -> None:
@@ -202,8 +249,7 @@ def test_verify_bundle_rejects_bundle_without_manifest(tmp_path: Path) -> None:
     with ZipFile(path, "w") as archive:
         archive.writestr("generated/index.md", b"# index\n")
 
-    with pytest.raises(ValueError, match="catalog-manifest.json is missing"):
-        verify_catalog_bundle(bundle=path)
+    assert _mentions(_problems(path), "catalog-manifest.json is missing")
 
 
 def test_build_catalog_bundle_records_catalog_version(tmp_path: Path) -> None:
@@ -219,7 +265,7 @@ def test_build_catalog_bundle_records_catalog_version(tmp_path: Path) -> None:
     with ZipFile(output) as archive:
         bundled = CatalogBundleManifest.model_validate_json(archive.read("catalog-manifest.json"))
     assert bundled.catalog_version == "v1.2.3"
-    assert verify_catalog_bundle(bundle=output, expect_version="v1.2.3") == manifest
+    assert _problems(output, expect_version="v1.2.3") == []
 
 
 def test_build_catalog_bundle_rejects_malformed_version(tmp_path: Path) -> None:
@@ -254,6 +300,23 @@ def test_cli_verify_bundle_prints_summary(
         f"Verified catalog bundle: v1.2.3 {REVISION} (2 files) sha256={expected_digest}"
     )
     assert captured.err == ""
+
+
+def test_cli_verify_bundle_checks_checksums(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    bundle = tmp_path / "catalog.zip"
+    _write_bundle(bundle, catalog_version="v1.2.3")
+    checksums = tmp_path / "SHA256SUMS"
+    checksums.write_text(f"{'0' * 64}  catalog.zip\n", encoding="utf-8")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["maa-wiki-verify-bundle", "--bundle", str(bundle), "--checksums", str(checksums)],
+    )
+
+    assert verify_bundle_main() == 1
+    assert "no SHA256SUMS entry matches catalog.zip" in capsys.readouterr().err
 
 
 def test_cli_verify_bundle_reports_error_without_traceback(
@@ -589,9 +652,8 @@ def test_corrupt_member_is_reported_without_a_traceback(
     build_catalog_bundle(root=ROOT, output=output, allow_dirty=True, version="v0.0.5")
     _corrupt_member(output, "catalog-manifest.json")
 
-    # The package verifier reports the problem as a ValueError instead of letting BadZipFile escape.
-    with pytest.raises(ValueError):
-        verify_catalog_bundle(bundle=output)
+    # A corrupt member is a verification problem, never an escaping BadZipFile.
+    assert _problems(output)
 
     monkeypatch.setattr(sys, "argv", ["maa-wiki-verify-bundle", "--bundle", str(output)])
     assert verify_bundle_main() == 1

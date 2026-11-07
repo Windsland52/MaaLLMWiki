@@ -22,7 +22,7 @@ generated/maa-framework/index.md
        -> documentation/index.md -> {en-us,zh-cn,tools}.md
        -> documentation/diagrams.md        # since 5.10.3
        -> bindings/index.md -> {python,nodejs,readmes}.md
-       -> native-api/index.md -> {framework,toolkit,agents}.md
+       -> native-api/index.md -> {framework,toolkit,agent-client-server}.md
        -> native-api/control-units.md      # since 5.10.0
        -> schemas.md
 ```

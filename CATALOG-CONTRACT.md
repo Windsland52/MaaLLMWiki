@@ -4,7 +4,9 @@
 `maa-llm-wiki-catalog-vX.Y.Z.zip` 发布产物；产物内的 `catalog-manifest.json` 锁定 Wiki 提交
 （`wiki_revision`）、目录版本（`catalog_version`）、四个上游来源（MaaFramework 与 Go/Rust/C# 三个绑定）的 40 位提交 SHA，以及每个打包
 文件的体积与 SHA-256。manifest 的格式版本是 `api_version: "maa-llm-wiki-catalog/v1"`：v1 内只允许
-向后兼容的新增字段，消费者必须忽略未知字段；删除/重命名字段或改变语义需要升到 v2。消费方应下载
+向后兼容的新增字段，消费者必须忽略未知字段；删除/重命名字段或改变语义需要升到 v2。v1 稳定的是 manifest
+与顶层入口（`START-HERE.md`、各源的 `generated/<源>/index.md`、目录层级），各版本目录下的分域页面可能跨快照增删或改名，
+请顺着索引页的链接导航，或以 manifest 的 `files` 列表为准。消费方应下载
 **带版本**的产物（不可变），运行 `uv run maa-wiki-verify-bundle` 校验，并用发布页的 `SHA256SUMS`
 （`sha256sum -c`）与 build provenance 证明（`gh attestation verify`）确认下载完整性和构建来源；
 发布页另附零依赖校验脚本 `verify_bundle.py`（仅需 Python 3.10+，可离线运行，非 attestation 主体）。
@@ -83,12 +85,23 @@ verification, checksum and attestation step.
   the tag itself.
 - `catalog_version` in the manifest equals the tag name (including the leading `v`). Bundles
   produced before this field existed omit it; consumers must treat it as optional.
-- `api_version` is `"maa-llm-wiki-catalog/v1"` and changes only for a breaking manifest change.
+- `api_version` is `"maa-llm-wiki-catalog/v1"` and changes only for a breaking change.
   **v1 stability rule:** additions are allowed within v1 (new optional manifest fields, new bundle
   directories, new schema files, new generated pages). Consumers MUST ignore unknown manifest fields
-  and unknown zip entries they do not need. Removing or renaming a field, changing the meaning of an
-  existing field, or changing the bundle layout breaks v1 and requires
+  and unknown zip entries they do not need. Removing or renaming a manifest field, changing the
+  meaning of an existing field, or changing the stable layout breaks v1 and requires
   `api_version: "maa-llm-wiki-catalog/v2"`.
+- **What the layout guarantee covers.** Stable within v1: the manifest; the top-level directories
+  (`generated/`, `sources/`, `schemas/`); the root documents (`START-HERE.md`, the READMEs, this
+  contract, the licence files); each source's `generated/<source>/index.md`; the per-release
+  directories `generated/<source>/<version>/` with their `index.md`; and the data files under
+  `sources/` that the contract names. **Not stable:** the pages inside a release directory and the
+  top-level navigation pages beside `index.md`. They are rendered views; a snapshot may add, remove,
+  split or rename them (for example `documentation/nodejs.md` became `bindings/readmes.md` in
+  `v0.1.23`, `behaviour-changes.md` was removed in `v0.1.36`, and
+  `native-api/agents.md` became `native-api/agent-client-server.md` in `v0.1.36`). Reach them by
+  following the links of the `index.md` pages, or list them from the manifest `files`, instead of
+  hard-coding their paths.
 - A tag with no Release is not consumable: `v0.1.2` predates the publish workflow and is documented
   as an exception (§7.4; it is deliberately not reused). Consumers should discover bundles through
   Releases, not through `git tag`.
@@ -154,8 +167,9 @@ uv run maa-wiki-verify-bundle \
 It aggregates all problems and exits non-zero with a single `error: ...` line if any check fails.
 Checks performed:
 
-1. `catalog-manifest.json` parses and validates as a catalog-bundle manifest
-   (`schemas/catalog-bundle-manifest.schema.json`).
+1. `catalog-manifest.json` parses, and every field this contract requires is present and well
+   formed (`schemas/catalog-bundle-manifest.schema.json`). `catalog_version` may be absent, and
+   fields the verifier does not know are ignored, so bundles from every v1 snapshot verify.
 2. Every `files` entry exists in the zip with matching `size_bytes` and `sha256`.
 3. The zip contains no entry outside `{catalog-manifest.json} ∪ manifest file paths`.
 4. When supplied, `--expect-version` equals `catalog_version` and `--expect-revision` equals
@@ -222,7 +236,7 @@ python verify_bundle.py \
   --checksums SHA256SUMS
 ```
 
-It performs the same manifest/zip/checksum/expectation checks as `maa-wiki-verify-bundle` and exits
+It is the same verifier as `maa-wiki-verify-bundle` (which also accepts `--checksums`) and exits
 non-zero with an `error: ...` line on failure. `verify_bundle.py` is a convenience artifact and is
 **not** an attested subject — only the versioned zip is attested (§5.2) — and `SHA256SUMS` covers
 the two zip download names only, not the script.
@@ -352,8 +366,10 @@ path of each commit, indexed or not.
 ### 7.4 Legacy snapshot tags
 
 - `v0.1.0` and `v0.1.1` predate the current single-job publish pipeline but **do carry release
-  bundles** (`maa-llm-wiki-catalog-v0.1.0.zip`, `...v0.1.1.zip`). They may omit fields and gates
-  introduced later (for example `catalog_version`), so treat them as historical.
+  bundles** (`maa-llm-wiki-catalog-v0.1.0.zip`, `...v0.1.1.zip`). They omit `catalog_version`; the
+  current verifier accepts them (checked against the published assets on 2026-11-07). The
+  `verify_bundle.py` copies shipped with `v0.1.19` through `v0.1.35` rejected these two bundles
+  with "keys outside the contract"; use the current script for them.
 - `v0.1.2` is a tag with **no GitHub Release at all**. It is not a consumable snapshot and its
   version number is not reused. Discovery goes through Releases (§4), never through `git tag`.
 

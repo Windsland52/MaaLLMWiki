@@ -12,7 +12,7 @@ from zipfile import BadZipFile
 import yaml
 
 from .bindings import BINDING_SPECS, sync_binding_history
-from .bundle import build_catalog_bundle, bundle_sha256, verify_catalog_bundle
+from .bundle import build_catalog_bundle
 from .inventory import artifact_changed, sync_maafw_history, write_yaml
 from .models import (
     ArtifactKind,
@@ -30,6 +30,7 @@ from .validation import (
     load_source_inventories,
     validate_repository,
 )
+from .verify_bundle import verify_bundle
 
 
 def _error_boundary(action: Callable[[], int]) -> Callable[[], int]:
@@ -216,18 +217,19 @@ def verify_bundle_main() -> int:
     parser.add_argument("--bundle", type=Path, required=True)
     parser.add_argument("--expect-revision")
     parser.add_argument("--expect-version")
+    parser.add_argument(
+        "--checksums", type=Path, help="SHA256SUMS file to check the bundle against"
+    )
     args = parser.parse_args()
-    bundle = args.bundle.resolve()
-    manifest = verify_catalog_bundle(
-        bundle=bundle,
+    problems, summary = verify_bundle(
+        bundle=args.bundle.resolve(),
         expect_revision=args.expect_revision,
         expect_version=args.expect_version,
+        checksums=args.checksums.resolve() if args.checksums is not None else None,
     )
-    version = manifest.catalog_version or "unversioned"
-    print(
-        f"Verified catalog bundle: {version} {manifest.wiki_revision} "
-        f"({len(manifest.files)} files) sha256={bundle_sha256(bundle)}"
-    )
+    if problems:
+        raise ValueError("; ".join(problems))
+    print(summary)
     return 0
 
 

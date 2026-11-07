@@ -2,6 +2,11 @@
 
 Shipped verbatim as a release asset: keep it self-contained, no ``maa_llm_wiki`` imports.
 ``python verify_bundle.py --bundle maa-llm-wiki-catalog-v1.2.3.zip --expect-version v1.2.3``.
+``maa-wiki-verify-bundle`` runs this same module.
+
+The manifest checks follow the v1 contract: every required field must be present and well formed,
+``catalog_version`` is optional (early bundles omit it), and fields this script does not know are
+ignored, so a bundle with fields added later in v1 still verifies.
 """
 
 from __future__ import annotations
@@ -22,10 +27,7 @@ _SHA256 = re.compile(r"[0-9a-f]{64}")
 _REVISION = re.compile(r"[0-9a-f]{40}")
 _VERSION = re.compile(r"v\d+\.\d+\.\d+")
 _ID = re.compile(r"[a-z0-9]+(?:[.-][a-z0-9]+)*")
-_MANIFEST_KEYS = frozenset(
-    {"api_version", "catalog_version", "wiki_revision", "working_tree_clean", "sources", "files"}
-)
-_SOURCE_KEYS = frozenset({"source_id", "version", "revision"})
+# Required fields of a file record; a record may carry more, which are ignored.
 _FILE_KEYS = frozenset({"path", "size_bytes", "sha256"})
 
 
@@ -50,8 +52,7 @@ def _valid_source(value: object) -> bool:
         return False
     record = cast(dict[str, object], value)
     return (
-        frozenset(record) == _SOURCE_KEYS
-        and _matches(record.get("source_id"), _ID)
+        _matches(record.get("source_id"), _ID)
         and isinstance(record.get("version"), str)
         and bool(record.get("version"))
         and _matches(record.get("revision"), _REVISION)
@@ -71,8 +72,6 @@ def _parse_manifest(value: object) -> tuple[BundleManifest | None, list[str]]:
         return None, [f"{_MANIFEST_NAME} is not a JSON object"]
     data = cast(dict[str, object], value)
     problems: list[str] = []
-    if frozenset(data) != _MANIFEST_KEYS:
-        problems.append(f"{_MANIFEST_NAME} has keys outside the contract")
     if data.get("api_version") != _API_VERSION:
         problems.append(f"{_MANIFEST_NAME} api_version is not {_API_VERSION!r}")
     version = data.get("catalog_version")
@@ -95,7 +94,7 @@ def _parse_manifest(value: object) -> tuple[BundleManifest | None, list[str]]:
         return None, [*problems, f"{_MANIFEST_NAME} files is not a non-empty array"]
     entries: list[BundleFile] = []
     for index, item in enumerate(cast(list[object], raw_files)):
-        if not isinstance(item, dict) or frozenset(cast(dict[str, object], item)) != _FILE_KEYS:
+        if not isinstance(item, dict) or not _FILE_KEYS <= cast(dict[str, object], item).keys():
             problems.append(f"{_MANIFEST_NAME} files[{index}] is not a contract file record")
             continue
         record = cast(dict[str, object], item)

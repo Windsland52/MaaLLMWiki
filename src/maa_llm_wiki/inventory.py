@@ -329,7 +329,13 @@ def _artifact_category(artifact: SourceArtifact) -> tuple[str, str]:
             return "native-api/toolkit.md", "MaaToolkit native API"
         if path.startswith("include/MaaControlUnit/"):
             return "native-api/control-units.md", "Control-unit native API"
-        return "native-api/agents.md", "Agent client and server API"
+        # Not `agents.md`: on case-insensitive file systems that name is the same file as
+        # AGENTS.md, which coding agents load as instructions.
+        if path.startswith(("include/MaaAgentClient/", "include/MaaAgentServer/")):
+            return "native-api/agent-client-server.md", "Agent client and server API"
+        raise ValueError(
+            f"no native-api page is assigned to {path}; map its include/ directory to a page"
+        )
     if path.startswith("docs/en_us/"):
         return "documentation/en-us.md", "English documentation"
     if path.startswith("docs/zh_cn/"):

@@ -5,9 +5,7 @@ import json
 import re
 import subprocess
 from pathlib import Path, PurePosixPath
-from zipfile import ZIP_DEFLATED, BadZipFile, ZipFile, ZipInfo
-
-from pydantic import ValidationError
+from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 from .models import CatalogBundleFile, CatalogBundleManifest, CatalogBundleSource
 from .schemas import SCHEMA_MODELS
@@ -227,73 +225,4 @@ def build_catalog_bundle(
         archive.writestr(_zip_info(_MANIFEST_NAME), serialized_manifest)
         for relative, content in files:
             archive.writestr(_zip_info(PurePosixPath(relative).as_posix()), content)
-    return manifest
-
-
-def verify_catalog_bundle(
-    *,
-    bundle: Path,
-    expect_revision: str | None = None,
-    expect_version: str | None = None,
-) -> CatalogBundleManifest:
-    """Verify a catalog bundle's manifest against its own contents.
-
-    Every problem is collected before raising, so one shard of a broken bundle still reports all
-    detectable defects. Raises ValueError when anything does not line up.
-    """
-    problems: list[str] = []
-    # Hashing the whole file also proves the archive is readable end to end; the digest is part of
-    # a failed verification report and is what the CLI prints for SHA256SUMS cross-checking.
-    digest = bundle_sha256(bundle)
-    try:
-        archive = ZipFile(bundle)
-    except BadZipFile as error:
-        raise ValueError(f"not a valid zip archive: {bundle}") from error
-    with archive:
-        names = archive.namelist()
-        if _MANIFEST_NAME not in names:
-            raise ValueError(f"{_MANIFEST_NAME} is missing from {bundle}")
-        try:
-            raw_manifest = archive.read(_MANIFEST_NAME)
-        except BadZipFile as error:
-            raise ValueError(f"{_MANIFEST_NAME} could not be read: {error}") from error
-        try:
-            manifest = CatalogBundleManifest.model_validate_json(raw_manifest)
-        except ValidationError as error:
-            raise ValueError(f"{_MANIFEST_NAME} is invalid: {error}") from error
-
-        expected = {record.path: record for record in manifest.files}
-        present = set(names)
-        for name in sorted(present - {_MANIFEST_NAME} - set(expected)):
-            problems.append(f"bundle contains an entry not listed in the manifest: {name}")
-        for path, record in expected.items():
-            if path not in present:
-                problems.append(f"manifest file is missing from the bundle: {path}")
-                continue
-            try:
-                content = archive.read(path)
-            except BadZipFile as error:
-                problems.append(f"bundle member is not readable: {path} ({error})")
-                continue
-            if len(content) != record.size_bytes:
-                problems.append(
-                    f"size mismatch for {path}: manifest {record.size_bytes}, bundle {len(content)}"
-                )
-            if hashlib.sha256(content).hexdigest() != record.sha256:
-                problems.append(f"sha256 mismatch for {path}")
-
-    if expect_revision is not None and manifest.wiki_revision != expect_revision:
-        problems.append(
-            f"wiki revision mismatch: bundle {manifest.wiki_revision}, expected {expect_revision}"
-        )
-    if expect_version is not None:
-        if manifest.catalog_version is None:
-            problems.append(f"bundle has no catalog_version, expected {expect_version}")
-        elif manifest.catalog_version != expect_version:
-            problems.append(
-                f"catalog version mismatch: bundle {manifest.catalog_version}, "
-                f"expected {expect_version}"
-            )
-    if problems:
-        raise ValueError(f"bundle sha256={digest}: " + "; ".join(problems))
     return manifest

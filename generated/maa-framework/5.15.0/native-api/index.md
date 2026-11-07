@@ -7,7 +7,7 @@ MaaFramework `5.15.0` at `172ec7b97df3e5b10adf69e36df01f8dc495b6f6`.
 
 ## Agent client and server API
 
-[Agent client and server API](agents.md)
+[Agent client and server API](agent-client-server.md)
 
 ## Control-unit native API
 

@@ -1,7 +1,6 @@
 {
   "$defs": {
     "CatalogBundleFile": {
-      "additionalProperties": false,
       "properties": {
         "path": {
           "title": "Path",
@@ -27,7 +26,6 @@
       "type": "object"
     },
     "CatalogBundleSource": {
-      "additionalProperties": false,
       "properties": {
         "source_id": {
           "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
@@ -54,7 +52,6 @@
       "type": "object"
     }
   },
-  "additionalProperties": false,
   "properties": {
     "api_version": {
       "const": "maa-llm-wiki-catalog/v1",

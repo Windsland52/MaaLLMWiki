@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import subprocess
 from datetime import date
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import pytest
 import yaml
@@ -676,6 +676,29 @@ def test_markdown_metadata_keeps_generic_fallback_for_link_only_docs() -> None:
     assert summary == "Official documentation for MaaFW NodeJS."
 
 
+def _header(path: str) -> SourceArtifact:
+    return SourceArtifact(
+        path=path, kind=ArtifactKind.PUBLIC_API, blob="c" * 40, title=path, summary="Header."
+    )
+
+
+def test_agent_headers_are_not_filed_under_an_agents_page() -> None:
+    for path in (
+        "include/MaaAgentClient/MaaAgentClientAPI.h",
+        "include/MaaAgentServer/MaaAgentServerAPI.h",
+    ):
+        page, title = inventory._artifact_category(_header(path))
+        assert page == "native-api/agent-client-server.md"
+        assert title == "Agent client and server API"
+        # On case-insensitive file systems agents.md is the same file as AGENTS.md.
+        assert PurePosixPath(page).name.lower() != "agents.md"
+
+
+def test_unknown_include_directory_fails_instead_of_being_misfiled() -> None:
+    with pytest.raises(ValueError, match="no native-api page is assigned to include/MaaNew/"):
+        inventory._artifact_category(_header("include/MaaNew/MaaNewAPI.h"))
+
+
 def test_render_release_index_links_topics_and_change_pages() -> None:
     releases = [
         ReleaseRecord(version="1.0.0", tag="v1.0.0", commit="a" * 40, released_at=FIXED_DATE)
@@ -811,7 +834,7 @@ def test_render_version_indexes_reports_added_changed_and_removed() -> None:
             _artifact("docs/a.md", blob="1" * 40),
             _artifact("docs/b.md", blob="2" * 40),
             _artifact("docs/gone.md", blob="3" * 40),
-            _artifact("include/Old.h", kind=ArtifactKind.PUBLIC_API, blob="4" * 40),
+            _artifact("include/MaaFramework/Old.h", kind=ArtifactKind.PUBLIC_API, blob="4" * 40),
         ],
     )
     current = _inventory(
@@ -820,7 +843,7 @@ def test_render_version_indexes_reports_added_changed_and_removed() -> None:
             _artifact("docs/a.md", blob="9" * 40),
             _artifact("docs/b.md", blob="2" * 40),
             _artifact("docs/new.md", blob="5" * 40),
-            _artifact("include/New.h", kind=ArtifactKind.PUBLIC_API, blob="6" * 40),
+            _artifact("include/MaaFramework/New.h", kind=ArtifactKind.PUBLIC_API, blob="6" * 40),
         ],
     )
 
@@ -829,15 +852,15 @@ def test_render_version_indexes_reports_added_changed_and_removed() -> None:
     assert "## Changed since `1.0.0`" in page
     assert "- Added: `2`, removed: `2`, content changed: `1`" in page
     assert "- added: `docs/new.md` (documentation)" in page
-    assert "- added: `include/New.h` (public-api)" in page
+    assert "- added: `include/MaaFramework/New.h` (public-api)" in page
     assert "- changed: `docs/a.md` (documentation)" in page
     assert "- removed: `docs/gone.md` (documentation)" in page
-    assert "- removed: `include/Old.h` (public-api)" in page
+    assert "- removed: `include/MaaFramework/Old.h` (public-api)" in page
     section = page.split("## Changed since `1.0.0`", 1)[1]
     assert "docs/b.md" not in section
     assert (
         section.index("- added: `docs/new.md`")
-        < section.index("- added: `include/New.h`")
+        < section.index("- added: `include/MaaFramework/New.h`")
         < section.index("- changed: `docs/a.md`")
         < section.index("- removed: `docs/gone.md`")
     )

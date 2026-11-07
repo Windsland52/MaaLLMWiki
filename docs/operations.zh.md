@@ -21,7 +21,7 @@ generated/maa-framework/index.md
        -> documentation/index.md -> {en-us,zh-cn,tools}.md
        -> documentation/diagrams.md        # 自 5.10.3 起
        -> bindings/index.md -> {python,nodejs,readmes}.md
-       -> native-api/index.md -> {framework,toolkit,agents}.md
+       -> native-api/index.md -> {framework,toolkit,agent-client-server}.md
        -> native-api/control-units.md      # 自 5.10.0 起
        -> schemas.md
 ```

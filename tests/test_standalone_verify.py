@@ -12,7 +12,7 @@ from zipfile import ZipFile
 
 import pytest
 
-from maa_llm_wiki.bundle import build_catalog_bundle, verify_catalog_bundle
+from maa_llm_wiki.bundle import build_catalog_bundle
 from maa_llm_wiki.verify_bundle import main, verify_bundle
 
 ROOT = Path(__file__).parents[1]
@@ -275,19 +275,14 @@ def test_standalone_checksums_reports_unreadable_file(good_bundle: Path, tmp_pat
 
 
 @pytest.mark.parametrize("mutation", MUTATIONS)
-def test_standalone_agrees_with_package_verifier(
+def test_standalone_rejects_every_tampered_bundle(
     mutation: str, good_bundle: Path, tmp_path: Path
 ) -> None:
     target = _tampered(mutation, good_bundle, tmp_path)
-    try:
-        verify_catalog_bundle(bundle=target, expect_version=VERSION)
-    except Exception:
-        package_accepted = False
-    else:
-        package_accepted = True
+
     problems, _ = verify_bundle(bundle=target, expect_version=VERSION)
 
-    assert bool(problems) != package_accepted
+    assert bool(problems) == (mutation != "good")
 
 
 def test_standalone_imports_only_the_standard_library() -> None:
