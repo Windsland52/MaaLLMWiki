@@ -46,8 +46,10 @@ previous snapshot (New upstream releases), the machine-extracted facts for those
 of indexed material that moved (Indexed material moved), how many catalog files the snapshot itself
 added, removed or changed (Catalog files changed), the exact verification commands, the
 released assets with their digests, sizes and file counts, and documentation links including a
-compare URL for the change range. The publish workflow is scheduled twice a day (03:17 and 15:17
-UTC) and can also be dispatched manually.
+compare URL for the change range. Because the in-tree Python and NodeJS bindings follow the
+MaaFramework revision rather than a separate source, the body names them beside the catalog
+data instead of listing them as upstream sources. The publish workflow is scheduled twice a day
+(03:17 and 15:17 UTC) and can also be dispatched manually.
 
 The bundle contains the catalog data (`sources/`, `generated/`, `schemas/`), the manifest
 (`catalog-manifest.json`), and the consumer documents that describe and license it (`START-HERE.md`,

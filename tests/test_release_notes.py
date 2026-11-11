@@ -165,6 +165,10 @@ def test_render_with_new_releases_and_machine_section() -> None:
 
     assert body.startswith("# Catalog snapshot v0.2.0\n")
     assert ("Catalog data: MaaFramework `5.16.0`. Wiki revision `" + WIKI_REVISION + "`.") in body
+    assert (
+        "In-tree bindings: Python and NodeJS are indexed with MaaFramework `5.16.0`; "
+        "see `generated/maa-framework/5.16.0/bindings/index.md`." in body
+    )
     assert "## Upstream snapshot" in body
     assert "| MaaFramework | 5.16.0 | `" + COMMIT_B + "` |" in body
     assert "## New upstream releases since v0.1.0" in body
@@ -248,6 +252,7 @@ def test_render_initial_snapshot() -> None:
     )
 
     assert "Initial catalog snapshot." in body
+    assert "In-tree bindings: Python and NodeJS are indexed with MaaFramework `5.16.0`" in body
     assert "## New upstream releases since" not in body
     assert "## Machine-extracted changes" not in body
     assert "## Indexed material moved" not in body

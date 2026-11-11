@@ -515,6 +515,17 @@ def _documentation_section(version: str, previous_tag: str | None) -> list[str]:
     return lines
 
 
+def _in_tree_bindings_line(current: Snapshot) -> str | None:
+    """Name the in-tree bindings, which follow the MaaFramework revision, not a separate source."""
+    maafw = next((source for source in current.sources if source.source_id == "maafw"), None)
+    if maafw is None:
+        return None
+    return (
+        f"In-tree bindings: Python and NodeJS are indexed with MaaFramework `{maafw.version}`; "
+        f"see `generated/maa-framework/{maafw.version}/bindings/index.md`."
+    )
+
+
 def render_release_notes(
     *,
     version: str,
@@ -534,6 +545,9 @@ def render_release_notes(
         f"Catalog data: {catalog_line}. Wiki revision `{wiki_revision}`.",
         "",
     ]
+    in_tree_bindings = _in_tree_bindings_line(current)
+    if in_tree_bindings is not None:
+        lines.extend([in_tree_bindings, ""])
     if previous is None:
         lines.extend(["Initial catalog snapshot.", ""])
         lines.extend(_upstream_section(current))
