@@ -3,7 +3,7 @@
 
 Hand-authored routing: a topic maps to the files, symbols, and literal search terms that
 answer it. Each variant applies to one release and proves only that the listed targets
-existed at that pinned commit. Latest indexed release: `5.15.0`.
+existed at that pinned commit. Latest indexed release: `5.16.0`.
 
 Source of truth: `sources/maa-framework/source-map.yaml`.
 

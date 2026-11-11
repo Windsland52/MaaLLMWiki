@@ -5,7 +5,7 @@ Every declared element that changed in at least one release pair, with the relea
 
 [← Version index](./index.md) · [Machine changes](./machine-changes.md) · [Upstream commits](./upstream-commits.md)
 
-2185 elements. Source of truth: `sources/maa-framework/machine-changes.yaml`.
+2285 elements. Source of truth: `sources/maa-framework/machine-changes.yaml`.
 
 | Symbol | Kind | File | Introduced | Later changes |
 | --- | --- | --- | --- | --- |
@@ -333,6 +333,7 @@ Every declared element that changed in at least one release pair, with the relea
 | `CustomControlUnitAPI` | type-definition | `include/MaaControlUnit/ControlUnitAPI.h` | [5.10.0](./5.10.0/index.md) |  |
 | `FullControlUnitAPI` | type-definition | `include/MaaControlUnit/ControlUnitAPI.h` | [5.10.0](./5.10.0/index.md) |  |
 | `GamepadControlUnitAPI` | type-definition | `include/MaaControlUnit/ControlUnitAPI.h` | [5.10.0](./5.10.0/index.md) |  |
+| `IOSControlUnitAPI` | type-definition | `include/MaaControlUnit/ControlUnitAPI.h` | [5.16.0](./5.16.0/index.md) |  |
 | `KWinControlUnitAPI` | type-definition | `include/MaaControlUnit/ControlUnitAPI.h` | [5.11.0](./5.11.0/index.md) |  |
 | `LinuxControlUnitAPI` | type-definition | `include/MaaControlUnit/ControlUnitAPI.h` | [5.13.0](./5.13.0/index.md) |  |
 | `MaaAdbControlUnitCreate` | public-function | `include/MaaControlUnit/AdbControlUnitAPI.h` | [5.10.0](./5.10.0/index.md) |  |
@@ -432,6 +433,22 @@ Every declared element that changed in at least one release pair, with the relea
 | `MaaGlobalOption_DrawQuality` | enum-value | `include/MaaFramework/MaaDef.h` | [5.3.0](./5.3.0/index.md) |  |
 | `MaaGlobalOption_RecoImageCacheLimit` | enum-value | `include/MaaFramework/MaaDef.h` | [5.3.0](./5.3.0/index.md) |  |
 | `MaaGlobalOption_SaveOnError` | enum-value | `include/MaaFramework/MaaDef.h` | [5.1.0](./5.1.0/index.md) |  |
+| `MaaIOSConnectionMethod` | type-definition | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSConnectionMethodEnum` | type-definition | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSConnectionMethod_Auto` | enum-value | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSConnectionMethod_USB` | enum-value | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSConnectionMethod_WiFi` | enum-value | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSControlUnitCreate` | public-function | `include/MaaControlUnit/IOSControlUnitAPI.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSControlUnitDestroy` | public-function | `include/MaaControlUnit/IOSControlUnitAPI.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSControlUnitGetVersion` | public-function | `include/MaaControlUnit/IOSControlUnitAPI.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSControlUnitHandle` | type-definition | `include/MaaControlUnit/ControlUnitAPI.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSControllerCreate` | public-function | `include/MaaFramework/Instance/MaaController.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSScreencapMethod` | type-definition | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSScreencapMethod_All` | constant | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSScreencapMethod_Default` | constant | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSScreencapMethod_None` | constant | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSScreencapMethod_ScreenshotService` | constant | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaIOSScreencapMethod_Stream` | constant | `include/MaaFramework/MaaDef.h` | [5.16.0](./5.16.0/index.md) |  |
 | `MaaImageBufferResize` | public-function | `include/MaaFramework/Utility/MaaBuffer.h` | [5.5.0](./5.5.0/index.md) |  |
 | `MaaInferenceExecutionProvider_CoreML` | enum-value | `include/MaaFramework/MaaDef.h` | ≤ 5.0.0 | [5.14.3](./5.14.3/index.md) deprecated |
 | `MaaInferenceExecutionProvider_NCNN` | enum-value | `include/MaaFramework/MaaDef.h` | [5.15.0](./5.15.0/index.md) |  |
@@ -521,6 +538,21 @@ Every declared element that changed in at least one release pair, with the relea
 | `MaaToolkitGamescopeInstanceListCreate` | public-function | `include/MaaToolkit/Gamescope/MaaToolkitGamescope.h` | [5.13.0](./5.13.0/index.md) |  |
 | `MaaToolkitGamescopeInstanceListDestroy` | public-function | `include/MaaToolkit/Gamescope/MaaToolkitGamescope.h` | [5.13.0](./5.13.0/index.md) |  |
 | `MaaToolkitGamescopeInstanceListSize` | public-function | `include/MaaToolkit/Gamescope/MaaToolkitGamescope.h` | [5.13.0](./5.13.0/index.md) |  |
+| `MaaToolkitIOSDevice` | type-definition | `include/MaaToolkit/MaaToolkitDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceCancelCallback` | type-definition | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceFind` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceFindWithOptions` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceGetConnections` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceGetName` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceGetScreencapMethods` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceGetState` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceGetUdid` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceList` | type-definition | `include/MaaToolkit/MaaToolkitDef.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceListAt` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceListCreate` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceListDestroy` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceListGetWarnings` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
+| `MaaToolkitIOSDeviceListSize` | public-function | `include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h` | [5.16.0](./5.16.0/index.md) |  |
 | `MaaToolkitMacOSCheckPermission` | public-function | `include/MaaToolkit/MacOS/MaaToolkitMacOS.h` | [5.10.0](./5.10.0/index.md) |  |
 | `MaaToolkitMacOSRequestPermission` | public-function | `include/MaaToolkit/MacOS/MaaToolkitMacOS.h` | [5.10.0](./5.10.0/index.md) |  |
 | `MaaToolkitMacOSRevealPermissionSettings` | public-function | `include/MaaToolkit/MacOS/MaaToolkitMacOS.h` | [5.10.0](./5.10.0/index.md) |  |
@@ -641,6 +673,7 @@ Every declared element that changed in at least one release pair, with the relea
 | `contact` | schema-property | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |
 | `controller` | schema-property | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |
 | `controller` | schema-required | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |
+| `controller.type = "IOS"` | schema-enum | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
 | `controller.type = "Linux"` | schema-enum | `tools/interface_config.schema.json` | [5.13.0](./5.13.0/index.md) |  |
 | `controller.type = "PlayCover"` | schema-enum | `tools/interface_config.schema.json` | [5.3.0](./5.3.0/index.md) |  |
 | `controller.type = "WlRoots"` | schema-enum | `tools/interface_config.schema.json` | [5.10.2](./5.10.2/index.md) | [5.13.0](./5.13.0/index.md) removed |
@@ -735,6 +768,21 @@ Every declared element that changed in at least one release pair, with the relea
 | `definitions.controllerItem.gamepad.window_regex` | schema-property | `tools/interface.schema.json` | [5.4.0](./5.4.0/index.md) |  |
 | `definitions.controllerItem.icon` | schema-property | `tools/interface.schema.json` | [5.1.4](./5.1.4/index.md) |  |
 | `definitions.controllerItem.icon` | schema-property | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |
+| `definitions.controllerItem.ios` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.config` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.config.hardware_decode` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.config.max_bitrate` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.config.max_fps` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.config.server_port` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.config.shared_control` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.config.wifi_address` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.config.wifi_port` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.connection` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.connection = "Auto"` | schema-enum | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.connection = "USB"` | schema-enum | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.connection = "WiFi"` | schema-enum | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.screencap` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `definitions.controllerItem.ios.udid` | schema-property | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
 | `definitions.controllerItem.label` | schema-property | `tools/interface.schema.json` | [5.1.4](./5.1.4/index.md) |  |
 | `definitions.controllerItem.label` | schema-property | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |
 | `definitions.controllerItem.linux` | schema-property | `tools/interface.schema.json` | [5.13.0](./5.13.0/index.md) |  |
@@ -775,6 +823,7 @@ Every declared element that changed in at least one release pair, with the relea
 | `definitions.controllerItem.type = "Adb"` | schema-enum | `tools/interface.schema.json` | [5.1.4](./5.1.4/index.md) |  |
 | `definitions.controllerItem.type = "Adb"` | schema-enum | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |
 | `definitions.controllerItem.type = "Gamepad"` | schema-enum | `tools/interface.schema.json` | [5.4.0](./5.4.0/index.md) |  |
+| `definitions.controllerItem.type = "IOS"` | schema-enum | `tools/interface.schema.json` | [5.16.0](./5.16.0/index.md) |  |
 | `definitions.controllerItem.type = "Linux"` | schema-enum | `tools/interface.schema.json` | [5.13.0](./5.13.0/index.md) |  |
 | `definitions.controllerItem.type = "MacOS"` | schema-enum | `tools/interface.schema.json` | [5.10.0](./5.10.0/index.md) |  |
 | `definitions.controllerItem.type = "PlayCover"` | schema-enum | `tools/interface.schema.json` | [5.3.0](./5.3.0/index.md) |  |
@@ -1257,6 +1306,21 @@ Every declared element that changed in at least one release pair, with the relea
 | `interface_version` | schema-required | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |
 | `interface_version = 2` | schema-enum | `tools/interface.schema.json` | [5.1.4](./5.1.4/index.md) |  |
 | `interface_version = 2` | schema-enum | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |
+| `ios` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.config` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.config.hardware_decode` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.config.max_bitrate` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.config.max_fps` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.config.server_port` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.config.shared_control` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.config.wifi_address` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.config.wifi_port` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.connection` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.connection = "Auto"` | schema-enum | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.connection = "USB"` | schema-enum | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.connection = "WiFi"` | schema-enum | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.screencap` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
+| `ios.udid` | schema-property | `tools/interface_config.schema.json` | [5.16.0](./5.16.0/index.md) |  |
 | `label` | schema-property | `tools/interface.schema.json` | [5.1.4](./5.1.4/index.md) |  |
 | `label` | schema-property | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |
 | `languages` | schema-property | `tools/interface.schema.json` | [5.1.4](./5.1.4/index.md) |  |
@@ -1283,7 +1347,7 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.ActionLongPress.target` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | ≤ 5.0.0 | [5.0.4](./5.0.4/index.md) modified |
 | `maa.ActionLongPress.target_offset` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | ≤ 5.0.0 | [5.0.4](./5.0.4/index.md) modified |
 | `maa.ActionMultiSwipe` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | ≤ 5.0.0 | [5.0.4](./5.0.4/index.md) modified, [5.3.0](./5.3.0/index.md) modified |
-| `maa.ActionParam` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | ≤ 5.0.0 | [5.1.0](./5.1.0/index.md) modified, [5.9.0](./5.9.0/index.md) modified |
+| `maa.ActionParam` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | ≤ 5.0.0 | [5.1.0](./5.1.0/index.md) modified, [5.9.0](./5.9.0/index.md) modified, [5.16.0](./5.16.0/index.md) modified |
 | `maa.ActionScreencap` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | [5.8.0](./5.8.0/index.md) |  |
 | `maa.ActionScreencap.filename` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | [5.8.0](./5.8.0/index.md) |  |
 | `maa.ActionScreencap.format` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | [5.8.0](./5.8.0/index.md) |  |
@@ -1304,6 +1368,8 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.ActionSwipe.only_hover` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | [5.3.0](./5.3.0/index.md) |  |
 | `maa.ActionTouch` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | ≤ 5.0.0 | [5.0.4](./5.0.4/index.md) modified, [5.14.0](./5.14.0/index.md) modified |
 | `maa.ActionType` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | [5.2.0](./5.2.0/index.md) | [5.3.0](./5.3.0/index.md) modified, [5.8.0](./5.8.0/index.md) modified |
+| `maa.ClickKeyParam.auto_up` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.ClickParam.pressure` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
 | `maa.Client.custom_action_list` | binding-api | `source/binding/NodeJS/src/apis/client.d.ts` | [5.1.0](./5.1.0/index.md) |  |
 | `maa.Client.custom_recognition_list` | binding-api | `source/binding/NodeJS/src/apis/client.d.ts` | [5.1.0](./5.1.0/index.md) |  |
 | `maa.Client.register_controller_sink` | binding-api | `source/binding/NodeJS/src/apis/client.d.ts` | [5.0.4](./5.0.4/index.md) |  |
@@ -1330,7 +1396,7 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.Controller.resolution` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.4.0](./5.4.0/index.md) |  |
 | `maa.Controller.screenshot_resize_method` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.10.0](./5.10.0/index.md) |  |
 | `maa.Controller.screenshot_target_expand` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.13.0](./5.13.0/index.md) |  |
-| `maa.ControllerNotify` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | ≤ 5.0.0 | [5.0.4](./5.0.4/index.md) modified, [5.1.0](./5.1.0/index.md) modified, [5.8.0](./5.8.0/index.md) modified, [5.9.0](./5.9.0/index.md) modified |
+| `maa.ControllerNotify` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | ≤ 5.0.0 | [5.0.4](./5.0.4/index.md) modified, [5.1.0](./5.1.0/index.md) modified, [5.8.0](./5.8.0/index.md) modified, [5.9.0](./5.9.0/index.md) modified, [5.16.0](./5.16.0/index.md) modified |
 | `maa.CustomControllerActor.connected` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.4.0](./5.4.0/index.md) | [5.5.0](./5.5.0/index.md) removed |
 | `maa.CustomControllerActor.get_info` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.8.0](./5.8.0/index.md) |  |
 | `maa.CustomControllerActor.inactive` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.8.0](./5.8.0/index.md) |  |
@@ -1363,6 +1429,12 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.Global.resize_image` | binding-api | `source/binding/NodeJS/src/apis/global.d.ts` | [5.5.0](./5.5.0/index.md) |  |
 | `maa.Global.save_on_error` | binding-api | `source/binding/NodeJS/src/apis/global.d.ts` | [5.1.0](./5.1.0/index.md) |  |
 | `maa.Global.stdout_level` | binding-api | `source/binding/NodeJS/src/apis/global.d.ts` | ≤ 5.0.0 | [5.9.0](./5.9.0/index.md) modified |
+| `maa.IOSConnectionMethod` | binding-api | `source/binding/NodeJS/src/apis/constant.d.ts` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.IOSController` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.IOSController.constructor` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.IOSController.find` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.IOSDevice` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.IOSScreencapMethod` | binding-api | `source/binding/NodeJS/src/apis/constant.d.ts` | [5.16.0](./5.16.0/index.md) |  |
 | `maa.KWinController` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.11.2](./5.11.2/index.md) | [5.13.0](./5.13.0/index.md) deprecated |
 | `maa.KWinController.constructor` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.11.2](./5.11.2/index.md) |  |
 | `maa.LinuxController` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.13.0](./5.13.0/index.md) |  |
@@ -1372,6 +1444,7 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.LinuxController.find_wlr_compositor` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.13.0](./5.13.0/index.md) |  |
 | `maa.LinuxInputMethod` | binding-api | `source/binding/NodeJS/src/apis/constant.d.ts` | [5.13.0](./5.13.0/index.md) |  |
 | `maa.LinuxScreencapMethod` | binding-api | `source/binding/NodeJS/src/apis/constant.d.ts` | [5.13.0](./5.13.0/index.md) |  |
+| `maa.LongPressParam.pressure` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
 | `maa.MacOSController` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.10.0](./5.10.0/index.md) |  |
 | `maa.MacOSController.constructor` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.10.0](./5.10.0/index.md) |  |
 | `maa.MacOSController.find` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.10.0](./5.10.0/index.md) |  |
@@ -1446,7 +1519,12 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.ScrollParam` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.1.0](./5.1.0/index.md) |  |
 | `maa.ScrollParam.dx` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.1.0](./5.1.0/index.md) |  |
 | `maa.ScrollParam.dy` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.1.0](./5.1.0/index.md) |  |
+| `maa.ScrollParam.point` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.ShellParam` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.ShellParam.cmd` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.ShellParam.shell_timeout` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
 | `maa.StdoutLevel` | binding-api | `source/binding/NodeJS/src/apis/global.d.ts` | [5.9.0](./5.9.0/index.md) |  |
+| `maa.SwipeParam.pressure` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
 | `maa.TaskDetail.nodes` | binding-api | `source/binding/NodeJS/src/apis/tasker.d.ts` | ≤ 5.0.0 | [5.7.0](./5.7.0/index.md) modified |
 | `maa.Tasker.inited` | binding-api | `source/binding/NodeJS/src/apis/tasker.d.ts` | ≤ 5.0.0 | [5.4.3](./5.4.3/index.md) modified, [5.5.0](./5.5.0/index.md) modified |
 | `maa.Tasker.override_pipeline` | binding-api | `source/binding/NodeJS/src/apis/tasker.d.ts` | [5.5.0](./5.5.0/index.md) |  |
@@ -1491,6 +1569,7 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.TaskerContextRecognitionNotify.reco_id` | binding-api | `source/binding/NodeJS/src/apis/tasker.d.ts` | [5.0.4](./5.0.4/index.md) |  |
 | `maa.TaskerContextRecognitionNotify.task_id` | binding-api | `source/binding/NodeJS/src/apis/tasker.d.ts` | [5.0.4](./5.0.4/index.md) |  |
 | `maa.TaskerNotify.msg` | binding-api | `source/binding/NodeJS/src/apis/tasker.d.ts` | ≤ 5.0.0 | [5.0.4](./5.0.4/index.md) modified |
+| `maa.TouchParam.auto_up` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | [5.16.0](./5.16.0/index.md) |  |
 | `maa.WaitFreeze.target` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | ≤ 5.0.0 | [5.0.4](./5.0.4/index.md) modified |
 | `maa.WaitFreeze.target_offset` | binding-api | `source/binding/NodeJS/src/apis/pipeline.d.ts` | ≤ 5.0.0 | [5.0.4](./5.0.4/index.md) modified |
 | `maa.Win32Controller.constructor` | binding-api | `source/binding/NodeJS/src/apis/controller.d.ts` | ≤ 5.0.0 | [5.9.0](./5.9.0/index.md) modified |
@@ -1594,6 +1673,8 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.controller:DbgController.__init__` | binding-api | `source/binding/Python/maa/controller.py` | ≤ 5.0.0 | [5.4.0](./5.4.0/index.md) modified, [5.10.0](./5.10.0/index.md) modified |
 | `maa.controller:GamepadController` | binding-api | `source/binding/Python/maa/controller.py` | [5.4.0](./5.4.0/index.md) |  |
 | `maa.controller:GamepadController.__init__` | binding-api | `source/binding/Python/maa/controller.py` | [5.4.0](./5.4.0/index.md) |  |
+| `maa.controller:IOSController` | binding-api | `source/binding/Python/maa/controller.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.controller:IOSController.__init__` | binding-api | `source/binding/Python/maa/controller.py` | [5.16.0](./5.16.0/index.md) |  |
 | `maa.controller:KWinController` | binding-api | `source/binding/Python/maa/controller.py` | [5.11.2](./5.11.2/index.md) |  |
 | `maa.controller:KWinController.__init__` | binding-api | `source/binding/Python/maa/controller.py` | [5.11.2](./5.11.2/index.md) | [5.13.0](./5.13.0/index.md) deprecated |
 | `maa.controller:LinuxController` | binding-api | `source/binding/Python/maa/controller.py` | [5.13.0](./5.13.0/index.md) |  |
@@ -1690,6 +1771,18 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.define:MaaGlobalOptionEnum.DrawQuality` | binding-api | `source/binding/Python/maa/define.py` | [5.3.0](./5.3.0/index.md) |  |
 | `maa.define:MaaGlobalOptionEnum.RecoImageCacheLimit` | binding-api | `source/binding/Python/maa/define.py` | [5.3.0](./5.3.0/index.md) |  |
 | `maa.define:MaaGlobalOptionEnum.SaveOnError` | binding-api | `source/binding/Python/maa/define.py` | [5.1.0](./5.1.0/index.md) |  |
+| `maa.define:MaaIOSConnectionMethod` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSConnectionMethodEnum` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSConnectionMethodEnum.Auto` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSConnectionMethodEnum.USB` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSConnectionMethodEnum.WiFi` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSScreencapMethod` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSScreencapMethodEnum` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSScreencapMethodEnum.All` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSScreencapMethodEnum.Default` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSScreencapMethodEnum.Null` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSScreencapMethodEnum.ScreenshotService` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.define:MaaIOSScreencapMethodEnum.Stream` | binding-api | `source/binding/Python/maa/define.py` | [5.16.0](./5.16.0/index.md) |  |
 | `maa.define:MaaInferenceExecutionProviderEnum.CoreML` | binding-api | `source/binding/Python/maa/define.py` | ≤ 5.0.0 | [5.14.3](./5.14.3/index.md) deprecated |
 | `maa.define:MaaInferenceExecutionProviderEnum.NCNN` | binding-api | `source/binding/Python/maa/define.py` | [5.15.0](./5.15.0/index.md) |  |
 | `maa.define:MaaInferenceExecutionProviderEnum.WebGPU` | binding-api | `source/binding/Python/maa/define.py` | [5.14.3](./5.14.3/index.md) |  |
@@ -2011,6 +2104,12 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.toolkit:GamescopeInstance.display_no` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.13.0](./5.13.0/index.md) |  |
 | `maa.toolkit:GamescopeInstance.eis_socket_path` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.13.0](./5.13.0/index.md) |  |
 | `maa.toolkit:GamescopeInstance.pipewire_node_id` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.13.0](./5.13.0/index.md) |  |
+| `maa.toolkit:IOSDevice` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.toolkit:IOSDevice.connections` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.toolkit:IOSDevice.name` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.toolkit:IOSDevice.screencap_methods` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.toolkit:IOSDevice.state` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.16.0](./5.16.0/index.md) |  |
+| `maa.toolkit:IOSDevice.udid` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.16.0](./5.16.0/index.md) |  |
 | `maa.toolkit:PortalHelper` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.13.0](./5.13.0/index.md) |  |
 | `maa.toolkit:PortalHelper.__init__` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.13.0](./5.13.0/index.md) |  |
 | `maa.toolkit:PortalHelper.get_persist` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.13.0](./5.13.0/index.md) |  |
@@ -2023,6 +2122,7 @@ Every declared element that changed in at least one release pair, with the relea
 | `maa.toolkit:Toolkit.find_adb_devices` | binding-api | `source/binding/Python/maa/toolkit.py` | ≤ 5.0.0 | [5.11.0](./5.11.0/index.md) modified |
 | `maa.toolkit:Toolkit.find_desktop_windows` | binding-api | `source/binding/Python/maa/toolkit.py` | ≤ 5.0.0 | [5.11.0](./5.11.0/index.md) modified |
 | `maa.toolkit:Toolkit.find_gamescope_instances` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.13.0](./5.13.0/index.md) |  |
+| `maa.toolkit:Toolkit.find_ios_devices` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.16.0](./5.16.0/index.md) |  |
 | `maa.toolkit:Toolkit.init_option` | binding-api | `source/binding/Python/maa/toolkit.py` | ≤ 5.0.0 | [5.11.0](./5.11.0/index.md) modified |
 | `maa.toolkit:Toolkit.macos_check_permission` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.10.0](./5.10.0/index.md) |  |
 | `maa.toolkit:Toolkit.macos_request_permission` | binding-api | `source/binding/Python/maa/toolkit.py` | [5.10.0](./5.10.0/index.md) |  |
@@ -2185,8 +2285,8 @@ Every declared element that changed in at least one release pair, with the relea
 | `v5.7` | documentation-version | `docs/zh_cn/3.1-任务流水线协议.md` | [5.8.0](./5.8.0/index.md) |  |
 | `v5.8` | documentation-version | `docs/en_us/3.1-PipelineProtocol.md` | [5.8.0](./5.8.0/index.md) |  |
 | `v5.8` | documentation-version | `docs/zh_cn/3.1-任务流水线协议.md` | [5.8.0](./5.8.0/index.md) |  |
-| `v5.9` | documentation-version | `docs/en_us/3.1-PipelineProtocol.md` | [5.10.0](./5.10.0/index.md) |  |
-| `v5.9` | documentation-version | `docs/zh_cn/3.1-任务流水线协议.md` | [5.10.0](./5.10.0/index.md) |  |
+| `v5.9` | documentation-version | `docs/en_us/3.1-PipelineProtocol.md` | [5.10.0](./5.10.0/index.md) | [5.16.0](./5.16.0/index.md) modified |
+| `v5.9` | documentation-version | `docs/zh_cn/3.1-任务流水线协议.md` | [5.10.0](./5.10.0/index.md) | [5.16.0](./5.16.0/index.md) modified |
 | `version` | schema-property | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |
 | `welcome` | schema-property | `tools/interface.schema.json` | [5.1.4](./5.1.4/index.md) | [5.13.1](./5.13.1/index.md) modified |
 | `welcome` | schema-property | `tools/interface_v2.schema.json` | [5.1.1](./5.1.1/index.md) | [5.1.4](./5.1.4/index.md) removed |

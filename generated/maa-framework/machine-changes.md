@@ -7,28 +7,29 @@ Quotes are upstream text with whitespace collapsed, cut at 300 characters; a mod
 
 [← Version index](./index.md) · [Symbols](./machine-symbols.md) · [Upstream commits](./upstream-commits.md) · [Topics](./topics.md)
 
-Source of truth: `sources/maa-framework/machine-changes.yaml` (2595 records over 38 releases).
+Source of truth: `sources/maa-framework/machine-changes.yaml` (2705 records over 39 releases).
 
 | Kind | Records |
 | --- | --- |
-| `binding-api` | 877 |
+| `binding-api` | 915 |
 | `callback-message` | 12 |
-| `constant` | 60 |
-| `documentation-version` | 60 |
-| `enum-value` | 30 |
-| `public-function` | 135 |
+| `constant` | 65 |
+| `documentation-version` | 62 |
+| `enum-value` | 33 |
+| `public-function` | 151 |
 | `schema-branch` | 111 |
 | `schema-default` | 73 |
 | `schema-definition` | 82 |
-| `schema-enum` | 226 |
-| `schema-property` | 645 |
+| `schema-enum` | 234 |
+| `schema-property` | 669 |
 | `schema-required` | 131 |
 | `struct-field` | 38 |
-| `type-definition` | 57 |
-| `unclassified` | 58 |
+| `type-definition` | 65 |
+| `unclassified` | 64 |
 
 | Release | added | removed | modified | deprecated | unclassified |
 | --- | --- | --- | --- | --- | --- |
+| [5.16.0](./5.16.0/index.md) | 100 | 0 | 4 | 0 | 6 |
 | [5.15.0](./5.15.0/index.md) | 39 | 0 | 2 | 0 | 2 |
 | [5.14.3](./5.14.3/index.md) | 12 | 0 | 1 | 3 | 2 |
 | [5.14.1](./5.14.1/index.md) | 43 | 0 | 0 | 0 | 1 |
@@ -67,6 +68,183 @@ Source of truth: `sources/maa-framework/machine-changes.yaml` (2595 records over
 | [5.1.0](./5.1.0/index.md) | 96 | 4 | 15 | 1 | 1 |
 | [5.0.4](./5.0.4/index.md) | 68 | 6 | 27 | 0 | 1 |
 | [5.0.2](./5.0.2/index.md) | 1 | 1 | 0 | 0 | 2 |
+
+## [5.16.0](./5.16.0/index.md)
+
+Revision: `11ea6b57fdd50322a462a3d39d77f110a8326335`
+
+### [`docs/en_us/3.1-PipelineProtocol.md`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/docs/en_us/3.1-PipelineProtocol.md)
+
+- modified documentation-version `v5.9`: `` | v5.9 | String-form `roi` / `target` added `[Anchor]AnchorName` reference support; fixed inconsistent action-failure follow-up behavior with/without `[JumpBack]` (jump-back is not performed when the… `` (was `` | v5.9 | String-form `roi` / `target` added `[Anchor]AnchorName` reference support; fixed inconsistent action-failure follow-up behavior with/without `[JumpBack]` (error-handling path does not jump b… ``)
+
+### [`docs/zh_cn/3.1-任务流水线协议.md`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/docs/zh_cn/3.1-%E4%BB%BB%E5%8A%A1%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%8F%E8%AE%AE.md)
+
+- modified documentation-version `v5.9`: `` | v5.9 | `roi` / `target` 的 string 形式新增 `[Anchor]锚点名` 引用支持; 修复 action 失败时有无 `[JumpBack]` 的行为不一致（错误未被 `on_error` 接住时不触发回跳） | `` (was `` | v5.9 | `roi` / `target` 的 string 形式新增 `[Anchor]锚点名` 引用支持; 修复 action 失败时有无 `[JumpBack]` 的行为不一致（错误处理路径不触发回跳） | ``)
+
+### [`include/MaaControlUnit/ControlUnitAPI.h`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/include/MaaControlUnit/ControlUnitAPI.h)
+
+- added type-definition `IOSControlUnitAPI`: `class IOSControlUnitAPI : public ControlUnitAPI`
+- added type-definition `MaaIOSControlUnitHandle`: `using MaaIOSControlUnitHandle = MAA_CTRL_UNIT_NS::IOSControlUnitAPI*;`
+
+### [`include/MaaControlUnit/IOSControlUnitAPI.h`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/include/MaaControlUnit/IOSControlUnitAPI.h)
+
+- added public-function `MaaIOSControlUnitCreate`: `MAA_CONTROL_UNIT_API MaaIOSControlUnitHandle MaaIOSControlUnitCreate( const char* udid, MaaIOSScreencapMethod screencap_methods, MaaIOSConnectionMethod connection_method, const char* config_json);`
+- added public-function `MaaIOSControlUnitDestroy`: `MAA_CONTROL_UNIT_API void MaaIOSControlUnitDestroy(MaaIOSControlUnitHandle handle);`
+- added public-function `MaaIOSControlUnitGetVersion`: `MAA_CONTROL_UNIT_API const char* MaaIOSControlUnitGetVersion();`
+
+### [`include/MaaControlUnit/MaaControlUnitAPI.h`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/include/MaaControlUnit/MaaControlUnitAPI.h)
+
+- modified file: include/MaaControlUnit/MaaControlUnitAPI.h changed without changing any declared element
+
+### [`include/MaaFramework/Instance/MaaController.h`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/include/MaaFramework/Instance/MaaController.h)
+
+- added public-function `MaaIOSControllerCreate`: `MAA_FRAMEWORK_API MaaController* MaaIOSControllerCreate( const char* udid, MaaIOSScreencapMethod screencap_methods, MaaIOSConnectionMethod connection_method, const char* config_json);`
+
+### [`include/MaaFramework/Instance/MaaTasker.h`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/include/MaaFramework/Instance/MaaTasker.h)
+
+- modified file: include/MaaFramework/Instance/MaaTasker.h changed without changing any declared element
+
+### [`include/MaaFramework/MaaDef.h`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/include/MaaFramework/MaaDef.h)
+
+- added constant `MaaIOSScreencapMethod_All`: `#define MaaIOSScreencapMethod_All (~MaaIOSScreencapMethod_None)`
+- added constant `MaaIOSScreencapMethod_Default`: `#define MaaIOSScreencapMethod_Default MaaIOSScreencapMethod_All`
+- added constant `MaaIOSScreencapMethod_None`: `#define MaaIOSScreencapMethod_None 0ULL`
+- added constant `MaaIOSScreencapMethod_ScreenshotService`: `#define MaaIOSScreencapMethod_ScreenshotService (1ULL << 1)`
+- added constant `MaaIOSScreencapMethod_Stream`: `#define MaaIOSScreencapMethod_Stream 1ULL`
+- added enum-value `MaaIOSConnectionMethod_Auto`: `MaaIOSConnectionMethod_Auto = 0`
+- added enum-value `MaaIOSConnectionMethod_USB`: `MaaIOSConnectionMethod_USB = 1`
+- added enum-value `MaaIOSConnectionMethod_WiFi`: `MaaIOSConnectionMethod_WiFi = 2`
+- added type-definition `MaaIOSConnectionMethod`: `typedef int32_t MaaIOSConnectionMethod;`
+- added type-definition `MaaIOSConnectionMethodEnum`: `enum MaaIOSConnectionMethodEnum`
+- added type-definition `MaaIOSScreencapMethod`: `typedef uint64_t MaaIOSScreencapMethod;`
+
+### [`include/MaaFramework/MaaPort.h`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/include/MaaFramework/MaaPort.h)
+
+- modified file: include/MaaFramework/MaaPort.h changed without changing any declared element
+
+### [`include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h)
+
+- added public-function `MaaToolkitIOSDeviceFind`: `MAA_TOOLKIT_API MaaBool MaaToolkitIOSDeviceFind(MaaToolkitIOSDeviceList* list);`
+- added public-function `MaaToolkitIOSDeviceFindWithOptions`: `MAA_TOOLKIT_API MaaBool MaaToolkitIOSDeviceFindWithOptions( MaaIOSConnectionMethod connection_method, const char* options_json, MaaToolkitIOSDeviceCancelCallback cancel_callback, void* userdata, MaaT…`
+- added public-function `MaaToolkitIOSDeviceGetConnections`: `MAA_TOOLKIT_API const char* MaaToolkitIOSDeviceGetConnections(const MaaToolkitIOSDevice* device);`
+- added public-function `MaaToolkitIOSDeviceGetName`: `MAA_TOOLKIT_API const char* MaaToolkitIOSDeviceGetName(const MaaToolkitIOSDevice* device);`
+- added public-function `MaaToolkitIOSDeviceGetScreencapMethods`: `MAA_TOOLKIT_API MaaIOSScreencapMethod MaaToolkitIOSDeviceGetScreencapMethods(const MaaToolkitIOSDevice* device);`
+- added public-function `MaaToolkitIOSDeviceGetState`: `MAA_TOOLKIT_API const char* MaaToolkitIOSDeviceGetState(const MaaToolkitIOSDevice* device);`
+- added public-function `MaaToolkitIOSDeviceGetUdid`: `MAA_TOOLKIT_API const char* MaaToolkitIOSDeviceGetUdid(const MaaToolkitIOSDevice* device);`
+- added public-function `MaaToolkitIOSDeviceListAt`: `MAA_TOOLKIT_API const MaaToolkitIOSDevice* MaaToolkitIOSDeviceListAt(const MaaToolkitIOSDeviceList* list, MaaSize index);`
+- added public-function `MaaToolkitIOSDeviceListCreate`: `MAA_TOOLKIT_API MaaToolkitIOSDeviceList* MaaToolkitIOSDeviceListCreate();`
+- added public-function `MaaToolkitIOSDeviceListDestroy`: `MAA_TOOLKIT_API void MaaToolkitIOSDeviceListDestroy(MaaToolkitIOSDeviceList* list);`
+- added public-function `MaaToolkitIOSDeviceListGetWarnings`: `MAA_TOOLKIT_API const char* MaaToolkitIOSDeviceListGetWarnings(const MaaToolkitIOSDeviceList* list);`
+- added public-function `MaaToolkitIOSDeviceListSize`: `MAA_TOOLKIT_API MaaSize MaaToolkitIOSDeviceListSize(const MaaToolkitIOSDeviceList* list);`
+- added type-definition `MaaToolkitIOSDeviceCancelCallback`: `typedef MaaBool(MAA_CALL* MaaToolkitIOSDeviceCancelCallback)(void* userdata);`
+
+### [`include/MaaToolkit/MaaToolkitAPI.h`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/include/MaaToolkit/MaaToolkitAPI.h)
+
+- modified file: include/MaaToolkit/MaaToolkitAPI.h changed without changing any declared element
+
+### [`include/MaaToolkit/MaaToolkitDef.h`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/include/MaaToolkit/MaaToolkitDef.h)
+
+- added type-definition `MaaToolkitIOSDevice`: `typedef struct MaaToolkitIOSDevice MaaToolkitIOSDevice;`
+- added type-definition `MaaToolkitIOSDeviceList`: `typedef struct MaaToolkitIOSDeviceList MaaToolkitIOSDeviceList;`
+
+### [`source/binding/NodeJS/src/apis/constant.d.ts`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/source/binding/NodeJS/src/apis/constant.d.ts)
+
+- added binding-api `maa.IOSConnectionMethod`: `const IOSConnectionMethod: Record<'Auto' | 'USB' | 'WiFi', number>`
+- added binding-api `maa.IOSScreencapMethod`: `const IOSScreencapMethod: Record< | 'Stream' | 'ScreenshotService' | 'All' | 'Default', ScreencapOrInputMethods >`
+
+### [`source/binding/NodeJS/src/apis/controller.d.ts`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/source/binding/NodeJS/src/apis/controller.d.ts)
+
+- modified binding-api `maa.ActionParam`: `type ActionParam = | {} | ClickParam | LongPressParam | SwipeParam | MultiSwipeParam | TouchParam | ClickKeyParam | LongPressKeyParam | InputTextParam | AppParam | ScrollParam | RelativeMoveParam | S…` (was `type ActionParam = | {} | ClickParam | LongPressParam | SwipeParam | MultiSwipeParam | TouchParam | ClickKeyParam | LongPressKeyParam | InputTextParam | AppParam | ScrollParam | RelativeMoveParam`)
+- added binding-api `maa.ClickKeyParam.auto_up`: `auto_up: boolean`
+- added binding-api `maa.ClickParam.pressure`: `pressure: number`
+- modified binding-api `maa.ControllerNotify`: `type ControllerNotify = { msg: NotifyMessage<'Action'> ctrl_id: number uuid: string info: Record<string, unknown> } & ( | { action: 'connect' param: null } | { action: 'click' param: ClickParam } | {…` (was `type ControllerNotify = { msg: NotifyMessage<'Action'> ctrl_id: number uuid: string info: Record<string, unknown> } & ( | { action: 'connect' param?: never } | { action: 'click' param: ClickParam } |…`)
+- added binding-api `maa.IOSController`: `class IOSController extends Controller { static find(timeout_ms?: number, config?: string, connection_method?: number): Promise<IOSDevice[] | null> constructor(udid: string, screencap_method?: Screen…`
+- added binding-api `maa.IOSController.constructor`: `constructor(udid: string, screencap_method?: ScreencapOrInputMethods, connection_method?: number, config?: string)`
+- added binding-api `maa.IOSController.find`: `static find(timeout_ms?: number, config?: string, connection_method?: number): Promise<IOSDevice[] | null>`
+- added binding-api `maa.IOSDevice`: `type IOSDevice = [name: string, udid: string, screencap_methods: ScreencapOrInputMethods, connections_json: string, state: string]`
+- added binding-api `maa.LongPressParam.pressure`: `pressure: number`
+- added binding-api `maa.ScrollParam.point`: `point: Point`
+- added binding-api `maa.ShellParam`: `type ShellParam = { cmd: string shell_timeout: number }`
+- added binding-api `maa.ShellParam.cmd`: `cmd: string`
+- added binding-api `maa.ShellParam.shell_timeout`: `shell_timeout: number`
+- added binding-api `maa.SwipeParam.pressure`: `pressure: number`
+- added binding-api `maa.TouchParam.auto_up`: `auto_up: boolean`
+
+### [`source/binding/NodeJS/src/apis/tasker.d.ts`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/source/binding/NodeJS/src/apis/tasker.d.ts)
+
+- modified file: source/binding/NodeJS/src/apis/tasker.d.ts changed without changing any declared element
+
+### [`source/binding/Python/maa/controller.py`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/source/binding/Python/maa/controller.py)
+
+- added binding-api `maa.controller:IOSController`: `class IOSController(Controller)`
+- added binding-api `maa.controller:IOSController.__init__`: `def __init__(self, udid: str, screencap_methods: int = MaaIOSScreencapMethodEnum.Default, connection_method: int = MaaIOSConnectionMethodEnum.Auto, config: Optional[dict] = None)`
+
+### [`source/binding/Python/maa/define.py`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/source/binding/Python/maa/define.py)
+
+- added binding-api `maa.define:MaaIOSConnectionMethod`: `MaaIOSConnectionMethod = ctypes.c_int32`
+- added binding-api `maa.define:MaaIOSConnectionMethodEnum`: `class MaaIOSConnectionMethodEnum(IntEnum)`
+- added binding-api `maa.define:MaaIOSConnectionMethodEnum.Auto`: `Auto = 0`
+- added binding-api `maa.define:MaaIOSConnectionMethodEnum.USB`: `USB = 1`
+- added binding-api `maa.define:MaaIOSConnectionMethodEnum.WiFi`: `WiFi = 2`
+- added binding-api `maa.define:MaaIOSScreencapMethod`: `MaaIOSScreencapMethod = ctypes.c_uint64`
+- added binding-api `maa.define:MaaIOSScreencapMethodEnum`: `class MaaIOSScreencapMethodEnum(IntEnum)`
+- added binding-api `maa.define:MaaIOSScreencapMethodEnum.All`: `All = ~Null`
+- added binding-api `maa.define:MaaIOSScreencapMethodEnum.Default`: `Default = All`
+- added binding-api `maa.define:MaaIOSScreencapMethodEnum.Null`: `Null = 0`
+- added binding-api `maa.define:MaaIOSScreencapMethodEnum.ScreenshotService`: `ScreenshotService = 1 << 1`
+- added binding-api `maa.define:MaaIOSScreencapMethodEnum.Stream`: `Stream = 1`
+
+### [`source/binding/Python/maa/tasker.py`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/source/binding/Python/maa/tasker.py)
+
+- modified file: source/binding/Python/maa/tasker.py changed without changing any declared element
+
+### [`source/binding/Python/maa/toolkit.py`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/source/binding/Python/maa/toolkit.py)
+
+- added binding-api `maa.toolkit:IOSDevice`: `@dataclass class IOSDevice`
+- added binding-api `maa.toolkit:IOSDevice.connections`: `connections: list[dict[str, Any]]`
+- added binding-api `maa.toolkit:IOSDevice.name`: `name: str`
+- added binding-api `maa.toolkit:IOSDevice.screencap_methods`: `screencap_methods: int`
+- added binding-api `maa.toolkit:IOSDevice.state`: `state: str`
+- added binding-api `maa.toolkit:IOSDevice.udid`: `udid: str`
+- added binding-api `maa.toolkit:Toolkit.find_ios_devices`: `@staticmethod def find_ios_devices( timeout_ms: int = 3000, config: Optional[dict[str, Any]] = None, connection_method: MaaIOSConnectionMethodEnum = MaaIOSConnectionMethodEnum.Auto, cancelled: Option…`
+
+### [`tools/interface.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/tools/interface.schema.json)
+
+- added schema-enum `definitions.controllerItem.ios.connection = "Auto"`: `"Auto"`
+- added schema-enum `definitions.controllerItem.ios.connection = "USB"`: `"USB"`
+- added schema-enum `definitions.controllerItem.ios.connection = "WiFi"`: `"WiFi"`
+- added schema-enum `definitions.controllerItem.type = "IOS"`: `"IOS"`
+- added schema-property `definitions.controllerItem.ios`: `{"additionalProperties": false, "title": "iOS 控制器配置", "type": "object"}`
+- added schema-property `definitions.controllerItem.ios.config`: `{"additionalProperties": false, "type": "object"}`
+- added schema-property `definitions.controllerItem.ios.config.hardware_decode`: `{"type": "boolean"}`
+- added schema-property `definitions.controllerItem.ios.config.max_bitrate`: `{"maximum": 18446744073709551615, "minimum": 0, "type": "integer"}`
+- added schema-property `definitions.controllerItem.ios.config.max_fps`: `{"maximum": 240, "minimum": 0, "type": "integer"}`
+- added schema-property `definitions.controllerItem.ios.config.server_port`: `{"maximum": 65535, "minimum": 0, "type": "integer"}`
+- added schema-property `definitions.controllerItem.ios.config.shared_control`: `{"type": "boolean"}`
+- added schema-property `definitions.controllerItem.ios.config.wifi_address`: `{"type": "string"}`
+- added schema-property `definitions.controllerItem.ios.config.wifi_port`: `{"maximum": 65535, "minimum": 1, "type": "integer"}`
+- added schema-property `definitions.controllerItem.ios.connection`: `{"enum": ["Auto", "USB", "WiFi"], "type": "string"}`
+- added schema-property `definitions.controllerItem.ios.screencap`: `{"description": "Stream、ScreenshotService 或按 | 组合", "type": "string"}`
+- added schema-property `definitions.controllerItem.ios.udid`: `{"type": "string"}`
+
+### [`tools/interface_config.schema.json`](https://github.com/MaaXYZ/MaaFramework/blob/11ea6b57fdd50322a462a3d39d77f110a8326335/tools/interface_config.schema.json)
+
+- added schema-enum `controller.type = "IOS"`: `"IOS"`
+- added schema-enum `ios.connection = "Auto"`: `"Auto"`
+- added schema-enum `ios.connection = "USB"`: `"USB"`
+- added schema-enum `ios.connection = "WiFi"`: `"WiFi"`
+- added schema-property `ios`: `{"additionalProperties": false, "title": "iOS配置", "type": "object"}`
+- added schema-property `ios.config`: `{"additionalProperties": false, "title": "iOS额外配置", "type": "object"}`
+- added schema-property `ios.config.hardware_decode`: `{"type": "boolean"}`
+- added schema-property `ios.config.max_bitrate`: `{"maximum": 18446744073709551615, "minimum": 0, "type": "integer"}`
+- added schema-property `ios.config.max_fps`: `{"maximum": 240, "minimum": 0, "type": "integer"}`
+- added schema-property `ios.config.server_port`: `{"maximum": 65535, "minimum": 0, "type": "integer"}`
+- added schema-property `ios.config.shared_control`: `{"type": "boolean"}`
+- added schema-property `ios.config.wifi_address`: `{"type": "string"}`
+- added schema-property `ios.config.wifi_port`: `{"maximum": 65535, "minimum": 1, "type": "integer"}`
+- added schema-property `ios.connection`: `{"enum": ["Auto", "USB", "WiFi"], "type": "string"}`
+- added schema-property `ios.screencap`: `{"type": "string"}`
+- added schema-property `ios.udid`: `{"type": "string"}`
 
 ## [5.15.0](./5.15.0/index.md)
 

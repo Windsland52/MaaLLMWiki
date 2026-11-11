@@ -6927,3 +6927,298 @@ commits:
   paths:
   - README.md
   - README_en.md
+- version: 5.16.0
+  commit: 44ce87f0021c689e2dac1574eaf3b4d74c89e0f9
+  subject: 'chore: autopublish Wed Nov  4 06:00:17 UTC 2026'
+  path_count: 1
+  paths:
+  - source/MaaUtils
+- version: 5.16.0
+  commit: 55382eb4add37ad54bcfe8761201862e08fb4e47
+  subject: 'fix(adb): reject empty gzip screencap output (#1599)'
+  pull_request: 1599
+  path_count: 1
+  paths:
+  - source/MaaAdbControlUnit/Screencap/ScreencapHelper.cpp
+- version: 5.16.0
+  commit: 3c450c15240aa8b2d57a7fc538aace1cc7ef471c
+  subject: 'fix: guard classifier debug labels (#1577)'
+  pull_request: 1577
+  path_count: 1
+  paths:
+  - source/MaaFramework/Vision/NeuralNetworkClassifier.cpp
+- version: 5.16.0
+  commit: a82af60c64e4a0fad3c7be4e085695fade546189
+  subject: 'docs: 按功能重分组 README 开发工具列表 (#1529)'
+  pull_request: 1529
+  path_count: 2
+  paths:
+  - README.md
+  - README_en.md
+- version: 5.16.0
+  commit: 5524b1c4666f049cbefb34aaf6f494865fba8910
+  subject: 'docs: 要求 AI PR 描述注明 agent、模型和思考强度'
+  path_count: 1
+  paths:
+  - AGENTS.md
+- version: 5.16.0
+  commit: c42de4d166accb1c09be4cfa2b47c93364f229d1
+  subject: 'fix(ocr): a roi whose cached box is cut below half its height reads itself
+    (#1573)'
+  pull_request: 1573
+  path_count: 1
+  paths:
+  - source/MaaFramework/Vision/OCRer.cpp
+- version: 5.16.0
+  commit: 48482ebc3088f0635a294b0ac593835a12c3e915
+  subject: 'docs: 阐明 jump_back 在 on_error 场景下的回跳机制 (#1439)'
+  pull_request: 1439
+  path_count: 2
+  paths:
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+- version: 5.16.0
+  commit: d2f641359f4769f8dcbe3dd6a4fe5072b16ffb76
+  subject: 'feat(macOS): 支持 macOS 应用启停及 PlayCover 应用启动 (#1571)'
+  pull_request: 1571
+  path_count: 8
+  paths:
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+  - source/ControlUnitCommon/MacOS/MacOSAppLifecycle.h
+  - source/ControlUnitCommon/MacOS/MacOSAppLifecycle.mm
+  - source/MaaMacOSControlUnit/CMakeLists.txt
+  - source/MaaMacOSControlUnit/Manager/MacOSControlUnitMgr.cpp
+  - source/MaaPlayCoverControlUnit/CMakeLists.txt
+  - source/MaaPlayCoverControlUnit/Manager/PlayCoverControlUnitMgr.cpp
+- version: 5.16.0
+  commit: b69608b2f60d71c6278289354cc6b0b6e42d784a
+  subject: 'fix(win32): 仅豁免客户区精确匹配显示器的全屏窗口 (#1587)'
+  pull_request: 1587
+  path_count: 6
+  paths:
+  - .github/workflows/test.yml
+  - CMakeLists.txt
+  - source/MaaWin32ControlUnit/Screencap/HwndUtils.hpp
+  - test/win32_test/window_geometry/CMakeLists.txt
+  - test/win32_test/window_geometry/logging/MaaUtils/Logger.h
+  - test/win32_test/window_geometry/window_geometry_test.cpp
+- version: 5.16.0
+  commit: 2118b335526a161a2176c51775f637c688a1af6a
+  subject: 'feat: 添加基于 XDeviceBridge 的 iOS 控制器 (#1574)'
+  pull_request: 1574
+  path_count: 77
+  paths:
+  - .github/workflows/release.yml
+  - .github/workflows/test.yml
+  - .gitmodules
+  - 3rdparty/XDeviceBridge
+  - CMakeLists.txt
+  - README.md
+  - README_en.md
+  - docs/en_us/2.2-IntegratedInterfaceOverview.md
+  - docs/en_us/2.3-CallbackProtocol.md
+  - docs/en_us/2.4-ControlMethods.md
+  - docs/en_us/3.1-PipelineProtocol.md
+  - docs/en_us/3.3-ProjectInterfaceV2.md
+  - docs/en_us/4.1-BuildGuide.md
+  - docs/zh_cn/2.2-集成接口一览.md
+  - docs/zh_cn/2.3-回调协议.md
+  - docs/zh_cn/2.4-控制方式说明.md
+  - docs/zh_cn/3.1-任务流水线协议.md
+  - docs/zh_cn/3.3-ProjectInterfaceV2协议.md
+  - docs/zh_cn/4.1-构建指南.md
+  - include/MaaControlUnit/ControlUnitAPI.h
+- version: 5.16.0
+  commit: 6137f2e32c1271a81f7870999d86cebc8700097b
+  subject: 'test(adb): tolerate slow child startup in pipe regression tests (#1600)'
+  pull_request: 1600
+  path_count: 1
+  paths:
+  - test/adb_pipe/main.cpp
+- version: 5.16.0
+  commit: f5d2f0f7f68a75e12455c37e3f9f4e3602d1bfef
+  subject: 'docs: 要求创建 AI PR 前由用户提供 agent、模型和思考强度'
+  path_count: 1
+  paths:
+  - AGENTS.md
+- version: 5.16.0
+  commit: 0067bd5dc88ba56e89be917d60f674ba40c10397
+  subject: 'chore: autopublish Wed Nov  4 23:07:31 UTC 2026'
+  path_count: 9
+  paths:
+  - source/MaaFramework/API/MaaFramework.cpp
+  - source/MaaIOSControlUnit/API/IOSControlUnitAPI.cpp
+  - source/MaaIOSControlUnit/Session/IOSSession.cpp
+  - source/MaaToolkit/API/MaaToolkitIOSDevice.cpp
+  - source/binding/NodeJS/src/apis/controller.cpp
+  - source/binding/NodeJS/src/apis/controller.h
+  - source/include/ControlUnit/IOSDeviceAPI.h
+  - test/dlopen/main.cpp
+  - test/ios_test/ios_input_mapping_test.cpp
+- version: 5.16.0
+  commit: 4c08f822c17697308fea1d5276f930f35eeff2b2
+  subject: 'feat(vision): reuse neural network inference within recognition rounds
+    (#1536)'
+  pull_request: 1536
+  path_count: 19
+  paths:
+  - source/MaaFramework/Task/Component/Recognizer.cpp
+  - source/MaaFramework/Task/Component/Recognizer.h
+  - source/MaaFramework/Task/PipelineTask.cpp
+  - source/MaaFramework/Task/TaskBase.cpp
+  - source/MaaFramework/Task/TaskBase.h
+  - source/MaaFramework/Vision/InferenceCache.hpp
+  - source/MaaFramework/Vision/NeuralNetworkCache.h
+  - source/MaaFramework/Vision/NeuralNetworkClassifier.cpp
+  - source/MaaFramework/Vision/NeuralNetworkClassifier.h
+  - source/MaaFramework/Vision/NeuralNetworkDetector.cpp
+  - source/MaaFramework/Vision/NeuralNetworkDetector.h
+  - test/pipeline/CMakeLists.txt
+  - test/pipeline/main.cpp
+  - test/pipeline/module/NeuralNetworkCache.cpp
+  - test/pipeline/module/NeuralNetworkCache.h
+  - test/pipeline/resource/NeuralNetworkCache/classifier.onnx
+  - test/pipeline/resource/NeuralNetworkCache/detector.onnx
+  - test/pipeline/resource/NeuralNetworkCache/generate_models.py
+  - test/python/binding_test.py
+- version: 5.16.0
+  commit: a0ae79a9d28cba8f4efe4e841899964391cbb146
+  subject: 'fix(MaaToolkit): 设备枚举按已知端口重连掉线的模拟器 (#1510)'
+  pull_request: 1510
+  path_count: 2
+  paths:
+  - source/MaaToolkit/AdbDevice/AdbDeviceFinder.cpp
+  - source/MaaToolkit/AdbDevice/AdbDeviceFinder.h
+- version: 5.16.0
+  commit: d46124a060cf7038b738dafa8c348e1abb28ecf9
+  subject: 'docs: 移除超过三个月未更新的应用程序'
+  path_count: 2
+  paths:
+  - README.md
+  - README_en.md
+- version: 5.16.0
+  commit: db2d1d79ad8dbd66d548c8596cb4ad3d01ade141
+  subject: 'ci: 固定 ubuntu 测试 job 到 24.04，规避 26.04 缺少 Python 3.9 (#1606)'
+  pull_request: 1606
+  path_count: 2
+  paths:
+  - .github/workflows/schema.yml
+  - .github/workflows/test.yml
+- version: 5.16.0
+  commit: d8298517762d9c673dd0474864e01e619bb17eb0
+  subject: 'docs: 添加社区项目 MaaRacingMaster (#1612)'
+  pull_request: 1612
+  path_count: 2
+  paths:
+  - README.md
+  - README_en.md
+- version: 5.16.0
+  commit: 6d2e2a74f9f4a12958cc6e08b001fb399ac7853e
+  subject: 'fix(controller): 事件标记随动作一起入队，修复 Controller.Action 事件偶发丢失 (#1609)'
+  pull_request: 1609
+  path_count: 5
+  paths:
+  - source/MaaFramework/Controller/ControllerAgent.cpp
+  - source/MaaFramework/Controller/ControllerAgent.h
+  - test/pipeline/main.cpp
+  - test/pipeline/module/ControllerActionEvents.cpp
+  - test/pipeline/module/ControllerActionEvents.h
+- version: 5.16.0
+  commit: 08e21658b53fad4ac3d59c0964aa6c94578e53f3
+  subject: 'docs: 修正控制器动作回调的 action / param 说明，并同步 NodeJS 类型 (#1610)'
+  pull_request: 1610
+  path_count: 3
+  paths:
+  - docs/en_us/2.3-CallbackProtocol.md
+  - docs/zh_cn/2.3-回调协议.md
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 1540fb00bb01456a4305b5863d56713575ff25d2
+  subject: 'fix: 修复 Tasker 停止标志的跨线程数据竞争 (#1602)'
+  pull_request: 1602
+  path_count: 1
+  paths:
+  - source/MaaFramework/Tasker/Tasker.h
+- version: 5.16.0
+  commit: 938c9f932656ecae7039183ca5831801ecec8960
+  subject: 'fix: preserve active tasks when clearing runtime cache (#1605)'
+  pull_request: 1605
+  path_count: 14
+  paths:
+  - docs/en_us/2.2-IntegratedInterfaceOverview.md
+  - docs/zh_cn/2.2-集成接口一览.md
+  - include/MaaFramework/Instance/MaaTasker.h
+  - source/MaaFramework/Task/Context.cpp
+  - source/MaaFramework/Task/TaskBase.cpp
+  - source/MaaFramework/Task/TaskBase.h
+  - source/MaaFramework/Tasker/RuntimeCache.cpp
+  - source/MaaFramework/Tasker/RuntimeCache.h
+  - source/MaaFramework/Tasker/Tasker.cpp
+  - source/binding/NodeJS/src/apis/tasker.d.ts
+  - source/binding/Python/maa/tasker.py
+  - test/agent/agent_child_test.py
+  - test/agent/agent_test_utils.py
+  - test/python/binding_test.py
+- version: 5.16.0
+  commit: e6d8aeda34356e8deb00ed5475daee3364163a76
+  subject: 'fix(ios): 修复长文本超时、断连状态和设备发现取消 (#1613)'
+  pull_request: 1613
+  path_count: 10
+  paths:
+  - 3rdparty/XDeviceBridge
+  - docs/en_us/2.2-IntegratedInterfaceOverview.md
+  - docs/en_us/2.4-ControlMethods.md
+  - docs/zh_cn/2.2-集成接口一览.md
+  - docs/zh_cn/2.4-控制方式说明.md
+  - source/MaaIOSControlUnit/API/IOSDeviceAPI.cpp
+  - source/MaaIOSControlUnit/Session/IOSSession.cpp
+  - source/MaaIOSControlUnit/Session/XdbClient.h
+  - test/ios_test/xdb_integration_test.py
+  - test/python/ios_management_test.py
+- version: 5.16.0
+  commit: e5bf11882d7d90fb7468c26da9c27908791c411a
+  subject: 'fix: 统一串行化 GPU 模型生命周期与推理 (#1604)'
+  pull_request: 1604
+  path_count: 14
+  paths:
+  - docs/en_us/2.2-IntegratedInterfaceOverview.md
+  - docs/zh_cn/2.2-集成接口一览.md
+  - source/MaaFramework/Resource/FastDeployOCRSession.cpp
+  - source/MaaFramework/Resource/FastDeployOCRSession.h
+  - source/MaaFramework/Resource/InferenceContext.h
+  - source/MaaFramework/Resource/InferenceResMgr.cpp
+  - source/MaaFramework/Resource/InferenceResMgr.h
+  - source/MaaFramework/Resource/OCRResMgr.cpp
+  - source/MaaFramework/Resource/OrtSession.cpp
+  - source/MaaFramework/Resource/OrtSession.h
+  - test/pipeline/CMakeLists.txt
+  - test/pipeline/main.cpp
+  - test/pipeline/module/InferenceContext.cpp
+  - test/pipeline/module/InferenceContext.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  subject: 'test: 扩充接口、Pipeline、Schema 和 Agent 契约测试 (#1615)'
+  pull_request: 1615
+  path_count: 31
+  paths:
+  - .github/workflows/schema.yml
+  - .github/workflows/test.yml
+  - CMakeLists.txt
+  - include/MaaControlUnit/ControlUnitAPI.h
+  - include/MaaFramework/MaaPort.h
+  - source/Common/MaaContext.cpp
+  - source/Common/MaaController.cpp
+  - source/Common/MaaResource.cpp
+  - source/Common/MaaTasker.cpp
+  - source/ControlUnitCommon/ControlUnitAPI.cpp
+  - source/MaaFramework/Resource/PipelineParser.cpp
+  - source/binding/NodeJS/src/apis/context.cpp
+  - source/binding/NodeJS/src/apis/controller.d.ts
+  - source/binding/NodeJS/src/apis/job.cpp
+  - source/binding/NodeJS/src/foundation/spec/nodejs/callback.h
+  - test/README.md
+  - test/agent/agent_child_test.py
+  - test/agent/agent_test_utils.py
+  - test/agent/remote_contract.py
+  - test/nodejs/api-contract.ts

@@ -22400,3 +22400,937 @@ changes:
     形式，`$filtered` 同理。结果顺序由回调自行决定，框架不排序。假设返回了 N 个结果'
   paths:
   - tools/pipeline.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: modified
+  kind: documentation-version
+  symbol: v5.9
+  quote: '| v5.9 | String-form `roi` / `target` added `[Anchor]AnchorName` reference
+    support; fixed inconsistent action-failure follow-up behavior with/without `[JumpBack]`
+    (jump-back is not performed when the error is not caught by `on_error`) |'
+  previous_quote: '| v5.9 | String-form `roi` / `target` added `[Anchor]AnchorName`
+    reference support; fixed inconsistent action-failure follow-up behavior with/without
+    `[JumpBack]` (error-handling path does not jump back) |'
+  paths:
+  - docs/en_us/3.1-PipelineProtocol.md
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: modified
+  kind: documentation-version
+  symbol: v5.9
+  quote: '| v5.9 | `roi` / `target` 的 string 形式新增 `[Anchor]锚点名` 引用支持; 修复 action 失败时有无
+    `[JumpBack]` 的行为不一致（错误未被 `on_error` 接住时不触发回跳） |'
+  previous_quote: '| v5.9 | `roi` / `target` 的 string 形式新增 `[Anchor]锚点名` 引用支持; 修复
+    action 失败时有无 `[JumpBack]` 的行为不一致（错误处理路径不触发回跳） |'
+  paths:
+  - docs/zh_cn/3.1-任务流水线协议.md
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: type-definition
+  symbol: IOSControlUnitAPI
+  quote: 'class IOSControlUnitAPI : public ControlUnitAPI'
+  paths:
+  - include/MaaControlUnit/ControlUnitAPI.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: type-definition
+  symbol: MaaIOSControlUnitHandle
+  quote: using MaaIOSControlUnitHandle = MAA_CTRL_UNIT_NS::IOSControlUnitAPI*;
+  paths:
+  - include/MaaControlUnit/ControlUnitAPI.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaIOSControlUnitCreate
+  quote: MAA_CONTROL_UNIT_API MaaIOSControlUnitHandle MaaIOSControlUnitCreate( const
+    char* udid, MaaIOSScreencapMethod screencap_methods, MaaIOSConnectionMethod connection_method,
+    const char* config_json);
+  paths:
+  - include/MaaControlUnit/IOSControlUnitAPI.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaIOSControlUnitDestroy
+  quote: MAA_CONTROL_UNIT_API void MaaIOSControlUnitDestroy(MaaIOSControlUnitHandle
+    handle);
+  paths:
+  - include/MaaControlUnit/IOSControlUnitAPI.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaIOSControlUnitGetVersion
+  quote: MAA_CONTROL_UNIT_API const char* MaaIOSControlUnitGetVersion();
+  paths:
+  - include/MaaControlUnit/IOSControlUnitAPI.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: modified
+  kind: unclassified
+  symbol: include/MaaControlUnit/MaaControlUnitAPI.h
+  quote: include/MaaControlUnit/MaaControlUnitAPI.h changed without changing any declared
+    element
+  paths:
+  - include/MaaControlUnit/MaaControlUnitAPI.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaIOSControllerCreate
+  quote: MAA_FRAMEWORK_API MaaController* MaaIOSControllerCreate( const char* udid,
+    MaaIOSScreencapMethod screencap_methods, MaaIOSConnectionMethod connection_method,
+    const char* config_json);
+  paths:
+  - include/MaaFramework/Instance/MaaController.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: modified
+  kind: unclassified
+  symbol: include/MaaFramework/Instance/MaaTasker.h
+  quote: include/MaaFramework/Instance/MaaTasker.h changed without changing any declared
+    element
+  paths:
+  - include/MaaFramework/Instance/MaaTasker.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: constant
+  symbol: MaaIOSScreencapMethod_All
+  quote: '#define MaaIOSScreencapMethod_All (~MaaIOSScreencapMethod_None)'
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: constant
+  symbol: MaaIOSScreencapMethod_Default
+  quote: '#define MaaIOSScreencapMethod_Default MaaIOSScreencapMethod_All'
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: constant
+  symbol: MaaIOSScreencapMethod_None
+  quote: '#define MaaIOSScreencapMethod_None 0ULL'
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: constant
+  symbol: MaaIOSScreencapMethod_ScreenshotService
+  quote: '#define MaaIOSScreencapMethod_ScreenshotService (1ULL << 1)'
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: constant
+  symbol: MaaIOSScreencapMethod_Stream
+  quote: '#define MaaIOSScreencapMethod_Stream 1ULL'
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: enum-value
+  symbol: MaaIOSConnectionMethod_Auto
+  quote: MaaIOSConnectionMethod_Auto = 0
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: enum-value
+  symbol: MaaIOSConnectionMethod_USB
+  quote: MaaIOSConnectionMethod_USB = 1
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: enum-value
+  symbol: MaaIOSConnectionMethod_WiFi
+  quote: MaaIOSConnectionMethod_WiFi = 2
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: type-definition
+  symbol: MaaIOSConnectionMethod
+  quote: typedef int32_t MaaIOSConnectionMethod;
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: type-definition
+  symbol: MaaIOSConnectionMethodEnum
+  quote: enum MaaIOSConnectionMethodEnum
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: type-definition
+  symbol: MaaIOSScreencapMethod
+  quote: typedef uint64_t MaaIOSScreencapMethod;
+  paths:
+  - include/MaaFramework/MaaDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: modified
+  kind: unclassified
+  symbol: include/MaaFramework/MaaPort.h
+  quote: include/MaaFramework/MaaPort.h changed without changing any declared element
+  paths:
+  - include/MaaFramework/MaaPort.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceFind
+  quote: MAA_TOOLKIT_API MaaBool MaaToolkitIOSDeviceFind(MaaToolkitIOSDeviceList*
+    list);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceFindWithOptions
+  quote: MAA_TOOLKIT_API MaaBool MaaToolkitIOSDeviceFindWithOptions( MaaIOSConnectionMethod
+    connection_method, const char* options_json, MaaToolkitIOSDeviceCancelCallback
+    cancel_callback, void* userdata, MaaToolkitIOSDeviceList* list);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceGetConnections
+  quote: MAA_TOOLKIT_API const char* MaaToolkitIOSDeviceGetConnections(const MaaToolkitIOSDevice*
+    device);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceGetName
+  quote: MAA_TOOLKIT_API const char* MaaToolkitIOSDeviceGetName(const MaaToolkitIOSDevice*
+    device);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceGetScreencapMethods
+  quote: MAA_TOOLKIT_API MaaIOSScreencapMethod MaaToolkitIOSDeviceGetScreencapMethods(const
+    MaaToolkitIOSDevice* device);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceGetState
+  quote: MAA_TOOLKIT_API const char* MaaToolkitIOSDeviceGetState(const MaaToolkitIOSDevice*
+    device);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceGetUdid
+  quote: MAA_TOOLKIT_API const char* MaaToolkitIOSDeviceGetUdid(const MaaToolkitIOSDevice*
+    device);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceListAt
+  quote: MAA_TOOLKIT_API const MaaToolkitIOSDevice* MaaToolkitIOSDeviceListAt(const
+    MaaToolkitIOSDeviceList* list, MaaSize index);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceListCreate
+  quote: MAA_TOOLKIT_API MaaToolkitIOSDeviceList* MaaToolkitIOSDeviceListCreate();
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceListDestroy
+  quote: MAA_TOOLKIT_API void MaaToolkitIOSDeviceListDestroy(MaaToolkitIOSDeviceList*
+    list);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceListGetWarnings
+  quote: MAA_TOOLKIT_API const char* MaaToolkitIOSDeviceListGetWarnings(const MaaToolkitIOSDeviceList*
+    list);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: public-function
+  symbol: MaaToolkitIOSDeviceListSize
+  quote: MAA_TOOLKIT_API MaaSize MaaToolkitIOSDeviceListSize(const MaaToolkitIOSDeviceList*
+    list);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: type-definition
+  symbol: MaaToolkitIOSDeviceCancelCallback
+  quote: typedef MaaBool(MAA_CALL* MaaToolkitIOSDeviceCancelCallback)(void* userdata);
+  paths:
+  - include/MaaToolkit/IOSDevice/MaaToolkitIOSDevice.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: modified
+  kind: unclassified
+  symbol: include/MaaToolkit/MaaToolkitAPI.h
+  quote: include/MaaToolkit/MaaToolkitAPI.h changed without changing any declared
+    element
+  paths:
+  - include/MaaToolkit/MaaToolkitAPI.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: type-definition
+  symbol: MaaToolkitIOSDevice
+  quote: typedef struct MaaToolkitIOSDevice MaaToolkitIOSDevice;
+  paths:
+  - include/MaaToolkit/MaaToolkitDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: type-definition
+  symbol: MaaToolkitIOSDeviceList
+  quote: typedef struct MaaToolkitIOSDeviceList MaaToolkitIOSDeviceList;
+  paths:
+  - include/MaaToolkit/MaaToolkitDef.h
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.IOSConnectionMethod
+  quote: 'const IOSConnectionMethod: Record<''Auto'' | ''USB'' | ''WiFi'', number>'
+  paths:
+  - source/binding/NodeJS/src/apis/constant.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.IOSScreencapMethod
+  quote: 'const IOSScreencapMethod: Record< | ''Stream'' | ''ScreenshotService'' |
+    ''All'' | ''Default'', ScreencapOrInputMethods >'
+  paths:
+  - source/binding/NodeJS/src/apis/constant.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: modified
+  kind: binding-api
+  symbol: maa.ActionParam
+  quote: type ActionParam = | {} | ClickParam | LongPressParam | SwipeParam | MultiSwipeParam
+    | TouchParam | ClickKeyParam | LongPressKeyParam | InputTextParam | AppParam |
+    ScrollParam | RelativeMoveParam | ShellParam
+  previous_quote: type ActionParam = | {} | ClickParam | LongPressParam | SwipeParam
+    | MultiSwipeParam | TouchParam | ClickKeyParam | LongPressKeyParam | InputTextParam
+    | AppParam | ScrollParam | RelativeMoveParam
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.ClickKeyParam.auto_up
+  quote: 'auto_up: boolean'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.ClickParam.pressure
+  quote: 'pressure: number'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: modified
+  kind: binding-api
+  symbol: maa.ControllerNotify
+  quote: 'type ControllerNotify = { msg: NotifyMessage<''Action''> ctrl_id: number
+    uuid: string info: Record<string, unknown> } & ( | { action: ''connect'' param:
+    null } | { action: ''click'' param: ClickParam } | { action: ''long_press'' param:
+    LongPressParam } | { action: ''swipe'' param: SwipeParam } | { action: ''mu'
+  previous_quote: 'type ControllerNotify = { msg: NotifyMessage<''Action''> ctrl_id:
+    number uuid: string info: Record<string, unknown> } & ( | { action: ''connect''
+    param?: never } | { action: ''click'' param: ClickParam } | { action: ''long_press''
+    param: LongPressParam } | { action: ''swipe'' param: SwipeParam } | { action:
+    '''
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.IOSController
+  quote: 'class IOSController extends Controller { static find(timeout_ms?: number,
+    config?: string, connection_method?: number): Promise<IOSDevice[] | null> constructor(udid:
+    string, screencap_method?: ScreencapOrInputMethods, connection_method?: number,
+    config?: string) }'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.IOSController.constructor
+  quote: 'constructor(udid: string, screencap_method?: ScreencapOrInputMethods, connection_method?:
+    number, config?: string)'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.IOSController.find
+  quote: 'static find(timeout_ms?: number, config?: string, connection_method?: number):
+    Promise<IOSDevice[] | null>'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.IOSDevice
+  quote: 'type IOSDevice = [name: string, udid: string, screencap_methods: ScreencapOrInputMethods,
+    connections_json: string, state: string]'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.LongPressParam.pressure
+  quote: 'pressure: number'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.ScrollParam.point
+  quote: 'point: Point'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.ShellParam
+  quote: 'type ShellParam = { cmd: string shell_timeout: number }'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.ShellParam.cmd
+  quote: 'cmd: string'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.ShellParam.shell_timeout
+  quote: 'shell_timeout: number'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.SwipeParam.pressure
+  quote: 'pressure: number'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.TouchParam.auto_up
+  quote: 'auto_up: boolean'
+  paths:
+  - source/binding/NodeJS/src/apis/controller.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: modified
+  kind: unclassified
+  symbol: source/binding/NodeJS/src/apis/tasker.d.ts
+  quote: source/binding/NodeJS/src/apis/tasker.d.ts changed without changing any declared
+    element
+  paths:
+  - source/binding/NodeJS/src/apis/tasker.d.ts
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.controller:IOSController
+  quote: class IOSController(Controller)
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.controller:IOSController.__init__
+  quote: 'def __init__(self, udid: str, screencap_methods: int = MaaIOSScreencapMethodEnum.Default,
+    connection_method: int = MaaIOSConnectionMethodEnum.Auto, config: Optional[dict]
+    = None)'
+  paths:
+  - source/binding/Python/maa/controller.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSConnectionMethod
+  quote: MaaIOSConnectionMethod = ctypes.c_int32
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSConnectionMethodEnum
+  quote: class MaaIOSConnectionMethodEnum(IntEnum)
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSConnectionMethodEnum.Auto
+  quote: Auto = 0
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSConnectionMethodEnum.USB
+  quote: USB = 1
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSConnectionMethodEnum.WiFi
+  quote: WiFi = 2
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSScreencapMethod
+  quote: MaaIOSScreencapMethod = ctypes.c_uint64
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSScreencapMethodEnum
+  quote: class MaaIOSScreencapMethodEnum(IntEnum)
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSScreencapMethodEnum.All
+  quote: All = ~Null
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSScreencapMethodEnum.Default
+  quote: Default = All
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSScreencapMethodEnum.Null
+  quote: Null = 0
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSScreencapMethodEnum.ScreenshotService
+  quote: ScreenshotService = 1 << 1
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.define:MaaIOSScreencapMethodEnum.Stream
+  quote: Stream = 1
+  paths:
+  - source/binding/Python/maa/define.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: modified
+  kind: unclassified
+  symbol: source/binding/Python/maa/tasker.py
+  quote: source/binding/Python/maa/tasker.py changed without changing any declared
+    element
+  paths:
+  - source/binding/Python/maa/tasker.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.toolkit:IOSDevice
+  quote: '@dataclass class IOSDevice'
+  paths:
+  - source/binding/Python/maa/toolkit.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.toolkit:IOSDevice.connections
+  quote: 'connections: list[dict[str, Any]]'
+  paths:
+  - source/binding/Python/maa/toolkit.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.toolkit:IOSDevice.name
+  quote: 'name: str'
+  paths:
+  - source/binding/Python/maa/toolkit.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.toolkit:IOSDevice.screencap_methods
+  quote: 'screencap_methods: int'
+  paths:
+  - source/binding/Python/maa/toolkit.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.toolkit:IOSDevice.state
+  quote: 'state: str'
+  paths:
+  - source/binding/Python/maa/toolkit.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.toolkit:IOSDevice.udid
+  quote: 'udid: str'
+  paths:
+  - source/binding/Python/maa/toolkit.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: binding-api
+  symbol: maa.toolkit:Toolkit.find_ios_devices
+  quote: '@staticmethod def find_ios_devices( timeout_ms: int = 3000, config: Optional[dict[str,
+    Any]] = None, connection_method: MaaIOSConnectionMethodEnum = MaaIOSConnectionMethodEnum.Auto,
+    cancelled: Optional[Callable[[], bool]] = None, ) -> list[IOSDevice]'
+  paths:
+  - source/binding/Python/maa/toolkit.py
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-enum
+  symbol: definitions.controllerItem.ios.connection = "Auto"
+  quote: '"Auto"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-enum
+  symbol: definitions.controllerItem.ios.connection = "USB"
+  quote: '"USB"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-enum
+  symbol: definitions.controllerItem.ios.connection = "WiFi"
+  quote: '"WiFi"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-enum
+  symbol: definitions.controllerItem.type = "IOS"
+  quote: '"IOS"'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios
+  quote: '{"additionalProperties": false, "title": "iOS 控制器配置", "type": "object"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.config
+  quote: '{"additionalProperties": false, "type": "object"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.config.hardware_decode
+  quote: '{"type": "boolean"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.config.max_bitrate
+  quote: '{"maximum": 18446744073709551615, "minimum": 0, "type": "integer"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.config.max_fps
+  quote: '{"maximum": 240, "minimum": 0, "type": "integer"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.config.server_port
+  quote: '{"maximum": 65535, "minimum": 0, "type": "integer"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.config.shared_control
+  quote: '{"type": "boolean"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.config.wifi_address
+  quote: '{"type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.config.wifi_port
+  quote: '{"maximum": 65535, "minimum": 1, "type": "integer"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.connection
+  quote: '{"enum": ["Auto", "USB", "WiFi"], "type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.screencap
+  quote: '{"description": "Stream、ScreenshotService 或按 | 组合", "type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: definitions.controllerItem.ios.udid
+  quote: '{"type": "string"}'
+  paths:
+  - tools/interface.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-enum
+  symbol: controller.type = "IOS"
+  quote: '"IOS"'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-enum
+  symbol: ios.connection = "Auto"
+  quote: '"Auto"'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-enum
+  symbol: ios.connection = "USB"
+  quote: '"USB"'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-enum
+  symbol: ios.connection = "WiFi"
+  quote: '"WiFi"'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios
+  quote: '{"additionalProperties": false, "title": "iOS配置", "type": "object"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.config
+  quote: '{"additionalProperties": false, "title": "iOS额外配置", "type": "object"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.config.hardware_decode
+  quote: '{"type": "boolean"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.config.max_bitrate
+  quote: '{"maximum": 18446744073709551615, "minimum": 0, "type": "integer"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.config.max_fps
+  quote: '{"maximum": 240, "minimum": 0, "type": "integer"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.config.server_port
+  quote: '{"maximum": 65535, "minimum": 0, "type": "integer"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.config.shared_control
+  quote: '{"type": "boolean"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.config.wifi_address
+  quote: '{"type": "string"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.config.wifi_port
+  quote: '{"maximum": 65535, "minimum": 1, "type": "integer"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.connection
+  quote: '{"enum": ["Auto", "USB", "WiFi"], "type": "string"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.screencap
+  quote: '{"type": "string"}'
+  paths:
+  - tools/interface_config.schema.json
+- version: 5.16.0
+  commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  change: added
+  kind: schema-property
+  symbol: ios.udid
+  quote: '{"type": "string"}'
+  paths:
+  - tools/interface_config.schema.json
