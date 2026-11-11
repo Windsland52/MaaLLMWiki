@@ -6,9 +6,14 @@ from typing import Any, cast
 
 import pytest
 
-from maa_llm_wiki.validation import validate_repository
+from maa_llm_wiki.validation import load_release_catalog, validate_repository
 
 REPO = Path(__file__).parents[1]
+
+
+def _latest_release(root: Path) -> str:
+    """The checkout's newest release, so these tests survive a catalog sync."""
+    return load_release_catalog(root).releases[-1].version
 
 
 @pytest.fixture(scope="session")
@@ -29,7 +34,8 @@ def test_pristine_catalog_is_valid(catalog_copy: Path) -> None:
 
 
 def test_tampered_generated_pages_are_detected(catalog_copy: Path) -> None:
-    version_root = catalog_copy / "generated" / "maa-framework" / "5.15.0"
+    latest = _latest_release(catalog_copy)
+    version_root = catalog_copy / "generated" / "maa-framework" / latest
     page = version_root / "documentation" / "zh-cn.md"
     release_index = catalog_copy / "generated" / "maa-framework" / "index.md"
     stray_page = version_root / "notes.md"
@@ -49,7 +55,8 @@ def test_tampered_generated_pages_are_detected(catalog_copy: Path) -> None:
 
     joined = "\n".join(errors)
     assert (
-        "generated page is stale: generated/maa-framework/5.15.0/documentation/zh-cn.md" in joined
+        f"generated page is stale: generated/maa-framework/{latest}/documentation/zh-cn.md"
+        in joined
     )
     assert "notes.md" in joined
     assert "not produced by the generator" in joined
@@ -57,6 +64,7 @@ def test_tampered_generated_pages_are_detected(catalog_copy: Path) -> None:
 
 
 def test_registry_and_schema_drift_is_detected(catalog_copy: Path) -> None:
+    latest = _latest_release(catalog_copy)
     missing_inventory = catalog_copy / "sources" / "maa-framework" / "inventories" / "5.0.0.yaml"
     unregistered_dir = catalog_copy / "generated" / "maa-framework" / "9.9.9"
     schema = catalog_copy / "schemas" / "source-inventory.schema.json"
@@ -85,7 +93,7 @@ def test_registry_and_schema_drift_is_detected(catalog_copy: Path) -> None:
     assert "MaaFramework inventory is missing release: 5.0.0" in joined
     assert "generated directory is not a registered release: 9.9.9" in joined
     assert "generated JSON schema is stale: schemas/source-inventory.schema.json" in joined
-    assert "MaaFramework default inventory disagrees with inventories/5.15.0.yaml" in joined
+    assert f"MaaFramework default inventory disagrees with inventories/{latest}.yaml" in joined
 
 
 def test_unproduced_binding_page_is_rejected(catalog_copy: Path) -> None:
