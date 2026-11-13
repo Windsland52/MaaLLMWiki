@@ -7222,3 +7222,63 @@ commits:
   - test/agent/agent_test_utils.py
   - test/agent/remote_contract.py
   - test/nodejs/api-contract.ts
+- version: 5.16.1
+  commit: 41546a083dc636650b48f99c064cf3d26e6125c3
+  subject: 'fix: 修复 RawByNetcat 初始化失败时的崩溃 (#1616)'
+  pull_request: 1616
+  path_count: 3
+  paths:
+  - source/MaaAdbControlUnit/Screencap/RawByNetcat.cpp
+  - test/adb_pipe/CMakeLists.txt
+  - test/adb_pipe/netcat.cpp
+- version: 5.16.1
+  commit: bcacd67c2a1ad7c77ca98d436a21536c991f842c
+  subject: 'fix(build): link LibraryHolder with the platform dynamic loader'
+  path_count: 1
+  paths:
+  - source/LibraryHolder/CMakeLists.txt
+- version: 5.16.1
+  commit: 94d401a470431a34ed218353d6473692248ce9ce
+  subject: 'chore: autopublish Tue Nov 10 23:06:57 UTC 2026'
+  path_count: 9
+  paths:
+  - source/MaaFramework/Resource/InferenceContext.h
+  - source/MaaFramework/Resource/InferenceResMgr.cpp
+  - source/MaaFramework/Resource/OrtSession.h
+  - source/MaaIOSControlUnit/API/IOSDeviceAPI.cpp
+  - source/MaaIOSControlUnit/Session/IOSSession.cpp
+  - source/MaaIOSControlUnit/Session/XdbClient.h
+  - source/binding/NodeJS/src/foundation/spec/nodejs/callback.h
+  - test/adb_pipe/netcat.cpp
+  - test/pipeline/module/InferenceContext.cpp
+- version: 5.16.1
+  commit: acd39cf612cfaa19f03b00dde581d69e0d42b010
+  subject: 'fix: release uncached recognition image storage (#1618)'
+  pull_request: 1618
+  path_count: 6
+  paths:
+  - source/MaaFramework/Tasker/RuntimeCache.cpp
+  - source/MaaFramework/Tasker/RuntimeCache.h
+  - test/pipeline/CMakeLists.txt
+  - test/pipeline/main.cpp
+  - test/pipeline/module/RuntimeCache.cpp
+  - test/pipeline/module/RuntimeCache.h
+- version: 5.16.1
+  commit: 00e5cd754f0cf647994d2e1577e6feab2f06f281
+  subject: 'chore: autopublish Wed Nov 11 23:07:19 UTC 2026'
+  path_count: 1
+  paths:
+  - test/pipeline/module/RuntimeCache.cpp
+- version: 5.16.1
+  commit: a25196a19b2e9999c13406eb2ce53c625a8f7418
+  subject: 'docs: add MaaTrace under extension plugins in Chinese and English'
+  path_count: 2
+  paths:
+  - README.md
+  - README_en.md
+- version: 5.16.1
+  commit: ea944bd7b75f649851dc4807295966b3676bc821
+  subject: 'fix: register plugin context events with the correct sink'
+  path_count: 1
+  paths:
+  - source/MaaFramework/Global/PluginMgr.cpp

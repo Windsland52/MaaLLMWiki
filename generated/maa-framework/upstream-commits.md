@@ -7,7 +7,19 @@ Commits whose subject ends with `[skip changelog]` (automated formatting and sub
 
 [← Version index](./index.md) · [Machine changes](./machine-changes.md) · [Symbols](./machine-symbols.md)
 
-Source of truth: `sources/maa-framework/upstream-commits.yaml` (740 commits over 55 releases).
+Source of truth: `sources/maa-framework/upstream-commits.yaml` (747 commits over 56 releases).
+
+## [5.16.1](./5.16.1/index.md)
+
+7 commits since `v5.16.0` · [compare](https://github.com/MaaXYZ/MaaFramework/compare/v5.16.0...v5.16.1)
+
+- [`41546a083d`](https://github.com/MaaXYZ/MaaFramework/commit/41546a083dc636650b48f99c064cf3d26e6125c3) fix: 修复 RawByNetcat 初始化失败时的崩溃 ([#1616](https://github.com/MaaXYZ/MaaFramework/pull/1616)) — `source/MaaAdbControlUnit/Screencap/RawByNetcat.cpp`, `test/adb_pipe/CMakeLists.txt`, `test/adb_pipe/netcat.cpp`
+- [`bcacd67c2a`](https://github.com/MaaXYZ/MaaFramework/commit/bcacd67c2a1ad7c77ca98d436a21536c991f842c) fix(build): link LibraryHolder with the platform dynamic loader — `source/LibraryHolder/CMakeLists.txt`
+- [`94d401a470`](https://github.com/MaaXYZ/MaaFramework/commit/94d401a470431a34ed218353d6473692248ce9ce) chore: autopublish Tue Nov 10 23:06:57 UTC 2026 — `source/MaaFramework/Resource/InferenceContext.h`, `source/MaaFramework/Resource/InferenceResMgr.cpp`, `source/MaaFramework/Resource/OrtSession.h`, `source/MaaIOSControlUnit/API/IOSDeviceAPI.cpp`, `source/MaaIOSControlUnit/Session/IOSSession.cpp` and 4 more
+- [`acd39cf612`](https://github.com/MaaXYZ/MaaFramework/commit/acd39cf612cfaa19f03b00dde581d69e0d42b010) fix: release uncached recognition image storage ([#1618](https://github.com/MaaXYZ/MaaFramework/pull/1618)) — `source/MaaFramework/Tasker/RuntimeCache.cpp`, `source/MaaFramework/Tasker/RuntimeCache.h`, `test/pipeline/CMakeLists.txt`, `test/pipeline/main.cpp`, `test/pipeline/module/RuntimeCache.cpp` and 1 more
+- [`00e5cd754f`](https://github.com/MaaXYZ/MaaFramework/commit/00e5cd754f0cf647994d2e1577e6feab2f06f281) chore: autopublish Wed Nov 11 23:07:19 UTC 2026 — `test/pipeline/module/RuntimeCache.cpp`
+- [`a25196a19b`](https://github.com/MaaXYZ/MaaFramework/commit/a25196a19b2e9999c13406eb2ce53c625a8f7418) docs: add MaaTrace under extension plugins in Chinese and English — `README.md`, `README_en.md`
+- [`ea944bd7b7`](https://github.com/MaaXYZ/MaaFramework/commit/ea944bd7b75f649851dc4807295966b3676bc821) fix: register plugin context events with the correct sink — `source/MaaFramework/Global/PluginMgr.cpp`
 
 ## [5.16.0](./5.16.0/index.md)
 

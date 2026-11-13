@@ -224,6 +224,10 @@ releases:
   tag: v5.16.0
   commit: 11ea6b57fdd50322a462a3d39d77f110a8326335
   released_at: '2026-11-10'
+- version: 5.16.1
+  tag: v5.16.1
+  commit: ea944bd7b75f649851dc4807295966b3676bc821
+  released_at: '2026-11-13'
 prereleases:
 - version: 5.0.0-alpha.1
   tag: v5.0.0-alpha.1

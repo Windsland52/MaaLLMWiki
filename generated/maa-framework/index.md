@@ -5,13 +5,14 @@ Select a version before using framework facts or APIs.
 
 ## Current snapshot
 
-- Latest indexed release: [5.16.0](./5.16.0/index.md)
-- Indexed releases: 56
+- Latest indexed release: [5.16.1](./5.16.1/index.md)
+- Indexed releases: 57
 - Registered prereleases: 77
 
 ## Releases
 
-- [5.16.0](./5.16.0/index.md) `11ea6b57fdd50322a462a3d39d77f110a8326335` (latest)
+- [5.16.1](./5.16.1/index.md) `ea944bd7b75f649851dc4807295966b3676bc821` (latest)
+- [5.16.0](./5.16.0/index.md) `11ea6b57fdd50322a462a3d39d77f110a8326335`
 - [5.15.0](./5.15.0/index.md) `172ec7b97df3e5b10adf69e36df01f8dc495b6f6`
 - [5.14.3](./5.14.3/index.md) `8963191215ca49d6b037802acd07d20a4213160a`
 - [5.14.2](./5.14.2/index.md) `8061d5bcaa3f07afcc1008795913663f64de46c8`

@@ -4,7 +4,7 @@ repositories:
   url: https://github.com/MaaXYZ/MaaFramework
   role: authoritative
   enabled: true
-  default_revision: 11ea6b57fdd50322a462a3d39d77f110a8326335
+  default_revision: ea944bd7b75f649851dc4807295966b3676bc821
   note: The default revision follows the latest indexed stable MaaFramework release.
 - id: maa-framework-go
   name: MaaFramework Go binding
