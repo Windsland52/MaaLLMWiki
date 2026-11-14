@@ -34,6 +34,7 @@ Revision: `f8457ec1ac7a8476ee1a6ab39f20324b6648ea11`
 
 - [All versions](../index.md)
 - Previous release: [1.28.0](../1.28.0/index.md)
+- Next release: [1.29.1](../1.29.1/index.md)
 - [Prereleases](../prereleases.md)
 
 ## Sources

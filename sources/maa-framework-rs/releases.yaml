@@ -152,4 +152,8 @@ releases:
   tag: v1.29.0
   commit: f8457ec1ac7a8476ee1a6ab39f20324b6648ea11
   released_at: '2026-11-11'
+- version: 1.29.1
+  tag: v1.29.1
+  commit: bf977ee31d081fde0cdfae4d3836ef436e9b7d7d
+  released_at: '2026-11-14'
 prereleases: []

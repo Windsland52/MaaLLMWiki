@@ -1,10 +1,10 @@
 source_id: maa-framework-rs
-version: 1.29.0
-revision: f8457ec1ac7a8476ee1a6ab39f20324b6648ea11
+version: 1.29.1
+revision: bf977ee31d081fde0cdfae4d3836ef436e9b7d7d
 artifacts:
 - path: Cargo.toml
   kind: package-manifest
-  blob: d3fc21ddfe85bbab0d31f1effc93509583ff929b
+  blob: 9075b45c4d1fe4f27fd542c04c5b1d1e2f75eb02
   title: Cargo.toml
   summary: Package and dependency metadata for the Rust binding.
 - path: README.md
@@ -20,7 +20,7 @@ artifacts:
   summary: MaaFramework 的 Rust 绑定，基于图像识别的新一代自动化框架。
 - path: maa-framework-sys/Cargo.toml
   kind: package-manifest
-  blob: 127b8e29a9e2cfb4231ddc7aec0a07e09d9d79da
+  blob: 9aecbc982cfc63f077d70daa4010b5e7607ca014
   title: Cargo.toml
   summary: Package and dependency metadata for the Rust binding.
 - path: maa-framework-sys/src/bindings/dynamic_bindings.rs
@@ -80,7 +80,7 @@ artifacts:
   summary: Public Rust binding declarations for the context module.
 - path: maa-framework/src/controller.rs
   kind: binding-api
-  blob: 8c05cb1d594acefa3994ce7e97d2b70110aaec7f
+  blob: f5a89ac3397c2eb681ca8a74ee8640b2cabd18a4
   title: controller.rs
   summary: Public Rust binding declarations for the controller module.
 - path: maa-framework/src/custom.rs
@@ -90,7 +90,7 @@ artifacts:
   summary: Public Rust binding declarations for the custom module.
 - path: maa-framework/src/custom_controller.rs
   kind: binding-api
-  blob: eb33ecab57103b9ce4c2566f8b6058508c5864a1
+  blob: 52f2d3f67c6593ee6352bf9e997eccfeb420ad05
   title: custom_controller.rs
   summary: Public Rust binding declarations for the custom_controller module.
 - path: maa-framework/src/error.rs
